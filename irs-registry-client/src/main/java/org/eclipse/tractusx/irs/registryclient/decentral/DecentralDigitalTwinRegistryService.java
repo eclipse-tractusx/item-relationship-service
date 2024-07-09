@@ -145,14 +145,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.error(e.getMessage(), e);
             Thread.currentThread().interrupt();
             return Stream.of(Either.left(e));
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | RegistryServiceException e) {
             log.warn(e.getMessage(), e);
             return Stream.of(Either.left(e));
         }
     }
 
     private CompletableFuture<List<Either<Exception, Shell>>> fetchShellDescriptors(final Set<String> calledEndpoints,
-            final String bpn, final List<DigitalTwinRegistryKey> keys) {
+            final String bpn, final List<DigitalTwinRegistryKey> keys) throws RegistryServiceException {
 
         final var watch = new StopWatch();
         final String msg = "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn);
@@ -162,6 +162,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         try {
 
             final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            if (edcUrls.isEmpty()) {
+                throw new RegistryServiceException("No EDC Endpoints could be discovered for BPN '%s'".formatted(bpn));
+            }
 
             log.info("Found {} connector endpoints for bpn '{}'", edcUrls.size(), bpn);
             calledEndpoints.addAll(edcUrls);

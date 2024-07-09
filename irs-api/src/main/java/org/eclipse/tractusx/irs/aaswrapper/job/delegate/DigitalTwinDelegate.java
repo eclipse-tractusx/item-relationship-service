@@ -89,7 +89,8 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             // otherwise Jobs stay in state RUNNING forever
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId.getGlobalAssetId(), null, e.getSuppressed(), retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
+                    Tombstone.from(itemId.getGlobalAssetId(), null, e, e.getSuppressed(), retryCount,
+                            ProcessStep.DIGITAL_TWIN_REQUEST));
         }
 
         if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {

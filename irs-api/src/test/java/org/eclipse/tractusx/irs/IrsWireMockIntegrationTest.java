@@ -370,7 +370,7 @@ class IrsWireMockIntegrationTest {
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
         assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
-                "No EDC endpoint could be discovered for BPN 'BPNL00000000TEST'");
+                "No EDC Endpoints could be discovered for BPN '%s'".formatted(TEST_BPN));
     }
 
     private void successfulRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,

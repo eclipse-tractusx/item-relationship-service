@@ -57,6 +57,7 @@ public final class SubmodelFacadeWiremockSupport {
     public static final String CX_POLICY_USAGE_PURPOSE = "cx-policy:UsagePurpose";
     public static final String CX_CORE_INDUSTRYCORE_1 = "cx.core.industrycore:1";
     public static final String PERMISSION_TYPE = "use";
+    public static final int STATUS_CODE_BAD_GATEWAY = 502;
 
     private SubmodelFacadeWiremockSupport() {
     }
@@ -118,7 +119,7 @@ public final class SubmodelFacadeWiremockSupport {
     }
 
     public static void prepareFailingCatalog() {
-        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(502)
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_BAD_GATEWAY)
                                                                             .withBody("")));
     }
 
