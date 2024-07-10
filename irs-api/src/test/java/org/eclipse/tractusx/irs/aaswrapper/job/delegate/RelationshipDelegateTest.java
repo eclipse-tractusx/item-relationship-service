@@ -391,7 +391,7 @@ class RelationshipDelegateTest {
 
         // when
         when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
-                new UsagePolicyPermissionException("itemId", null, businessPartnerNumber));
+                new UsagePolicyPermissionException(List.of(), null, businessPartnerNumber));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 new AASTransferProcess(), createKey());

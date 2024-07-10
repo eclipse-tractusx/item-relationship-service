@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
@@ -30,7 +31,8 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
  */
 @Builder
 @Schema(example = PolicyResponse.EXAMPLE_PAYLOAD)
-public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
+public record PolicyResponse(OffsetDateTime validUntil, Payload payload,
+                             @JsonInclude(JsonInclude.Include.NON_NULL) String bpn) {
 
     public static final String BPN_TO_POLICY_MAP_EXAMPLE = """
               {
@@ -56,14 +58,14 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                                                       "operator": {
                                                           "@id": "eq"
                                                       },
-                                                      "odrl:rightOperand": "active"
+                                                      "rightOperand": "active"
                                                   },
                                                   {
                                                       "leftOperand": "PURPOSE",
                                                       "operator": {
                                                           "@id": "eq"
                                                       },
-                                                      "odrl:rightOperand": "ID 3.1 Trace"
+                                                      "rightOperand": "ID 3.1 Trace"
                                                   }
                                               ],
                                               "or": null
@@ -134,6 +136,10 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
             """;
 
     public static PolicyResponse fromPolicy(final Policy policy) {
+        return from(policy, null);
+    }
+
+    public static PolicyResponse from(final Policy policy, final String bpn) {
         return PolicyResponse.builder()
                              .validUntil(policy.getValidUntil())
                              .payload(Payload.builder()
@@ -141,6 +147,8 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                                              .context(Context.getDefault())
                                              .policy(policy)
                                              .build())
+                             .bpn(bpn)
                              .build();
     }
+
 }

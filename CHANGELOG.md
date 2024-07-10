@@ -8,9 +8,13 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## [5.2.0] - 2024-07-03
+
 ### Fixed
 
--  Fixed ESS Investigation job processing not starting #579
+- Fixed ESS Investigation job processing not starting #579
+- Policy store API returns 'rightOperand' without 'odrl:' prefix now (see traceability-foss/issues/970).
+- Fixed trivy workflow to fail only on CRITICAL, HIGH (according to https://github.com/eclipse-tractusx/eclipse-tractusx.github.io/pull/949/files).
 
 ### Changed
 
@@ -28,11 +32,16 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## Added
 
+- Added tests for aspect version compatibility. #529
 - Added endpoint for dedicated removal of policy from BPNL. #559
 - Integration Test Policy Store API Unhappy Path. #519
 - Support for SingleLevelUsageAsPlanned. #470
 - Documentation to describe the delegate process. #470
 - Added file for CC BY 4.0 license for TRG 7 #681
+- Paging endpoint for Policy Store API: `GET /irs/policies/paged`. #639
+    - Supports multi-sort for the properties "bpn", "validUntil", "policyId", "createdOn", "action" with ascending / descending order.
+    - Supports AND-connected multi-filtering by the properties "bpn", "validUntil", "policyId".
+        - Note: filtering by "createdOn", "validUntil" will be implemented in a subsequent story.
 
 ## [5.1.4] - 2024-05-27
 
@@ -696,7 +705,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.4...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.2.0...HEAD
+[5.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.4...5.2.0
 [5.1.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.3...5.1.4
 [5.1.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.1...5.1.2

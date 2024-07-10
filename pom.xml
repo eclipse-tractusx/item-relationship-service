@@ -75,7 +75,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>2.1.0-SNAPSHOT</irs-registry-client.version>
+        <irs-registry-client.version>2.1.5-SNAPSHOT</irs-registry-client.version>
 
         <!-- Dependencies -->
         <springboot.version>3.1.11</springboot.version>
@@ -127,6 +127,7 @@
         <snappy-java.version>1.1.10.5</snappy-java.version>
         <commons-compress.version>1.26.1</commons-compress.version>
         <commons-collections4.version>4.4</commons-collections4.version>
+        <xmlunit-core.version>2.10.0</xmlunit-core.version>
     </properties>
 
     <dependencyManagement>
@@ -140,6 +141,12 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xmlunit</groupId>
+                <artifactId>xmlunit-core</artifactId>
+                <version>${xmlunit-core.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -328,7 +335,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <excludedGroups>INTEGRATION_TEST,INACTIVE</excludedGroups>
+                            <excludedGroups>INTEGRATION_TEST,INACTIVE,Ignore</excludedGroups>
                             <properties>
                                 <configurationParameters>
                                     cucumber.execution.dry-run=true

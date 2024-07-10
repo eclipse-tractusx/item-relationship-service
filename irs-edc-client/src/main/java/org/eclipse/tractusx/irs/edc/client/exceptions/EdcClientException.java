@@ -39,4 +39,5 @@ public class EdcClientException extends Exception {
     public EdcClientException(final String msg) {
         super(msg);
     }
+
 }

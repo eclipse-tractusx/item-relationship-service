@@ -24,7 +24,10 @@
 package org.eclipse.tractusx.irs.ess.bpn.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.ess.service.EssService.PART_AS_PLANNED;
+import static org.eclipse.tractusx.irs.ess.service.EssService.PART_SITE_INFORMATION_AS_PLANNED;
 import static org.eclipse.tractusx.irs.util.TestMother.shell;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
 import org.eclipse.tractusx.irs.component.partasplanned.ValidityPeriod;
 import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
@@ -61,7 +65,8 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(
+                jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.NO);
@@ -82,7 +87,8 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(
+                jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.YES);
@@ -98,7 +104,8 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(
+                jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.YES);
@@ -114,7 +121,8 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(
+                jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.NO);
@@ -129,7 +137,8 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(
+                jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
@@ -151,7 +160,8 @@ class BPNIncidentValidationTest {
                               .build();
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(
+                jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
@@ -164,7 +174,7 @@ class BPNIncidentValidationTest {
         final PartSiteInformationAsPlanned partSiteInformation = PartSiteInformationAsPlanned.builder()
                                                                                              .sites(List.of(
                                                                                                      Site.builder()
-                                                                                                         .catenaXSiteId(
+                                                                                                         .catenaXsiteId(
                                                                                                                  "BPNS123456")
                                                                                                          .build()))
                                                                                              .build();
@@ -183,7 +193,7 @@ class BPNIncidentValidationTest {
         final PartSiteInformationAsPlanned partSiteInformation = PartSiteInformationAsPlanned.builder()
                                                                                              .sites(List.of(
                                                                                                      Site.builder()
-                                                                                                         .catenaXSiteId(
+                                                                                                         .catenaXsiteId(
                                                                                                                  "BPNS00000003B0Q0")
                                                                                                          .build()))
                                                                                              .build();
@@ -278,12 +288,16 @@ class BPNIncidentValidationTest {
     }
 
     private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
+        final List<SubmodelDescriptor> submodelDescriptors = List.of(
+                submodelDescriptor(PART_AS_PLANNED, "test", "test"),
+                submodelDescriptor(PART_SITE_INFORMATION_AS_PLANNED, "test", "test"));
         return AssetAdministrationShellDescriptor.builder()
                                                  .globalAssetId(catenaXId)
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
                                                                                                  .name("manufacturerId")
                                                                                                  .value(bpn)
                                                                                                  .build()))
+                                                 .submodelDescriptors(submodelDescriptors)
                                                  .build();
     }
 }

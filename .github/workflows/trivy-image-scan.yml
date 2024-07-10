@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -58,9 +58,11 @@ jobs:
           image-ref: "localhost:5000/irs-api:testing"
           format: "sarif"
           output: "trivy-results2.sarif"
-          exit-code: "1"
+          exit-code: "1" # Trivy exits with code 1 if vulnerabilities are found, causing the workflow step to fail.
           severity: "CRITICAL,HIGH"
           trivyignores: .config/.trivyignore
+          limit-severities-for-sarif: true
+
 
       - name: Upload Trivy scan results to GitHub Security tab
         if: always()

@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.ACTIVE_MEMBERSHIP;
 import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE;
 import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.PURPOSE_ID_3_1_TRACE;
@@ -48,6 +49,7 @@ import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.services.PolicyPagingService;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.eclipse.tractusx.irs.policystore.testutil.PolicyStoreTestUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,6 +58,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class PolicyStoreControllerTest {
@@ -99,9 +102,13 @@ public class PolicyStoreControllerTest {
     @Mock
     private PolicyStoreService policyStoreServiceMock;
 
+    @Mock
+    private PolicyPagingService policyPagingServiceMock;
+
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreController(policyStoreServiceMock, mock(HttpServletRequest.class));
+        testee = new PolicyStoreController(policyStoreServiceMock, policyPagingServiceMock,
+                mock(HttpServletRequest.class));
     }
 
     @Nested
@@ -126,7 +133,25 @@ public class PolicyStoreControllerTest {
     }
 
     @Nested
-    class GetPolicyTests {
+    class GetPoliciesPagedTests {
+
+        @Test
+        void pageSizeTooLarge() {
+            assertThatThrownBy(() -> testee.getPoliciesPaged(PageRequest.of(0, PolicyStoreController.MAX_PAGE_SIZE + 1),
+                    Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
+                                             .hasMessageContaining("Page size too large");
+        }
+
+        @Test
+        void pageSizeTooLow() {
+            assertThatThrownBy(
+                    () -> testee.getPoliciesPaged(PageRequest.of(0, 0), Collections.emptyList())).isInstanceOf(
+                    IllegalArgumentException.class).hasMessageContaining("Page size must not be less than one");
+        }
+    }
+
+    @Nested
+    class GetPoliciesTests {
 
         @Test
         void getPolicies() {

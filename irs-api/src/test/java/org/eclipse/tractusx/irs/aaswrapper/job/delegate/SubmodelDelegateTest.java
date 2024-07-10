@@ -153,7 +153,7 @@ class SubmodelDelegateTest {
 
         // when
         when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
-                new UsagePolicyPermissionException("itemId", null, businessPartnerNumber));
+                new UsagePolicyPermissionException(List.of(), null, businessPartnerNumber));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
                 jobParameterCollectAspects(), new AASTransferProcess(), createKey());

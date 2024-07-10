@@ -24,7 +24,6 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,13 +38,13 @@ import lombok.NoArgsConstructor;
 public class Constraint {
 
     @Schema(implementation = String.class, example = "string")
-    @JsonAlias({"odrl:leftOperand"})
+    @JsonAlias("odrl:leftOperand")
     private String leftOperand;
     @JsonAlias("odrl:operator")
     @Schema
     private Operator operator;
     @Schema(implementation = String.class, example = "string")
-    @JsonProperty("odrl:rightOperand")
+    @JsonAlias("odrl:rightOperand")
     private String rightOperand;
 
 }
