@@ -86,6 +86,20 @@ public class Tombstone {
                         .build();
     }
 
+    public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
+            final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
+        final ProcessingError processingError =
+                        withProcessingError(processStep, retryCount, exception.getMessage(), suppressed);
+        //                hasSuppressedExceptions(exception)
+        //                        ? withProcessingError(processStep, retryCount, exception.getMessage(), suppressed)
+        //                        : withProcessingError(processStep, retryCount, exception.getMessage());
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(globalAssetId)
+                        .processingError(processingError)
+                        .build();
+    }
+
     private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
             final String message, final Throwable... suppressed) {
         final List<String> rootCauses = Arrays.stream(suppressed).flatMap(Tombstone::getErrorMessages).toList();
@@ -115,19 +129,6 @@ public class Tombstone {
                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
                               .withErrorDetail(exception)
                               .build();
-    }
-
-    public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
-            final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
-        final ProcessingError processingError =
-                hasSuppressedExceptions(exception)
-                        ? withProcessingError(processStep, retryCount, exception.getMessage(), suppressed)
-                        : withProcessingError(processStep, retryCount, exception.getMessage());
-        return Tombstone.builder()
-                        .endpointURL(endpointURL)
-                        .catenaXId(globalAssetId)
-                        .processingError(processingError)
-                        .build();
     }
 
     private static boolean hasSuppressedExceptions(final Throwable exception) {

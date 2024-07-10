@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,7 +17,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.tombstone;
+package org.eclipse.tractusx.irs.component;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,12 +25,10 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import io.github.resilience4j.retry.RetryRegistry;
-import org.eclipse.tractusx.irs.component.ProcessingError;
-import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.junit.jupiter.api.Test;
 
-class TombStoneTest {
+class TombstoneTest {
 
     Tombstone tombstone;
 
@@ -74,6 +68,62 @@ class TombStoneTest {
         assertThat(tombstone.getEndpointURL()).isEqualTo(expectedTombstone.getEndpointURL());
         assertThat(tombstone.getProcessingError().getRetryCounter()).isEqualTo(
                 expectedTombstone.getProcessingError().getRetryCounter());
+    }
+
+    @Test
+    void shouldUseSuppressedExceptionWhenPresent() {
+        // arrange
+        final String mainExceptionMessage = "Exception occurred.";
+        final Exception exception = new Exception(mainExceptionMessage);
+        final String suppressedExceptionMessage = "Suppressed Exception which occurred deeper.";
+        exception.addSuppressed(new Exception(suppressedExceptionMessage));
+        Throwable[] suppressed = exception.getSuppressed();
+
+        // act
+        final Tombstone from = Tombstone.from("testId", "testUrl", exception, suppressed, 1,
+                ProcessStep.DIGITAL_TWIN_REQUEST);
+
+        // assert
+        assertThat(from.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
+        assertThat(from.getProcessingError().getRootCauses()).contains(suppressedExceptionMessage);
+    }
+
+    @Test
+    void shouldUseDeepSuppressedExceptionWhenPresent() {
+        // arrange
+        final Exception exception = new Exception("Exception occurred.");
+
+        final Exception rootCause = new Exception("Wrapper exception to the root cause");
+        rootCause.addSuppressed(new Exception("Root cause of the exception"));
+
+        final Exception suppressedWrapperException = new Exception("Suppressed Exception which was added through Futures.", rootCause);
+        exception.addSuppressed(suppressedWrapperException);
+
+        Throwable[] suppressed = exception.getSuppressed();
+
+        // act
+        final Tombstone from = Tombstone.from("testId", "testUrl", exception, suppressed, 1,
+                ProcessStep.DIGITAL_TWIN_REQUEST);
+
+        // assert
+        assertThat(from.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
+        assertThat(from.getProcessingError().getRootCauses()).contains("Root cause of the exception");
+    }
+
+    @Test
+    void shouldUseExceptionMessageWhenSuppressedExceptionNotPresent() {
+        // arrange
+        final String mainExceptionMessage = "Exception occurred.";
+        final Exception exception = new Exception(mainExceptionMessage);
+        Throwable[] suppressed = exception.getSuppressed();
+
+        // act
+        final Tombstone from = Tombstone.from("testId", "testUrl", exception, suppressed, 1,
+                ProcessStep.DIGITAL_TWIN_REQUEST);
+
+        // assert
+        assertThat(from.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
+        assertThat(from.getProcessingError().getRootCauses()).isEmpty();
     }
 
     private String zonedDateTimeExcerpt(ZonedDateTime dateTime) {
