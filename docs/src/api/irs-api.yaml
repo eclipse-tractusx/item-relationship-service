@@ -394,8 +394,6 @@ paths:
         schema:
           type: string
           format: uuid
-          maxLength: 36
-          minLength: 36
       - description: "\\<true\\> Return job with current processed item graph. \\\
           <false\\> Return job with item graph if job is in state COMPLETED, otherwise\
           \ job."
@@ -478,8 +476,6 @@ paths:
         schema:
           type: string
           format: uuid
-          maxLength: 36
-          minLength: 36
       responses:
         "200":
           content:
@@ -598,8 +594,6 @@ paths:
         schema:
           type: string
           format: uuid
-          maxLength: 36
-          minLength: 36
       responses:
         "200":
           content:
@@ -663,8 +657,6 @@ paths:
         schema:
           type: string
           format: uuid
-          maxLength: 36
-          minLength: 36
       responses:
         "200":
           content:
@@ -729,8 +721,6 @@ paths:
         schema:
           type: string
           format: uuid
-          maxLength: 36
-          minLength: 36
       - description: Id of the batch.
         example: 4bce40b8-64c7-41bf-9ca3-e9432c7fef98
         in: path
@@ -739,8 +729,6 @@ paths:
         schema:
           type: string
           format: uuid
-          maxLength: 36
-          minLength: 36
       responses:
         "200":
           content:

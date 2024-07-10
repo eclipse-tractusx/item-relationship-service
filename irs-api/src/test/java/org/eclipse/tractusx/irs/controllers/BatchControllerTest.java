@@ -165,4 +165,17 @@ class BatchControllerTest extends ControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString(orderId.toString())));
     }
+
+    @Test
+    void shouldReturnBadRequestWhenUuidMalformed() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
+        final String orderId = "12345-1348-13-abcd-a-b-z-g-h";
+        final String orderId2 = "zc311d29-5753-46d4-b32c-19b918ea93b0";
+        final String orderId3 = "ac311d29-5753-4-d4-b32c-19b918ea93b0";
+
+        this.mockMvc.perform(put("/irs/orders/" + orderId)).andExpect(status().isBadRequest());
+        this.mockMvc.perform(put("/irs/orders/" + orderId2)).andExpect(status().isBadRequest());
+        this.mockMvc.perform(put("/irs/orders/" + orderId3)).andExpect(status().isBadRequest());
+    }
 }
