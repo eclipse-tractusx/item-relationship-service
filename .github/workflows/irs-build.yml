@@ -2,19 +2,6 @@ name: IRS build
 
 on:
   workflow_dispatch: # Trigger manually
-  workflow_call:
-    inputs:
-      checkout-tag:
-        description: 'Whether to check out a tag'
-        required: false
-        type: boolean
-        default: false
-
-      ref-to-checkout:
-        description: 'Ref of branch/tag from which to execute workflow'
-        required: true
-        type: string
-
   pull_request:
     paths-ignore:
       - '**/*.md'
@@ -25,49 +12,20 @@ on:
       - '!docs/src/api/**'
       - 'local/**'
       - 'CHANGELOG.md'
+
   push:
     branches:
       - main
     tags:
       - '**'
 
+
 jobs:
-  determine-ref:
-    runs-on: ubuntu-latest
-    outputs:
-      ref: ${{ steps.determine-ref.outputs.ref }}
-    steps:
-      - name: Determine ref to check out
-        id: determine-ref
-        run: |
-          if [[ "${{ inputs.checkout-tag }}" == "false" ]]; then
-            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
-          fi
-
-  init:
-    runs-on: ubuntu-latest
-    outputs:
-      image_namespace: tractusx
-      image_name: irs-api
-      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
-      # In order to skip sonar if not configured
-      sonar_configured: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
-    steps:
-      - run: |
-          echo "Preparing variables"
-          echo "sonar_configured: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}"
-
   build:
     runs-on: ubuntu-latest
-    needs: determine-ref
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-tags: 'true'
-          ref: ${{ needs.determine-ref.outputs.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -86,11 +44,22 @@ jobs:
         run: |
           mvn clean verify --batch-mode
 
+  check_sonar_configured:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check_sonar_configured
+        run: |
+          echo "Checking if sonar is configured: ${{ env.SONAR_CONFIGURED }}"
+    env:
+      SONAR_CONFIGURED: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
+    outputs:
+      sonar_configured: ${{ env.SONAR_CONFIGURED }}
+
   analyze_with_Sonar:
-    needs: [init, determine-ref]
+    needs: [check_sonar_configured]
     # No need to run if we cannot use the sonar token
     if: >-
-      needs.init.outputs.sonar_configured == 'true'
+      needs.check_sonar_configured.outputs.sonar_configured == 'true'
       && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
       && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
@@ -98,8 +67,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonar analysis
-          fetch-tags: 'true'
-          ref: ${{ needs.determine-ref.outputs.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -132,70 +99,72 @@ jobs:
           -Dcheckstyle.skip -Dpmd.skip=true
 
   build_images:
-    needs: [init, determine-ref]
-    strategy:
-      matrix:
-        image:
-          - irs-api
+    env:
+      IMAGE_NAMESPACE: tractusx
+      IMAGE_NAME: irs-api
+      TARGET_PLATFORMS: "linux/amd64"  # add 'linux/arm64' once the upgrade to JDK 21 is done
     runs-on: ubuntu-latest
     outputs:
       image-tag: ${{ steps.version.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v4
+
+      # Needed to create multi-platform image
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Needed to create multi-platform image
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # Create SemVer or ref tags dependent of trigger event
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          fetch-tags: 'true'
-          ref: ${{ needs.determine-ref.outputs.ref }}
+          images: |
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
+          # Automatically prepare image tags; See action docs for more examples.
+          # semver patter will generate tags like these for example :1 :1.2 :1.2.3
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix=,format=long
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
 
-      - name: Build image to make sure Dockerfile is valid
-        run: |
-          # RUN --mount=type=cache is used in the IRS Dockerfile to cache directories for maven.
-          # And the --mount option requires BuildKit.
-          DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TARGET=${{ matrix.image }} --target ${{ matrix.image }} -t ${{ matrix.image }}:latest .
-
-      - name: Set image version
-        id: version
-        run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Support PR ref versions
-          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
-          echo VERSION=$VERSION
-          echo "::set-output name=image_tag::$VERSION"
-
-      - name: Login to Docker Hub
-        if: needs.init.outputs.docker_hub_user != ''
-        uses: docker/login-action@v3
+      - name: DockerHub login
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
         with:
+          # Use existing DockerHub credentials present as secrets
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Push image (DockerHub)
-        if: needs.init.outputs.docker_hub_user != '' && github.event_name != 'pull_request'
-        run: |
-          docker tag ${{ matrix.image }} ${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}:${{ steps.version.outputs.image_tag }}
-          docker push ${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}:${{ steps.version.outputs.image_tag }}
-          
-          docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
-          docker push $IMAGE_ID:$GITHUB_SHA
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          # Needed to create multi-platform image
+          platforms: ${{ env.TARGET_PLATFORMS }}
+          # Build image for verification purposes on every trigger event. Only push if event is not a PR
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       # https://github.com/peter-evans/dockerhub-description
       - name: Update Docker Hub description
-        if: needs.init.outputs.docker_hub_user != '' && github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request'
         uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          repository: ${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}
+          repository: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
           readme-filepath: ./DOCKER_NOTICE.md
 
   trigger-trivy-image-scan:
-    if: >-
-      github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request'
     needs:
       - build_images
     uses: ./.github/workflows/trivy-docker-hub-scan.yml
-

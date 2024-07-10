@@ -17,29 +17,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.exceptions;
+package org.eclipse.tractusx.irs.policystore.models;
 
-import java.util.List;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 
 /**
- * Usage Policy Expired Exception errors in the contract negotiation.
+ * Search criteria.
+ *
+ * @param <T> type for value
  */
+@AllArgsConstructor
 @Getter
-public class UsagePolicyExpiredException extends EdcClientException {
+public class SearchCriteria<T> {
 
-    private final transient Policy policy;
-    private final String businessPartnerNumber;
+    private String property;
+    private Operation operation;
+    private T value;
 
-    public UsagePolicyExpiredException(final List<AcceptedPolicy> acceptedPolicies,
-            final Policy providedCatalogItemPolicy, final String businessPartnerNumber) {
-        super("Policy " + acceptedPolicies.stream().map(policy -> policy.policy().getPolicyId()).toList()
-                + " has expired.");
-        this.policy = providedCatalogItemPolicy;
-        this.businessPartnerNumber = businessPartnerNumber;
+    /**
+     * Search filter operation.
+     */
+    public enum Operation {
+        EQUALS,
+        STARTS_WITH,
+        BEFORE_LOCAL_DATE,
+        AFTER_LOCAL_DATE
     }
-
 }

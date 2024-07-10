@@ -17,29 +17,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.exceptions;
-
-import java.util.List;
-
-import lombok.Getter;
-import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
+package org.eclipse.tractusx.irs.policystore.common;
 
 /**
- * Usage Policy Expired Exception errors in the contract negotiation.
+ * Common constants.
  */
-@Getter
-public class UsagePolicyExpiredException extends EdcClientException {
-
-    private final transient Policy policy;
-    private final String businessPartnerNumber;
-
-    public UsagePolicyExpiredException(final List<AcceptedPolicy> acceptedPolicies,
-            final Policy providedCatalogItemPolicy, final String businessPartnerNumber) {
-        super("Policy " + acceptedPolicies.stream().map(policy -> policy.policy().getPolicyId()).toList()
-                + " has expired.");
-        this.policy = providedCatalogItemPolicy;
-        this.businessPartnerNumber = businessPartnerNumber;
-    }
-
+public class CommonConstants {
+    public static final String PROPERTY_BPN = "bpn";
+    public static final String PROPERTY_POLICY_ID = "policyId";
+    public static final String PROPERTY_ACTION = "action";
+    public static final String PROPERTY_CREATED_ON = "createdOn";
+    public static final String PROPERTY_VALID_UNTIL = "validUntil";
 }
