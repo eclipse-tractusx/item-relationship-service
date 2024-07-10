@@ -25,9 +25,12 @@ package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.eclipse.tractusx.irs.common.ApiConstants.FORBIDDEN_DESC;
 import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_BPN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,14 +53,22 @@ import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.policystore.common.SearchParameterParser;
 import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
+import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
+import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.services.PolicyPagingService;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.eclipse.tractusx.irs.policystore.validators.BusinessPartnerNumberListValidator;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
 import org.eclipse.tractusx.irs.policystore.validators.ValidPolicyId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -88,14 +99,21 @@ import org.springframework.web.server.ResponseStatusException;
 public class PolicyStoreController {
 
     public static final String BPN_REGEX = BusinessPartnerNumberListValidator.BPN_REGEX;
+    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int MAX_PAGE_SIZE = 1000;
+    public static final String SEARCH = "search";
+    public static final String POLICY_API_TAG = "Policy Store API";
+    public static final String API_KEY = "api_key";
 
     private final PolicyStoreService service;
+
+    private final PolicyPagingService policyPagingService;
 
     private final HttpServletRequest httpServletRequest;
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Register a policy that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201"),
                             @ApiResponse(responseCode = "500",
@@ -146,7 +164,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "getAllowedPoliciesByBpn",
                summary = "Lists the registered policies that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Returns the policies as map of BPN to list of policies.",
@@ -180,10 +198,8 @@ public class PolicyStoreController {
     ) {
 
         final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
-        if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Please use parameter 'businessPartnerNumbers' instead");
-        }
+
+        ensureParamBusinessPartnerNumberCorrectlyNamed(parameterMap);
 
         final Map<String, List<Policy>> policies = service.getPolicies(businessPartnerNumbers);
 
@@ -194,9 +210,89 @@ public class PolicyStoreController {
                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
+    @GetMapping("/policies/paged")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find policies.", //
+               description = """
+                       Fetch a page of policies with options to filter and sort.
+                       
+                       - **Filtering:**
+                         `search=<property>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<value>`.
+                         Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
+                       
+                       - **Sorting:**
+                         `sort=<property>,[asc|desc]`.
+                         Example: `sort=BPN,asc&sort=policyId,desc`.
+                       
+                       - **Paging:**
+                         Example: `page=1&size=20`
+                       """, //
+               security = @SecurityRequirement(name = API_KEY), //
+               tags = { POLICY_API_TAG }, //
+               responses = { //
+                             @ApiResponse(responseCode = "200",
+                                          description = "Successfully retrieved the paged policies",
+                                          content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                             schema = @Schema(implementation = Page.class),
+                                                             examples = @ExampleObject(name = "success",
+                                                                                       ref = "#/components/examples/get-policies-paged-result"))),
+
+                             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-401"))
+                                          }),
+                             @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-403"))
+                                          }),
+               })
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    public Page<PolicyResponse> getPoliciesPaged(//
+            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = PROPERTY_BPN, direction = Sort.Direction.ASC) //
+            @Parameter(description = "Page configuration", hidden = true) //
+            final Pageable pageable, //
+            @RequestParam(required = false) //
+            @ValidListOfBusinessPartnerNumbers //
+            @Parameter(name = "businessPartnerNumbers", description = "List of business partner numbers.") //
+            final List<String> businessPartnerNumbers) {
+
+        if (pageable.getPageSize() > MAX_PAGE_SIZE) {
+            throw new IllegalArgumentException("Page size too large");
+        }
+
+        final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
+
+        ensureParamBusinessPartnerNumberCorrectlyNamed(parameterMap);
+
+        // There seems to be a bug concerning interpretation of delimiters
+        // (https://stackoverflow.com/questions/37058691/encoded-comma-in-url-is-read-as-list-in-spring).
+        // The described annotation Delimiter did not work either. Therefore, we read the params manually from request:
+        final List<SearchCriteria<?>> searchCriteria = new SearchParameterParser(
+                getSearchParameters(parameterMap)).getSearchCriteria();
+        final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(businessPartnerNumbers);
+        final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable,
+                searchCriteria);
+        return policies.map(policyWithBpn -> PolicyResponse.from(policyWithBpn.policy(), policyWithBpn.bpn()));
+    }
+
+    private List<String> getSearchParameters(final Map<String, String[]> parameterMap) {
+        return parameterMap.get(SEARCH) != null ? Arrays.asList(parameterMap.get(SEARCH)) : Collections.emptyList();
+    }
+
+    private static void ensureParamBusinessPartnerNumberCorrectlyNamed(final Map<String, String[]> parameterMap) {
+        if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Please use parameter 'businessPartnerNumbers' instead");
+        }
+    }
+
     @Operation(operationId = "deleteAllowedPolicy",
                summary = "Removes a policy that should no longer be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Removes a policy that should no longer be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
                             @ApiResponse(responseCode = "400", description = "Policy deletion failed.",
@@ -227,7 +323,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "removeAllowedPolicyFromBpnl",
                summary = "Removes a policy from BPNL that should no longer be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Removes a policy from BPNL that should no longer be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
                             @ApiResponse(responseCode = "400", description = "Policy deletion failed.",
@@ -252,15 +348,14 @@ public class PolicyStoreController {
     @DeleteMapping("/policies/{policyId}/bpnl/{bpnl}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void removeAllowedPolicyFromBpnl(
-            @PathVariable("policyId") final String policyId, //
+    public void removeAllowedPolicyFromBpnl(@PathVariable("policyId") final String policyId, //
             @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") //
             @PathVariable("bpnl") final String bpnl) {
         service.deletePolicyForEachBpn(policyId, List.of(bpnl));
     }
 
     @Operation(operationId = "updateAllowedPolicy", summary = "Updates existing policies.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Updates existing policies.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
                             @ApiResponse(responseCode = "500",

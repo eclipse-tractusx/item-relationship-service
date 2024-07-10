@@ -127,13 +127,14 @@ public class ContractNegotiationService {
 
         if (!policyCheckerService.isValid(catalogItem.getPolicy(), bpn)) {
             log.warn("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyPermissionException(catalogItem.getItemId(), catalogItem.getPolicy(),
+            throw new UsagePolicyPermissionException(policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()), catalogItem.getPolicy(),
                     catalogItem.getConnectorId());
         }
 
         if (policyCheckerService.isExpired(catalogItem.getPolicy(), bpn)) {
             log.warn("Policy is expired, canceling negotiation.");
-            throw new UsagePolicyExpiredException(catalogItem.getItemId(), catalogItem.getPolicy(),
+            throw new UsagePolicyExpiredException(policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()),
+                    catalogItem.getPolicy(),
                     catalogItem.getConnectorId());
         }
 

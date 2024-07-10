@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,18 +17,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.partsiteinformationasplanned;
-
-import java.time.ZonedDateTime;
-
-import lombok.Builder;
-import lombok.extern.jackson.Jacksonized;
+package org.eclipse.tractusx.irs.policystore.common;
 
 /**
- * Site as part of {@link PartSiteInformationAsPlanned} according to semantic model version 1.0.0.
+ * Common constants.
  */
-@Builder
-@Jacksonized
-public record Site(ZonedDateTime functionValidUntil, String function, ZonedDateTime functionValidFrom,
-                   String catenaXsiteId) {
+public class CommonConstants {
+    public static final String PROPERTY_BPN = "bpn";
+    public static final String PROPERTY_POLICY_ID = "policyId";
+    public static final String PROPERTY_ACTION = "action";
+    public static final String PROPERTY_CREATED_ON = "createdOn";
+    public static final String PROPERTY_VALID_UNTIL = "validUntil";
 }

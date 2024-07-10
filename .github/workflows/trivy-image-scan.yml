@@ -5,6 +5,18 @@ name: "Trivy vulnerability scanner for image"
 
 on:
   workflow_dispatch: # Trigger manually
+  workflow_call:
+    inputs:
+      checkout-tag:
+        description: 'Whether to check out a tag'
+        required: false
+        type: boolean
+        default: false
+
+      ref-to-checkout:
+        description: 'Ref of branch/tag from which to execute workflow'
+        required: true
+        type: string
   pull_request:
     paths-ignore:
       - '**/*.md'
@@ -22,8 +34,23 @@ on:
     - cron: '0 0 * * *' # Once a day
 
 jobs:
+  determine-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.determine-ref.outputs.ref }}
+    steps:
+      - name: Determine ref to check out
+        id: determine-ref
+        run: |
+          if [[ "${{ inputs.checkout-tag }}" == "false" ]]; then
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
+          fi
+
   analyze-irs-api:
     runs-on: ubuntu-latest
+    needs: determine-ref
     permissions:
       actions: read
       contents: read
@@ -35,11 +62,14 @@ jobs:
           - 5000:5000
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-tags: 'true'
+          ref: ${{ needs.determine-ref.outputs.ref }}
 
       - name: Build image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -58,9 +88,11 @@ jobs:
           image-ref: "localhost:5000/irs-api:testing"
           format: "sarif"
           output: "trivy-results2.sarif"
-          exit-code: "1"
+          exit-code: "1" # Trivy exits with code 1 if vulnerabilities are found, causing the workflow step to fail.
           severity: "CRITICAL,HIGH"
           trivyignores: .config/.trivyignore
+          limit-severities-for-sarif: true
+
 
       - name: Upload Trivy scan results to GitHub Security tab
         if: always()

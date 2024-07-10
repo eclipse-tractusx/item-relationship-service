@@ -2,6 +2,18 @@ name: "Validate OpenAPI definition"
 
 on:
   workflow_dispatch: # Trigger manually
+  workflow_call:
+    inputs:
+      checkout-tag:
+        description: 'Whether to check out a tag'
+        required: false
+        type: boolean
+        default: false
+
+      ref-to-checkout:
+        description: 'Ref of branch/tag from which to execute workflow'
+        required: true
+        type: string
   pull_request:
   push:
     branches:
@@ -10,12 +22,32 @@ on:
       - '**'
 
 jobs:
+  determine-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.determine-ref.outputs.ref }}
+    steps:
+      - name: Determine ref to check out
+        id: determine-ref
+        run: |
+          if [[ "${{ inputs.checkout-tag }}" == "false" ]]; then
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
+          fi
+
   test_swagger_editor_validator_remote:
     runs-on: ubuntu-latest
+    needs: determine-ref
     name: Swagger Editor Validator Remote
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: 'true'
+          ref: ${{ needs.determine-ref.outputs.ref }}
+
       - name: Validate OpenAPI definition
         uses: char0n/swagger-editor-validate@v1
         with:

@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,18 +17,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.partsiteinformationasplanned;
+package org.eclipse.tractusx.irs.policystore.models;
 
-import java.time.ZonedDateTime;
-
-import lombok.Builder;
-import lombok.extern.jackson.Jacksonized;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * Site as part of {@link PartSiteInformationAsPlanned} according to semantic model version 1.0.0.
+ * Search criteria.
+ *
+ * @param <T> type for value
  */
-@Builder
-@Jacksonized
-public record Site(ZonedDateTime functionValidUntil, String function, ZonedDateTime functionValidFrom,
-                   String catenaXsiteId) {
+@AllArgsConstructor
+@Getter
+public class SearchCriteria<T> {
+
+    private String property;
+    private Operation operation;
+    private T value;
+
+    /**
+     * Search filter operation.
+     */
+    public enum Operation {
+        EQUALS,
+        STARTS_WITH,
+        BEFORE_LOCAL_DATE,
+        AFTER_LOCAL_DATE
+    }
 }
