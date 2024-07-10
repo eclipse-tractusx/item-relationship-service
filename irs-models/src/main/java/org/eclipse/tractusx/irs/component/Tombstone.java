@@ -90,9 +90,6 @@ public class Tombstone {
             final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
         final ProcessingError processingError =
                         withProcessingError(processStep, retryCount, exception.getMessage(), suppressed);
-        //                hasSuppressedExceptions(exception)
-        //                        ? withProcessingError(processStep, retryCount, exception.getMessage(), suppressed)
-        //                        : withProcessingError(processStep, retryCount, exception.getMessage());
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(globalAssetId)
