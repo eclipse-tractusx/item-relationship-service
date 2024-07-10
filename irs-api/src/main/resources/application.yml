@@ -115,9 +115,13 @@ resilience4j:
         waitDuration: 10s # How long to wait between each retry
         enableExponentialBackoff: true # Whether subsequent retries will delay exponentially or not
         exponentialBackoffMultiplier: 2 # Multiplier for the exponential delay
-        ignore-exceptions: # Do not retry on the listed exceptions
-          - org.springframework.web.client.HttpClientErrorException.NotFound
-          - org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException
+        retry-exceptions:
+          - org.springframework.web.client.HttpServerErrorException.GatewayTimeout
+          - org.springframework.web.client.HttpServerErrorException.InternalServerError
+          - org.springframework.web.client.HttpServerErrorException.ServiceUnavailable
+          - org.springframework.web.client.HttpServerErrorException.BadGateway
+          - org.springframework.web.client.HttpClientErrorException.TooManyRequests
+          - org.springframework.web.client.ResourceAccessException
     instances:
       registry:
         baseConfig: default
