@@ -73,6 +73,8 @@
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.reporting.outputDirectory}/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
+        <!-- Exclude irs-testing from coverage, since this is only used as testing utility -->
+        <sonar.coverage.exclusions>org/eclipse/tractusx/irs/testing/**</sonar.coverage.exclusions>
 
         <!-- IRS Registry Client Library -->
         <irs-registry-client.version>2.1.4</irs-registry-client.version>
