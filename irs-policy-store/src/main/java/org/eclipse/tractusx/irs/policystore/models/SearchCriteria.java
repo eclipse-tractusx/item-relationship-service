@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,23 +17,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.exceptions;
+package org.eclipse.tractusx.irs.policystore.models;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * Exception for errors in the EDC client.
+ * Search criteria.
+ *
+ * @param <T> type for value
  */
-public class EdcClientException extends Exception {
+@AllArgsConstructor
+@Getter
+public class SearchCriteria<T> {
 
-    public EdcClientException(final String msg, final Throwable cause) {
-        super(msg, cause);
+    private String property;
+    private Operation operation;
+    private T value;
+
+    /**
+     * Search filter operation.
+     */
+    public enum Operation {
+        EQUALS,
+        STARTS_WITH,
+        BEFORE_LOCAL_DATE,
+        AFTER_LOCAL_DATE
     }
-
-    public EdcClientException(final Throwable cause) {
-        super(cause);
-    }
-
-    public EdcClientException(final String msg) {
-        super(msg);
-    }
-
 }

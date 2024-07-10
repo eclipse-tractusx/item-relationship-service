@@ -23,7 +23,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.ACTIVE_MEMBERSHIP;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.PURPOSE_ID_3_1_TRACE;
+
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -66,11 +72,18 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
+import org.eclipse.tractusx.irs.edc.client.policy.Permission;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.ess.service.NotificationSummary;
+import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -139,6 +152,28 @@ public class OpenApiExamples {
         components.addExamples("canceled-job-response", createCanceledJobResponse());
         components.addExamples("complete-job-list-processing-state", createJobListProcessingState());
         components.addExamples("aspect-models-list", createAspectModelsResult());
+        components.addExamples("get-policies-paged-result", createPageOfPolicies());
+    }
+
+    private Example createPageOfPolicies() {
+        final PageImpl<PolicyWithBpn> page = new PageImpl<>(List.of(new PolicyWithBpn("BPNL1234567890AB",
+                Policy.builder()
+                      .policyId("13a8523f-c80a-40b8-9e43-faab47fbceaa")
+                      .createdOn(OffsetDateTime.parse("2024-07-08T12:01:19.4677109+02:00"))
+                      .validUntil(OffsetDateTime.parse("2025-07-08T12:01:19.4677109+02:00"))
+                      .permissions(createPermissions())
+                      .build())), PageRequest.of(1, 10), 1);
+        return toExample(page);
+    }
+
+    private List<Permission> createPermissions() {
+        return List.of(new Permission(PolicyType.USE, createConstraints()),
+                new Permission(PolicyType.ACCESS, createConstraints()));
+    }
+
+    private Constraints createConstraints() {
+        return new Constraints(Collections.emptyList(),
+                List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE, PURPOSE_ID_3_1_TRACE));
     }
 
     private Example createAspectModelsResult() {
@@ -394,22 +429,24 @@ public class OpenApiExamples {
     }
 
     private Shell createShell() {
-        return new Shell(EXAMPLE_ID,
-                AssetAdministrationShellDescriptor.builder()
-                                                           .description(List.of(LangString.builder()
-                                                                                .language("en")
-                                                                                .text("The shell for a vehicle")
-                                                                                .build()))
-                                                           .globalAssetId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
-                                                           .idShort("future concept x")
-                                                           .id("urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8")
-                                                           .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .name("engineserialid")
-                                                                                                 .value("12309481209312")
-                                                                                                 .build()))
-                                                           .submodelDescriptors(List.of(createBaseSubmodelDescriptor(),
-                                                         createPartSubmodelDescriptor()))
-                                                           .build());
+        return new Shell(EXAMPLE_ID, AssetAdministrationShellDescriptor.builder()
+                                                                       .description(List.of(LangString.builder()
+                                                                                                      .language("en")
+                                                                                                      .text("The shell for a vehicle")
+                                                                                                      .build()))
+                                                                       .globalAssetId(
+                                                                               "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
+                                                                       .idShort("future concept x")
+                                                                       .id("urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8")
+                                                                       .specificAssetIds(
+                                                                               List.of(IdentifierKeyValuePair.builder()
+                                                                                                             .name("engineserialid")
+                                                                                                             .value("12309481209312")
+                                                                                                             .build()))
+                                                                       .submodelDescriptors(
+                                                                               List.of(createBaseSubmodelDescriptor(),
+                                                                                       createPartSubmodelDescriptor()))
+                                                                       .build());
     }
 
     private Relationship createRelationship() {

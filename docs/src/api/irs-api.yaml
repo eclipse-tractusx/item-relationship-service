@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: 5.1.4
+  version: 5.2.0
 servers:
 - url: http://localhost:8080
 security:
@@ -860,7 +860,7 @@ paths:
       - api_key: []
       summary: Lists the registered policies that should be accepted in EDC negotiation.
       tags:
-      - Item Relationship Service
+      - Policy Store API
     post:
       description: Register a policy that should be accepted in EDC negotiation.
       operationId: registerAllowedPolicy
@@ -917,7 +917,7 @@ paths:
       - api_key: []
       summary: Register a policy that should be accepted in EDC negotiation.
       tags:
-      - Item Relationship Service
+      - Policy Store API
     put:
       description: Updates existing policies.
       operationId: updateAllowedPolicy
@@ -970,7 +970,65 @@ paths:
       - api_key: []
       summary: Updates existing policies.
       tags:
-      - Item Relationship Service
+      - Policy Store API
+  /irs/policies/paged:
+    get:
+      description: |
+        Fetch a page of policies with options to filter and sort.
+
+        - **Filtering:**
+          `search=<property>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<value>`.
+          Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
+
+        - **Sorting:**
+          `sort=<property>,[asc|desc]`.
+          Example: `sort=BPN,asc&sort=policyId,desc`.
+
+        - **Paging:**
+          Example: `page=1&size=20`
+      operationId: getPoliciesPaged
+      parameters:
+      - description: List of business partner numbers.
+        in: query
+        name: businessPartnerNumbers
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                success:
+                  $ref: '#/components/examples/get-policies-paged-result'
+              schema:
+                $ref: '#/components/schemas/Page'
+          description: Successfully retrieved the paged policies
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorization refused by server.
+      security:
+      - api_key: []
+      summary: Find policies.
+      tags:
+      - Policy Store API
   /irs/policies/{policyId}:
     delete:
       description: Removes a policy that should no longer be accepted in EDC negotiation.
@@ -1015,7 +1073,7 @@ paths:
       - api_key: []
       summary: Removes a policy that should no longer be accepted in EDC negotiation.
       tags:
-      - Item Relationship Service
+      - Policy Store API
   /irs/policies/{policyId}/bpnl/{bpnl}:
     delete:
       description: Removes a policy from BPNL that should no longer be accepted in
@@ -1032,7 +1090,7 @@ paths:
         required: true
         schema:
           type: string
-          pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
+          pattern: "(BPNL)[\\w\\d]{10}[\\w\\d]{2}"
       responses:
         "200":
           description: OK
@@ -1068,7 +1126,7 @@ paths:
       summary: Removes a policy from BPNL that should no longer be accepted in EDC
         negotiation.
       tags:
-      - Item Relationship Service
+      - Policy Store API
 components:
   examples:
     aspect-models-list:
@@ -1459,6 +1517,69 @@ components:
         relationships: []
         submodels: []
         tombstones: []
+    get-policies-paged-result:
+      value:
+        content:
+        - bpn: BPNL1234567890AB
+          policy:
+            createdOn: 2024-07-08T12:01:19.4677109+02:00
+            permissions:
+            - action: use
+              constraint:
+                and: []
+                or:
+                - leftOperand: Membership
+                  operator:
+                    '@id': eq
+                  rightOperand: active
+                - leftOperand: FrameworkAgreement.traceability
+                  operator:
+                    '@id': eq
+                  rightOperand: active
+                - leftOperand: PURPOSE
+                  operator:
+                    '@id': eq
+                  rightOperand: ID 3.1 Trace
+            - action: access
+              constraint:
+                and: []
+                or:
+                - leftOperand: Membership
+                  operator:
+                    '@id': eq
+                  rightOperand: active
+                - leftOperand: FrameworkAgreement.traceability
+                  operator:
+                    '@id': eq
+                  rightOperand: active
+                - leftOperand: PURPOSE
+                  operator:
+                    '@id': eq
+                  rightOperand: ID 3.1 Trace
+            policyId: 13a8523f-c80a-40b8-9e43-faab47fbceaa
+            validUntil: 2025-07-08T12:01:19.4677109+02:00
+        empty: false
+        first: false
+        last: true
+        number: 1
+        numberOfElements: 1
+        pageable:
+          offset: 10
+          pageNumber: 1
+          pageSize: 10
+          paged: true
+          sort:
+            empty: true
+            sorted: false
+            unsorted: true
+          unpaged: false
+        size: 10
+        sort:
+          empty: true
+          sorted: false
+          unsorted: true
+        totalElements: 11
+        totalPages: 2
     job-handle:
       value:
         id: 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -2331,6 +2452,39 @@ components:
         lexicalValue:
           type: string
           example: piece
+    Page:
+      type: object
+      additionalProperties: false
+      properties:
+        content:
+          type: array
+          items:
+            type: object
+        empty:
+          type: boolean
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        size:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
     PageResult:
       type: object
       additionalProperties: false
@@ -2354,6 +2508,25 @@ components:
         totalElements:
           type: integer
           format: int32
+    PageableObject:
+      type: object
+      additionalProperties: false
+      properties:
+        offset:
+          type: integer
+          format: int64
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        unpaged:
+          type: boolean
     PartChainIdentificationKey:
       type: object
       additionalProperties: false
@@ -2757,6 +2930,16 @@ components:
           type: string
         payload:
           $ref: '#/components/schemas/AssetAdministrationShellDescriptor'
+    SortObject:
+      type: object
+      additionalProperties: false
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
     Submodel:
       type: object
       additionalProperties: false
