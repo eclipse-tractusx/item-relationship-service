@@ -299,9 +299,9 @@ class IrsWireMockIntegrationTest {
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
-        assertThat(jobForJobId.getShells()).hasSize(0);
-        assertThat(jobForJobId.getRelationships()).hasSize(0);
-        assertThat(jobForJobId.getSubmodels()).hasSize(0);
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getSubmodels()).isEmpty();
         assertThat(jobForJobId.getTombstones()).hasSize(1);
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
@@ -331,9 +331,9 @@ class IrsWireMockIntegrationTest {
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
-        assertThat(jobForJobId.getShells()).hasSize(0);
-        assertThat(jobForJobId.getRelationships()).hasSize(0);
-        assertThat(jobForJobId.getSubmodels()).hasSize(0);
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getSubmodels()).isEmpty();
         assertThat(jobForJobId.getTombstones()).hasSize(1);
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
@@ -363,9 +363,9 @@ class IrsWireMockIntegrationTest {
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
-        assertThat(jobForJobId.getShells()).hasSize(0);
-        assertThat(jobForJobId.getRelationships()).hasSize(0);
-        assertThat(jobForJobId.getSubmodels()).hasSize(0);
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getSubmodels()).isEmpty();
         assertThat(jobForJobId.getTombstones()).hasSize(1);
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
