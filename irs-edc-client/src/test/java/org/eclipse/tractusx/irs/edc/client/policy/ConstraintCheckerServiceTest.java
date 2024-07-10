@@ -114,6 +114,25 @@ class ConstraintCheckerServiceTest {
     }
 
     @Test
+    void shouldNotAcceptSubsetOfAndConstraints() {
+
+        final AndConstraint andConstraint = createAndConstraint(
+                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                                TestConstants.STATUS_ACTIVE),
+                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
+                        createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+        final Policy acceptedPolicy = createPolicyWithAndConstraint(
+                List.of(new Operand(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, TestConstants.STATUS_ACTIVE),
+                        //                        new Operand(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
+                        new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
     void shouldRejectAndConstraintWhenOneIsDifferent() {
         final AndConstraint andConstraint = createAndConstraint(
                 List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,

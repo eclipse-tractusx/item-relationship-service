@@ -54,7 +54,7 @@ public class ConstraintCheckerService {
 
     private boolean isValidOnList(final Constraint constraint, final List<Constraints> acceptedConstraintsList) {
         return acceptedConstraintsList.stream()
-                                      .anyMatch(acceptedConstraints -> isSameAs(constraint, acceptedConstraints));
+                                      .allMatch(acceptedConstraints -> isSameAs(constraint, acceptedConstraints));
     }
 
     private boolean isSameAs(final Constraint constraint, final Constraints acceptedConstraints) {
