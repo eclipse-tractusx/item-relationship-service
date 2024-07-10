@@ -175,6 +175,10 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
     }
 
+    public List<AcceptedPolicy> getConfiguredDefaultPolicies() {
+        return allowedPoliciesFromConfig.stream().map(this::toAcceptedPolicy).toList();
+    }
+
     public Map<String, List<Policy>> getAllStoredPolicies() {
         final Map<String, List<Policy>> bpnToPolicies = persistence.readAll();
         if (bpnToPolicies.isEmpty()) {
@@ -267,13 +271,12 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public List<AcceptedPolicy> getAcceptedPolicies(final String bpn) {
 
         if (bpn == null) {
-            return getAllPolicies();
+            return getConfiguredDefaultPolicies();
         }
 
         final List<Policy> storedPolicies = getStoredPolicies(List.of(bpn));
         final Stream<Policy> result = sortByPolicyId(storedPolicies);
         return result.map(this::toAcceptedPolicy).toList();
-
     }
 
     private static Stream<Policy> sortByPolicyId(final List<Policy> policies) {
