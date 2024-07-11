@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 
 import jakarta.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
@@ -188,19 +189,23 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     public void deletePolicy(final String policyId) {
+
         log.info("Getting all policies to find correct BPN");
         final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(), policyId);
 
         if (bpnsContainingPolicyId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Policy with id '%s' not found".formatted(policyId));
-        }
-
-        try {
-            log.info("Deleting policy with id {}", policyId);
-            bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
-        } catch (final PolicyStoreException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        } else if (bpnsContainingPolicyId.stream().noneMatch(StringUtils::isNotEmpty)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A configured default policy cannot be deleted. "
+                    + "It can be overridden by defining a default policy via the API instead.");
+        } else {
+            try {
+                log.info("Deleting policy with id {}", policyId);
+                bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
+            } catch (final PolicyStoreException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            }
         }
     }
 

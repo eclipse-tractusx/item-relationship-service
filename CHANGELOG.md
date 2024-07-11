@@ -8,6 +8,17 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Added
+
+
+### Fixed
+
+
+### Changed
+
+- Replaced technical error message when trying to delete the configured default policy with a user-friendly message.  
+
+
 ## [5.2.0] - 2024-07-03
 
 ### Fixed
