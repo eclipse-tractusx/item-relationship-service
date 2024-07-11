@@ -85,15 +85,22 @@
 					"id": "pair_8482da576c10480b9f7edf7a4aa752c6",
 					"name": "businessPartnerNumbers",
 					"value": "BPNL1234567890AB",
-					"description": "",
+					"description": "Get policies for the given BPN",
 					"disabled": false
 				},
 				{
 					"id": "pair_ec0ce8fad21144aaa531cbbcb941f522",
 					"name": "businessPartnerNumbers",
-					"value": "BPNL1234567890XX",
-					"description": "",
+					"value": "BPNL9834567890CD",
+					"description": "Get policies for the given BPN",
 					"disabled": false
+				},
+				{
+					"id": "pair_ec0ce8fad21144aaa531cbbcb941f533",
+					"name": "businessPartnerNumbers",
+					"value": "default",
+					"description": "Get the default policies",
+					"disabled": true
 				}
 			],
 			"headers": [],
@@ -180,14 +187,14 @@
 					"name": "search",
 					"value": "action,EQUALS,use",
 					"description": "Filter / search by action",
-					"disabled": false
+					"disabled": true
 				},
 				{
 					"id": "pair_ad26500e1b5e41759f59881d1ceaca1b",
 					"name": "search",
 					"value": "policyId,STARTS_WITH,policy4",
 					"description": "Filter / search by policyId starting with the given string",
-					"disabled": false
+					"disabled": true
 				},
 				{
 					"id": "pair_ad26500e1b5e41759f59881d1ceaca1c",
@@ -208,14 +215,14 @@
 					"name": "businessPartnerNumbers",
 					"value": "default",
 					"description": "Only default policies",
-					"disabled": false
+					"disabled": true
 				},
 				{
 					"id": "pair_ad26500e1b5e41759f59881d1ceaca1f",
 					"name": "search",
 					"value": "BPN,EQUALS,default",
 					"description": "Only default policies (same as the parameter businessPartnerNumbers)",
-					"disabled": false
+					"disabled": true
 				}
 			],
 			"headers": [],
