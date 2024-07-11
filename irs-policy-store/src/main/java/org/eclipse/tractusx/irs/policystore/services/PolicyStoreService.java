@@ -29,7 +29,6 @@ import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -288,14 +287,6 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         final TreeSet<Policy> result = new TreeSet<>(Comparator.comparing(Policy::getPolicyId));
         result.addAll(policies);
         return result.stream();
-    }
-
-    private List<AcceptedPolicy> getAllPolicies() {
-        return getAllStoredPolicies().values()
-                                     .stream()
-                                     .flatMap(Collection::stream)
-                                     .map(this::toAcceptedPolicy)
-                                     .toList();
     }
 
     private AcceptedPolicy toAcceptedPolicy(final Policy policy) {
