@@ -13,6 +13,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Fixed
 
 - Access and Usage Policy Validation flow correction. #757
+- GET /irs/policies and GET /irs/policies/paged return the configured default policies if no custom default policy is defined now. #734
 
 ### Changed
 
