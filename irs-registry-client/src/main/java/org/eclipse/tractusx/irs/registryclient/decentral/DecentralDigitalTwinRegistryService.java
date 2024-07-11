@@ -35,9 +35,11 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.github.resilience4j.core.functions.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.common.ExceptionUtils;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -56,7 +58,9 @@ import org.springframework.util.StopWatch;
  */
 @RequiredArgsConstructor
 @Slf4j
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods",
+                    "PMD.ExcessiveImports"
+})
 public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
 
     private static final String TOOK_MS = "{} took {} ms";
@@ -85,7 +89,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
     @Override
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    public Collection<Shell> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
+    public Collection<Either<Exception, Shell>> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
             throws RegistryServiceException {
 
         final var watch = new StopWatch();
@@ -96,7 +100,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         try {
             final var calledEndpoints = new HashSet<String>();
 
-            final var collectedShells = groupKeysByBpn(keys).flatMap(entry -> {
+            final List<Either<Exception, Shell>> collectedShells = groupKeysByBpn(keys).flatMap(entry -> {
 
                 try {
                     return fetchShellDescriptors(entry, calledEndpoints);
@@ -104,14 +108,18 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                     // catching generic exception is intended here,
                     // otherwise Jobs stay in state RUNNING forever
                     log.warn(e.getMessage(), e);
-                    return Stream.empty();
+                    return Stream.of(Either.<Exception, Shell>left(e));
                 }
 
             }).toList();
 
-            if (collectedShells.isEmpty()) {
+            if (collectedShells.stream().noneMatch(Either::isRight)) {
                 log.info("No shells found");
-                throw new ShellNotFoundException("Unable to find any of the requested shells", calledEndpoints);
+
+                final ShellNotFoundException shellNotFoundException = new ShellNotFoundException(
+                        "Unable to find any of the requested shells", calledEndpoints);
+                ExceptionUtils.addSuppressedExceptions(collectedShells, shellNotFoundException);
+                throw shellNotFoundException;
             } else {
                 log.info("Found {} shell(s) for {} key(s)", collectedShells.size(), keys.size());
                 return collectedShells;
@@ -123,8 +131,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private Stream<Shell> fetchShellDescriptors(final Map.Entry<String, List<DigitalTwinRegistryKey>> entry,
-            final Set<String> calledEndpoints) throws TimeoutException {
+    private Stream<Either<Exception, Shell>> fetchShellDescriptors(
+            final Map.Entry<String, List<DigitalTwinRegistryKey>> entry, final Set<String> calledEndpoints)
+            throws TimeoutException {
 
         try {
 
@@ -135,15 +144,15 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         } catch (InterruptedException e) {
             log.error(e.getMessage(), e);
             Thread.currentThread().interrupt();
-            return Stream.empty();
-        } catch (ExecutionException e) {
+            return Stream.of(Either.left(e));
+        } catch (ExecutionException | RegistryServiceException e) {
             log.warn(e.getMessage(), e);
-            return Stream.empty();
+            return Stream.of(Either.left(e));
         }
     }
 
-    private CompletableFuture<List<Shell>> fetchShellDescriptors(final Set<String> calledEndpoints, final String bpn,
-            final List<DigitalTwinRegistryKey> keys) {
+    private CompletableFuture<List<Either<Exception, Shell>>> fetchShellDescriptors(final Set<String> calledEndpoints,
+            final String bpn, final List<DigitalTwinRegistryKey> keys) throws RegistryServiceException {
 
         final var watch = new StopWatch();
         final String msg = "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn);
@@ -153,6 +162,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         try {
 
             final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            if (edcUrls.isEmpty()) {
+                throw new RegistryServiceException("No EDC Endpoints could be discovered for BPN '%s'".formatted(bpn));
+            }
 
             log.info("Found {} connector endpoints for bpn '{}'", edcUrls.size(), bpn);
             calledEndpoints.addAll(edcUrls);
@@ -165,7 +177,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private CompletableFuture<List<Shell>> fetchShellDescriptorsForConnectorEndpoints(
+    private CompletableFuture<List<Either<Exception, Shell>>> fetchShellDescriptorsForConnectorEndpoints(
             final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls, final String bpn) {
 
         final var service = endpointDataForConnectorsService;
@@ -180,7 +192,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         return resultFinder.getFastestResult(shellsFuture);
     }
 
-    private List<Shell> fetchShellDescriptorsForKey(final List<DigitalTwinRegistryKey> keys,
+    private List<Either<Exception, Shell>> fetchShellDescriptorsForKey(final List<DigitalTwinRegistryKey> keys,
             final EndpointDataReference endpointDataReference) {
 
         final var watch = new StopWatch();
@@ -191,8 +203,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         try {
             return keys.stream()
-                       .map(key -> new Shell(endpointDataReference.getContractId(),
-                               fetchShellDescriptor(endpointDataReference, key)))
+                       .map(key -> Either.<Exception, Shell>right(
+                               new Shell(endpointDataReference.getContractId(),
+                                       fetchShellDescriptor(endpointDataReference, key))))
                        .toList();
         } finally {
             watch.stop();
@@ -333,8 +346,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         try {
             return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                    endpointDataReference,
-                    IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build()).getResult();
+                                                             endpointDataReference, IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())
+                                                     .getResult();
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());

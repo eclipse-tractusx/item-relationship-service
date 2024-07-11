@@ -8,11 +8,22 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+- Access and Usage Policy Validation flow correction. #757
+
+### Changed
+
+- Replaced technical error message when trying to delete the configured default policy with a user-friendly message.
+
+
 ## [5.2.0] - 2024-07-03
 
 ### Fixed
 
-- Fixed ESS Investigation job processing not starting #579
+- Fixed ESS Investigation job processing not starting. #579
 - Policy store API returns 'rightOperand' without 'odrl:' prefix now (see traceability-foss/issues/970).
 - Fixed trivy workflow to fail only on CRITICAL, HIGH (according to https://github.com/eclipse-tractusx/eclipse-tractusx.github.io/pull/949/files).
 
@@ -58,6 +69,11 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   or `edc:type`: `data.core.digitalTwinRegistry`. #616
 - Fix missing and malformed properties for EDC policy transformation. #648
 
+## Fixed
+
+- Propagates exceptions to have more detail in tombstone. #538
+
+
 ## [5.1.2] - 2024-05-13
 
 ### Fixed
@@ -98,9 +114,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [5.0.0] - 2024-04-16
 
 ### Added
-
 - SAMM models can now be added locally #488
 - Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
+
 
 
 ### Fixed
@@ -117,6 +133,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   exception as failed future now). #405
 - RestClientExceptions are handled correctly in BpdmFacade now. #405
 - Fixed Base64 encoding and decoding for locally provided Semantic Models #488
+
 
 ## [4.9.0] - 2024-04-03
 ### Added

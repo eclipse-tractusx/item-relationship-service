@@ -78,12 +78,19 @@ public class ResultFinder {
             log.debug("All of the futures completed");
 
             if (ex != null) {
-                log.warn("All failed: " + System.lineSeparator() //
+                log.warn("All failed: " + System.lineSeparator()
+                        // TODO (#538) can we remove logging here and log only up in call hierarchy
                         + exceptions.stream()
                                     .map(ExceptionUtils::getStackTrace)
                                     .collect(Collectors.joining(System.lineSeparator())), ex);
 
-                overallFuture.completeExceptionally(new CompletionExceptions("None successful", exceptions));
+                final CompletionExceptions noneSuccessful = new CompletionExceptions("None successful");
+                for (final Throwable exception : exceptions) {
+                    noneSuccessful.addSuppressed(exception);
+                }
+
+                overallFuture.completeExceptionally(noneSuccessful);
+
             } else {
                 overallFuture.complete(null);
             }
@@ -139,11 +146,8 @@ public class ResultFinder {
     @ToString
     public static class CompletionExceptions extends CompletionException {
 
-        private final List<Throwable> causes;
-
-        public CompletionExceptions(final String msg, final List<Throwable> causes) {
+        public CompletionExceptions(final String msg) {
             super(msg);
-            this.causes = causes;
         }
 
     }

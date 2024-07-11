@@ -25,7 +25,10 @@ package org.eclipse.tractusx.irs.component;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -83,6 +86,38 @@ public class Tombstone {
                         .build();
     }
 
+    public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
+            final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
+        final ProcessingError processingError =
+                        withProcessingError(processStep, retryCount, exception.getMessage(), suppressed);
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(globalAssetId)
+                        .processingError(processingError)
+                        .build();
+    }
+
+    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
+            final String message, final Throwable... suppressed) {
+        final List<String> rootCauses = Arrays.stream(suppressed).flatMap(Tombstone::getErrorMessages).toList();
+
+        return ProcessingError.builder()
+                              .withProcessStep(processStep)
+                              .withRetryCounter(retryCount)
+                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                              .withErrorDetail(message)
+                              .withRootCauses(rootCauses)
+                              .build();
+    }
+
+    private static Stream<String> getErrorMessages(final Throwable throwable) {
+        final Throwable cause = throwable.getCause();
+        if (cause != null && hasSuppressedExceptions(cause)) {
+            return Arrays.stream(throwable.getCause().getSuppressed()).map(Throwable::getMessage);
+        }
+        return Stream.of(throwable.getMessage());
+    }
+
     private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
             final String exception) {
         return ProcessingError.builder()
@@ -93,4 +128,7 @@ public class Tombstone {
                               .build();
     }
 
+    private static boolean hasSuppressedExceptions(final Throwable exception) {
+        return exception.getSuppressed().length > 0;
+    }
 }
