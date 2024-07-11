@@ -24,7 +24,6 @@
 package org.eclipse.tractusx.irs.policystore.services;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -311,9 +310,6 @@ class PolicyStoreServiceTest {
 
         @Test
         void getAcceptedPolicies_whenParameterBpnIsNull_shouldReturnTheConfiguredDefaultPolicy() {
-
-            // ARRANGE
-            when(persistenceMock.readAll()).thenReturn(emptyMap());
 
             // ACT
             final var acceptedPolicies = testee.getAcceptedPolicies(null);

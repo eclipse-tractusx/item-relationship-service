@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -23,21 +19,19 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.exceptions;
 
+import org.eclipse.edc.policy.model.Policy;
+
 /**
- * Exception for errors in the EDC client.
+ * This interface provides get-methods for fine-grained policy exceptions
  */
-public class EdcClientException extends Exception {
+public interface PolicyException {
+    /**
+     * @return the corresponding bpn of the policy
+     */
+    String getBusinessPartnerNumber();
 
-    public EdcClientException(final String msg, final Throwable cause) {
-        super(msg, cause);
-    }
-
-    public EdcClientException(final Throwable cause) {
-        super(cause);
-    }
-
-    public EdcClientException(final String msg) {
-        super(msg);
-    }
-
+    /**
+     * @return the policy that caused the exception
+     */
+    Policy getPolicy();
 }

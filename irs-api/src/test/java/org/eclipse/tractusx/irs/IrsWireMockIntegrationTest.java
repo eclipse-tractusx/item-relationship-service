@@ -59,6 +59,7 @@ import org.awaitility.Awaitility;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
+import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
@@ -276,6 +277,102 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.verifyNegotiationCalls(6);
     }
 
+    @Test
+    void shouldCreateDetailedTombstoneForMissmatchPolicy() {
+        // Arrange
+        final String globalAssetId = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+
+        failedRegistryRequestMissmatchPolicy();
+
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetId, TEST_BPN, 4);
+
+        // Act
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+
+        // Assert
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle);
+        final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getSubmodels()).isEmpty();
+        assertThat(jobForJobId.getTombstones()).hasSize(1);
+        final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
+        assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
+        assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
+                "Asset could not be negotiated for providerWithSuffix 'https://test.edc.io/api/v1/dsp', BPN 'BPNL00000000TEST', catalogItem");
+    }
+
+    @Test
+    void shouldCreateDetailedTombstoneForEdcErrors() {
+        // Arrange
+        final String globalAssetId = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+
+        failedRegistryRequestEdcError();
+
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetId, TEST_BPN, 4);
+
+        // Act
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+
+        // Assert
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle);
+        final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getSubmodels()).isEmpty();
+        assertThat(jobForJobId.getTombstones()).hasSize(1);
+        final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
+        assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
+        assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
+                "502 Bad Gateway");
+    }
+
+    @Test
+    void shouldCreateDetailedTombstoneForDiscoveryErrors() {
+        // Arrange
+        final String globalAssetId = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.failedEdcDiscovery();
+
+        failedRegistryRequestEdcError();
+
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetId, TEST_BPN, 4);
+
+        // Act
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+
+        // Assert
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle);
+        final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getSubmodels()).isEmpty();
+        assertThat(jobForJobId.getTombstones()).hasSize(1);
+        final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
+        assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
+        assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
+                "No EDC Endpoints could be discovered for BPN '%s'".formatted(TEST_BPN));
+    }
+
     private void successfulRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
             final String batchFileName, final String sbomFileName) {
 
@@ -304,6 +401,24 @@ class IrsWireMockIntegrationTest {
         SubmodelFacadeWiremockSupport.prepareNegotiation(negotiationId, transferProcessId, contractAgreementId,
                 edcAssetId);
         endpointDataReferenceStorage.put(contractAgreementId, createEndpointDataReference(contractAgreementId));
+    }
+
+    private void failedRegistryRequestMissmatchPolicy() {
+        final String registryEdcAssetId = "registry-asset";
+        failedPolicyMissmatchNegotiation(registryEdcAssetId);
+    }
+
+    private void failedRegistryRequestEdcError() {
+        failedNegotiation();
+    }
+
+    private void failedPolicyMissmatchNegotiation(final String edcAssetId) {
+        final String contractAgreementId = "%s:%s:%s".formatted(randomUUID(), edcAssetId, randomUUID());
+        SubmodelFacadeWiremockSupport.prepareMissmatchPolicyCatalog(edcAssetId, contractAgreementId);
+    }
+
+    private void failedNegotiation() {
+        SubmodelFacadeWiremockSupport.prepareFailingCatalog();
     }
 
     private void waitForCompletion(final JobHandle jobHandle) {

@@ -17,29 +17,35 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.exceptions;
+package org.eclipse.tractusx.irs.common;
 
-import java.util.List;
+import java.util.Collection;
 
-import lombok.Getter;
-import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
+import io.github.resilience4j.core.functions.Either;
 
 /**
- * Usage Policy Expired Exception errors in the contract negotiation.
+ * Utilities for exception handling
  */
-@Getter
-public class UsagePolicyExpiredException extends EdcClientException implements PolicyException  {
+public final class ExceptionUtils {
 
-    private final transient Policy policy;
-    private final String businessPartnerNumber;
-
-    public UsagePolicyExpiredException(final List<AcceptedPolicy> acceptedPolicies,
-            final Policy providedCatalogItemPolicy, final String businessPartnerNumber) {
-        super("Policy " + acceptedPolicies.stream().map(policy -> policy.policy().getPolicyId()).toList()
-                + " has expired.");
-        this.policy = providedCatalogItemPolicy;
-        this.businessPartnerNumber = businessPartnerNumber;
+    private ExceptionUtils() {
+        // private constructor, utility class
     }
 
+    /**
+     * Adds all exceptions from left side of the given Eithers to the exception.
+     *
+     * @param eithers   the {@link Either}s
+     * @param exception the exception
+     * @param <E>       the exception type (left-hand side of {@link Either})
+     * @param <T>       the object type (right-hand side of {@link Either})
+     */
+    public static <E extends Exception, T> void addSuppressedExceptions(final Collection<Either<E, T>> eithers,
+            final Exception exception) {
+        for (final Either<E, T> either : eithers) {
+            if (either.isLeft() && either.getLeft() != null) {
+                exception.addSuppressed(either.getLeft());
+            }
+        }
+    }
 }
