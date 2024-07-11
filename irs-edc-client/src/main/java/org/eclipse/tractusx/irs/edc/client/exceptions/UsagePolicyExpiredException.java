@@ -29,7 +29,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
  * Usage Policy Expired Exception errors in the contract negotiation.
  */
 @Getter
-public class UsagePolicyExpiredException extends EdcClientException {
+public class UsagePolicyExpiredException extends EdcClientException implements PolicyException  {
 
     private final transient Policy policy;
     private final String businessPartnerNumber;
