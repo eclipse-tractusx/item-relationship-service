@@ -8,11 +8,19 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-## [5.2.0] - 2024-07-03
+### Added
 
 ### Fixed
 
 - Access and Usage Policy Validation flow correction. #757
+
+### Changed
+
+
+## [5.2.0] - 2024-07-03
+
+### Fixed
+
 - Fixed ESS Investigation job processing not starting. #579
 - Policy store API returns 'rightOperand' without 'odrl:' prefix now (see traceability-foss/issues/970).
 - Fixed trivy workflow to fail only on CRITICAL, HIGH (according to https://github.com/eclipse-tractusx/eclipse-tractusx.github.io/pull/949/files).
