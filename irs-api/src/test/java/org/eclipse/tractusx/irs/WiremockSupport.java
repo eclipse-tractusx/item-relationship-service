@@ -99,6 +99,11 @@ public class WiremockSupport {
         stubFor(DiscoveryServiceWiremockSupport.postEdcDiscovery200());
     }
 
+    static void failedEdcDiscovery() {
+        stubFor(DiscoveryServiceWiremockSupport.postDiscoveryFinder200());
+        stubFor(DiscoveryServiceWiremockSupport.postEdcDiscovery200Empty());
+    }
+
     static String encodedId(final String shellId) {
         return encodeBase64String(shellId.getBytes(StandardCharsets.UTF_8));
     }
