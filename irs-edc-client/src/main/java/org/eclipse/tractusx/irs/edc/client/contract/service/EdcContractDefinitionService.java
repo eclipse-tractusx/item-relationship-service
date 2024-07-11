@@ -21,16 +21,21 @@ package org.eclipse.tractusx.irs.edc.client.contract.service;
 
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 
+import java.util.List;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.asset.model.EdcContext;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinition;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinitionCriteria;
-import org.eclipse.tractusx.irs.edc.client.contract.model.EdcCreateContractDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcContractDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractDefinitionAlreadyExists;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +61,7 @@ public class EdcContractDefinitionService {
     public String createContractDefinition(final String assetId, final String policyId)
             throws CreateEdcContractDefinitionException {
         final String contractId = UUID.randomUUID().toString();
-        final EdcCreateContractDefinitionRequest createContractDefinitionRequest = createContractDefinitionRequest(
+        final EdcContractDefinition createContractDefinitionRequest = createContractDefinitionRequest(
                 assetId, policyId, contractId);
         final ResponseEntity<String> createContractDefinitionResponse;
         try {
@@ -85,7 +90,7 @@ public class EdcContractDefinitionService {
 
     }
 
-    public EdcCreateContractDefinitionRequest createContractDefinitionRequest(final String assetId,
+    public EdcContractDefinition createContractDefinitionRequest(final String assetId,
             final String accessPolicyId, final String contractId) {
         final EdcContractDefinitionCriteria edcContractDefinitionCriteria = EdcContractDefinitionCriteria.builder()
                                                                                                          .type(ASSET_SELECTOR_TYPE)
@@ -98,13 +103,24 @@ public class EdcContractDefinitionService {
                                                                                                          .build();
 
         final EdcContext edcContext = EdcContext.builder().edc(NAMESPACE_EDC).build();
-        return EdcCreateContractDefinitionRequest.builder()
-                                                 .contractPolicyId(accessPolicyId)
-                                                 .edcContext(edcContext)
-                                                 .type(CONTRACT_DEFINITION_TYPE)
-                                                 .accessPolicyId(accessPolicyId)
-                                                 .contractDefinitionId(contractId)
-                                                 .assetsSelector(edcContractDefinitionCriteria)
-                                                 .build();
+        return EdcContractDefinition.builder()
+                                    .contractPolicyId(accessPolicyId)
+                                    .edcContext(edcContext)
+                                    .type(CONTRACT_DEFINITION_TYPE)
+                                    .accessPolicyId(accessPolicyId)
+                                    .contractDefinitionId(contractId)
+                                    .assetsSelector(edcContractDefinitionCriteria)
+                                    .build();
+    }
+
+    public ResponseEntity<List<EdcContractDefinition>> getContractDefinitions(final QuerySpec querySpec) {
+        return restTemplate.exchange(config.getControlplane().getEndpoint().getContractDefinition() + "/request",
+                HttpMethod.POST, new HttpEntity<>(querySpec), new ParameterizedTypeReference<>() {
+                });
+    }
+
+    public void deleteContractDefinition(final String contractDefinitionId) {
+        restTemplate.delete(config.getControlplane().getEndpoint().getContractDefinition() + "/{contractDefinitionId}",
+                contractDefinitionId);
     }
 }
