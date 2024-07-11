@@ -197,9 +197,8 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Policy with id '%s' not found".formatted(policyId));
         } else if (bpnsContainingPolicyId.stream().noneMatch(StringUtils::isNotEmpty)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    ("A configured default policy cannot be deleted. "
-                            + "It can be overridden by defining a default policy via the API instead."));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A configured default policy cannot be deleted. "
+                    + "It can be overridden by defining a default policy via the API instead.");
         } else {
             try {
                 log.info("Deleting policy with id {}", policyId);
