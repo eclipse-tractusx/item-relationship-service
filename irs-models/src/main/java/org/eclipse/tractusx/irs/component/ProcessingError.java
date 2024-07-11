@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.component;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -44,6 +45,7 @@ public class ProcessingError {
     private ProcessStep processStep;
     private String errorDetail;
     private ZonedDateTime lastAttempt;
+    private List<String> rootCauses;
 
     @Schema(implementation = Integer.class)
     @Min(0)

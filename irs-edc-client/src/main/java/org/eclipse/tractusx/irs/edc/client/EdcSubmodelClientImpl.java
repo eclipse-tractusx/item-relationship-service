@@ -319,12 +319,13 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         try {
             response = contractNegotiationService.negotiate(providerWithSuffix, catalogItem,
                     endpointDataReferenceStatus, bpn);
-        } catch (TransferProcessException | UsagePolicyPermissionException | UsagePolicyExpiredException
-                 | ContractNegotiationException e) {
+        } catch (TransferProcessException | ContractNegotiationException e) {
             throw new EdcClientException(("Negotiation failed for endpoint '%s', " + "tokenStatus '%s', "
                     + "providerWithSuffix '%s', catalogItem '%s'").formatted(
                     endpointDataReferenceStatus.endpointDataReference(), endpointDataReferenceStatus.tokenStatus(),
-                    providerWithSuffix, endpointDataReferenceStatus), e);
+                    providerWithSuffix, catalogItem), e);
+        } catch (UsagePolicyExpiredException | UsagePolicyPermissionException e) {
+            throw new EdcClientException("Asset could not be negotiated for providerWithSuffix '%s', BPN '%s', catalogItem '%s'".formatted(providerWithSuffix, bpn, catalogItem), e);
         }
         return response;
     }
