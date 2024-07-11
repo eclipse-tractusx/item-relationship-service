@@ -44,4 +44,6 @@ public @interface ValidListOfBusinessPartnerNumbers {
     Class<?>[] groups() default { };
 
     Class<? extends Payload>[] payload() default { };
+
+    boolean allowDefault() default false;
 }

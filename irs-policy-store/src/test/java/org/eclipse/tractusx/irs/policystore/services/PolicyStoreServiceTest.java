@@ -312,9 +312,6 @@ class PolicyStoreServiceTest {
         @Test
         void getAcceptedPolicies_whenParameterBpnIsNull_shouldReturnTheConfiguredDefaultPolicy() {
 
-            // ARRANGE
-            when(persistenceMock.readAll()).thenReturn(new HashMap<>());
-
             // ACT
             final var acceptedPolicies = testee.getAcceptedPolicies(null);
 
