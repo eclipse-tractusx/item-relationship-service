@@ -141,23 +141,30 @@ class BusinessPartnerNumberListValidatorTest {
         }
 
         public BusinessPartnerNumberListValidator build() {
-            ValidListOfBusinessPartnerNumbers annotation = new ValidListOfBusinessPartnerNumbers() {
+
+            final var annotation = new ValidListOfBusinessPartnerNumbers() {
+
+                @Override
                 public Class<? extends Annotation> annotationType() {
                     return ValidListOfBusinessPartnerNumbers.class;
                 }
 
+                @Override
                 public String message() {
                     return message;
                 }
 
+                @Override
                 public Class<?>[] groups() {
                     return groups;
                 }
 
+                @Override
                 public Class<? extends Payload>[] payload() {
                     return payload;
                 }
 
+                @Override
                 public boolean allowDefault() {
                     return allowDefault;
                 }
