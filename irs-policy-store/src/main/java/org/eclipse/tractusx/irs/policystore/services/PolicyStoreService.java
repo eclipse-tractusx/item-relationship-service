@@ -285,14 +285,6 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         return result.stream();
     }
 
-    private List<AcceptedPolicy> getAllPolicies() {
-        return getAllStoredPolicies().values()
-                                     .stream()
-                                     .flatMap(Collection::stream)
-                                     .map(this::toAcceptedPolicy)
-                                     .toList();
-    }
-
     private AcceptedPolicy toAcceptedPolicy(final Policy policy) {
         return new AcceptedPolicy(policy, policy.getValidUntil());
     }
