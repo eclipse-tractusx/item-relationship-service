@@ -96,9 +96,15 @@ class PolicyCheckerServiceTest {
         @Test
         void shouldRejectAndConstraintsWhenOnlyOneMatch() {
             // given
+
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+
             final var policyList = List.of(
-                    new AcceptedPolicy(policy(FRAMEWORK_AGREEMENT_TRACEABILITY), OffsetDateTime.now().plusYears(1)),
-                    new AcceptedPolicy(policy(FRAMEWORK_AGREEMENT_DISMANTLER), OffsetDateTime.now().plusYears(1)));
+                    new AcceptedPolicy(policy("policy1", List.of(constraint1, constraint2), Collections.emptyList()),
+                            OffsetDateTime.now().plusYears(1)));
             when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
             final Policy policy = createAndConstraintPolicy(
@@ -112,7 +118,7 @@ class PolicyCheckerServiceTest {
         }
 
         @Test
-        void shouldAcceptAndConstraintsWhenAcceptedPolicyContainsMoreConstraintsSuperSetOfProvidedPolicy() {
+        void shouldRejectAndConstraintsWhenAcceptedPolicyContainsSuperSetOfProvidedPolicy() {
             // given
             final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
                     new Operator(OperatorType.EQ), STATUS_ACTIVE);
@@ -132,7 +138,7 @@ class PolicyCheckerServiceTest {
             final boolean valid = policyCheckerService.isValid(policy, "bpn");
 
             // then
-            assertThat(valid).isTrue();
+            assertThat(valid).isFalse();
         }
 
         @Test
@@ -187,9 +193,15 @@ class PolicyCheckerServiceTest {
         @Test
         void shouldRejectOrConstraintsWhenNoneMatch() {
             // given
+
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TEST, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+
             final var policyList = List.of(
-                    new AcceptedPolicy(policy(FRAMEWORK_AGREEMENT_TEST), OffsetDateTime.now().plusYears(1)),
-                    new AcceptedPolicy(policy(FRAMEWORK_AGREEMENT_DISMANTLER), OffsetDateTime.now().plusYears(1)));
+                    new AcceptedPolicy(policy("policy1", Collections.emptyList(), List.of(constraint1, constraint2)),
+                            OffsetDateTime.now().plusYears(1)));
             when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
             final Policy policy = createAndConstraintPolicy(
@@ -204,11 +216,18 @@ class PolicyCheckerServiceTest {
         }
 
         @Test
-        void shouldRejectXOneConstraintsWhenNoneMatch() {
+        void shouldRejectXOneConstraintsBecauseXOneIsNotSupported() {
             // given
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+
             final var policyList = List.of(
-                    new AcceptedPolicy(policy(FRAMEWORK_AGREEMENT_TEST), OffsetDateTime.now().plusYears(1)),
-                    new AcceptedPolicy(policy(FRAMEWORK_AGREEMENT_DISMANTLER), OffsetDateTime.now().plusYears(1)));
+                    new AcceptedPolicy(policy("policy1", Collections.emptyList(), List.of(constraint1, constraint2)),
+                            OffsetDateTime.now().plusYears(1)),
+                    new AcceptedPolicy(policy("policy2", List.of(constraint1, constraint2), Collections.emptyList()),
+                            OffsetDateTime.now().plusYears(1)));
             when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
             final Policy policy = createXOneConstraintPolicy(
@@ -222,33 +241,6 @@ class PolicyCheckerServiceTest {
             assertThat(valid).isFalse();
         }
 
-        @Test
-        void shouldRejectXOneConstraintsWhenMoreThanOneMatch() {
-            // given
-            final var policyList = List.of(
-                    new AcceptedPolicy(policy(FRAMEWORK_AGREEMENT_TRACEABILITY), OffsetDateTime.now().plusYears(1)),
-                    new AcceptedPolicy(policy(MEMBERSHIP), OffsetDateTime.now().plusYears(1)));
-            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
-
-            final Policy policy = createXOneConstraintPolicy(
-                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
-                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
-
-            // when
-            final boolean valid = policyCheckerService.isValid(policy, "bpn");
-
-            // then
-            assertThat(valid).isFalse();
-        }
-    }
-
-    private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(final String policyId) {
-        return org.eclipse.tractusx.irs.edc.client.policy.Policy.builder()
-                                                                .policyId(policyId)
-                                                                .createdOn(OffsetDateTime.now())
-                                                                .validUntil(OffsetDateTime.now().plusYears(1))
-                                                                .permissions(Collections.emptyList())
-                                                                .build();
     }
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(final String policyId,
