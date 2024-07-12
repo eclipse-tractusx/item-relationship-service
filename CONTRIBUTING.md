@@ -212,24 +212,22 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
-2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md)
-   and [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md)
-   (for an example [see here](https://github.com/eclipse-tractusx/item-relationship-service/pull/429))
+2. Make sure the changelog entries [CHANGELOG.md](CHANGELOG.md)
+   and [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md) are up-to-date
     - Check if the changelog entries for the release are complete.
     - Add the corresponding GitHub issue numbers to each entry if missing.
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md).
-4. Execute the workflow named _"Release IRS"_. The workflow takes three inputs. These are:
+4. Execute the workflow named _"Prepare Release documentation"_. The workflow takes three inputs. These are:
     - IRS release version - type: semantic version string
     - Helm Chart release version - type: semantic version string
     - Whether to automatically update the Helm Chart changelog with the change
       _"- Update IRS version to x.x.x"_. This is a checkbox which is ticked by default.
-5. The workflow makes automated changes and creates a pull request from them right away.
-   Please review the created pull request within 15 minutes. If you fail to do so, or if the
-   pull request gets closed, the workflow will fail.
-6. Once the pull request has been merged, the workflow continues execution. It pushes a tag (which will be
-   the semantic IRS release version number) and creates the release. Subsequent workflows, such
-   as the IRS build workflow, are triggered automatically.
-7. Notify about the release in IRS Matrix Chat using the following template:
+5. The workflow updates the necessary documentation and creates a pull request right away.
+   Review the changes and merge the PR.
+6. Once the pull request has been merged, the helm chart will be release automatically.
+7. To create the IRS release, [draft a new release](https://github.com/eclipse-tractusx/item-relationship-service/releases/new). As a tag and title, choose the IRS version provided to the release workflow. (If the release is created from a hotfix branch, make sure to choose this hotfix branch as the target of the tag)
+8. Paste the release notes from the PR into the release description.
+9. Notify about the release in IRS Matrix Chat using the following template:
 
 > **IRS Release x.x.x**
 >

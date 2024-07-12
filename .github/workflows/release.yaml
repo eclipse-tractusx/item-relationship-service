@@ -1,4 +1,4 @@
-name: Release IRS
+name: Prepare Release documentation
 
 on:
   workflow_dispatch:
@@ -25,8 +25,7 @@ env:
   OPENAPI_SPEC_PATH: 'docs/src/api/irs-api.yaml'
   HELM_CHART_PATH: 'charts/item-relationship-service'
   SEMVER_PATTERN: '[0-9]+\.[0-9]+\.[0-9]+'
-  SEMVER_PATTERN_SED: '[0-9]\+\.[0-9]\+\.[0-9]\+\'
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  SEMVER_PATTERN_SED: '[0-9]\+\.[0-9]\+\.[0-9]\+'
 
 jobs:
   release:
@@ -47,9 +46,9 @@ jobs:
       - name: Validate that IRS and Helm Chart versions don't exist yet
         run: |
           # IRS version can be checked via git tag since every release has a tag
-          matched_irs_version=$(git tag | grep -Eo "${{ inputs.irs-version }}" || echo "")
+          matched_irs_version=$(git tag | grep -Eo "^${{ inputs.irs-version }}" || echo "")
           # extract from Helm Chart changelog
-          matched_helm_chart_version=$(grep -Eo "## \[${{ inputs.helm-chart-version }}\]" ${{ env.HELM_CHART_PATH }}/CHANGELOG.md || echo "")
+          matched_helm_chart_version=$(git tag | grep -Eo "^(irs-helm|item-relationship-service)-${{ inputs.irs-version }}" || echo "")
           
           if [[ -n "$matched_irs_version" || -n "$matched_helm_chart_version" ]]; then
               echo "At least one of the version numbers ${{ inputs.irs-version }} or ${{ inputs.helm-chart-version }} already exists."
@@ -119,9 +118,8 @@ jobs:
         run: sed -i "s|${{ steps.main-changelog-update.outputs.previous-irs-version }}|${{ inputs.irs-version }}|" ${{ env.IRS_APPLICATION_PATH }}
 
       - name: Update irs-api.yaml
-        uses: mikefarah/yq@v4.44.2
-        with:
-          cmd: yq -i eval '.info.version = "${{ inputs.irs-version }}"' ${{ env.OPENAPI_SPEC_PATH }}
+        run: |
+          sed -i '0,/version: ${{ env.SEMVER_PATTERN_SED }}/s//version: ${{ inputs.irs-version }}/' ${{ env.OPENAPI_SPEC_PATH }}
 
       - name: Update Chart.yaml appVersion
         uses: mikefarah/yq@v4.44.2
@@ -133,66 +131,6 @@ jobs:
         with:
           cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' ${{ env.HELM_CHART_PATH }}/Chart.yaml
 
-      - name: Update docs and Helm chart for release
-        id: cpr
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: 'chore(docs): updated docs and Helm chart for IRS release ${{ inputs.irs-version }}'
-          branch: action/update-for-release-${{ inputs.irs-version }}
-          delete-branch: true
-          title: "chore: updated docs and Helm chart for release"
-          body: This PR prepares the docs and the Helm chart for IRS release ${{ inputs.irs-version }}.
-            Please check whether everything was updated correctly. Once this PR is merged, the release process will continue automatically.
-
-      - name: Wait for pull request merge
-        run: |
-          pull_request_number=${{ steps.cpr.outputs.pull-request-number }}
-          pull_request_merged="False"
-          seconds_waited_for_merge=0
-          # set duration between api requests
-          sleep_interval_length=5 # seconds
-          timeout_in_minutes=15
-          
-          echo "Waiting for merge of PR #$pull_request_number."
-          
-          while [[ "$pull_request_merged" == "False" ]]
-          do
-            # give some time to merge pull request
-            sleep "$sleep_interval_length"s
-          
-            # retrieve pr status using GH API's pull requests endpoint with GH CLI
-            pr_status=$(gh pr view $pull_request_number --json state --jq ".state")
-          
-            case $pr_status in
-          
-              MERGED)
-                pull_request_merged="True"
-                echo "PR #$pull_request_number merged, continuing the workflow."
-                ;;
-          
-              OPEN)
-                seconds_waited_for_merge=$((seconds_waited_for_merge+sleep_interval_length))
-          
-                # abort workflow when having waited for more than allowed time
-                if [[ $seconds_waited_for_merge -gt $((timeout_in_minutes*60)) ]]; then
-                  echo "Timeout waiting for merge of PR #$pull_request_number, aborting the workflow."
-                  exit 1
-                fi                
-                ;;
-          
-              CLOSED)
-                echo "PR #$pull_request_number was closed, aborting the workflow."
-                exit 1
-                ;;
-          
-            esac
-          
-          done
-        continue-on-error: false
-
-      - name: Create and push new Git tag for release and pull latest changes
-        run: git tag ${{ inputs.irs-version }} && git push origin ${{ inputs.irs-version }} && git pull
-
       - name: Extract changelog text
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
         run: |
@@ -203,43 +141,18 @@ jobs:
           /${{ steps.main-changelog-update.outputs.previous-irs-version }}...${{ inputs.irs-version }} >> $GITHUB_ENV
           echo "$EOF" >> "$GITHUB_ENV"
 
-      - name: Create IRS release
-        uses: softprops/action-gh-release@v2
+      - name: Update docs and Helm chart for release
+        uses: peter-evans/create-pull-request@v6
         with:
-          body: ${{ env.CHANGELOG }}
-          tag_name: ${{ inputs.irs-version }}
+          commit-message: 'chore(docs): updated docs and Helm chart for IRS release ${{ inputs.irs-version }}'
+          branch: action/update-for-release-${{ inputs.irs-version }}
+          delete-branch: true
+          title: "chore: updated docs and Helm chart for release"
+          body: This PR prepares the docs and the Helm chart for IRS release ${{ inputs.irs-version }}.
+            Please check whether everything was updated correctly. Once this PR is merged, you can draft a new release
+            with the following Releasenotes.
+            
+            ```
+            ${{ env.CHANGELOG }}
 
-  release-helm-chart:
-    name: "Release Helm chart"
-    needs:
-      - release
-    uses: ./.github/workflows/helm-chart-release.yaml
-    with:
-      ref-to-check-out: 'refs/tags/${{ inputs.irs-version }}'
-
-  build-irs:
-    name: "Build IRS"
-    needs:
-      - release
-    uses: ./.github/workflows/irs-build.yml
-    secrets: inherit
-    with:
-      ref-to-check-out: 'refs/tags/${{ inputs.irs-version }}'
-
-  trivy-image-scan:
-    name: "Scan image in local registry with Trivy"
-    needs:
-      - release
-    uses: ./.github/workflows/trivy-image-scan.yml
-    secrets: inherit
-    with:
-      ref-to-check-out: 'refs/tags/${{ inputs.irs-version }}'
-
-  validate-openapi-definition:
-    needs:
-      - release
-    name: "Validate OpenAPI definition"
-    uses: ./.github/workflows/swagger-editor-validate.yml
-    secrets: inherit
-    with:
-      ref-to-check-out: 'refs/tags/${{ inputs.irs-version }}'
+            ```
