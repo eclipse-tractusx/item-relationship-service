@@ -10,6 +10,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Added
 
+- Added autocomplete endpoint Policy Store API: `GET /irs/policies/attributes/{attribute}`. #750
+
 ### Fixed
 
 - Access and Usage Policy Validation flow correction. #757
