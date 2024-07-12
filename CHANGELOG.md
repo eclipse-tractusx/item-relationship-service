@@ -13,6 +13,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Fixed
 
 - Access and Usage Policy Validation flow correction. #757
+- IRS Policy Validation does not accept subset of AND constraint any longer. #649
 
 ### Changed
 
