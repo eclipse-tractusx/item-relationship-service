@@ -85,36 +85,22 @@
 					"id": "pair_8482da576c10480b9f7edf7a4aa752c6",
 					"name": "businessPartnerNumbers",
 					"value": "BPNL1234567890AB",
-					"description": "",
+					"description": "Get policies for the given BPN",
 					"disabled": false
 				},
 				{
 					"id": "pair_ec0ce8fad21144aaa531cbbcb941f522",
 					"name": "businessPartnerNumbers",
-					"value": "BPNL1234567890XX",
-					"description": "",
+					"value": "BPNL9834567890CD",
+					"description": "Get policies for the given BPN",
 					"disabled": false
 				},
 				{
-					"id": "pair_05398fd8c0f048b996b9f9af94fcc8ba",
-					"name": "search",
-					"value": "policyId,STARTS_WITH,policy4",
-					"description": "",
+					"id": "pair_ec0ce8fad21144aaa531cbbcb941f533",
+					"name": "businessPartnerNumbers",
+					"value": "default",
+					"description": "Get the default policies",
 					"disabled": true
-				},
-				{
-					"id": "pair_88cfa390e59c456493e70736b32d529d",
-					"name": "page",
-					"value": "1",
-					"description": "",
-					"disabled": false
-				},
-				{
-					"id": "pair_05e508de308f4f25993a39aebb5c462e",
-					"name": "size",
-					"value": "10",
-					"description": "",
-					"disabled": false
 				}
 			],
 			"headers": [],
@@ -151,57 +137,92 @@
 					"id": "pair_0b54166258504534a4485bf109444618",
 					"name": "sort",
 					"value": "bpn,asc",
-					"description": "",
+					"description": "Sort by BPN ascending",
 					"disabled": false
 				},
 				{
 					"id": "pair_beea0b998a0c4afbb0d1288b2ed73ee4",
 					"name": "sort",
 					"value": "policyId,asc",
-					"description": "",
+					"description": "Sort by policyId ascending",
 					"disabled": false
 				},
 				{
 					"id": "pair_46baddf55de8401baae8c5a1c0dda650",
 					"name": "sort",
 					"value": "action,asc",
-					"description": "",
+					"description": "Sort by action ascending",
 					"disabled": false
 				},
 				{
 					"id": "pair_479d0c25e9b04af8bf79647e55287cbd",
 					"name": "sort",
 					"value": "validUntil,asc",
-					"description": "",
+					"description": "Sort by validUntil ascending",
 					"disabled": true
 				},
 				{
 					"id": "pair_5d1ba9763a7640cab07c6faa153b42c5",
 					"name": "sort",
 					"value": "createdOn,asc",
-					"description": "",
+					"description": "Sort by createdOn ascending",
 					"disabled": true
 				},
 				{
 					"id": "pair_09ae1cec1dc74a38a16a410dbfcedfab",
 					"name": "search",
 					"value": "validUntil,AFTER_LOCAL_DATE,2024-06-04",
-					"description": "",
+					"description": "Filter / search all where validUntil is after the given date string",
 					"disabled": true
 				},
 				{
 					"id": "pair_9d1b8c086d74456f86c88123d9ec940a",
 					"name": "search",
 					"value": "BPN,STARTS_WITH,BPNL12",
-					"description": "",
-					"disabled": false
+					"description": "Filter / search by BPN starting with the given string",
+					"disabled": true
 				},
 				{
 					"id": "pair_ad26500e1b5e41759f59881d1ceaca1a",
 					"name": "search",
 					"value": "action,EQUALS,use",
-					"description": "",
+					"description": "Filter / search by action",
+					"disabled": true
+				},
+				{
+					"id": "pair_ad26500e1b5e41759f59881d1ceaca1b",
+					"name": "search",
+					"value": "policyId,STARTS_WITH,policy4",
+					"description": "Filter / search by policyId starting with the given string",
+					"disabled": true
+				},
+				{
+					"id": "pair_ad26500e1b5e41759f59881d1ceaca1c",
+					"name": "page",
+					"value": "0",
+					"description": "The requested page",
 					"disabled": false
+				},
+				{
+					"id": "pair_ad26500e1b5e41759f59881d1ceaca1d",
+					"name": "size",
+					"value": "10",
+					"description": "The page size",
+					"disabled": false
+				},
+				{
+					"id": "pair_ad26500e1b5e41759f59881d1ceaca1e",
+					"name": "businessPartnerNumbers",
+					"value": "default",
+					"description": "Only default policies",
+					"disabled": true
+				},
+				{
+					"id": "pair_ad26500e1b5e41759f59881d1ceaca1f",
+					"name": "search",
+					"value": "BPN,EQUALS,default",
+					"description": "Only default policies (same as the parameter businessPartnerNumbers)",
+					"disabled": true
 				}
 			],
 			"headers": [],
@@ -229,7 +250,7 @@
 			"modified": 1702990529632,
 			"created": 1687243204155,
 			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'policyId', '', 'traceability-test', '', false, true %}",
-			"name": "Delete policy",
+			"name": "Delete policy by ID",
 			"description": "",
 			"method": "DELETE",
 			"body": {},
@@ -305,6 +326,45 @@
 			"body": {
 				"mimeType": "application/json",
 				"text": "{\n\t\"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumber\": \"BPNL1234567890AB\",\n\t\"payload\":\n\t\t{\n\t\t\t\"@context\": {\n\t\t\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\"\n\t\t\t},\n\t\t\t\"@id\": \"test-policy\",\n\t\t\t\"policy\": {\n\t\t\t\t\"odrl:permission\": [\n\t\t\t\t\t{\n\t\t\t\t\t\t\"odrl:action\": \"use\",\n\t\t\t\t\t\t\"odrl:constraint\": {\n\t\t\t\t\t\t\t\"odrl:and\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"Membership\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"active\"\n\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"PURPOSE\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"ID 3.1 Trace\"\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t}\n\t\t}\n}"
+			},
+			"preRequestScript": "",
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.ADMIN_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1683962737633.5,
+			"isPrivate": false,
+			"pathParameters": [],
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_48a45cea23df4839879e1e813945f6aa",
+			"parentId": "fld_ad061853620b45c397a7906a6e566930",
+			"modified": 1717571530832,
+			"created": 1687243182397,
+			"url": "{{IRS_HOST}}/irs/policies",
+      "name": "Register a default policy",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+        "text": "{\n\t\"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"payload\":\n\t\t{\n\t\t\t\"@context\": {\n\t\t\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\"\n\t\t\t},\n\t\t\t\"@id\": \"my-default-policy-1\",\n\t\t\t\"policy\": {\n\t\t\t\t\"odrl:permission\": [\n\t\t\t\t\t{\n\t\t\t\t\t\t\"action\": \"use\",\n\t\t\t\t\t\t\"constraint\": {\n\t\t\t\t\t\t\t\"and\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"leftOperand\": \"Membership\",\n\t\t\t\t\t\t\t\t\t\"operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"rightOperand\": \"active\"\n\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"leftOperand\": \"PURPOSE\",\n\t\t\t\t\t\t\t\t\t\"operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"Testtestetstetsatse\"\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t}\n\t\t}\n}"
 			},
 			"preRequestScript": "",
 			"parameters": [],
@@ -3800,7 +3860,7 @@
 			"modified": 1717577274756,
 			"created": 1717577274756,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/request",
-			"name": "Get all Policies",
+			"name": "Get all policies",
 			"description": "",
 			"method": "POST",
 			"body": {

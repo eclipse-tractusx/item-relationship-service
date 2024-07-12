@@ -36,6 +36,7 @@ import static org.mockito.Mockito.when;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -385,12 +386,12 @@ class PolicyStoreServiceTest {
         void deletePolicy_deleteSuccessful() {
             // ARRANGE
             final String policyId = randomPolicyId();
-            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(Policy.builder()
-                                                                                 .policyId(policyId)
-                                                                                 .createdOn(null)
-                                                                                 .validUntil(null)
-                                                                                 .permissions(null)
-                                                                                 .build())));
+            when(persistenceMock.readAll()).thenReturn(new HashMap<>(Map.of(BPN, List.of(Policy.builder()
+                                                                                               .policyId(policyId)
+                                                                                               .createdOn(null)
+                                                                                               .validUntil(null)
+                                                                                               .permissions(null)
+                                                                                               .build()))));
 
             // ACT
             testee.deletePolicy(policyId);
@@ -404,12 +405,12 @@ class PolicyStoreServiceTest {
 
             // ACT
             final String policyId = randomPolicyId();
-            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(Policy.builder()
-                                                                                 .policyId(policyId)
-                                                                                 .createdOn(null)
-                                                                                 .validUntil(null)
-                                                                                 .permissions(null)
-                                                                                 .build())));
+            when(persistenceMock.readAll()).thenReturn(new HashMap<>(Map.of(BPN, List.of(Policy.builder()
+                                                                                               .policyId(policyId)
+                                                                                               .createdOn(null)
+                                                                                               .validUntil(null)
+                                                                                               .permissions(null)
+                                                                                               .build()))));
             doThrow(new PolicyStoreException("")).when(persistenceMock).delete(BPN, policyId);
 
             // ASSERT
@@ -424,7 +425,7 @@ class PolicyStoreServiceTest {
             final String notExistingPolicyId = randomPolicyId();
             final String policyId = randomPolicyId();
             when(persistenceMock.readAll()).thenReturn(
-                    Map.of(BPN, List.of(Policy.builder().policyId(policyId).build())));
+                    new HashMap<>(Map.of(BPN, List.of(Policy.builder().policyId(policyId).build()))));
 
             // ASSERT
             assertThatThrownBy(() -> testee.deletePolicy(notExistingPolicyId)).isInstanceOf(
@@ -459,7 +460,7 @@ class PolicyStoreServiceTest {
                                             .validUntil(originalValidUntil)
                                             .permissions(permissions)
                                             .build();
-            when(persistenceMock.readAll()).thenReturn(Map.of(originalBpn, List.of(testPolicy)));
+            when(persistenceMock.readAll()).thenReturn(new HashMap<>(Map.of(originalBpn, List.of(testPolicy))));
             // get policies for bpn
             when(persistenceMock.readAll(originalBpn)).thenReturn(List.of(testPolicy));
 
@@ -494,7 +495,7 @@ class PolicyStoreServiceTest {
                                             .validUntil(validUntil)
                                             .permissions(permissions)
                                             .build();
-            when(persistenceMock.readAll()).thenReturn(Map.of("bpn2", List.of(testPolicy)));
+            when(persistenceMock.readAll()).thenReturn(new HashMap<>(Map.of("bpn2", List.of(testPolicy))));
             when(persistenceMock.readAll("bpn2")).thenReturn(List.of(testPolicy));
 
             // ACT
@@ -543,7 +544,7 @@ class PolicyStoreServiceTest {
             // BPN1 without any policies
 
             // BPN2 with testPolicy1 and testPolicy2
-            when(persistenceMock.readAll()).thenReturn(Map.of(bpn2, List.of(testPolicy1, testPolicy2)));
+            when(persistenceMock.readAll()).thenReturn(new HashMap<>(Map.of(bpn2, List.of(testPolicy1, testPolicy2))));
             when(persistenceMock.readAll(bpn2)).thenReturn(List.of(Policy.builder()
                                                                          .policyId(policyId1)
                                                                          .createdOn(createdOn)

@@ -192,8 +192,9 @@ public class PolicyStoreController {
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public Map<String, List<PolicyResponse>> getPolicies(//
             @RequestParam(required = false) //
-            @ValidListOfBusinessPartnerNumbers //
-            @Parameter(description = "List of business partner numbers.") //
+            @ValidListOfBusinessPartnerNumbers(allowDefault = true) //
+            @Parameter(description = "List of business partner numbers. "
+                    + "This may also contain the value \"default\" in order to query the default policies.") //
             final List<String> businessPartnerNumbers //
     ) {
 
@@ -256,8 +257,9 @@ public class PolicyStoreController {
             @Parameter(description = "Page configuration", hidden = true) //
             final Pageable pageable, //
             @RequestParam(required = false) //
-            @ValidListOfBusinessPartnerNumbers //
-            @Parameter(name = "businessPartnerNumbers", description = "List of business partner numbers.") //
+            @ValidListOfBusinessPartnerNumbers(allowDefault = true) //
+            @Parameter(name = "businessPartnerNumbers", description = "List of business partner numbers. "
+                    + "This may also contain the value \"default\" in order to query the default policies.") //
             final List<String> businessPartnerNumbers) {
 
         if (pageable.getPageSize() > MAX_PAGE_SIZE) {
