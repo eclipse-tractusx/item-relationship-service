@@ -58,22 +58,33 @@ public class ConstraintCheckerService {
     }
 
     private boolean isSameAs(final Constraint constraint, final Constraints acceptedConstraints) {
+
         if (constraint instanceof AtomicConstraint atomicConstraint) {
             return acceptedConstraints.getOr().stream().anyMatch(p -> isSameAs(atomicConstraint, p))
                     || acceptedConstraints.getAnd().stream().anyMatch(p -> isSameAs(atomicConstraint, p));
         }
+
         if (constraint instanceof AndConstraint andConstraint) {
+
+            // AND means the number of constraints must be the same
+            if (acceptedConstraints.getAnd() != null
+                    && acceptedConstraints.getAnd().size() != andConstraint.getConstraints().size()) {
+                return false;
+            }
+
             return andConstraint.getConstraints()
                                 .stream()
                                 .allMatch(constr -> isInList(constr, Optional.ofNullable(acceptedConstraints.getAnd())
                                                                              .orElse(Collections.emptyList())));
         }
+
         if (constraint instanceof OrConstraint orConstraint) {
             return orConstraint.getConstraints()
                                .stream()
                                .anyMatch(constr -> isInList(constr, Optional.ofNullable(acceptedConstraints.getOr())
                                                                             .orElse(Collections.emptyList())));
         }
+
         return false;
     }
 
