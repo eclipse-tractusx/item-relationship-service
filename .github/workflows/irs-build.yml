@@ -2,13 +2,6 @@ name: IRS build
 
 on:
   workflow_dispatch: # Trigger manually
-  workflow_call:
-    inputs:
-      ref-to-check-out:
-        description: 'Ref of branch/tag from which to execute workflow'
-        required: true
-        type: string
-
   pull_request:
     paths-ignore:
       - '**/*.md'
@@ -33,9 +26,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-tags: 'true'
-          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -76,9 +66,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          fetch-tags: 'true'
-          ref: ${{ inputs.ref-to-check-out || github.ref }}
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonar analysis
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -120,9 +108,6 @@ jobs:
       image-tag: ${{ steps.version.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-tags: 'true'
-          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       # Needed to create multi-platform image
       - name: Set up Docker Buildx
@@ -183,5 +168,3 @@ jobs:
     needs:
       - build_images
     uses: ./.github/workflows/trivy-docker-hub-scan.yml
-    with:
-      ref-to-check-out: ${{ inputs.ref-to-check-out || github.ref }}

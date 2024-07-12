@@ -2,12 +2,6 @@ name: Release Helm Charts
 
 on:
   workflow_dispatch: # Trigger manually
-  workflow_call:
-    inputs:
-      ref-to-check-out:
-        description: 'Ref of branch/tag from which to execute workflow'
-        required: true
-        type: string
   push:
     branches:
       - main
@@ -27,8 +21,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: 'true'
-          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Get helm charts latest tag version
         id: step1
@@ -44,7 +36,7 @@ jobs:
           echo "Exported $chartVersion helm charts version"
 
   release:
-    needs: [get-helm-charts-versions-irs]
+    needs: "get-helm-charts-versions-irs"
     if: needs.get-helm-charts-versions-irs.outputs.latest_version != needs.get-helm-charts-versions-irs.outputs.current_version
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
     # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
@@ -56,8 +48,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: 'true'
-          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Configure Git
         run: |
