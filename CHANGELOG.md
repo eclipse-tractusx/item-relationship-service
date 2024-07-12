@@ -10,6 +10,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Added
 
+- Added filtering by "createdOn", "validUntil" to paging endpoint for Policy Store API: `GET /irs/policies/paged`. #750
+
 ### Fixed
 
 - Access and Usage Policy Validation flow correction. #757
