@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 @DisplayNameGeneration(CamelCaseToSpacesDisplayNameGenerator.class)
 class ConstraintCheckerServiceTest {
 
-    ConstraintCheckerService cut = new ConstraintCheckerService();
+    private final ConstraintCheckerService cut = new ConstraintCheckerService();
 
     @Test
     void shouldAcceptSimpleAtomicConstraint() {
@@ -52,7 +52,7 @@ class ConstraintCheckerServiceTest {
         final AtomicConstraint simpleAtomicConstraint = createAtomicConstraint(TestConstants.PURPOSE,
                 TestConstants.ID_3_1_TRACE);
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
 
         assertThat(result).isTrue();
     }
@@ -65,7 +65,7 @@ class ConstraintCheckerServiceTest {
         final AtomicConstraint simpleAtomicConstraint = createAtomicConstraint(unknownLeftExpression,
                 TestConstants.ID_3_1_TRACE);
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
 
         assertThat(result).isFalse();
     }
@@ -78,7 +78,7 @@ class ConstraintCheckerServiceTest {
         final AtomicConstraint simpleAtomicConstraint = createAtomicConstraint(TestConstants.PURPOSE,
                 unknownRightExpression);
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
 
         assertThat(result).isFalse();
     }
@@ -96,7 +96,7 @@ class ConstraintCheckerServiceTest {
                         new Operand(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
 
         assertThat(result).isTrue();
     }
@@ -113,7 +113,7 @@ class ConstraintCheckerServiceTest {
                 List.of(new Operand(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
 
         assertThat(result).isFalse();
     }
@@ -132,7 +132,7 @@ class ConstraintCheckerServiceTest {
                         //                        new Operand(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+            final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
 
         assertThat(result).isFalse();
     }
@@ -151,7 +151,7 @@ class ConstraintCheckerServiceTest {
                         new Operand(unknownLeftExpression, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
 
         assertThat(result).isFalse();
     }
@@ -168,7 +168,7 @@ class ConstraintCheckerServiceTest {
                         new Operand(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(orConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(orConstraint));
 
         assertThat(result).isTrue();
     }
@@ -185,7 +185,7 @@ class ConstraintCheckerServiceTest {
                 List.of(new Operand(unknownLeftExpression, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(orConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(orConstraint));
 
         assertThat(result).isFalse();
     }
@@ -204,12 +204,14 @@ class ConstraintCheckerServiceTest {
                                                      .toList();
 
         final Policy acceptedOrPolicy = createPolicyWithConstraint(new Constraints(null, constraints));
-        final boolean resultOr = cut.hasAllConstraint(acceptedOrPolicy, List.of(orConstraint, andConstraint));
-        assertThat(resultOr).isFalse();
+        final boolean result = cut.hasAllConstraint(acceptedOrPolicy, List.of(orConstraint, andConstraint));
+
+        assertThat(result).isFalse();
     }
 
     @Test
     void shouldBeNullsafeOnNoOr() {
+
         final OrConstraint orConstraint = createOrConstraint(
                 List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
         final AndConstraint andConstraint = createAndConstraint(
@@ -220,33 +222,34 @@ class ConstraintCheckerServiceTest {
                                                      .map(operand -> new Constraint(operand.left(),
                                                              new Operator(OperatorType.EQ), operand.right()))
                                                      .toList();
-
         final Policy acceptedAndPolicy = createPolicyWithConstraint(new Constraints(constraints, null));
-        final boolean resultAnd = cut.hasAllConstraint(acceptedAndPolicy, List.of(orConstraint, andConstraint));
-        assertThat(resultAnd).isFalse();
+
+        final boolean result = cut.hasAllConstraint(acceptedAndPolicy, List.of(orConstraint, andConstraint));
+
+        assertThat(result).isFalse();
     }
 
     private Policy createPolicyWithAndConstraint(List<Operand> operands) {
-        List<Constraint> and = operands.stream()
-                                       .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
-                                               operand.right))
-                                       .toList();
-        Constraints constraints = new Constraints(and, new ArrayList<>());
+        final List<Constraint> and = operands.stream()
+                                             .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
+                                                     operand.right))
+                                             .toList();
+        final Constraints constraints = new Constraints(and, new ArrayList<>());
         return createPolicyWithConstraint(constraints);
     }
 
     private Policy createPolicyWithOrConstraint(List<Operand> operands) {
-        List<Constraint> or = operands.stream()
-                                      .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
-                                              operand.right))
-                                      .toList();
-        Constraints constraints = new Constraints(new ArrayList<>(), or);
+        final List<Constraint> or = operands.stream()
+                                            .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
+                                                    operand.right))
+                                            .toList();
+        final Constraints constraints = new Constraints(new ArrayList<>(), or);
         return createPolicyWithConstraint(constraints);
     }
 
     private Policy createPolicyWithConstraint(Constraints constraints) {
-        Permission permission = new Permission(PolicyType.ACCESS, constraints);
-        List<Permission> permissions = List.of(permission);
+        final Permission permission = new Permission(PolicyType.ACCESS, constraints);
+        final List<Permission> permissions = List.of(permission);
         final String policyId = "policyId";
         return org.eclipse.tractusx.irs.edc.client.policy.Policy.builder()
                                                                 .policyId(policyId)
