@@ -44,14 +44,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.tractusx.irs.edc.client.testutil.TestConstants;
+import org.eclipse.tractusx.irs.edc.client.testutil.CamelCaseToSpacesDisplayNameGenerator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@DisplayNameGeneration(CamelCaseToSpacesDisplayNameGenerator.class)
 @ExtendWith(MockitoExtension.class)
 class PolicyCheckerServiceTest {
 

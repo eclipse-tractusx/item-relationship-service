@@ -33,9 +33,14 @@ import java.util.List;
 import org.eclipse.edc.policy.model.AndConstraint;
 import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.OrConstraint;
+import org.eclipse.tractusx.irs.edc.client.testutil.CamelCaseToSpacesDisplayNameGenerator;
 import org.eclipse.tractusx.irs.edc.client.testutil.TestConstants;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@DisplayNameGeneration(CamelCaseToSpacesDisplayNameGenerator.class)
 class ConstraintCheckerServiceTest {
 
     ConstraintCheckerService cut = new ConstraintCheckerService();
