@@ -44,4 +44,13 @@ public @interface ValidListOfBusinessPartnerNumbers {
     Class<?>[] groups() default { };
 
     Class<? extends Payload>[] payload() default { };
+
+    /**
+     * Whether to allow "default" as a valid value
+     * (This is used in {@link org.eclipse.tractusx.irs.policystore.controllers.PolicyStoreController}
+     * for filtering default policies).
+     *
+     * @return the value of the flag
+     */
+    boolean allowDefault() default false;
 }
