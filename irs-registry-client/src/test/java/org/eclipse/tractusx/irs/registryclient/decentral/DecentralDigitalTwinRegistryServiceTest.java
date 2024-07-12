@@ -40,6 +40,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import io.github.resilience4j.core.functions.Either;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.component.Shell;
@@ -108,7 +109,10 @@ class DecentralDigitalTwinRegistryServiceTest {
                     expectedShell);
 
             // when
-            final var actualShell = sut.fetchShells(List.of(digitalTwinRegistryKey)).stream().map(Shell::payload);
+            final var actualShell = sut.fetchShells(List.of(digitalTwinRegistryKey))
+                                       .stream()
+                                       .map(Either::getOrNull)
+                                       .map(Shell::payload);
 
             // then
             assertThat(actualShell).containsExactly(expectedShell);
@@ -143,6 +147,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             // then
             assertThatThrownBy(call).isInstanceOf(ShellNotFoundException.class)
                                     .hasMessage("Unable to find any of the requested shells")
+                                    .hasSuppressedException(new InterruptedException("interrupted"))
                                     .satisfies(e -> assertThat(
                                             ((ShellNotFoundException) e).getCalledEndpoints()).containsExactlyInAnyOrder(
                                             "address1", "address2"));
@@ -236,6 +241,7 @@ class DecentralDigitalTwinRegistryServiceTest {
 
             String actualGlobalAssetId = assetAdministrationShellDescriptors.stream()
                                                                             .findFirst()
+                                                                            .map(Either::getOrNull)
                                                                             .map(Shell::payload)
                                                                             .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
                                                                             .get();

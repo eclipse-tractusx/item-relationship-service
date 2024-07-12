@@ -47,7 +47,7 @@ Wiremock Tests and their corresponding utilities are marked by the suffix `Wirem
 ### Smoke Tests
 
 - The smoke test can be found under `irs-integration-tests/src/test/java/org/eclipse/tractusx/irs/smoketest/ItemGraphSmokeTest.java`.
-- It is executed via the GitHub workflow  [IRS integration tests](.github/workflows/int-test-automation.yml).
+- It is executed via the GitHub workflow  [IRS integration tests](.github/workflows/smoketest.yml).
 
 
 ### Regression Tests
