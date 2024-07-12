@@ -2,6 +2,12 @@ name: "Validate OpenAPI definition"
 
 on:
   workflow_dispatch: # Trigger manually
+  workflow_call:
+    inputs:
+      ref-to-check-out:
+        description: 'Ref of branch/tag from which to execute workflow'
+        required: true
+        type: string
   pull_request:
   push:
     branches:
@@ -15,7 +21,12 @@ jobs:
     name: Swagger Editor Validator Remote
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: 'true'
+          ref: ${{ inputs.ref-to-check-out || github.ref }}
+
       - name: Validate OpenAPI definition
         uses: char0n/swagger-editor-validate@v1
         with:

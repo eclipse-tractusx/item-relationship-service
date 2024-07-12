@@ -5,6 +5,12 @@ name: "Trivy vulnerability scanner for image"
 
 on:
   workflow_dispatch: # Trigger manually
+  workflow_call:
+    inputs:
+      ref-to-check-out:
+        description: 'Ref of branch/tag from which to execute workflow'
+        required: true
+        type: string
   pull_request:
     paths-ignore:
       - '**/*.md'
@@ -35,8 +41,11 @@ jobs:
           - 5000:5000
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-tags: 'true'
+          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Build image
         uses: docker/build-push-action@v6
