@@ -27,7 +27,11 @@ import java.time.ZoneOffset;
 /**
  * Date utilities.
  */
-public class DateUtils {
+public final class DateUtils {
+
+    private DateUtils() {
+        // private constructor (utility  class)
+    }
 
     public static boolean isDateBefore(final OffsetDateTime dateTime, final String referenceDateString) {
         return dateTime.isBefore(toOffsetDateTimeAtStartOfDay(referenceDateString));
