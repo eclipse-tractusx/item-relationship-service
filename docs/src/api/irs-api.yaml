@@ -2572,6 +2572,10 @@ components:
           format: int32
           maximum: 2147483647
           minimum: 0
+        rootCauses:
+          type: array
+          items:
+            type: string
     ProtocolInformation:
       type: object
       additionalProperties: false

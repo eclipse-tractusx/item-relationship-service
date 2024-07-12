@@ -23,12 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
+import io.github.resilience4j.core.functions.Either;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.common.ExceptionUtils;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
@@ -69,10 +73,14 @@ public class DigitalTwinDelegate extends AbstractDelegate {
 
         try {
             final var dtrKeys = List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()));
-            final Shell shell = digitalTwinRegistryService.fetchShells(dtrKeys).stream()
-                                                          // we use findFirst here,  because we query only for one
-                                                          // DigitalTwinRegistryKey here
-                                                          .findFirst().orElseThrow();
+            final var eithers = digitalTwinRegistryService.fetchShells(dtrKeys);
+            final var shell = eithers.stream()
+                                     // we use findFirst here,  because we query only for one
+                                     // DigitalTwinRegistryKey here
+                                     .map(Either::getOrNull)
+                                     .filter(Objects::nonNull)
+                                     .findFirst()
+                                     .orElseThrow(() -> shellNotFound(eithers));
 
             itemContainerBuilder.shell(
                     jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
@@ -81,7 +89,8 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             // otherwise Jobs stay in state RUNNING forever
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
+                    Tombstone.from(itemId.getGlobalAssetId(), null, e, e.getSuppressed(), retryCount,
+                            ProcessStep.DIGITAL_TWIN_REQUEST));
         }
 
         if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
@@ -90,6 +99,12 @@ public class DigitalTwinDelegate extends AbstractDelegate {
 
         // depth reached - stop processing
         return itemContainerBuilder.build();
+    }
+
+    private static RegistryServiceException shellNotFound(final Collection<Either<Exception, Shell>> eithers) {
+        final RegistryServiceException shellNotFound = new RegistryServiceException("Shell not found");
+        ExceptionUtils.addSuppressedExceptions(eithers, shellNotFound);
+        return shellNotFound;
     }
 
     private boolean expectedDepthOfTreeIsNotReached(final int expectedDepth, final int currentDepth) {
