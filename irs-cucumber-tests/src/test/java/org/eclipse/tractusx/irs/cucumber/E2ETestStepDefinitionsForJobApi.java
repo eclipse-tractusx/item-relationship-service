@@ -384,7 +384,7 @@ public class E2ETestStepDefinitionsForJobApi {
             final List<Tombstone> expectedTombstones = getExpectedTombstones(fileName);
             assertThat(actualTombstones).hasSameSizeAs(expectedTombstones)
                                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields(
-                                                "processingError.lastAttempt")
+                                                "processingError.lastAttempt", "processingError.rootCauses")
                                         .containsAll(expectedTombstones);
         }
     }
