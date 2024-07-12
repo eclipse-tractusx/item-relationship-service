@@ -105,6 +105,7 @@ public class PolicyStoreController {
     public static final String SEARCH = "search";
     public static final String POLICY_API_TAG = "Policy Store API";
     public static final String API_KEY = "api_key";
+    public static final int MAX_AUTOCOMPLETE_LIMIT = 100;
 
     private final PolicyStoreService service;
 
@@ -250,7 +251,7 @@ public class PolicyStoreController {
                     message = "Parameter 's' contains invalid characters") @RequestParam("s") final String value,
 
             @Parameter(description = "Limit for the number of results, default is 10 and max is 100") @RequestParam(
-                    name = "limit", required = false, defaultValue = "10") @Max(value = 100,
+                    name = "limit", required = false, defaultValue = "10") @Max(value = MAX_AUTOCOMPLETE_LIMIT,
                                                                                 message = "Parameter 'limit' is above max") final int limit) {
 
         final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(null);
