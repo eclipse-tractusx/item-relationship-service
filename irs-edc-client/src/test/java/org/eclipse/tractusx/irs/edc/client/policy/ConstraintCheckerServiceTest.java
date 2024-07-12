@@ -101,23 +101,6 @@ class ConstraintCheckerServiceTest {
         assertThat(result).isTrue();
     }
 
-    @Test
-    void shouldNotAcceptAndConstraintWithOneLessElement() { // TODO remove this duplicate test, see SubsetAndTests
-        final AndConstraint andConstraint = createAndConstraint(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
-
-        final Policy acceptedPolicy = createPolicyWithAndConstraint(
-                List.of(new Operand(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, TestConstants.STATUS_ACTIVE),
-                        new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
-
-        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
-
-        assertThat(result).isFalse();
-    }
-
     @Nested
     @DisplayName("Tests asserting that for AND all must match in both ways (no subset match allowed)")
     class SubsetAndTests {
