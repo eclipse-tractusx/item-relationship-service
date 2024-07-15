@@ -20,17 +20,25 @@
 package org.eclipse.tractusx.irs.edc.client.contract.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.eclipse.tractusx.irs.edc.client.asset.model.EdcContext;
 
 /**
- * EdcCreateContractDefinitionRequest used for creation of contract
+ * EdcCreateContractDefinitionRequest used for creating and receiving contract definitions
  */
 
 @ToString
 @Builder
-public class EdcCreateContractDefinitionRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class EdcContractDefinition {
 
     @JsonProperty("@context")
     private EdcContext edcContext;
