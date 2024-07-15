@@ -28,12 +28,12 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.tractusx.irs.component.enums.NodeType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 
@@ -88,8 +88,8 @@ public class Tombstone {
 
     public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
             final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
-        final ProcessingError processingError =
-                        withProcessingError(processStep, retryCount, exception.getMessage(), suppressed);
+        final ProcessingError processingError = withProcessingError(processStep, retryCount, exception.getMessage(),
+                suppressed);
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(globalAssetId)
@@ -99,7 +99,7 @@ public class Tombstone {
 
     private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
             final String message, final Throwable... suppressed) {
-        final List<String> rootCauses = Arrays.stream(suppressed).flatMap(Tombstone::getErrorMessages).toList();
+        final List<String> rootCauses = Arrays.stream(suppressed).map(Tombstone::getRootErrorMessages).toList();
 
         return ProcessingError.builder()
                               .withProcessStep(processStep)
@@ -110,12 +110,31 @@ public class Tombstone {
                               .build();
     }
 
-    private static Stream<String> getErrorMessages(final Throwable throwable) {
+    /**
+     * Search for the root cause or suppressed exception as long as there is a cause or suppressed exception.
+     * Stop after a depth of 10 to prevent endless loop.
+     *
+     * @param throwable the exception with a nested or suppressed exception
+     * @return the root cause, eiter suppressed or nested
+     */
+    private static String getRootErrorMessages(final Throwable throwable) {
         final Throwable cause = throwable.getCause();
-        if (cause != null && hasSuppressedExceptions(cause)) {
-            return Arrays.stream(throwable.getCause().getSuppressed()).map(Throwable::getMessage);
+
+        if (cause != null) {
+            Throwable rootCause = cause;
+            int depth = 0;
+            final int maxDepth = 10;
+            while ((rootCause.getCause() != null || hasSuppressedExceptions(rootCause)) && depth < maxDepth) {
+                if (hasSuppressedExceptions(rootCause)) {
+                    rootCause = rootCause.getSuppressed()[0];
+                } else {
+                    rootCause = rootCause.getCause();
+                }
+                depth++;
+            }
+            return ExceptionUtils.getRootCauseMessage(rootCause);
         }
-        return Stream.of(throwable.getMessage());
+        return ExceptionUtils.getRootCauseMessage(throwable);
     }
 
     private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,

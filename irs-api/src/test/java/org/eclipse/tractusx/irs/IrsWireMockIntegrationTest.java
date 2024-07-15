@@ -306,7 +306,7 @@ class IrsWireMockIntegrationTest {
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
         assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
-                "Asset could not be negotiated for providerWithSuffix 'https://test.edc.io/api/v1/dsp', BPN 'BPNL00000000TEST', catalogItem");
+                "UsagePolicyPermissionException: Policies [default-policy] did not match with policy from BPNL00000000TEST.");
     }
 
     @Test
