@@ -58,7 +58,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-@SuppressWarnings({ "PMD.TooManyStaticImports" })
+@SuppressWarnings({ "PMD.TooManyStaticImports",
+                    "PMD.ExcessiveImports"
+})
 public class PolicyPagingService {
 
     /**
