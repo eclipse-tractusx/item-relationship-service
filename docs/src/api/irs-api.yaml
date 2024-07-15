@@ -972,6 +972,74 @@ paths:
       summary: Updates existing policies.
       tags:
       - Policy Store API
+  /irs/policies/attributes/{field}:
+    get:
+      description: Provides autocomplete suggestions for policy fields based on input
+        criteria.
+      operationId: autocomplete
+      parameters:
+      - description: "The field to autocomplete (BPN, policyId, createdOn, validUntil,\
+          \ action)"
+        in: path
+        name: field
+        required: true
+        schema:
+          type: string
+      - description: Search query with restricted character set
+        in: query
+        name: s
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-zA-Z0-9\\-\\+: ]*$"
+      - description: "Limit for the number of results, default is 10 and max is 100"
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+          maximum: 100
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Successful retrieval of autocomplete suggestions
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid input parameters
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorization refused by server.
+      security:
+      - api_key: []
+      summary: Autocomplete for policy fields
+      tags:
+      - Policy Store API
   /irs/policies/paged:
     get:
       description: |

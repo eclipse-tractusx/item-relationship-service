@@ -45,6 +45,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,6 +105,7 @@ public class PolicyStoreController {
     public static final String SEARCH = "search";
     public static final String POLICY_API_TAG = "Policy Store API";
     public static final String API_KEY = "api_key";
+    public static final int MAX_AUTOCOMPLETE_LIMIT = 100;
 
     private final PolicyStoreService service;
 
@@ -209,6 +211,53 @@ public class PolicyStoreController {
                        .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
                                entry.getValue().stream().map(PolicyResponse::fromPolicy).toList()))
                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+    }
+
+    @GetMapping("/policies/attributes/{field}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @Operation(summary = "Autocomplete for policy fields",
+               description = "Provides autocomplete suggestions for policy fields based on input criteria.",
+               security = @SecurityRequirement(name = API_KEY), //
+               tags = { POLICY_API_TAG }, //
+               responses = { @ApiResponse(responseCode = "200",
+                                          description = "Successful retrieval of autocomplete suggestions",
+                                          content = @Content(mediaType = "application/json",
+                                                             schema = @Schema(implementation = List.class))),
+                             @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-403"))
+                                          }),
+                             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-401"))
+                                          }),
+                             @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-403"))
+                                          })
+               })
+    public List<String> autocomplete(
+            @Parameter(description = "The field to autocomplete (BPN, policyId, createdOn, validUntil, action)") //
+            @PathVariable("field") final String field,
+
+            @Parameter(description = "Search query with restricted character set") @Pattern(
+                    regexp = "^[a-zA-Z0-9\\-\\+: ]*$",
+                    message = "Parameter 's' contains invalid characters") @RequestParam("s") final String value,
+
+            @Parameter(description = "Limit for the number of results, default is 10 and max is 100") @RequestParam(
+                    name = "limit", required = false, defaultValue = "10") @Max(value = MAX_AUTOCOMPLETE_LIMIT,
+                                                                                message = "Parameter 'limit' is above max") final int limit) {
+
+        final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(null);
+        return policyPagingService.autocomplete(bpnToPoliciesMap, field, value, limit);
+
     }
 
     @GetMapping("/policies/paged")
