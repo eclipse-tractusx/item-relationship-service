@@ -797,7 +797,8 @@ paths:
       description: Lists the registered policies that should be accepted in EDC negotiation.
       operationId: getAllowedPoliciesByBpn
       parameters:
-      - description: List of business partner numbers.
+      - description: List of business partner numbers. This may also contain the value
+          "default" in order to query the default policies.
         in: query
         name: businessPartnerNumbers
         required: false
@@ -988,7 +989,8 @@ paths:
           Example: `page=1&size=20`
       operationId: getPoliciesPaged
       parameters:
-      - description: List of business partner numbers.
+      - description: List of business partner numbers. This may also contain the value
+          "default" in order to query the default policies.
         in: query
         name: businessPartnerNumbers
         required: false
@@ -2572,6 +2574,10 @@ components:
           format: int32
           maximum: 2147483647
           minimum: 0
+        rootCauses:
+          type: array
+          items:
+            type: string
     ProtocolInformation:
       type: object
       additionalProperties: false

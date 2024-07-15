@@ -31,6 +31,8 @@ import jakarta.validation.ConstraintValidatorContext;
 public class BusinessPartnerNumberListValidator
         implements ConstraintValidator<ValidListOfBusinessPartnerNumbers, List<String>> {
 
+    private static final String DEFAULT = "default";
+
     /**
      * Regex for BPN.
      */
@@ -38,16 +40,29 @@ public class BusinessPartnerNumberListValidator
 
     private static final Pattern PATTERN = Pattern.compile(BPN_REGEX);
 
+    private boolean allowDefault;
+
     @Override
-    public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
+    public void initialize(final ValidListOfBusinessPartnerNumbers constraintAnnotation) {
+        this.allowDefault = constraintAnnotation.allowDefault();
+    }
+
+    @Override
+    public boolean isValid(final List<String> businessPartnerNumbers, final ConstraintValidatorContext context) {
 
         // allow null and empty here (in order to allow flexible combination with @NotNull and @NotEmpty)
-        if (value == null || value.isEmpty()) {
+        if (businessPartnerNumbers == null || businessPartnerNumbers.isEmpty()) {
             return true;
         }
 
-        for (int index = 0; index < value.size(); index++) {
-            if (!PATTERN.matcher(value.get(index)).matches()) {
+        for (int index = 0; index < businessPartnerNumbers.size(); index++) {
+            final String bpn = businessPartnerNumbers.get(index);
+
+            if (allowDefault && DEFAULT.equals(bpn)) {
+                return true;
+            }
+
+            if (!PATTERN.matcher(bpn).matches()) {
                 context.disableDefaultConstraintViolation();
                 final String msg = "The business partner number at index %d is invalid (should conform to pattern '%s')";
                 context.buildConstraintViolationWithTemplate(msg.formatted(index, BPN_REGEX)).addConstraintViolation();

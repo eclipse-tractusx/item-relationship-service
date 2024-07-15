@@ -29,7 +29,6 @@ import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +41,7 @@ import java.util.stream.Stream;
 
 import jakarta.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
@@ -176,28 +176,40 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
     }
 
+    public List<AcceptedPolicy> getConfiguredDefaultPolicies() {
+        return allowedPoliciesFromConfig.stream().map(this::toAcceptedPolicy).toList();
+    }
+
     public Map<String, List<Policy>> getAllStoredPolicies() {
         final Map<String, List<Policy>> bpnToPolicies = persistence.readAll();
-        if (bpnToPolicies.isEmpty()) {
-            return Map.of("", allowedPoliciesFromConfig);
+        if (containsNoDefaultPolicyAvailable(bpnToPolicies)) {
+            bpnToPolicies.put("default", allowedPoliciesFromConfig);
         }
         return bpnToPolicies;
     }
 
+    private static boolean containsNoDefaultPolicyAvailable(final Map<String, List<Policy>> bpnToPolicies) {
+        return bpnToPolicies.keySet().stream().noneMatch(key -> StringUtils.isEmpty(key) || DEFAULT.equals(key));
+    }
+
     public void deletePolicy(final String policyId) {
+
         log.info("Getting all policies to find correct BPN");
         final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(), policyId);
 
         if (bpnsContainingPolicyId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Policy with id '%s' not found".formatted(policyId));
-        }
-
-        try {
-            log.info("Deleting policy with id {}", policyId);
-            bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
-        } catch (final PolicyStoreException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        } else if (bpnsContainingPolicyId.stream().noneMatch(StringUtils::isNotEmpty)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A configured default policy cannot be deleted. "
+                    + "It can be overridden by defining a default policy via the API instead.");
+        } else {
+            try {
+                log.info("Deleting policy with id {}", policyId);
+                bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
+            } catch (final PolicyStoreException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            }
         }
     }
 
@@ -268,27 +280,18 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public List<AcceptedPolicy> getAcceptedPolicies(final String bpn) {
 
         if (bpn == null) {
-            return getAllPolicies();
+            return getConfiguredDefaultPolicies();
         }
 
         final List<Policy> storedPolicies = getStoredPolicies(List.of(bpn));
         final Stream<Policy> result = sortByPolicyId(storedPolicies);
         return result.map(this::toAcceptedPolicy).toList();
-
     }
 
     private static Stream<Policy> sortByPolicyId(final List<Policy> policies) {
         final Set<Policy> result = new TreeSet<>(Comparator.comparing(Policy::getPolicyId));
         result.addAll(policies);
         return result.stream();
-    }
-
-    private List<AcceptedPolicy> getAllPolicies() {
-        return getAllStoredPolicies().values()
-                                     .stream()
-                                     .flatMap(Collection::stream)
-                                     .map(this::toAcceptedPolicy)
-                                     .toList();
     }
 
     private AcceptedPolicy toAcceptedPolicy(final Policy policy) {
