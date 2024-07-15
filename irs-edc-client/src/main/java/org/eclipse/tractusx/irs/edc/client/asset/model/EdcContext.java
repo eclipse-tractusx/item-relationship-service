@@ -19,8 +19,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.asset.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
@@ -30,7 +35,12 @@ import lombok.extern.jackson.Jacksonized;
 
 @ToString
 @Builder
+@AllArgsConstructor
 @Jacksonized
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@Getter
+@Setter
 public class EdcContext {
     @JsonProperty("edc")
     private String edc;
