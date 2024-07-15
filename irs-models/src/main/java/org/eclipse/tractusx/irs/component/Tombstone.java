@@ -124,7 +124,7 @@ public class Tombstone {
             Throwable rootCause = cause;
             int depth = 0;
             final int maxDepth = 10;
-            while (rootCause.getCause() != null || hasSuppressedExceptions(rootCause) || depth > maxDepth) {
+            while ((rootCause.getCause() != null || hasSuppressedExceptions(rootCause)) && depth < maxDepth) {
                 if (hasSuppressedExceptions(rootCause)) {
                     rootCause = rootCause.getSuppressed()[0];
                 } else {
