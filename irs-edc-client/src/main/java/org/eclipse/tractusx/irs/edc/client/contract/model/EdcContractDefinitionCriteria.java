@@ -20,8 +20,11 @@
 package org.eclipse.tractusx.irs.edc.client.contract.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -31,6 +34,9 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class EdcContractDefinitionCriteria {
 
     @JsonProperty("@type")

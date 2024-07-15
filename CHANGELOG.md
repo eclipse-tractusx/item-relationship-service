@@ -11,6 +11,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Added
 
 - Added filtering by "createdOn", "validUntil" to paging endpoint for Policy Store API: `GET /irs/policies/paged`. #750
+- Added autocomplete endpoint Policy Store API: `GET /irs/policies/attributes/{attribute}`. #750
+- Added get and delete functionality for contract definitions eclipse-tractusx/traceability-foss#1190
 
 ### Fixed
 
@@ -21,6 +23,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 
 - Replaced technical error message when trying to delete the configured default policy with a user-friendly message.
+- Renamed EdcCreateContractDefinitionRequest to EdcContractDefinition because it's used for both get and post eclipse-tractusx/traceability-foss#1190
 
 
 ## [5.2.0] - 2024-07-03

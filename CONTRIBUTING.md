@@ -3,6 +3,7 @@
 Thanks for your interest in this project.
 
 # Table of Contents
+
 1. [Project description](#project-description)
 2. [Project licenses](#project-licenses)
 3. [Terms of Use](#terms-of-use)
@@ -88,7 +89,9 @@ See [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md).
 
 ## Eclipse Dependency License Check
 
-In case of new dependencies or version updates, it might be necessary to have the new library checked and accepted by the Eclipse foundation. Do create new tickets for this, you can use this command:
+In case of new dependencies or version updates, it might be necessary to have the new library checked and accepted by
+the Eclipse foundation. Do create new tickets for this, you can use this command:
+
 ```
 mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.iplab.token=$ECLIPSE_DASH_TOKEN -Ddash.projectId=automotive.tractusx --batch-mode -DskipTests -P dash
 ```
@@ -99,30 +102,37 @@ For more information on the tool and how to acquire the token, check https://git
 
 General contributions e.g. contributions to improve documentation are welcome.
 If you need ideas for contributions, you can check the following links:
+
 - [open documentation stories](https://github.com/orgs/eclipse-tractusx/projects/8/views/4?filterQuery=label%3Adocumentation++status%3Ainbox%2Cbacklog)
 - [discussion page concerning documentation improvements](https://github.com/eclipse-tractusx/item-relationship-service/discussions/407)
 
-### Maintaining [CHANGELOG.md](CHANGELOG.md) 
+### Maintaining [CHANGELOG.md](CHANGELOG.md)
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
-to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). 
+to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## Contributing as a Consultant
 
 ### Conceptual work and specification guidelines
-1. The prerequisite for a concept is always a GitHub issue that defines the business value and the acceptance criteria that are to be implemented with the concept
+
+1. The prerequisite for a concept is always a GitHub issue that defines the business value and the acceptance criteria
+   that are to be implemented with the concept
 2. Copy and rename directory /docs/#000-concept-name-template /docs/#<DDD>-<target-name>
-3. Copy the template file [/docs/concept/TEMPLATE_Concept.md](docs/concept/TEMPLATE_Concept.md) into new directory `/docs/#<DDD>-<target-name>`.
+3. Copy the template file [/docs/concept/TEMPLATE_Concept.md](docs/concept/TEMPLATE_Concept.md) into new
+   directory `/docs/#<DDD>-<target-name>`.
 
 ### Diagrams
+
 [PlantUML](https://plantuml.com/) and [Mermaid](https://mermaid.js.org/) is used for conceptual work.
 
+#### PlantUML
 
-#### PlantUML 
-default skinparam for plantUml diagrams 
+default skinparam for plantUml diagrams
+
 ````
 @startuml
 skinparam monochrome true
@@ -134,8 +144,10 @@ autonumber "<b>[000]"
 @enduml
 ````
 
-####  Mermaid
+#### Mermaid
+
 Default header for mermaid sequence diagrams
+
 ````
 sequenceDiagram
     %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px'}}}%%
@@ -157,6 +169,7 @@ Example:
 Detailed pattern can be found here: [commit-msg](local/development/commit-msg)
 
 #### How to Use
+
 ```shell
 cp local/development/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
 ```
@@ -166,11 +179,15 @@ For further information please see https://github.com/hazcod/semantic-commit-hoo
 ### Code Formatting
 
 #### Deprecated soon:
+
 Please use the following code formatter: [.idea/codeStyles](.idea/codeStyles)
 
-#### Upcoming change (not available until whole project base will be formatted to new standard):  
+#### Upcoming change (not available until whole project base will be formatted to new standard):
+
 Google Java Format will be used as code format standard.  
-Please install `google-java-format` plugin and edit customer VM options (for IntelliJ `Help → Edit Custom VM Options...`) and paste following configuration: 
+Please install `google-java-format` plugin and edit customer VM options (for
+IntelliJ `Help → Edit Custom VM Options...`) and paste following configuration:
+
 ```
 -Xmx4096m
 --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
@@ -180,53 +197,59 @@ Please install `google-java-format` plugin and edit customer VM options (for Int
 --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
 --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
 ```
-The plugin will be disabled by default. To enable it in the current project, go to `File→Settings...→google-java-format` Settings (or `IntelliJ IDEA→Preferences...→Other Settings→google-java-format` Settings on macOS) and check the Enable google-java-format checkbox. (A notification will be presented when you first open a project offering to do this for you.)
+
+The plugin will be disabled by default. To enable it in the current project, go to `File→Settings...→google-java-format`
+Settings (or `IntelliJ IDEA→Preferences...→Other Settings→google-java-format` Settings on macOS) and check the Enable
+google-java-format checkbox. (A notification will be presented when you first open a project offering to do this for
+you.)
 
 More info:  
 https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config
 
 ### Create a Release
 
-#### Full release
+### Full release
 
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
-2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md)
-   and [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md)
-   (for an example [see here](https://github.com/eclipse-tractusx/item-relationship-service/pull/429))
-   - Check if the changelog entries for the release are complete.
-   - Add the corresponding GitHub issue numbers to each entry if missing.
+2. Make sure the changelog entries [CHANGELOG.md](CHANGELOG.md)
+   and [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md) are up-to-date
+    - Check if the changelog entries for the release are complete.
+    - Add the corresponding GitHub issue numbers to each entry if missing.
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md).
-4. Update IRS API version in IrsApplication class and irs-api.yaml
-5. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) 
-6. Merge this pull request to main.
-7. Create Git tag for the desired release version `git tag x.x.x`
-   (note: the _item-relationship-service_ tag will be created automatically by the GitHub workflow based on the version in the [helm chart changelog](charts/item-relationship-service/CHANGELOG.md)). 
-8. Push Git tag to repository `git push origin x.x.x` (this will trigger the GitHub release workflow).
-9. Wait for release workflow to complete.
-10. Merge the pull request that was automatically opened by GitHub actions bot.
-11. Notify about the release in IRS Matrix Chat using the following template: 
-   
-   >   **IRS Release x.x.x**
-   >
-   >   IRS version x.x.x is released. 
-   >
-   >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/x.x.x<br>
-   >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/item-relationship-service-y.y.y<br>
-   >   **Full Changelog:** https://github.com/eclipse-tractusx/item-relationship-service/compare/w.w.w...x.x.x
+4. Execute the workflow named _"Prepare Release documentation"_. The workflow takes three inputs. These are:
+    - IRS release version - type: semantic version string
+    - Helm Chart release version - type: semantic version string
+    - Whether to automatically update the Helm Chart changelog with the change
+      _"- Update IRS version to x.x.x"_. This is a checkbox which is ticked by default.
+5. The workflow updates the necessary documentation and creates a pull request right away.
+   Review the changes and merge the PR.
+6. Once the pull request has been merged, the helm chart will be release automatically.
+7. To create the IRS release, [draft a new release](https://github.com/eclipse-tractusx/item-relationship-service/releases/new). As a tag and title, choose the IRS version provided to the release workflow. (If the release is created from a hotfix branch, make sure to choose this hotfix branch as the target of the tag)
+8. Paste the release notes from the PR into the release description.
+9. Notify about the release in IRS Matrix Chat using the following template:
 
-   _(replace x.x.x with IRS version to release, y.y.y with IRS helm version to release and w.w.w with previous IRS version)_
+> **IRS Release x.x.x**
+>
+>   IRS version x.x.x is released.
+>
+>   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/x.x.x<br>
+> https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/item-relationship-service-y.y.y<br>
+> **Full Changelog:** https://github.com/eclipse-tractusx/item-relationship-service/compare/w.w.w...x.x.x
 
-#### Release chart only
+_(replace x.x.x with IRS version to release, y.y.y with Helm Chart version to release and w.w.w with previous IRS
+version)_
+
+### Release Helm chart only
 
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/release-chart-x.x.x`.
 2. Add new version to [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md)
-3. Change chart version in [Chart.yaml](charts/item-relationship-service/Chart.yaml) 
-4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/release-chart-x.x.x)
+3. Change chart version in [Chart.yaml](charts/item-relationship-service/Chart.yaml)
+4. Create pull request
+   from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/release-chart-x.x.x)
 5. Merge this pull request to main.
 6. Wait for release workflow to complete.
-
 
 ## Contact
 
