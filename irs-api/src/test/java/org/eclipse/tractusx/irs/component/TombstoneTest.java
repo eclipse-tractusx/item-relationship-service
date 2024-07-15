@@ -84,7 +84,7 @@ class TombstoneTest {
 
         // assert
         assertThat(from.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
-        assertThat(from.getProcessingError().getRootCauses()).contains(suppressedExceptionMessage);
+        assertThat(from.getProcessingError().getRootCauses()).contains("Exception: " + suppressedExceptionMessage);
     }
 
     @Test
@@ -93,7 +93,8 @@ class TombstoneTest {
         final Exception exception = new Exception("Exception occurred.");
 
         final Exception rootCause = new Exception("Wrapper exception to the root cause");
-        rootCause.addSuppressed(new Exception("Root cause of the exception"));
+        final String suppressedRootCause = "Root cause of the exception";
+        rootCause.addSuppressed(new Exception(suppressedRootCause));
 
         final Exception suppressedWrapperException = new Exception(
                 "Suppressed Exception which was added through Futures.", rootCause);
@@ -107,7 +108,7 @@ class TombstoneTest {
 
         // assert
         assertThat(from.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
-        assertThat(from.getProcessingError().getRootCauses()).contains("Root cause of the exception");
+        assertThat(from.getProcessingError().getRootCauses()).contains("Exception: " + suppressedRootCause);
     }
 
     @Test
