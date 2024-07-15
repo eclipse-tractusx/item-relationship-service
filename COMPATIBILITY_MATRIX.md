@@ -12,7 +12,24 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 | Discovery Finder                                                                                                                         | 0.2.5                        | -     | REST connection |
 | Minio                                                                                                                                    | RELEASE.2022-11-11T03-44-20Z | 5.0.1 |                 |
 | Helm                                                                                                                                     | 3.9.3                        | -     | -               |
-| Kubernetes                                                                                                                               | 1.29                         | -     | -               |
+| Kubernetes                                                                                                                               | [ 1.28; 1.29; 1.30 ]         | -     | -               |
+| [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built)         | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
+| [SingleLevelBomAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_planned)     | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
+| [SingleLevelBomAsSpecified](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_specified) | 2.0.0                        | -     | Model version   |
+| [SingleLevelUsageAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_built)     | 3.0.0                        | -     | Model version   |
+| [SingleLevelUsageAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_planned) | 2.0.0                        | -     | Model version   |
+
+## [CATENA-X Release 24.08](https://eclipse-tractusx.github.io/CHANGELOG/) - [5.3.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.3.0) - 2024-07-15
+
+| Dependency                                                                                                                               | Version                      | Helm  | Comments        |
+|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
+| EDC                                                                                                                                      | 0.7.1                        | 0.7.1 |                 |
+| Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1 | REST connection |
+| DTR                                                                                                                                      | 0.4.1                        | 0.4.9 | REST connection |
+| Discovery Finder                                                                                                                         | 0.2.5                        | -     | REST connection |
+| Minio                                                                                                                                    | RELEASE.2022-11-11T03-44-20Z | 5.0.1 |                 |
+| Helm                                                                                                                                     | 3.9.3                        | -     | -               |
+| Kubernetes                                                                                                                               | [ 1.28; 1.29; 1.30 ]         | -     | -               |
 | [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built)         | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
 | [SingleLevelBomAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_planned)     | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
 | [SingleLevelBomAsSpecified](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_specified) | 2.0.0                        | -     | Model version   |
