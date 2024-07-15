@@ -1,4 +1,5 @@
 product: "Item Relationship Service"
 leadingRepository: "https://github.com/eclipse-tractusx/item-relationship-service"
 repositories: []
-
+openApiSpecs:
+- "https://raw.githubusercontent.com/eclipse-tractusx/item-relationship-service/main/docs/src/api/irs-api.yaml"
