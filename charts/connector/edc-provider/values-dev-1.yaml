@@ -49,7 +49,7 @@ tractusx-connector:
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
 
   postgresql:
-    jdbcUrl: "jdbc:postgresql://irs-provider-edc-postgresql-hl:5432/edc"
+    jdbcUrl: "jdbc:postgresql://irs-provider-edc-postgresql:5432/edc"
 
 simple-data-backend:
   ingress:
