@@ -5,12 +5,13 @@ on:
     inputs:
       version-type:
         type: choice
-        description: Type of version increment
+        description: Type of version increment. 'none' will release the current -SNAPSHOT version without increment.
         required: true
         options:
           - 'major'
           - 'minor'
           - 'patch'
+          - 'none'
       is-release-version:
         type: boolean
         required: true
@@ -51,6 +52,12 @@ jobs:
             patch=0
           elif [ "$TYPE" == "patch" ]; then
             patch=$((patch + 1))
+          elif [ "$TYPE" == "none" ]; then
+            if [ $IS_RELEASE_VERSION = 'true' ]; then
+              echo "Invalid increment type. Type 'none' is only supported in combination with 'is-release-version=true'."
+              exit 1
+            fi
+            echo "Skipping version increment, only remove -SNAPSHOT"
           else
             echo "Invalid increment type. Use 'major', 'minor', or 'patch'."
             exit 1
@@ -58,6 +65,10 @@ jobs:
           new_version="${major}.${minor}.${patch}-SNAPSHOT"
           if [ $IS_RELEASE_VERSION = 'true' ]; then
             new_version="${major}.${minor}.${patch}"
+          fi
+          if [ $new_version == $CURRENT_VERSION ]; then
+            echo "New version is equal to current version."
+            exit 1
           fi
           echo NEXT_VERSION="$new_version" >> $GITHUB_ENV
 
