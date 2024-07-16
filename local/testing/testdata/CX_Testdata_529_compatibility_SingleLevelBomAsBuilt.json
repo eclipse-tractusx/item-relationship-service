@@ -13,19 +13,16 @@
           {
             "odrl:action": "use",
             "odrl:constraint": {
-              "@type": "AtomicConstraint",
               "odrl:and": [
                 {
-                  "@type": "Constraint",
-                  "odrl:leftOperand": "cx-policy:FrameworkAgreement",
+                  "odrl:leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
                   "odrl:operator": {
                     "@id": "odrl:eq"
                   },
                   "odrl:rightOperand": "traceability:1.0"
                 },
                 {
-                  "@type": "Constraint",
-                  "odrl:leftOperand": "cx-policy:UsagePurpose",
+                  "odrl:leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
                   "odrl:operator": {
                     "@id": "odrl:eq"
                   },
