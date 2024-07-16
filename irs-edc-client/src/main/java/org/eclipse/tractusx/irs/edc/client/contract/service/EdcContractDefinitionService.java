@@ -26,11 +26,11 @@ import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.asset.model.EdcContext;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinition;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinitionCriteria;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinitionQuerySpec;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcContractDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractDefinitionAlreadyExists;
 import org.springframework.core.ParameterizedTypeReference;
@@ -113,9 +113,9 @@ public class EdcContractDefinitionService {
                                     .build();
     }
 
-    public ResponseEntity<List<EdcContractDefinition>> getContractDefinitions(final QuerySpec querySpec) {
+    public ResponseEntity<List<EdcContractDefinition>> getContractDefinitions(final EdcContractDefinitionQuerySpec edcContractDefinitionQuerySpec) {
         return restTemplate.exchange(config.getControlplane().getEndpoint().getContractDefinition() + "/request",
-                HttpMethod.POST, new HttpEntity<>(querySpec), new ParameterizedTypeReference<>() {
+                HttpMethod.POST, new HttpEntity<>(edcContractDefinitionQuerySpec), new ParameterizedTypeReference<>() {
                 });
     }
 
