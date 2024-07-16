@@ -47,7 +47,14 @@ digital-twin-registry:
         nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
         nginx.ingress.kubernetes.io/rewrite-target: /$2
         nginx.ingress.kubernetes.io/use-regex: "true"
-
+    livenessProbe:
+      failureThreshold: 10
+      periodSeconds: 5
+      initialDelaySeconds: 30
+    readinessProbe:
+      failureThreshold: 10
+      periodSeconds: 5
+      initialDelaySeconds: 30
     resources:
       limits:
         cpu: 1500m
