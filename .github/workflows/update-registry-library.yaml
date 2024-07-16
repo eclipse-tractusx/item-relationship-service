@@ -67,7 +67,7 @@ jobs:
             new_version="${major}.${minor}.${patch}"
           fi
           if [ $new_version == $CURRENT_VERSION ]; then
-            echo "New version is equal to current version."
+            echo "New version $new_version is equal to current version $CURRENT_VERSION."
             exit 1
           fi
           echo NEXT_VERSION="$new_version" >> $GITHUB_ENV
