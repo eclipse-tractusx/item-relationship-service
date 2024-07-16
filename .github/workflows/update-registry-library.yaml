@@ -67,6 +67,10 @@ jobs:
         run: |-
           sed -i -e 's#<irs-registry-client\.version>.*</irs-registry-client\.version>#<irs-registry-client\.version>'$VERSION'</irs-registry-client\.version>#g' pom.xml
 
+      - name: Update DEPENDENCIES
+        run: |
+          mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES -P dash
+
       - name: Create PR for irs-registry-client version update
         uses: peter-evans/create-pull-request@v6
         with:
