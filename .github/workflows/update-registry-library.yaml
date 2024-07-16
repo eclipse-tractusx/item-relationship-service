@@ -53,7 +53,7 @@ jobs:
           elif [ "$TYPE" == "patch" ]; then
             patch=$((patch + 1))
           elif [ "$TYPE" == "none" ]; then
-            if [ $IS_RELEASE_VERSION = 'true' ]; then
+            if [ $IS_RELEASE_VERSION = 'false' ]; then
               echo "Invalid increment type. Type 'none' is only supported in combination with 'is-release-version=true'."
               exit 1
             fi
