@@ -190,10 +190,10 @@ edc:
     # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
     # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
     acceptedPolicies:
-      - leftOperand: "cx-policy:FrameworkAgreement"
+      - leftOperand: "https://w3id.org/catenax/policy/FrameworkAgreement"
         operator: "eq"
         rightOperand: "traceability:1.0"
-      - leftOperand: "cx-policy:UsagePurpose"
+      - leftOperand: "https://w3id.org/catenax/policy/UsagePurpose"
         operator: "eq"
         rightOperand: "cx.core.industrycore:1"
   discoveryFinderClient:
