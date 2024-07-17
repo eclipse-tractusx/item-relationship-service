@@ -53,7 +53,7 @@ The IRS project consists of several different parts:
 | .idea                            | Configuration for development via [IntelliJ](https://www.jetbrains.com/idea/).                                                                                                 |                                                                              |
 | .run                             | Run configurations for running the IRS in [IntelliJ](https://www.jetbrains.com/idea/).                                                                                         |                                                                              |
 | charts                           | [HELM](https://helm.sh/) charts.                                                                                                                                               |                                                                              |
-| charts/item-relationship-service | IRS [HELM](https://helm.sh/) chart for running the IRS with and its direct dependencies in [kubernetes](https://kubernetes.io/).                                               | [IRS HELM charts documentation](charts/item-relationship-service/README.md)  |
+| charts/item-relationship-service | IRS [HELM](https://helm.sh/) chart for running the IRS with and its direct dependencies in [Kubernetes](https://kubernetes.io/).                                               | [IRS HELM charts documentation](charts/item-relationship-service/README.md)  |
 | docs                             | Concepts and documentation.                                                                                                                                                    | [Docs README](docs/README.md)                                                |
 | irs-api                          | The IRS API.                                                                                                                                                                   |                                                                              |
 | irs-common                       | Common classes of the IRS.                                                                                                                                                     |                                                                              |
@@ -79,7 +79,7 @@ The IRS project consists of several different parts:
 
 ## Installation
 
-This section describes both deployment on [kubernetes](https://kubernetes.io) via [Helm](https://helm.sh/) and local deployment for development.
+This section describes both deployment on [Kubernetes](https://kubernetes.io) via [Helm](https://helm.sh/) and local deployment for development.
 
 ### Helm Deployment
 
