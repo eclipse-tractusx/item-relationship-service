@@ -182,7 +182,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public Map<String, List<Policy>> getAllStoredPolicies() {
         final Map<String, List<Policy>> bpnToPolicies = persistence.readAll();
         if (containsNoDefaultPolicyAvailable(bpnToPolicies)) {
-            bpnToPolicies.put("default", allowedPoliciesFromConfig);
+            bpnToPolicies.put(DEFAULT, allowedPoliciesFromConfig);
         }
         return bpnToPolicies;
     }
