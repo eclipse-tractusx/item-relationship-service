@@ -27,6 +27,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Replaced technical error message when trying to delete the configured default policy with a user-friendly message.
 - Renamed EdcCreateContractDefinitionRequest to EdcContractDefinition because it's used for both get and post eclipse-tractusx/traceability-foss#1190
 
+### Known knowns
+
+- [#755] Duplicate callbacks for jobs
 
 ## [5.2.0] - 2024-07-03
 
