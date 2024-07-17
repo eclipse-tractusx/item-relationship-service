@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.data;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -59,6 +60,14 @@ public class StringMapper {
     public static <T> T mapFromString(final String value, final Class<T> clazz) {
         try {
             return MAPPER.readValue(value, clazz);
+        } catch (final JsonProcessingException e) {
+            throw new JsonParseException(e);
+        }
+    }
+
+    public static <T> T mapFromString(final String value, final TypeReference<T> typeReference) {
+        try {
+            return MAPPER.readValue(value, typeReference);
         } catch (final JsonProcessingException e) {
             throw new JsonParseException(e);
         }
