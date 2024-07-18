@@ -44,10 +44,10 @@ Or create a new Helm chart and use the IRS as a dependency.
     dependencies:
       - name: item-relationship-service
         repository: https://eclipse-tractusx.github.io/item-relationship-service
-        version: 6.x.x
+        version: 7.x.x
       - name: tractusx-connector
         repository: https://eclipse-tractusx.github.io/tractusx-edc
-        version: 0.5.x
+        version: 0.7.x
 ```
 
 Then provide your configuration as the values.yaml of that chart.
