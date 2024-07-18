@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.data;
 
+import java.util.Base64;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -33,6 +35,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Maps objects to strings and vice-versa.
@@ -63,6 +66,10 @@ public class StringMapper {
         } catch (final JsonProcessingException e) {
             throw new JsonParseException(e);
         }
+    }
+
+    public static <T> T mapFromBase64String(final String value, final TypeReference<T> typeReference) {
+        return mapFromString(new String(Base64.getDecoder().decode(StringUtils.trim(value))), typeReference);
     }
 
     public static <T> T mapFromString(final String value, final TypeReference<T> typeReference) {

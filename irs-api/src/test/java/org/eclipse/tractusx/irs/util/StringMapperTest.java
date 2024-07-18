@@ -26,7 +26,9 @@ package org.eclipse.tractusx.irs.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -72,13 +74,13 @@ class StringMapperTest {
     }
 
     @Test
-    void shouldMapFromStringUsingTypeReference() {
+    void shouldMapFromBase64StringUsingTypeReference() {
 
         // ARRANGE
         final TypeReference<List<Policy>> listOfPoliciesType = new TypeReference<>() {
         };
 
-        final String originalJson = """
+        final String originalJsonStr = """
                 [{
                     "policyId": "default-trace-policy",
                     "createdOn": "2024-07-17T16:15:14.12345678Z",
@@ -108,10 +110,12 @@ class StringMapperTest {
                     ]
                 }]
                 """;
+        final String originalJsonBase64 = new String(
+                Base64.getEncoder().encode(originalJsonStr.getBytes(StandardCharsets.UTF_8)));
 
         // ACT
         // convert back andConstraints forth to facilitate comparison
-        final List<Policy> listOfPolicies = StringMapper.mapFromString(originalJson, listOfPoliciesType);
+        final List<Policy> listOfPolicies = StringMapper.mapFromBase64String(originalJsonBase64, listOfPoliciesType);
         final String backToString = StringMapper.mapToString(listOfPolicies);
         final List<Policy> backToObj = StringMapper.mapFromString(backToString, listOfPoliciesType);
 
