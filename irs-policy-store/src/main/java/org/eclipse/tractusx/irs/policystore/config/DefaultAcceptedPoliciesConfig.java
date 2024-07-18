@@ -40,6 +40,11 @@ public class DefaultAcceptedPoliciesConfig {
     private List<AcceptedPolicy> acceptedPolicies;
 
     /**
+     * Accepted policies as JSON with Base64 encoding
+     */
+    private String acceptedPoliciesJson;
+
+    /**
      * Accepted Policy for
      */
     @Data
