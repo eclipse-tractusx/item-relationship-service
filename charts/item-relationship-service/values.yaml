@@ -221,7 +221,6 @@ edc:
               }
           ]
       }]
-
   discoveryFinderClient:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:

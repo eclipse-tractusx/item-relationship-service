@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinition;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinitionQuerySpec;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcContractDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractDefinitionAlreadyExists;
 import org.json.JSONException;
@@ -177,7 +177,7 @@ class EdcContractDefinitionServiceTest {
 
         //when
         final ResponseEntity<List<EdcContractDefinition>> contractDefinitions = service.getContractDefinitions(
-                new QuerySpec());
+                EdcContractDefinitionQuerySpec.builder().build());
         //then
         assertThat(contractDefinitions.getBody()).isNotEmpty();
 
@@ -225,5 +225,29 @@ class EdcContractDefinitionServiceTest {
 
         //THEN
         JSONAssert.assertEquals(jsonResponse, objectMapper.writeValueAsString(responseObj), false);
+    }
+
+    @Test
+    void testEdcContractDefinitionQuerySpec() throws IOException, JSONException {
+        //GIVEN
+        String jsonResponse = """
+                {
+                	"@context": {
+                		"@vocab": "https://w3id.org/edc/v0.0.1/ns/"
+                	},
+                	"filterExpression": [
+                		{
+                			"operandLeft": "assetsSelector.operandRight",
+                			"operator": "in",
+                			"operandRight":["3eeea531-3772-4f69-9ef6-c680ed9fd09d", "d333dc13-26f2-457a-bbe0-d3d421ebe91d", "07d35ae6-41b1-4de5-ae12-2da89b9dcade", "6a46922a-8f71-4c54-b5ac-e50c631841e9"]
+                		}
+                	]
+                }
+                """;
+        //WHEN
+        EdcContractDefinitionQuerySpec edcContractDefinitionQuerySpec = objectMapper.readValue(jsonResponse, EdcContractDefinitionQuerySpec.class);
+
+        //THEN
+        JSONAssert.assertEquals(jsonResponse, objectMapper.writeValueAsString(edcContractDefinitionQuerySpec), false);
     }
 }

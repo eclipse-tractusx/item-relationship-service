@@ -18,10 +18,15 @@ curl -X 'POST' \
   "aspects": [
     "SerialPart"
   ],
+  "key": {
+	  "globalAssetId": "urn:uuid:00000000-0000-0000-0000-000000000000",
+	  "bpn": "BPNL000000000000"
+  }
   "bomLifecycle": "asBuilt",
   "depth": 1,
   "direction": "downward",
-  "globalAssetId": "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6"
+  "collectAspects": true,
+  "callbackUrl": "https://hostname.com/callback?id={id}&state={state}"
 }'
 ```
 

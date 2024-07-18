@@ -20,3 +20,5 @@ The following people have contributed to this repository:
 - Matthias Fischer, doubleSlash Net-Business GmbH, https://github.com/dsmf
 - Sebastian Ceronik, doubleSlash Net-Business GmbH, https://github.com/ds-ext-sceronik
 - Maximilian Wesener, doubleSlash Net-Business GmbH, https://github.com/ds-mwesener
+- Kama Gassner, doubleSlash Net-Business GmbH, https://github.com/ds-kgassner
+- Philipp Weick, doubleSlash Net-Business GmbH, https://github.com/ds-pweick
