@@ -382,10 +382,10 @@ edc:
     # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
     # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
     acceptedPolicies:
-      - leftOperand: "cx-policy:FrameworkAgreement"
+      - leftOperand: "https://w3id.org/catenax/policy/FrameworkAgreement"
         operator: "eq"
         rightOperand: "traceability:1.0"
-      - leftOperand: "cx-policy:UsagePurpose"
+      - leftOperand: "https://w3id.org/catenax/policy/UsagePurpose"
         operator: "eq"
         rightOperand: "cx.core.industrycore:1"
   discoveryFinderClient:
@@ -721,9 +721,9 @@ Currently, the IRS only supports one version of the Job model at a time. This me
 This work is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 * SPDX-License-Identifier: Apache-2.0
-* SPDX-FileCopyrightText: 2021, 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+* SPDX-FileCopyrightText: 2021, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
 * SPDX-FileCopyrightText: 2022, 2023 BOSCH AG
 * SPDX-FileCopyrightText: 2021, 2022 ZF Friedrichshafen AG
 * SPDX-FileCopyrightText: 2022  ISTOS GmbH
-* SPDX-FileCopyrightText: 2021, 2023 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2021, 2024 Contributors to the Eclipse Foundation
 * Source URL: <https://github.com/eclipse-tractusx/item-relationship-service>
