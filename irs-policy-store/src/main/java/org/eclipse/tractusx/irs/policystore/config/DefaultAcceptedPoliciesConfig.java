@@ -37,6 +37,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "irs-edc-client.catalog")
 @Data
 public class DefaultAcceptedPoliciesConfig {
+
+    @Deprecated
     private List<AcceptedPolicy> acceptedPolicies;
 
     /**
