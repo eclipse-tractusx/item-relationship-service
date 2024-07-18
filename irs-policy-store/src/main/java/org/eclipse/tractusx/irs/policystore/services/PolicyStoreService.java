@@ -38,9 +38,12 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
@@ -300,12 +303,25 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     private List<Policy> createDefaultPolicyFromConfig(
             final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig) {
 
+        // Implementation prior to issue #542, retained for backward compatibility; may be removed in the future
+        if (CollectionUtils.isNotEmpty(defaultAcceptedPoliciesConfig.getAcceptedPolicies())) {
+            final List<DefaultAcceptedPoliciesConfig.AcceptedPolicy> acceptedPolicies = defaultAcceptedPoliciesConfig.getAcceptedPolicies();
+            return createDefaultPolicyFromAcceptedPoliciesYaml(acceptedPolicies);
+        }
+        // New implementation from issue #542 using JSON compliant with the ODRL schema
+        else {
+            final String policiesString = defaultAcceptedPoliciesConfig.getAcceptedPoliciesJson();
+            return createPoliciesFromConfigJsonString(policiesString);
+        }
+    }
+
+    @Deprecated
+    private List<Policy> createDefaultPolicyFromAcceptedPoliciesYaml(
+            final List<DefaultAcceptedPoliciesConfig.AcceptedPolicy> acceptedPolicies) {
+
         final List<Constraint> constraints = new ArrayList<>();
-        defaultAcceptedPoliciesConfig.getAcceptedPolicies()
-                                     .forEach(acceptedPolicy -> constraints.add(
-                                             new Constraint(acceptedPolicy.getLeftOperand(),
-                                                     new Operator(OperatorType.fromValue(acceptedPolicy.getOperator())),
-                                                     acceptedPolicy.getRightOperand())));
+        acceptedPolicies.forEach(acceptedPolicy -> constraints.add(new Constraint(acceptedPolicy.getLeftOperand(),
+                new Operator(OperatorType.fromValue(acceptedPolicy.getOperator())), acceptedPolicy.getRightOperand())));
 
         final OffsetDateTime now = OffsetDateTime.now(clock);
         return List.of(Policy.builder()
@@ -317,6 +333,11 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
                                                             .constraint(new Constraints(constraints, constraints))
                                                             .build()))
                              .build());
+    }
+
+    public static List<Policy> createPoliciesFromConfigJsonString(final String policiesString) {
+        return StringMapper.mapFromBase64String(policiesString, new TypeReference<>() {
+        });
     }
 
 }
