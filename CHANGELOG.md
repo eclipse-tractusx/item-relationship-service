@@ -8,6 +8,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Changed
+- Default policies are now configured using JSON in accordance with the ODRL schema. #542
+
 ## [5.3.0] - 2024-07-15
 
 ### Added

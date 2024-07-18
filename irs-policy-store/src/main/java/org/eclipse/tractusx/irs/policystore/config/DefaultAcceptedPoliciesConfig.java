@@ -23,8 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.config;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -38,13 +36,10 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class DefaultAcceptedPoliciesConfig {
 
-    @Deprecated
-    private List<AcceptedPolicy> acceptedPolicies;
-
     /**
-     * Accepted policies as JSON with Base64 encoding
+     * Accepted policies as a Base64 encoded string.
      */
-    private String acceptedPoliciesJson;
+    private String acceptedPolicies;
 
     /**
      * Accepted Policy for
