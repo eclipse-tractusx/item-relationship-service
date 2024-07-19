@@ -27,9 +27,9 @@ item-relationship-service:
     shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
     lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
   discovery:
-    discoveryFinderUrl: https://semantics.int.demo.catena-x.net/discoveryfinder/api/v1.0/administration/connectors/discovery/search
+    discoveryFinderUrl: https://semantics.int.catena-x.net/discoveryfinder/api/v1.0/administration/connectors/discovery/search
   semanticshub:
-    url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
+    url: https://semantics.int.catena-x.net/hub/api/v1/models
     pageSize: "200"
   minioUser: <path:item-relationship-service/data/int/minio#minioUser>
   minioPassword: <path:item-relationship-service/data/int/minio#minioPassword>
