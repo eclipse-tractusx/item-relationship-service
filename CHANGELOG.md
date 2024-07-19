@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
+
+- Improved exception handling concerning invalid date format in search parameters for GET /irs/policies/paged. #639
+
 ## [5.3.0] - 2024-07-15
 
 ### Added
