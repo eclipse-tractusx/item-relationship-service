@@ -20,6 +20,7 @@
 package org.eclipse.tractusx.irs.policystore.common;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,9 +28,12 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class DateUtilsTest {
 
@@ -62,6 +66,32 @@ class DateUtilsTest {
                 Arguments.of(referenceDateTime, "2023-07-04", true),
                 Arguments.of(referenceDateTime, "2023-07-05", false),
                 Arguments.of(referenceDateTime, "2023-07-06", false));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "3333-11-11T11:11:11.111Z",
+                             "3333-11-",
+                             "2222",
+                             "asdf"
+    })
+    void testInvalidDate(final String referenceDateStr) {
+        final ThrowingCallable call = () -> DateUtils.isDateAfter(OffsetDateTime.now(), referenceDateStr);
+        assertThatThrownBy(call).isInstanceOf(IllegalArgumentException.class)
+                                .hasMessageContaining("Invalid date")
+                                .hasMessageContaining("refer to the documentation");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "   \t",
+                             " ",
+                             ""
+    })
+    @NullSource
+    void testInvalidDateBlank(final String referenceDateStr) {
+        final ThrowingCallable call = () -> DateUtils.isDateAfter(OffsetDateTime.now(), referenceDateStr);
+        assertThatThrownBy(call).isInstanceOf(IllegalArgumentException.class)
+                                .hasMessageContaining("Invalid date")
+                                .hasMessageContaining("must not be blank");
     }
 
 }

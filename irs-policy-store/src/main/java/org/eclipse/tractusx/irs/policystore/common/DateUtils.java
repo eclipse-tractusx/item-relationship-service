@@ -23,6 +23,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Date utilities.
@@ -42,10 +45,21 @@ public final class DateUtils {
     }
 
     public static OffsetDateTime toOffsetDateTimeAtStartOfDay(final String dateString) {
-        return LocalDate.parse(dateString).atStartOfDay().atOffset(ZoneOffset.UTC);
+        return parseDate(dateString).atStartOfDay().atOffset(ZoneOffset.UTC);
     }
 
     public static OffsetDateTime toOffsetDateTimeAtEndOfDay(final String dateString) {
-        return LocalDate.parse(dateString).atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC);
+        return parseDate(dateString).atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC);
+    }
+
+    private static LocalDate parseDate(final String dateString) {
+        if (StringUtils.isBlank(dateString)) {
+            throw new IllegalArgumentException("Invalid date format (must not be blank)");
+        }
+        try {
+            return LocalDate.parse(dateString);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format (please refer to the documentation)");
+        }
     }
 }

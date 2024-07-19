@@ -24,8 +24,6 @@ import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPER
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_CREATED_ON;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_POLICY_ID;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_VALID_UNTIL;
-import static org.eclipse.tractusx.irs.policystore.common.DateUtils.isDateAfter;
-import static org.eclipse.tractusx.irs.policystore.common.DateUtils.isDateBefore;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.AFTER_LOCAL_DATE;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BEFORE_LOCAL_DATE;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
@@ -44,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.policystore.common.DateUtils;
 import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
 import org.springframework.data.domain.Page;
@@ -51,7 +50,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Paging helper service for policies.
@@ -307,12 +308,12 @@ public class PolicyPagingService {
         private Predicate<PolicyWithBpn> getCreatedOnFilter(final SearchCriteria<?> searchCriteria) {
             return switch (searchCriteria.getOperation()) {
                 case BEFORE_LOCAL_DATE -> p -> {
-                    final OffsetDateTime createdOn = p.policy().getCreatedOn();
-                    return isDateBefore(createdOn, searchCriteria.getValue().toString());
+                    final OffsetDateTime date = p.policy().getCreatedOn();
+                    return isDateBefore(searchCriteria, date);
                 };
                 case AFTER_LOCAL_DATE -> p -> {
-                    final OffsetDateTime createdOn = p.policy().getCreatedOn();
-                    return isDateAfter(createdOn, searchCriteria.getValue().toString());
+                    final OffsetDateTime date = p.policy().getCreatedOn();
+                    return isDateAfter(searchCriteria, date);
                 };
                 default -> throw new IllegalArgumentException(
                         MSG_PROPERTY_ONLY_SUPPORTS_THE_FOLLOWING_OPERATIONS.formatted(searchCriteria.getProperty(),
@@ -323,17 +324,35 @@ public class PolicyPagingService {
         private Predicate<PolicyWithBpn> getValidUntilFilter(final SearchCriteria<?> searchCriteria) {
             return switch (searchCriteria.getOperation()) {
                 case BEFORE_LOCAL_DATE -> p -> {
-                    final OffsetDateTime createdOn = p.policy().getValidUntil();
-                    return isDateBefore(createdOn, searchCriteria.getValue().toString());
+                    final OffsetDateTime date = p.policy().getValidUntil();
+                    return isDateBefore(searchCriteria, date);
                 };
                 case AFTER_LOCAL_DATE -> p -> {
-                    final OffsetDateTime createdOn = p.policy().getValidUntil();
-                    return isDateAfter(createdOn, searchCriteria.getValue().toString());
+                    final OffsetDateTime date = p.policy().getValidUntil();
+                    return isDateAfter(searchCriteria, date);
                 };
                 default -> throw new IllegalArgumentException(
                         MSG_PROPERTY_ONLY_SUPPORTS_THE_FOLLOWING_OPERATIONS.formatted(searchCriteria.getProperty(),
                                 List.of(BEFORE_LOCAL_DATE, AFTER_LOCAL_DATE)));
             };
+        }
+
+        private boolean isDateAfter(final SearchCriteria<?> searchCriteria, final OffsetDateTime date) {
+            try {
+                return DateUtils.isDateAfter(date, searchCriteria.getValue().toString());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Search by property '%s': %s".formatted(searchCriteria.getProperty(), e.getMessage()), e);
+            }
+        }
+
+        private boolean isDateBefore(final SearchCriteria<?> searchCriteria, final OffsetDateTime date) {
+            try {
+                return DateUtils.isDateBefore(date, searchCriteria.getValue().toString());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Search by property '%s': %s".formatted(searchCriteria.getProperty(), e.getMessage()), e);
+            }
         }
     }
 }
