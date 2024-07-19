@@ -47,7 +47,9 @@ import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
@@ -76,8 +78,6 @@ import org.springframework.web.server.ResponseStatusException;
 class PolicyStoreServiceTest {
 
     private static final String BPN = "testBpn";
-    private static final String EXAMPLE_ALLOWED_NAME = "ID 3.1 Trace";
-    private static final String EXAMPLE_ACCEPTED_LEFT_OPERAND = "PURPOSE";
     private static final String REGISTER_POLICY_EXAMPLE_PAYLOAD = PolicyStoreControllerTest.REGISTER_POLICY_EXAMPLE_PAYLOAD;
 
     private final Clock clock = Clock.systemUTC();
@@ -100,7 +100,46 @@ class PolicyStoreServiceTest {
     @BeforeEach
     void setUp() {
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
-        defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of());
+        final String defaultPoliciesStr = """
+                [{
+                    "policyId": "default-policy",
+                    "createdOn": "2024-07-17T16:15:14.12345678Z",
+                    "validUntil": "9999-01-01T00:00:00.00000000Z",
+                    "permissions": [
+                        {
+                            "action": "use",
+                            "constraint": {
+                                "and": [
+                                    {
+                                        "leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                                        "operator": {
+                                            "@id": "eq"
+                                        },
+                                        "rightOperand": "traceability:1.0"
+                                    },
+                                    {
+                                        "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                                        "operator": {
+                                            "@id": "eq"
+                                        },
+                                        "rightOperand": "cx.core.industrycore:1"
+                                    }
+                                ],
+                                "or": [
+                                    {
+                                        "leftOperand": "https://w3id.org/catenax/policy/SomethingElse",
+                                        "operator": {
+                                            "@id": "eq"
+                                        },
+                                        "rightOperand": "somethingElse:1.0"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }]
+                """;
+        defaultAcceptedPoliciesConfig.setAcceptedPolicies(StringMapper.toBase64(defaultPoliciesStr));
         testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistenceMock, edcTransformer, clock);
     }
 
@@ -279,18 +318,6 @@ class PolicyStoreServiceTest {
 
         @Test
         void getStoredPolicies_whenNoPoliciesForBpn_shouldReturnTheConfiguredDefaultPolicies() {
-
-            // ARRANGE
-
-            // default policy configuration
-            final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy1 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
-                    EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
-            final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy2 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
-                    EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
-            final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
-            defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of(acceptedPolicy1, acceptedPolicy2));
-            testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistenceMock, edcTransformer, clock);
-
             // ACT
             final var defaultPolicies = testee.getStoredPolicies(List.of(BPN));
 
@@ -301,8 +328,14 @@ class PolicyStoreServiceTest {
             assertThat(permissionList).hasSize(1);
 
             final Constraints constraints = permissionList.get(0).getConstraint();
-            assertThat(constraints.getOr()).hasSize(2);
+            assertThat(constraints.getOr()).hasSize(1);
+            assertThat(constraints.getOr().get(0).getLeftOperand()).isEqualTo(
+                    "https://w3id.org/catenax/policy/SomethingElse");
+
             assertThat(constraints.getAnd()).hasSize(2);
+            assertThat(constraints.getAnd().stream().map(Constraint::getLeftOperand)).containsExactlyInAnyOrder(
+                    "https://w3id.org/catenax/policy/FrameworkAgreement",
+                    "https://w3id.org/catenax/policy/UsagePurpose");
         }
     }
 
