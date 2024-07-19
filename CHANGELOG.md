@@ -10,6 +10,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 - Default policies are now configured using JSON in accordance with the ODRL schema. #542
+- Improved the exception handling for modification attempts on read-only default policies. Such actions now result in a 400 BAD REQUEST response with a user-friendly error message. #734
 
 ## [5.3.0] - 2024-07-15
 

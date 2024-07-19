@@ -48,6 +48,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.exceptions.ResourceDoesNotExistException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
@@ -62,7 +63,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Slf4j
 @SuppressWarnings({ "PMD.ExcessiveImports",
-                    "PMD.TooManyMethods"
+                    "PMD.TooManyMethods",
+                    "PMD.GodClass"
 })
 public class PolicyStoreService implements AcceptedPoliciesProvider {
 
@@ -205,6 +207,9 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
             try {
                 log.info("Deleting policy with id {}", policyId);
                 bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
+            } catch (final ResourceDoesNotExistException e) {
+                handleTrialToModifyConfiguredDefaultPolicy(policyId, e);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
             } catch (final PolicyStoreException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
             }
@@ -216,9 +221,26 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
             for (final String bpn : bpnList) {
                 persistence.delete(bpn, policyId);
             }
+        } catch (final ResourceDoesNotExistException e) {
+            handleTrialToModifyConfiguredDefaultPolicy(policyId, e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
+    }
+
+    private void handleTrialToModifyConfiguredDefaultPolicy(final String policyId, final Exception cause) {
+        if (isConfiguredDefaultPolicy(policyId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    ("The policy '%s' is a configured default policy which cannot be modified. "
+                     + "However you can define custom default policies via the API by registering a policy "
+                     + "without a business partner number. "
+                     + "These will take precedence over configured default policies.").formatted(policyId), cause);
+        }
+    }
+
+    private boolean isConfiguredDefaultPolicy(final String policyId) {
+        return this.allowedPoliciesFromConfig.stream().anyMatch(p -> p.getPolicyId().equals(policyId));
     }
 
     public void updatePolicies(final UpdatePolicyRequest request) {
