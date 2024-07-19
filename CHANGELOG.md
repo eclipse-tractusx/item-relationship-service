@@ -8,6 +8,11 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Changed
+
+- Cleanup in IrsApplicationTest.generatedOpenApiMatchesContract 
+  (removed obsolete ignoringFields, improved assertion message)
+
 ## [5.3.0] - 2024-07-15
 
 ### Added
