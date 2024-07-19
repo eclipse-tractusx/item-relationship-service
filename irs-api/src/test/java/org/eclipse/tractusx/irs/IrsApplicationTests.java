@@ -107,7 +107,8 @@ class IrsApplicationTests {
         } catch (AssertionError e) {
             // write changed API to file for easier comparison
             Files.writeString(Paths.get("../docs/src/api/irs-api.actual.yaml"), generatedYaml);
-            throw e;
+            throw new AssertionError("Please compare the generated irs-api.actual.yaml "
+                    + "with irs-api.yaml to find the differences easily!", e);
         }
 
     }
