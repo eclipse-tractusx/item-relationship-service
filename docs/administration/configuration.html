@@ -866,15 +866,12 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the submodel client</span>
 
   <span class="na">catalog</span><span class="pi">:</span>
-    <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.</span>
-    <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
-    <span class="na">acceptedPolicies</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx-policy:FrameworkAgreement"</span>
-        <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">traceability:1.0"</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx-policy:UsagePurpose"</span>
-        <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx.core.industrycore:1"</span>
+    <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the Policy Store.</span>
+    <span class="c1"># The following configuration value allows the definition of default policies to be used</span>
+    <span class="c1"># if no policy has been defined via the Policy Store API.</span>
+    <span class="c1"># If the policy check fails, a tombstone will be created and this node will not be processed.</span>
+    <span class="c1"># The value must be Base64 encoded here. See decoded value in charts/item-relationship-service/values.yaml.</span>
+    <span class="na">acceptedPolicies</span><span class="pi">:</span> <span class="s2">"</span><span class="s">W3sKICAgICJwb2xpY3lJZCI6ICJkZWZhdWx0LXBvbGljeSIsCiAgICAiY3JlYXRlZE9uIjogIjIwMjQtMDctMTdUMTY6MTU6MTQuMTIzNDU2NzhaIiwKICAgICJ2YWxpZFVudGlsIjogIjk5OTktMDEtMDFUMDA6MDA6MDAuMDAwMDAwMDBaIiwKICAgICJwZXJtaXNzaW9ucyI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJhY3Rpb24iOiAidXNlIiwKICAgICAgICAgICAgImNvbnN0cmFpbnQiOiB7CiAgICAgICAgICAgICAgICAiYW5kIjogWwogICAgICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAgICAgImxlZnRPcGVyYW5kIjogImh0dHBzOi8vdzNpZC5vcmcvY2F0ZW5heC9wb2xpY3kvRnJhbWV3b3JrQWdyZWVtZW50IiwKICAgICAgICAgICAgICAgICAgICAgICAgIm9wZXJhdG9yIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgIkBpZCI6ICJlcSIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgInJpZ2h0T3BlcmFuZCI6ICJ0cmFjZWFiaWxpdHk6MS4wIgogICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgICAgICAibGVmdE9wZXJhbmQiOiAiaHR0cHM6Ly93M2lkLm9yZy9jYXRlbmF4L3BvbGljeS9Vc2FnZVB1cnBvc2UiLAogICAgICAgICAgICAgICAgICAgICAgICAib3BlcmF0b3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiQGlkIjogImVxIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAicmlnaHRPcGVyYW5kIjogImN4LmNvcmUuaW5kdXN0cnljb3JlOjEiCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgXQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgXQp9XQ=="</span>
   <span class="na">discoveryFinderClient</span><span class="pi">:</span>
     <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache</span>
   <span class="na">connectorEndpointService</span><span class="pi">:</span>
@@ -1029,15 +1026,40 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">urnprefix</span><span class="pi">:</span> <span class="s">/urn</span>
     <span class="na">suffix</span><span class="pi">:</span> <span class="s">/$value</span>
   <span class="na">catalog</span><span class="pi">:</span>
-    <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.</span>
-    <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
-    <span class="na">acceptedPolicies</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://w3id.org/catenax/policy/FrameworkAgreement"</span>
-        <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">traceability:1.0"</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://w3id.org/catenax/policy/UsagePurpose"</span>
-        <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx.core.industrycore:1"</span>
+    <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the Policy Store.</span>
+    <span class="c1"># The following configuration value allows the definition of default policies to be used</span>
+    <span class="c1"># if no policy has been defined via the Policy Store API.</span>
+    <span class="c1"># If the policy check fails, a tombstone will be created and this node will not be processed.</span>
+    <span class="c1"># Configure the default policies as JSON array using multiline string here.</span>
+    <span class="na">acceptedPolicies</span><span class="pi">:</span> <span class="pi">&gt;</span>
+      <span class="s">[{</span>
+          <span class="s">"policyId": "default-policy",</span>
+          <span class="s">"createdOn": "2024-07-17T16:15:14.12345678Z",</span>
+          <span class="s">"validUntil": "9999-01-01T00:00:00.00000000Z",</span>
+          <span class="s">"permissions": [</span>
+              <span class="s">{</span>
+                  <span class="s">"action": "use",</span>
+                  <span class="s">"constraint": {</span>
+                      <span class="s">"and": [</span>
+                          <span class="s">{</span>
+                              <span class="s">"leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",</span>
+                              <span class="s">"operator": {</span>
+                                  <span class="s">"@id": "eq"</span>
+                              <span class="s">},</span>
+                              <span class="s">"rightOperand": "traceability:1.0"</span>
+                          <span class="s">},</span>
+                          <span class="s">{</span>
+                              <span class="s">"leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",</span>
+                              <span class="s">"operator": {</span>
+                                  <span class="s">"@id": "eq"</span>
+                              <span class="s">},</span>
+                              <span class="s">"rightOperand": "cx.core.industrycore:1"</span>
+                          <span class="s">}</span>
+                      <span class="s">]</span>
+                  <span class="s">}</span>
+              <span class="s">}</span>
+          <span class="s">]</span>
+      <span class="s">}]</span>
   <span class="na">discoveryFinderClient</span><span class="pi">:</span>
     <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache</span>
   <span class="na">connectorEndpointService</span><span class="pi">:</span>
@@ -1141,7 +1163,17 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
   <span class="na">admin</span><span class="pi">:</span>
     <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-item-relationship-service"</span>
-    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span></code></pre>
+    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
+    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span>
+
+  <span class="na">datasources</span><span class="pi">:</span>
+    <span class="na">datasources.yaml</span><span class="pi">:</span>
+      <span class="na">apiVersion</span><span class="pi">:</span> <span class="m">1</span>
+      <span class="na">datasources</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Prometheus</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">prometheus</span>
+          <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-prometheus-server"</span>
+          <span class="na">isDefault</span><span class="pi">:</span> <span class="no">true</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1432,7 +1464,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-07-18 11:46:24 UTC
+Last updated 2024-07-19 14:48:40 UTC
 </div>
 </div>
 </body>

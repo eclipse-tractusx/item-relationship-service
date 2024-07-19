@@ -220,15 +220,12 @@ irs-edc-client:
       connect: PT90S # HTTP connect timeout for the submodel client
 
   catalog:
-    # IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.
-    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-    acceptedPolicies:
-      - leftOperand: "cx-policy:FrameworkAgreement"
-        operator: "eq"
-        rightOperand: "traceability:1.0"
-      - leftOperand: "cx-policy:UsagePurpose"
-        operator: "eq"
-        rightOperand: "cx.core.industrycore:1"
+    # IRS will only negotiate contracts for offers with a policy as defined in the Policy Store.
+    # The following configuration value allows the definition of default policies to be used
+    # if no policy has been defined via the Policy Store API.
+    # If the policy check fails, a tombstone will be created and this node will not be processed.
+    # The value must be Base64 encoded here. See decoded value in charts/item-relationship-service/values.yaml.
+    acceptedPolicies: "W3sKICAgICJwb2xpY3lJZCI6ICJkZWZhdWx0LXBvbGljeSIsCiAgICAiY3JlYXRlZE9uIjogIjIwMjQtMDctMTdUMTY6MTU6MTQuMTIzNDU2NzhaIiwKICAgICJ2YWxpZFVudGlsIjogIjk5OTktMDEtMDFUMDA6MDA6MDAuMDAwMDAwMDBaIiwKICAgICJwZXJtaXNzaW9ucyI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJhY3Rpb24iOiAidXNlIiwKICAgICAgICAgICAgImNvbnN0cmFpbnQiOiB7CiAgICAgICAgICAgICAgICAiYW5kIjogWwogICAgICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAgICAgImxlZnRPcGVyYW5kIjogImh0dHBzOi8vdzNpZC5vcmcvY2F0ZW5heC9wb2xpY3kvRnJhbWV3b3JrQWdyZWVtZW50IiwKICAgICAgICAgICAgICAgICAgICAgICAgIm9wZXJhdG9yIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgIkBpZCI6ICJlcSIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgInJpZ2h0T3BlcmFuZCI6ICJ0cmFjZWFiaWxpdHk6MS4wIgogICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgICAgICAibGVmdE9wZXJhbmQiOiAiaHR0cHM6Ly93M2lkLm9yZy9jYXRlbmF4L3BvbGljeS9Vc2FnZVB1cnBvc2UiLAogICAgICAgICAgICAgICAgICAgICAgICAib3BlcmF0b3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiQGlkIjogImVxIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAicmlnaHRPcGVyYW5kIjogImN4LmNvcmUuaW5kdXN0cnljb3JlOjEiCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgXQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgXQp9XQ=="
   discoveryFinderClient:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
@@ -379,15 +376,40 @@ edc:
     urnprefix: /urn
     suffix: /$value
   catalog:
-    # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
-    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-    acceptedPolicies:
-      - leftOperand: "https://w3id.org/catenax/policy/FrameworkAgreement"
-        operator: "eq"
-        rightOperand: "traceability:1.0"
-      - leftOperand: "https://w3id.org/catenax/policy/UsagePurpose"
-        operator: "eq"
-        rightOperand: "cx.core.industrycore:1"
+    # IRS will only negotiate contracts for offers with a policy as defined in the Policy Store.
+    # The following configuration value allows the definition of default policies to be used
+    # if no policy has been defined via the Policy Store API.
+    # If the policy check fails, a tombstone will be created and this node will not be processed.
+    # Configure the default policies as JSON array using multiline string here.
+    acceptedPolicies: >
+      [{
+          "policyId": "default-policy",
+          "createdOn": "2024-07-17T16:15:14.12345678Z",
+          "validUntil": "9999-01-01T00:00:00.00000000Z",
+          "permissions": [
+              {
+                  "action": "use",
+                  "constraint": {
+                      "and": [
+                          {
+                              "leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                              "operator": {
+                                  "@id": "eq"
+                              },
+                              "rightOperand": "traceability:1.0"
+                          },
+                          {
+                              "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                              "operator": {
+                                  "@id": "eq"
+                              },
+                              "rightOperand": "cx.core.industrycore:1"
+                          }
+                      ]
+                  }
+              }
+          ]
+      }]
   discoveryFinderClient:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
@@ -492,6 +514,17 @@ grafana:
   admin:
     existingSecret: "{{ .Release.Name }}-item-relationship-service"
     userKey: grafanaUser
+    passwordKey: grafanaPassword
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: "http://{{ .Release.Name }}-prometheus-server"
+          isDefault: true
+
 ```
 
 1. Use this to enable or disable the monitoring components
