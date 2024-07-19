@@ -59,7 +59,7 @@ public final class DateUtils {
         try {
             return LocalDate.parse(dateString);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format (please refer to the documentation)");
+            throw new IllegalArgumentException("Invalid date format (please refer to the documentation)", e);
         }
     }
 }

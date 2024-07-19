@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -78,7 +79,8 @@ class DateUtilsTest {
         final ThrowingCallable call = () -> DateUtils.isDateAfter(OffsetDateTime.now(), referenceDateStr);
         assertThatThrownBy(call).isInstanceOf(IllegalArgumentException.class)
                                 .hasMessageContaining("Invalid date")
-                                .hasMessageContaining("refer to the documentation");
+                                .hasMessageContaining("refer to the documentation")
+                                .hasCauseInstanceOf(DateTimeParseException.class);
     }
 
     @ParameterizedTest
@@ -91,7 +93,8 @@ class DateUtilsTest {
         final ThrowingCallable call = () -> DateUtils.isDateAfter(OffsetDateTime.now(), referenceDateStr);
         assertThatThrownBy(call).isInstanceOf(IllegalArgumentException.class)
                                 .hasMessageContaining("Invalid date")
-                                .hasMessageContaining("must not be blank");
+                                .hasMessageContaining("must not be blank")
+                                .hasNoCause();
     }
 
 }
