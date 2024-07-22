@@ -63,7 +63,7 @@ jobs:
             exit 1
           fi
           new_version="${major}.${minor}.${patch}-SNAPSHOT"
-          if [ $IS_RELEASE_VERSION = 'true' ]; then
+          if [ $IS_RELEASE_VERSION == 'true' ]; then
             new_version="${major}.${minor}.${patch}"
           fi
           if [ $new_version == $CURRENT_VERSION ]; then
