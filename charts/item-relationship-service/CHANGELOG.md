@@ -6,8 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.4.0] - 2024-07-22
+
 ### Changed
 
+- Update IRS version to 5.4.0
 - Changed configuration for default policies (#542) from:
   ```
   edc:
