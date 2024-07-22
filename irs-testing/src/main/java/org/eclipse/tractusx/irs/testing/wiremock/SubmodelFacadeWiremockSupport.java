@@ -52,9 +52,9 @@ public final class SubmodelFacadeWiremockSupport {
     public static final String IRS_INTERNAL_CALLBACK_URL = "https://irs.test/internal/endpoint-data-reference";
     public static final String EDC_PROVIDER_BPN = "BPNL00000000TEST";
     public static final int STATUS_CODE_OK = 200;
-    public static final String CX_POLICY_FRAMEWORK_AGREEMENT = "cx-policy:FrameworkAgreement";
+    public static final String CX_POLICY_FRAMEWORK_AGREEMENT = "https://w3id.org/catenax/policy/FrameworkAgreement";
     public static final String TRACEABILITY_1_0 = "traceability:1.0";
-    public static final String CX_POLICY_USAGE_PURPOSE = "cx-policy:UsagePurpose";
+    public static final String CX_POLICY_USAGE_PURPOSE = "https://w3id.org/catenax/policy/UsagePurpose";
     public static final String CX_CORE_INDUSTRYCORE_1 = "cx.core.industrycore:1";
     public static final String PERMISSION_TYPE = "use";
     public static final int STATUS_CODE_BAD_GATEWAY = 502;
@@ -76,8 +76,7 @@ public final class SubmodelFacadeWiremockSupport {
         stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                                                                             .withBody(getCatalogResponse(edcAssetId,
                                                                                     contractAgreementId,
-                                                                                    PERMISSION_TYPE,
-                                                                                    EDC_PROVIDER_BPN,
+                                                                                    PERMISSION_TYPE, EDC_PROVIDER_BPN,
                                                                                     createConstraints()))));
 
         stubFor(post(urlPathEqualTo(PATH_NEGOTIATE)).willReturn(
@@ -113,14 +112,13 @@ public final class SubmodelFacadeWiremockSupport {
         stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                                                                             .withBody(getCatalogResponse(edcAssetId,
                                                                                     contractAgreementId,
-                                                                                    PERMISSION_TYPE,
-                                                                                    EDC_PROVIDER_BPN,
+                                                                                    PERMISSION_TYPE, EDC_PROVIDER_BPN,
                                                                                     createNotAcceptedConstraints()))));
     }
 
     public static void prepareFailingCatalog() {
-        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_BAD_GATEWAY)
-                                                                            .withBody("")));
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(
+                WireMockConfig.responseWithStatus(STATUS_CODE_BAD_GATEWAY).withBody("")));
     }
 
     private static String startTransferProcessResponse(final String transferProcessId) {
@@ -253,8 +251,8 @@ public final class SubmodelFacadeWiremockSupport {
                    "dspace:participantId": "%s",
                    "@context": %s
                  }
-                """.formatted(edcAssetId, offerId, permissionType, constraints, EDC_PROVIDER_DUMMY_URL,
-                edcAssetId, EDC_PROVIDER_DUMMY_URL, edcProviderBpn, edcProviderBpn, CONTEXT);
+                """.formatted(edcAssetId, offerId, permissionType, constraints, EDC_PROVIDER_DUMMY_URL, edcAssetId,
+                EDC_PROVIDER_DUMMY_URL, edcProviderBpn, edcProviderBpn, CONTEXT);
     }
 
     private static String createConstraints() {
@@ -270,8 +268,7 @@ public final class SubmodelFacadeWiremockSupport {
     }
 
     private static String createNotAcceptedConstraints() {
-        final List<String> atomitConstraints = List.of(
-                createAtomicConstraint("test", "test"));
+        final List<String> atomitConstraints = List.of(createAtomicConstraint("test", "test"));
         return """
                 {
                   "odrl:and": [

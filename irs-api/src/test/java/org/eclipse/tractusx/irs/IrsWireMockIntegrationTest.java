@@ -337,8 +337,7 @@ class IrsWireMockIntegrationTest {
         assertThat(jobForJobId.getTombstones()).hasSize(1);
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
-        assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
-                "502 Bad Gateway");
+        assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains("502 Bad Gateway");
     }
 
     @Test

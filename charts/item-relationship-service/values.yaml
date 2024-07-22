@@ -187,15 +187,40 @@ edc:
     urnprefix: /urn
     suffix: /$value
   catalog:
-    # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
-    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-    acceptedPolicies:
-      - leftOperand: "https://w3id.org/catenax/policy/FrameworkAgreement"
-        operator: "eq"
-        rightOperand: "traceability:1.0"
-      - leftOperand: "https://w3id.org/catenax/policy/UsagePurpose"
-        operator: "eq"
-        rightOperand: "cx.core.industrycore:1"
+    # IRS will only negotiate contracts for offers with a policy as defined in the Policy Store.
+    # The following configuration value allows the definition of default policies to be used
+    # if no policy has been defined via the Policy Store API.
+    # If the policy check fails, a tombstone will be created and this node will not be processed.
+    # Configure the default policies as JSON array using multiline string here.
+    acceptedPolicies: >
+      [{
+          "policyId": "default-policy",
+          "createdOn": "2024-07-17T16:15:14.12345678Z",
+          "validUntil": "9999-01-01T00:00:00.00000000Z",
+          "permissions": [
+              {
+                  "action": "use",
+                  "constraint": {
+                      "and": [
+                          {
+                              "leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                              "operator": {
+                                  "@id": "eq"
+                              },
+                              "rightOperand": "traceability:1.0"
+                          },
+                          {
+                              "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                              "operator": {
+                                  "@id": "eq"
+                              },
+                              "rightOperand": "cx.core.industrycore:1"
+                          }
+                      ]
+                  }
+              }
+          ]
+      }]
   discoveryFinderClient:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:

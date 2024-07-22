@@ -118,12 +118,7 @@ data:
         submodel-suffix: {{ tpl (.Values.edc.submodel.suffix | default "/$value") . | quote }}
 
       catalog:
-        acceptedPolicies:
-          {{- range .Values.edc.catalog.acceptedPolicies}}
-          - leftOperand: {{ .leftOperand | quote }}
-            operator: {{ .operator | quote }}
-            rightOperand: {{ .rightOperand | quote }}
-          {{- end }}
+        acceptedPolicies: {{ .Values.edc.catalog.acceptedPolicies | trim | b64enc | quote }}
       discoveryFinderClient:
         cacheTTL: {{ .Values.edc.discoveryFinderClient.cacheTTL | quote }}
       connectorEndpointService:
