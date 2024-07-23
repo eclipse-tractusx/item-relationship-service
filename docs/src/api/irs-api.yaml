@@ -794,6 +794,7 @@ paths:
       - Item Relationship Service
   /irs/policies:
     get:
+      deprecated: true
       description: Lists the registered policies that should be accepted in EDC negotiation.
       operationId: getAllowedPoliciesByBpn
       parameters:
@@ -860,6 +861,7 @@ paths:
       security:
       - api_key: []
       summary: Lists the registered policies that should be accepted in EDC negotiation.
+        (This method is DEPRECATED in favor of `/policies/paged`)
       tags:
       - Policy Store API
     post:
