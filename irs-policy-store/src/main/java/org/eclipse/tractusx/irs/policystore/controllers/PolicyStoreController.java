@@ -165,7 +165,8 @@ public class PolicyStoreController {
     }
 
     @Operation(operationId = "getAllowedPoliciesByBpn",
-               summary = "Lists the registered policies that should be accepted in EDC negotiation.",
+               summary = "Lists the registered policies that should be accepted in EDC negotiation. "
+                         + "(This method is DEPRECATED in favor of `/policies/paged`)", deprecated = true,
                security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
@@ -192,11 +193,13 @@ public class PolicyStoreController {
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @Deprecated(forRemoval = true)
     public Map<String, List<PolicyResponse>> getPolicies(//
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers(allowDefault = true) //
             @Parameter(description = "List of business partner numbers. "
-                    + "This may also contain the value \"default\" in order to query the default policies.") //
+                                     + "This may also contain the value \"default\" in order to query the default policies.")
+            //
             final List<String> businessPartnerNumbers //
     ) {
 
@@ -263,7 +266,7 @@ public class PolicyStoreController {
     @GetMapping("/policies/paged")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find registered policies that should be accepted in EDC negotiation "
-            + "(with filtering, sorting and paging).", //
+                         + "(with filtering, sorting and paging).", //
                description = """
                        Fetch a page of policies with options to filter and sort.
                        \s
@@ -326,7 +329,8 @@ public class PolicyStoreController {
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers(allowDefault = true) //
             @Parameter(name = "businessPartnerNumbers", description = "List of business partner numbers. "
-                    + "This may also contain the value \"default\" in order to query the default policies.") //
+                                                                      + "This may also contain the value \"default\" in order to query the default policies.")
+            //
             final List<String> businessPartnerNumbers) {
 
         if (pageable.getPageSize() > MAX_PAGE_SIZE) {
