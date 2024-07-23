@@ -12,6 +12,13 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Fixed already merged implementation from _"Access and Usage Policy Validation flow correction. #757"_ 
   where fallback to default policy was not implemented correctly.
+- Improved exception handling concerning invalid date format in search parameters for `GET /irs/policies/paged`. #639
+
+### Changed
+
+- Improved documentation for `GET /irs/policies/paged` endpoint. #639
+- Cleanup in IrsApplicationTest.generatedOpenApiMatchesContract 
+  (removed obsolete ignoringFields, improved assertion message)
 
 ## [5.4.0] - 2024-07-22
 
