@@ -12,6 +12,11 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Improved documentation for `GET /irs/policies/paged` endpoint. #639
 
+## [5.4.0] - 2024-07-22
+
+### Changed
+- Default policies are now configured using JSON in accordance with the ODRL schema. #542
+
 ## [5.3.0] - 2024-07-15
 
 ### Added
@@ -737,7 +742,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.0...HEAD
+[5.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.0...5.4.0
 [5.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.2.0...5.3.0
 [5.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.4...5.2.0
 [5.1.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.3...5.1.4

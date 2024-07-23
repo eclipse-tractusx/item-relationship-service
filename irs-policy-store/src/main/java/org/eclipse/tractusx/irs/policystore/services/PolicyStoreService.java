@@ -28,7 +28,6 @@ import static org.eclipse.tractusx.irs.common.persistence.BlobPersistence.DEFAUL
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,18 +37,14 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
-import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
-import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
-import org.eclipse.tractusx.irs.edc.client.policy.Operator;
-import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
-import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
-import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
@@ -70,6 +65,9 @@ import org.springframework.web.server.ResponseStatusException;
                     "PMD.TooManyMethods"
 })
 public class PolicyStoreService implements AcceptedPoliciesProvider {
+
+    private static final TypeReference<List<Policy>> LIST_OF_POLICIES_TYPE = new TypeReference<>() {
+    };
 
     private final List<Policy> allowedPoliciesFromConfig;
 
@@ -200,7 +198,8 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Policy with id '%s' not found".formatted(policyId));
         } else if (bpnsContainingPolicyId.stream().noneMatch(StringUtils::isNotEmpty)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A configured default policy cannot be deleted. "
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, //
+                    "A configured default policy cannot be deleted. "
                     + "It can be overridden by defining a default policy via the API instead.");
         } else {
             try {
@@ -297,26 +296,8 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         return new AcceptedPolicy(policy, policy.getValidUntil());
     }
 
-    private List<Policy> createDefaultPolicyFromConfig(
-            final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig) {
-
-        final List<Constraint> constraints = new ArrayList<>();
-        defaultAcceptedPoliciesConfig.getAcceptedPolicies()
-                                     .forEach(acceptedPolicy -> constraints.add(
-                                             new Constraint(acceptedPolicy.getLeftOperand(),
-                                                     new Operator(OperatorType.fromValue(acceptedPolicy.getOperator())),
-                                                     acceptedPolicy.getRightOperand())));
-
-        final OffsetDateTime now = OffsetDateTime.now(clock);
-        return List.of(Policy.builder()
-                             .policyId(ConfiguredDefaultPolicy.DEFAULT_POLICY_ID)
-                             .createdOn(now)
-                             .validUntil(now.plusYears(ConfiguredDefaultPolicy.DEFAULT_POLICY_LIFETIME_YEARS))
-                             .permissions(List.of(Permission.builder()
-                                                            .action(PolicyType.USE)
-                                                            .constraint(new Constraints(constraints, constraints))
-                                                            .build()))
-                             .build());
+    private List<Policy> createDefaultPolicyFromConfig(final DefaultAcceptedPoliciesConfig defaultPoliciesConfig) {
+        return StringMapper.mapFromBase64String(defaultPoliciesConfig.getAcceptedPolicies(), LIST_OF_POLICIES_TYPE);
     }
 
 }

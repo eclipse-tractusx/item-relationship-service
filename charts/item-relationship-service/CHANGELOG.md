@@ -6,6 +6,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.4.0] - 2024-07-22
+
+### Changed
+
+- Update IRS version to 5.4.0
+- Changed configuration for default policies (#542) from:
+  ```
+  edc:
+    catalog:
+      acceptedPolicies:
+        - leftOperand: "https://w3id.org/catenax/policy/FrameworkAgreement"
+          operator: "eq"
+          rightOperand: "traceability:1.0"
+        - leftOperand: "https://w3id.org/catenax/policy/UsagePurpose"
+          operator: "eq"
+          rightOperand: "cx.core.industrycore:1"
+  ```
+  to:
+  ```
+  edc:
+    catalog:
+      acceptedPolicies: >
+        [{
+            "policyId": "default-policy",
+            "createdOn": "2024-07-17T16:15:14.12345678Z",
+            "validUntil": "9999-01-01T00:00:00.00000000Z",
+            "permissions": [
+                {
+                    "action": "use",
+                    "constraint": {
+                        "and": [
+                            {
+                                "leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                                "operator": {
+                                    "@id": "eq"
+                                },
+                                "rightOperand": "traceability:1.0"
+                            },
+                            {
+                                "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                                "operator": {
+                                    "@id": "eq"
+                                },
+                                "rightOperand": "cx.core.industrycore:1"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }]  
+  ```
+
 ## [7.3.1] - 2024-07-16
 
 ### Changed

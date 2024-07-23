@@ -23,8 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.config;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -37,7 +35,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "irs-edc-client.catalog")
 @Data
 public class DefaultAcceptedPoliciesConfig {
-    private List<AcceptedPolicy> acceptedPolicies;
+
+    /**
+     * Accepted policies as a Base64 encoded string.
+     */
+    private String acceptedPolicies;
 
     /**
      * Accepted Policy for
