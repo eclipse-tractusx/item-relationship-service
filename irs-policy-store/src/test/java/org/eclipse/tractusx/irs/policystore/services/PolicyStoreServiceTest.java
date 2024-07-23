@@ -64,6 +64,7 @@ import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.eclipse.tractusx.irs.policystore.testutil.PolicyStoreTestUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,6 +80,7 @@ class PolicyStoreServiceTest {
 
     private static final String BPN = "testBpn";
     private static final String REGISTER_POLICY_EXAMPLE_PAYLOAD = PolicyStoreControllerTest.REGISTER_POLICY_EXAMPLE_PAYLOAD;
+    private static final String CONFIGURED_DEFAULT_POLICY_ID = "default-policy";
 
     private final Clock clock = Clock.systemUTC();
 
@@ -102,7 +104,7 @@ class PolicyStoreServiceTest {
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
         final String defaultPoliciesStr = """
                 [{
-                    "policyId": "default-policy",
+                    "policyId": "%s",
                     "createdOn": "2024-07-17T16:15:14.12345678Z",
                     "validUntil": "9999-01-01T00:00:00.00000000Z",
                     "permissions": [
@@ -138,12 +140,13 @@ class PolicyStoreServiceTest {
                         }
                     ]
                 }]
-                """;
+                """.formatted(CONFIGURED_DEFAULT_POLICY_ID);
         defaultAcceptedPoliciesConfig.setAcceptedPolicies(StringMapper.toBase64(defaultPoliciesStr));
         testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistenceMock, edcTransformer, clock);
     }
 
     @Nested
+    @DisplayName("registerPolicy")
     class RegisterPolicyTests {
 
         @Test
@@ -157,7 +160,7 @@ class PolicyStoreServiceTest {
             testee.registerPolicy(new CreatePolicyRequest(now, null, jsonObject));
 
             // ASSERT
-            verify(persistenceMock).save(eq("default"), policyCaptor.capture());
+            verify(persistenceMock).save(eq(PolicyStoreService.BPN_DEFAULT), policyCaptor.capture());
             assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("e917f5f-8dac-49ac-8d10-5b4d254d2b48");
             assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(now);
             assertThat(policyCaptor.getValue().getPermissions()).hasSize(1);
@@ -187,6 +190,7 @@ class PolicyStoreServiceTest {
     }
 
     @Nested
+    @DisplayName("doRegisterPolicy")
     class DoRegisterPolicyTests {
 
         @Test
@@ -300,6 +304,7 @@ class PolicyStoreServiceTest {
     }
 
     @Nested
+    @DisplayName("getStoredPolicies")
     class GetStoredPoliciesTests {
 
         @Test
@@ -340,44 +345,109 @@ class PolicyStoreServiceTest {
     }
 
     @Nested
+    @DisplayName("getAcceptedPolicies")
     class GetAcceptedPoliciesTests {
 
-        @Test
-        void getAcceptedPolicies_whenParameterBpnIsNull_shouldReturnTheConfiguredDefaultPolicy() {
+        @Nested
+        @DisplayName("when BPN is null")
+        class WhenBpnIsNull {
 
-            // ACT
-            final var acceptedPolicies = testee.getAcceptedPolicies(null);
+            @Test
+            @DisplayName("and there are **no** custom default policies in the database")
+            void getAcceptedPolicies_whenBpnIsNull_andThereAreNoCustomDefaultPoliciesInDb() {
 
-            // ASSERT
-            final String policyIdOfConfiguredDefaultPolicy = "default-policy";
-            assertThat(acceptedPolicies.get(0).policy().getPolicyId()).isEqualTo(policyIdOfConfiguredDefaultPolicy);
+                // ACT
+                final var acceptedPolicies = testee.getAcceptedPolicies(null);
+
+                // ASSERT
+                assertThat(acceptedPolicies).as("""
+                                                    Should return the configured default policy \
+                                                    (because no custom default policies have been added \
+                                                    via the Policy Store API)""")
+                                            .extracting(policy -> policy.policy().getPolicyId())
+                                            .containsExactly(CONFIGURED_DEFAULT_POLICY_ID);
+            }
+
+            @Test
+            @DisplayName("and there are custom default policies in the database")
+            void getAcceptedPolicies_whenBpnIsNull_andThereAreCustomDefaultPoliciesInDb() {
+
+                // ARRANGE
+                final String customDefaultPolicy1 = "custom-default-policy-1";
+                final String customDefaultPolicy2 = "custom-default-policy-2";
+                when(persistenceMock.readAll()).thenReturn(Map.of(PolicyStoreService.BPN_DEFAULT,
+                        List.of(createPolicy(customDefaultPolicy1), createPolicy(customDefaultPolicy2))));
+
+                // ACT
+                final var acceptedPolicies = testee.getAcceptedPolicies(null);
+
+                // ASSERT
+                assertThat(acceptedPolicies).as("""
+                                                    Should return the custom default policies \
+                                                    that have been added via the Policy Store API \
+                                                    instead of the configured default policy \
+                                                    (which is only used as fallback).""")
+                                            .extracting(policy -> policy.policy().getPolicyId())
+                                            .containsExactlyInAnyOrder(customDefaultPolicy1, customDefaultPolicy2);
+            }
         }
 
-        @Test
-        void getAcceptedPolicies_whenNoPoliciesAssociatedWithTheGivenBpn_shouldReturnTheRegisteredDefaultPolicies() {
+        @Nested
+        @DisplayName("when BPN has no policies")
+        class WhenBpnHasNoPolicies {
 
-            // ARRANGE
-            when(persistenceMock.readAll(BPN)).thenReturn(emptyList());
+            @Test
+            @DisplayName("and there are **no** custom default policies in the database")
+            void getAcceptedPolicies_whenBpnHasNoPolicies_andThereAreNoCustomDefaultPoliciesInDb() {
 
-            // policy registered without BPN should be used as default policy (see #199)
-            // this overrides the configured default policy (see the previous test above)
-            final String defaultPolicyId1 = "registered-default-policy-1";
-            final String defaultPolicyId2 = "registered-default-policy-2";
-            when(persistenceMock.readAll("default")).thenReturn(List.of(
-                    // default policy 1
-                    createPolicy(defaultPolicyId1),
-                    // default policy 2
-                    createPolicy(defaultPolicyId2)));
+                // ARRANGE
+                when(persistenceMock.readAll(BPN)).thenReturn(emptyList());
 
-            // ACT
-            final var acceptedPolicies = testee.getAcceptedPolicies(BPN);
+                // ACT
+                final var acceptedPolicies = testee.getAcceptedPolicies(BPN);
 
-            // ASSERT
-            final List<String> policyIds = acceptedPolicies.stream()
-                                                           .map(AcceptedPolicy::policy)
-                                                           .map(Policy::getPolicyId)
-                                                           .toList();
-            assertThat(policyIds).containsExactlyInAnyOrder(defaultPolicyId1, defaultPolicyId2);
+                // ASSERT
+                final List<String> policyIds = acceptedPolicies.stream()
+                                                               .map(AcceptedPolicy::policy)
+                                                               .map(Policy::getPolicyId)
+                                                               .toList();
+                assertThat(policyIds).containsExactly(CONFIGURED_DEFAULT_POLICY_ID);
+            }
+
+            @Test
+            @DisplayName("and there are custom default policies in the database")
+            void getAcceptedPolicies_whenBpnHasNoPolicies_andThereAreCustomDefaultPoliciesInDb() {
+
+                // ARRANGE
+                when(persistenceMock.readAll(BPN)).thenReturn(emptyList());
+
+                // policy registered without BPN should be used as default policy (see #199)
+                // this overrides the configured default policy
+                final String defaultPolicyId1 = "registered-default-policy-1";
+                final String defaultPolicyId2 = "registered-default-policy-2";
+                when(persistenceMock.readAll(PolicyStoreService.BPN_DEFAULT)).thenReturn(List.of(
+                        // default policy 1
+                        createPolicy(defaultPolicyId1),
+                        // default policy 2
+                        createPolicy(defaultPolicyId2)));
+
+                // ACT
+                final var acceptedPolicies = testee.getAcceptedPolicies(BPN);
+
+                // ASSERT
+                final List<String> policyIds = acceptedPolicies.stream()
+                                                               .map(AcceptedPolicy::policy)
+                                                               .map(Policy::getPolicyId)
+                                                               .toList();
+                assertThat(policyIds).containsExactlyInAnyOrder(defaultPolicyId1, defaultPolicyId2);
+                assertThat(acceptedPolicies).as("""
+                                                    Should return the configured default policies \
+                                                    (because no custom default policies have been added \
+                                                    via the Policy Store API)""")
+                                            .hasSize(2)
+                                            .extracting(policy -> policy.policy().getPolicyId())
+                                            .containsExactly(defaultPolicyId1, defaultPolicyId2);
+            }
         }
 
     }
