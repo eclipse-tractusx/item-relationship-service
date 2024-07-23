@@ -264,7 +264,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public List<AcceptedPolicy> getAcceptedPolicies(final String bpn) {
 
         if (bpn == null) {
-            return getEitherCustomOrConfiguredDefaultPolicy();
+            return getCustomPolicyOrFallback();
         }
 
         final List<Policy> storedPolicies = getStoredPolicies(List.of(bpn));
@@ -278,7 +278,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
      *
      * @return list of default policies
      */
-    private List<AcceptedPolicy> getEitherCustomOrConfiguredDefaultPolicy() {
+    private List<AcceptedPolicy> getCustomPolicyOrFallback() {
         final List<Policy> defaultPoliciesFromDb = getAllStoredPolicies().get(DEFAULT);
         if (isNotEmpty(defaultPoliciesFromDb)) {
             return defaultPoliciesFromDb.stream().map(this::toAcceptedPolicy).toList();
