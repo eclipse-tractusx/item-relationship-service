@@ -8,8 +8,13 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
+
+- Improved exception handling concerning invalid date format in search parameters for `GET /irs/policies/paged`. #639
+
 ### Changed
 
+- Improved documentation for `GET /irs/policies/paged` endpoint. #639
 - Cleanup in IrsApplicationTest.generatedOpenApiMatchesContract 
   (removed obsolete ignoringFields, improved assertion message)
 
