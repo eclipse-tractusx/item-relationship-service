@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.services;
 
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.eclipse.tractusx.irs.common.persistence.BlobPersistence.DEFAULT_BLOB_NAME;
 
 import java.time.Clock;
@@ -77,7 +78,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     private final Clock clock;
 
-    private static final String DEFAULT = "default";
+    /* package */ static final String DEFAULT = "default";
 
     public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
             final PolicyPersistence persistence, final EdcTransformer edcTransformer, final Clock clock) {
@@ -263,12 +264,27 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public List<AcceptedPolicy> getAcceptedPolicies(final String bpn) {
 
         if (bpn == null) {
-            return getConfiguredDefaultPolicies();
+            return getEitherCustomOrConfiguredDefaultPolicy();
         }
 
         final List<Policy> storedPolicies = getStoredPolicies(List.of(bpn));
         final Stream<Policy> result = sortByPolicyId(storedPolicies);
         return result.map(this::toAcceptedPolicy).toList();
+    }
+
+    /**
+     * Gets either the custom default policies from the database
+     * or the fallback default policies from the configuration.
+     *
+     * @return list of default policies
+     */
+    private List<AcceptedPolicy> getEitherCustomOrConfiguredDefaultPolicy() {
+        final List<Policy> defaultPoliciesFromDb = getAllStoredPolicies().get(DEFAULT);
+        if (isNotEmpty(defaultPoliciesFromDb)) {
+            return defaultPoliciesFromDb.stream().map(this::toAcceptedPolicy).toList();
+        } else {
+            return getConfiguredDefaultPolicies();
+        }
     }
 
     private static Stream<Policy> sortByPolicyId(final List<Policy> policies) {

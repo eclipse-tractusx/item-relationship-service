@@ -8,6 +8,11 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed already merged implementation from _"Access and Usage Policy Validation flow correction. #757"_ 
+  where fallback to default policy was not implemented correctly.
+
 ## [5.4.0] - 2024-07-22
 
 ### Changed
