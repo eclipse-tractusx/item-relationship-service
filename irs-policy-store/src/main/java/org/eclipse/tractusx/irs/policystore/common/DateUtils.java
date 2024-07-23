@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Date utilities.
@@ -34,11 +36,19 @@ public final class DateUtils {
     }
 
     public static boolean isDateBefore(final OffsetDateTime dateTime, final String referenceDateString) {
-        return dateTime.isBefore(toOffsetDateTimeAtStartOfDay(referenceDateString));
+        if (isDateWithoutTime(referenceDateString)) {
+            return dateTime.isBefore(toOffsetDateTimeAtStartOfDay(referenceDateString));
+        } else {
+            return dateTime.isBefore(OffsetDateTime.parse(referenceDateString));
+        }
     }
 
     public static boolean isDateAfter(final OffsetDateTime dateTime, final String referenceDateString) {
-        return dateTime.isAfter(toOffsetDateTimeAtEndOfDay(referenceDateString));
+        if (isDateWithoutTime(referenceDateString)) {
+            return dateTime.isAfter(toOffsetDateTimeAtEndOfDay(referenceDateString));
+        } else {
+            return dateTime.isAfter(OffsetDateTime.parse(referenceDateString));
+        }
     }
 
     public static OffsetDateTime toOffsetDateTimeAtStartOfDay(final String dateString) {
@@ -47,5 +57,24 @@ public final class DateUtils {
 
     public static OffsetDateTime toOffsetDateTimeAtEndOfDay(final String dateString) {
         return LocalDate.parse(dateString).atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC);
+    }
+
+    public static boolean isDateWithoutTime(final String referenceDateString) {
+        try {
+            DateTimeFormatter.ofPattern("yyyy-MM-dd").parse(referenceDateString);
+            return true;
+        } catch (DateTimeParseException e) {
+            try {
+                OffsetDateTime.parse(referenceDateString, DateTimeFormatter.ISO_DATE);
+                return true;
+            } catch (DateTimeParseException e2) {
+                try {
+                    OffsetDateTime.parse(referenceDateString, DateTimeFormatter.ISO_DATE_TIME);
+                    return false;
+                } catch (DateTimeParseException e3) {
+                    throw new IllegalArgumentException("Invalid date format: " + referenceDateString);
+                }
+            }
+        }
     }
 }

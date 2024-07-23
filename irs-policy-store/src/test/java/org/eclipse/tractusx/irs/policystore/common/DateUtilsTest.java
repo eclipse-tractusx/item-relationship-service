@@ -20,6 +20,7 @@
 package org.eclipse.tractusx.irs.policystore.common;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,6 +28,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -40,11 +43,26 @@ class DateUtilsTest {
     }
 
     static Stream<Arguments> provideDatesForIsDateBefore() {
-        final OffsetDateTime referenceDateTime = LocalDate.parse("2024-07-05").atStartOfDay().atOffset(ZoneOffset.UTC);
         return Stream.of( //
-                Arguments.of(referenceDateTime, "2024-07-04", false),
-                Arguments.of(referenceDateTime, "2024-07-05", false),
-                Arguments.of(referenceDateTime, "2024-07-06", true));
+                Arguments.of(atStartOfDay("2024-07-05"), "2024-07-04", false),  //
+                Arguments.of(atStartOfDay("2024-07-05"), "2024-07-05", false), //
+                Arguments.of(atStartOfDay("2024-07-05"), "2024-07-06", true), //
+                Arguments.of(OffsetDateTime.parse("2024-07-23T15:30:00Z"), "2024-07-23T15:30:00Z", false), //
+                Arguments.of(OffsetDateTime.parse("2024-07-23T15:30:00Z"), "2024-07-23T15:30:01Z", true), //
+                Arguments.of(OffsetDateTime.parse("2023-12-01T08:45:00+05:30"), "2023-12-01T08:45:00+05:30", false), //
+                Arguments.of(OffsetDateTime.parse("2023-12-01T08:45:00+05:30"), "2023-12-01T08:46:01+05:30", true), //
+                Arguments.of(OffsetDateTime.parse("2022-11-15T22:15:30-04:00"), "2022-11-15T22:15:30-04:00", false), //
+                Arguments.of(OffsetDateTime.parse("2022-11-15T22:15:30-04:00"), "2022-11-15T22:16:01-04:00", true), //
+                Arguments.of(OffsetDateTime.parse("2021-06-30T14:00:00.123Z"), "2021-06-30T14:00:00.123Z", false), //
+                Arguments.of(OffsetDateTime.parse("2021-06-30T14:00:00.123Z"), "2021-06-30T14:00:00.124Z", true), //
+                Arguments.of(OffsetDateTime.parse("2021-06-29T00:00Z"), "2021-06-29T00:00Z", false), //
+                Arguments.of(OffsetDateTime.parse("2021-06-29T00:00Z"), "2021-06-30T00:01Z", true) //
+        );
+    }
+
+    @NotNull
+    private static OffsetDateTime atStartOfDay(final String date) {
+        return LocalDate.parse(date).atStartOfDay().atOffset(ZoneOffset.UTC);
     }
 
     @ParameterizedTest
@@ -54,14 +72,48 @@ class DateUtilsTest {
     }
 
     static Stream<Arguments> provideDatesForIsDateAfter() {
-        final OffsetDateTime referenceDateTime = LocalDate.parse("2023-07-05")
-                                                          .atTime(LocalTime.MAX)
-                                                          .atOffset(ZoneOffset.UTC);
 
         return Stream.of( //
-                Arguments.of(referenceDateTime, "2023-07-04", true),
-                Arguments.of(referenceDateTime, "2023-07-05", false),
-                Arguments.of(referenceDateTime, "2023-07-06", false));
+                Arguments.of(atStartOfDay("2024-07-05"), "2024-07-04", true),  //
+                Arguments.of(atStartOfDay("2024-07-05"), "2024-07-05", false), //
+                Arguments.of(atStartOfDay("2024-07-05"), "2024-07-06", false), //
+                Arguments.of(OffsetDateTime.parse("2024-07-23T15:30:00Z"), "2024-07-23T15:30:00Z", false), //
+                Arguments.of(OffsetDateTime.parse("2024-07-23T15:30:00Z"), "2024-07-23T15:29:59Z", true), //
+                Arguments.of(OffsetDateTime.parse("2023-12-01T08:45:00+05:30"), "2023-12-01T08:45:00+05:30", false), //
+                Arguments.of(OffsetDateTime.parse("2023-12-01T08:45:00+05:30"), "2023-12-01T08:44:59+05:30", true), //
+                Arguments.of(OffsetDateTime.parse("2022-11-15T22:15:30-04:00"), "2022-11-15T22:15:30-04:00", false), //
+                Arguments.of(OffsetDateTime.parse("2022-11-15T22:15:30-04:00"), "2022-11-15T22:15:29-04:00", true), //
+                Arguments.of(OffsetDateTime.parse("2021-06-30T14:00:00.123Z"), "2021-06-30T14:00:00.123Z", false), //
+                Arguments.of(OffsetDateTime.parse("2021-06-30T14:00:00.123Z"), "2021-06-30T14:00:00.122Z", true), //
+                Arguments.of(OffsetDateTime.parse("2021-06-29T00:00Z"), "2021-06-29T00:00Z", false), //
+                Arguments.of(OffsetDateTime.parse("2021-06-29T00:00Z"), "2021-06-28T00:01Z", true) //
+        );
+    }
+
+    @NotNull
+    private static OffsetDateTime atEndOfDay(final String dateStr) {
+        return LocalDate.parse(dateStr).atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC);
+    }
+
+    @Test
+    public void testIsDateWithoutTimeWithDateOnly() {
+        assertThat(DateUtils.isDateWithoutTime("2023-07-23")).isTrue();
+    }
+
+    @Test
+    public void testIsDateWithoutTimeWithDateTime() {
+        assertThat(DateUtils.isDateWithoutTime("2023-07-23T10:15:30+01:00")).isFalse();
+    }
+
+    @Test
+    public void testIsDateWithoutTimeWithInvalidDate() {
+        assertThatThrownBy(() -> DateUtils.isDateWithoutTime("invalid-date")).isInstanceOf(
+                IllegalArgumentException.class).hasMessageContaining("Invalid date format: invalid-date");
+    }
+
+    @Test
+    public void testIsDateWithoutTimeWithDifferentFormatDateTime() {
+        assertThat(DateUtils.isDateWithoutTime("2023-07-23T10:15:30Z")).isFalse();
     }
 
 }

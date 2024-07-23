@@ -10,6 +10,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 
+- The date search operators `AFTER_LOCAL_DATE` and `BEFORE_LOCAL_DATE` for fields `createdOn` and `validUntil` support any ISO date time now (relates to #639 and #750).
 - Improved documentation for `GET /irs/policies/paged` endpoint. #639
 
 ## [5.4.0] - 2024-07-22
