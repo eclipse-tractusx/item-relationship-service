@@ -196,7 +196,8 @@ public class PolicyStoreController {
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers(allowDefault = true) //
             @Parameter(description = "List of business partner numbers. "
-                    + "This may also contain the value \"default\" in order to query the default policies.") //
+                                     + "This may also contain the value \"default\" in order to query the default policies.")
+            //
             final List<String> businessPartnerNumbers //
     ) {
 
@@ -263,7 +264,7 @@ public class PolicyStoreController {
     @GetMapping("/policies/paged")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find registered policies that should be accepted in EDC negotiation "
-            + "(with filtering, sorting and paging).", //
+                         + "(with filtering, sorting and paging).", //
                description = """
                        Fetch a page of policies with options to filter and sort.
                        \s
@@ -278,13 +279,13 @@ public class PolicyStoreController {
                        \s
                        Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
                        \s
-                       | Field        | Supported Operations                     | Value Format         |
-                       |--------------|------------------------------------------|----------------------|
-                       | `BPN`        | `EQUALS`, `STARTS_WITH`                  | any string           |
-                       | `policyId`   | `EQUALS`, `STARTS_WITH`                  | any string           |
-                       | `action`     | `EQUALS`                                 | `use` or `access`    |
-                       | `createdOn`  | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd`         |
-                       | `validUntil` | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd`         |
+                       | Field        | Supported Operations                     | Value Format                       |
+                       |--------------|------------------------------------------|------------------------------------|
+                       | `BPN`        | `EQUALS`, `STARTS_WITH`                  | any string                         |
+                       | `policyId`   | `EQUALS`, `STARTS_WITH`                  | any string                         |
+                       | `action`     | `EQUALS`                                 | `use` or `access`                  |
+                       | `createdOn`  | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd` or ISO date with time |
+                       | `validUntil` | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd` or ISO date with time |
                        
                        ### Sorting
                        `sort=[BPN|policyId|action|createdOn|validUntil],[asc|desc]`.
@@ -326,7 +327,8 @@ public class PolicyStoreController {
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers(allowDefault = true) //
             @Parameter(name = "businessPartnerNumbers", description = "List of business partner numbers. "
-                    + "This may also contain the value \"default\" in order to query the default policies.") //
+                                                                      + "This may also contain the value \"default\" in order to query the default policies.")
+            //
             final List<String> businessPartnerNumbers) {
 
         if (pageable.getPageSize() > MAX_PAGE_SIZE) {
