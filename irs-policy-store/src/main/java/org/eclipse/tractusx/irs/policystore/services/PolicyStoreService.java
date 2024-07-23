@@ -78,7 +78,10 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     private final Clock clock;
 
-    /* package */ static final String DEFAULT = "default";
+    /**
+     * Under this "virtual" BPN custom default policies are stored
+     */
+    /* package */ static final String BPN_DEFAULT = "default";
 
     public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
             final PolicyPersistence persistence, final EdcTransformer edcTransformer, final Clock clock) {
@@ -105,7 +108,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         policy.setValidUntil(request.validUntil());
 
         registeredPolicy = doRegisterPolicy(policy,
-                request.businessPartnerNumber() == null ? DEFAULT : request.businessPartnerNumber());
+                request.businessPartnerNumber() == null ? BPN_DEFAULT : request.businessPartnerNumber());
 
         return registeredPolicy;
     }
@@ -138,10 +141,10 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
     }
 
-    public List<Policy> getStoredPolicies(final List<String> bpnls) {
-        log.info("Reading all stored polices for BPN {}", bpnls);
+    public List<Policy> getStoredPolicies(final List<String> businessPartnerNumbers) {
+        log.info("Reading all stored polices for BPN {}", businessPartnerNumbers);
         final List<Policy> storedPolicies = new LinkedList<>();
-        for (final String bpn : bpnls) {
+        for (final String bpn : businessPartnerNumbers) {
             storedPolicies.addAll(persistence.readAll(bpn));
         }
 
@@ -166,13 +169,13 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public Map<String, List<Policy>> getAllStoredPolicies() {
         final Map<String, List<Policy>> bpnToPolicies = persistence.readAll();
         if (containsNoDefaultPolicy(bpnToPolicies)) {
-            bpnToPolicies.put(DEFAULT, allowedPoliciesFromConfig);
+            bpnToPolicies.put(BPN_DEFAULT, allowedPoliciesFromConfig);
         }
         return bpnToPolicies;
     }
 
     private static boolean containsNoDefaultPolicy(final Map<String, List<Policy>> bpnToPolicies) {
-        return bpnToPolicies.keySet().stream().noneMatch(key -> StringUtils.isEmpty(key) || DEFAULT.equals(key));
+        return bpnToPolicies.keySet().stream().noneMatch(key -> StringUtils.isEmpty(key) || BPN_DEFAULT.equals(key));
     }
 
     public void deletePolicy(final String policyId) {
@@ -186,7 +189,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         } else if (bpnsContainingPolicyId.stream().noneMatch(StringUtils::isNotEmpty)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, //
                     "A configured default policy cannot be deleted. "
-                    + "It can be overridden by defining a default policy via the API instead.");
+                            + "It can be overridden by defining a default policy via the API instead.");
         } else {
             try {
                 log.info("Deleting policy with id {}", policyId);
@@ -210,7 +213,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public void updatePolicies(final UpdatePolicyRequest request) {
         for (final String policyId : request.policyIds()) {
             updatePolicy(policyId, request.validUntil(),
-                    request.businessPartnerNumbers() == null ? List.of(DEFAULT) : request.businessPartnerNumbers());
+                    request.businessPartnerNumbers() == null ? List.of(BPN_DEFAULT) : request.businessPartnerNumbers());
         }
     }
 
@@ -279,7 +282,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
      * @return list of default policies
      */
     private List<AcceptedPolicy> getCustomPolicyOrFallback() {
-        final List<Policy> defaultPoliciesFromDb = getAllStoredPolicies().get(DEFAULT);
+        final List<Policy> defaultPoliciesFromDb = getAllStoredPolicies().get(BPN_DEFAULT);
         if (isNotEmpty(defaultPoliciesFromDb)) {
             return defaultPoliciesFromDb.stream().map(this::toAcceptedPolicy).toList();
         } else {

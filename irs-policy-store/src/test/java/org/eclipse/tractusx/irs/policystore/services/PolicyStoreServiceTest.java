@@ -160,7 +160,7 @@ class PolicyStoreServiceTest {
             testee.registerPolicy(new CreatePolicyRequest(now, null, jsonObject));
 
             // ASSERT
-            verify(persistenceMock).save(eq(PolicyStoreService.DEFAULT), policyCaptor.capture());
+            verify(persistenceMock).save(eq(PolicyStoreService.BPN_DEFAULT), policyCaptor.capture());
             assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("e917f5f-8dac-49ac-8d10-5b4d254d2b48");
             assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(now);
             assertThat(policyCaptor.getValue().getPermissions()).hasSize(1);
@@ -375,7 +375,7 @@ class PolicyStoreServiceTest {
                 // ARRANGE
                 final String customDefaultPolicy1 = "custom-default-policy-1";
                 final String customDefaultPolicy2 = "custom-default-policy-2";
-                when(persistenceMock.readAll()).thenReturn(Map.of(PolicyStoreService.DEFAULT,
+                when(persistenceMock.readAll()).thenReturn(Map.of(PolicyStoreService.BPN_DEFAULT,
                         List.of(createPolicy(customDefaultPolicy1), createPolicy(customDefaultPolicy2))));
 
                 // ACT
@@ -425,7 +425,7 @@ class PolicyStoreServiceTest {
                 // this overrides the configured default policy
                 final String defaultPolicyId1 = "registered-default-policy-1";
                 final String defaultPolicyId2 = "registered-default-policy-2";
-                when(persistenceMock.readAll(PolicyStoreService.DEFAULT)).thenReturn(List.of(
+                when(persistenceMock.readAll(PolicyStoreService.BPN_DEFAULT)).thenReturn(List.of(
                         // default policy 1
                         createPolicy(defaultPolicyId1),
                         // default policy 2
