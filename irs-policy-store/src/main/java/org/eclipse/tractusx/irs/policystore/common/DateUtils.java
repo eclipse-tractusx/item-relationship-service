@@ -26,10 +26,15 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Date utilities.
  */
+@Slf4j
 public final class DateUtils {
+
+    public static final String SIMPLE_DATE_WITHOUT_TIME = "yyyy-MM-dd";
 
     private DateUtils() {
         // private constructor (utility  class)
@@ -59,22 +64,30 @@ public final class DateUtils {
         return LocalDate.parse(dateString).atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC);
     }
 
+    @SuppressWarnings("PMD.PreserveStackTrace") // this is intended here as we try to parse with different formats
     public static boolean isDateWithoutTime(final String referenceDateString) {
         try {
-            DateTimeFormatter.ofPattern("yyyy-MM-dd").parse(referenceDateString);
+            DateTimeFormatter.ofPattern(SIMPLE_DATE_WITHOUT_TIME).parse(referenceDateString);
             return true;
         } catch (DateTimeParseException e) {
-            try {
-                OffsetDateTime.parse(referenceDateString, DateTimeFormatter.ISO_DATE);
-                return true;
-            } catch (DateTimeParseException e2) {
-                try {
-                    OffsetDateTime.parse(referenceDateString, DateTimeFormatter.ISO_DATE_TIME);
-                    return false;
-                } catch (DateTimeParseException e3) {
-                    throw new IllegalArgumentException("Invalid date format: " + referenceDateString);
-                }
-            }
+            // ignore, trying next format below
+            log.trace(e.getMessage(), e);
+        }
+
+        try {
+            OffsetDateTime.parse(referenceDateString, DateTimeFormatter.ISO_DATE);
+            return true;
+        } catch (DateTimeParseException e) {
+            // ignore, trying next format below
+            log.trace(e.getMessage(), e);
+        }
+
+        try {
+            OffsetDateTime.parse(referenceDateString, DateTimeFormatter.ISO_DATE_TIME);
+            return false;
+        } catch (DateTimeParseException e) {
+            log.trace(e.getMessage(), e);
+            throw new IllegalArgumentException("Invalid date format: " + referenceDateString);
         }
     }
 }
