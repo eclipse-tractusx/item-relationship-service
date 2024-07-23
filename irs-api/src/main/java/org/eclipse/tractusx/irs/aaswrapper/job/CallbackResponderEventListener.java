@@ -57,11 +57,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 class CallbackResponderEventListener {
 
+    public static final String INVALID_CALLBACK_URL = "Invalid callback url '{}'.";
     private final UrlValidator urlValidator;
     private final RestTemplate restTemplate;
 
-    /* package */ CallbackResponderEventListener(@Qualifier(NO_ERROR_REST_TEMPLATE) final RestTemplate noErrorRestTemplate) {
-        this.urlValidator = new UrlValidator();
+    /* package */ CallbackResponderEventListener(
+            @Qualifier(NO_ERROR_REST_TEMPLATE) final RestTemplate noErrorRestTemplate) {
+        this.urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
         this.restTemplate = noErrorRestTemplate;
     }
 
@@ -83,6 +85,8 @@ class CallbackResponderEventListener {
                 } catch (final ResourceAccessException resourceAccessException) {
                     log.warn("Callback url is not reachable - connection timed out, jobId {}", jobProcessingFinishedEvent.jobId());
                 }
+            } else {
+                log.warn(INVALID_CALLBACK_URL, callbackUri);
             }
         }
     }
@@ -105,6 +109,8 @@ class CallbackResponderEventListener {
                 } catch (final ResourceAccessException resourceAccessException) {
                     log.warn("Callback url is not reachable - connection timed out, orderId {} batchId {}", batchProcessingFinishedEvent.batchOrderId(), batchProcessingFinishedEvent.batchId());
                 }
+            } else {
+                log.warn(INVALID_CALLBACK_URL, callbackUri);
             }
         }
     }
@@ -127,6 +133,8 @@ class CallbackResponderEventListener {
                 } catch (final ResourceAccessException resourceAccessException) {
                     log.warn("Callback url is not reachable - connection timed out, jobId {}", batchOrderProcessingFinishedEvent.batchOrderId());
                 }
+            } else {
+                log.warn(INVALID_CALLBACK_URL, callbackUri);
             }
         }
     }
@@ -136,7 +144,7 @@ class CallbackResponderEventListener {
     }
 
     @SuppressWarnings("PMD.UseConcurrentHashMap")
-    private URI buildCallbackUri(final String callbackUrl, final String jobId,  final JobState jobState) {
+    private URI buildCallbackUri(final String callbackUrl, final String jobId, final JobState jobState) {
         final Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("id", jobId);
         uriVariables.put("state", jobState);
@@ -145,7 +153,7 @@ class CallbackResponderEventListener {
         uriComponentsBuilder.uriVariables(uriVariables);
         return uriComponentsBuilder.build().toUri();
     }
-    
+
     @SuppressWarnings("PMD.UseConcurrentHashMap")
     private URI buildCallbackUri(final String callbackUrl, final UUID orderId, final UUID batchId, final ProcessingState orderState, final ProcessingState batchState) {
         final Map<String, Object> uriVariables = new HashMap<>();
