@@ -281,13 +281,13 @@ public class PolicyStoreController {
                        \s
                        Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
                        \s
-                       | Field        | Supported Operations                     | Value Format         |
-                       |--------------|------------------------------------------|----------------------|
-                       | `BPN`        | `EQUALS`, `STARTS_WITH`                  | any string           |
-                       | `policyId`   | `EQUALS`, `STARTS_WITH`                  | any string           |
-                       | `action`     | `EQUALS`                                 | `use` or `access`    |
-                       | `createdOn`  | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd`         |
-                       | `validUntil` | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd`         |
+                       | Field        | Supported Operations                     | Value Format                       |
+                       |--------------|------------------------------------------|------------------------------------|
+                       | `BPN`        | `EQUALS`, `STARTS_WITH`                  | any string                         |
+                       | `policyId`   | `EQUALS`, `STARTS_WITH`                  | any string                         |
+                       | `action`     | `EQUALS`                                 | `use` or `access`                  |
+                       | `createdOn`  | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd` or ISO date with time |
+                       | `validUntil` | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd` or ISO date with time |
                        
                        ### Sorting
                        `sort=[BPN|policyId|action|createdOn|validUntil],[asc|desc]`.

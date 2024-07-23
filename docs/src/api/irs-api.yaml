@@ -1049,13 +1049,14 @@ paths:
         ```\n \n### Filtering\n \n`search=<Field>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<Value>`.\n\
         \ \nExample: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.\n\
         \ \n| Field        | Supported Operations                     | Value Format\
-        \         |\n|--------------|------------------------------------------|----------------------|\n\
+        \                       |\n|--------------|------------------------------------------|------------------------------------|\n\
         | `BPN`        | `EQUALS`, `STARTS_WITH`                  | any string   \
-        \        |\n| `policyId`   | `EQUALS`, `STARTS_WITH`                  | any\
-        \ string           |\n| `action`     | `EQUALS`                          \
-        \       | `use` or `access`    |\n| `createdOn`  | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`\
-        \  | `yyyy-MM-dd`         |\n| `validUntil` | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`\
-        \  | `yyyy-MM-dd`         |\n\n### Sorting\n`sort=[BPN|policyId|action|createdOn|validUntil],[asc|desc]`.\n\
+        \                      |\n| `policyId`   | `EQUALS`, `STARTS_WITH`       \
+        \           | any string                         |\n| `action`     | `EQUALS`\
+        \                                 | `use` or `access`                  |\n\
+        | `createdOn`  | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd` or\
+        \ ISO date with time |\n| `validUntil` | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`\
+        \  | `yyyy-MM-dd` or ISO date with time |\n\n### Sorting\n`sort=[BPN|policyId|action|createdOn|validUntil],[asc|desc]`.\n\
         \ \nExample: `sort=BPN,asc&sort=policyId,desc`. _(default: `BPN,asc`)_\n\n\
         ### Paging\n \nExample: `page=1&size=20` _(default page size: 10, maximal\
         \ page size: 1000)_\n"
