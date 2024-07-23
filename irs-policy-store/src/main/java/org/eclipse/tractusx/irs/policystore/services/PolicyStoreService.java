@@ -182,22 +182,19 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public void deletePolicy(final String policyId) {
 
+        handleTrialToModifyFallbackPolicy(policyId);
+
         log.info("Getting all policies to find correct BPN");
         final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(), policyId);
 
         if (bpnsContainingPolicyId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Policy with id '%s' not found".formatted(policyId));
-        } else if (bpnsContainingPolicyId.stream().noneMatch(StringUtils::isNotEmpty)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, //
-                    "A configured default policy cannot be deleted. "
-                            + "It can be overridden by defining a default policy via the API instead.");
         } else {
             try {
                 log.info("Deleting policy with id {}", policyId);
                 bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
             } catch (final ResourceDoesNotExistException e) {
-                handleTrialToModifyConfiguredDefaultPolicy(policyId, e);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
             } catch (final PolicyStoreException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
@@ -206,30 +203,22 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     public void deletePolicyForEachBpn(final String policyId, final List<String> bpnList) {
+
+        handleTrialToModifyFallbackPolicy(policyId);
+
         try {
             for (final String bpn : bpnList) {
                 persistence.delete(bpn, policyId);
             }
         } catch (final ResourceDoesNotExistException e) {
-            handleTrialToModifyConfiguredDefaultPolicy(policyId, e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }
 
-    private void handleTrialToModifyConfiguredDefaultPolicy(final String policyId, final Exception cause) {
-        if (isConfiguredDefaultPolicy(policyId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    ("The policy '%s' is a configured default policy which cannot be modified. "
-                     + "However you can define custom default policies via the API by registering a policy "
-                     + "without a business partner number. "
-                     + "These will take precedence over configured default policies.").formatted(policyId), cause);
-        }
-    }
-
-    private boolean isConfiguredDefaultPolicy(final String policyId) {
-        return this.allowedPoliciesFromConfig.stream().anyMatch(p -> p.getPolicyId().equals(policyId));
+    private boolean isFallbackPolicyFromConfiguration(final String policyId) {
+        return this.allowedPoliciesFromConfig.stream().map(Policy::getPolicyId).anyMatch(p -> p.equals(policyId));
     }
 
     public void updatePolicies(final UpdatePolicyRequest request) {
@@ -241,6 +230,8 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public void updatePolicy(final String policyId, final OffsetDateTime newValidUntil,
             final List<String> newBusinessPartnerNumbers) {
+
+        handleTrialToModifyFallbackPolicy(policyId);
 
         log.info("Updating policy with id {}", policyId);
 
@@ -324,6 +315,16 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     private List<Policy> createDefaultPolicyFromConfig(final DefaultAcceptedPoliciesConfig defaultPoliciesConfig) {
         return StringMapper.mapFromBase64String(defaultPoliciesConfig.getAcceptedPolicies(), LIST_OF_POLICIES_TYPE);
+    }
+
+    private void handleTrialToModifyFallbackPolicy(final String policyId) {
+        if (isFallbackPolicyFromConfiguration(policyId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    ("The policy '%s' is a configured default policy which cannot be modified. "
+                     + "However you can define custom default policies via the API by registering a policy "
+                     + "without a business partner number. "
+                     + "These will take precedence over configured default policies.").formatted(policyId));
+        }
     }
 
 }
