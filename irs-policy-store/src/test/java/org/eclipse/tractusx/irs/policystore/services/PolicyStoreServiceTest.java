@@ -150,18 +150,37 @@ class PolicyStoreServiceTest {
     class RegisterPolicyTests {
 
         @Test
+        void registerPolicy_whenFallbackPolicyId_shouldReturnHttpStatus400() {
+            final JsonObject policy = PolicyStoreTestUtil.toJsonObject(
+                    REGISTER_POLICY_EXAMPLE_PAYLOAD.formatted(CONFIGURED_DEFAULT_POLICY_ID));
+            assertThatThrownBy(() -> testee.registerPolicy(CreatePolicyRequest.builder()
+                                                                              .businessPartnerNumber("BPNL1234567890AB")
+                                                                              .validUntil(OffsetDateTime.now(clock)
+                                                                                                        .plusYears(2))
+                                                                              .payload(policy)
+                                                                              .build())).isInstanceOf(
+                                                                                                ResponseStatusException.class)
+                                                                                        .hasMessageContaining(
+                                                                                                "400 BAD_REQUEST")
+                                                                                        .hasMessageContaining(
+                                                                                                CONFIGURED_DEFAULT_POLICY_ID);
+        }
+
+        @Test
         void registerPolicy_withBpnNull_shouldStoreAsDefault() {
 
             // ARRANGE
             final OffsetDateTime now = OffsetDateTime.now();
-            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(REGISTER_POLICY_EXAMPLE_PAYLOAD);
+            final String policyId = "e917f5f-8dac-49ac-8d10-5b4d254d2b48";
+            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(
+                    REGISTER_POLICY_EXAMPLE_PAYLOAD.formatted(policyId));
 
             // ACT
             testee.registerPolicy(new CreatePolicyRequest(now, null, jsonObject));
 
             // ASSERT
             verify(persistenceMock).save(eq(PolicyStoreService.BPN_DEFAULT), policyCaptor.capture());
-            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("e917f5f-8dac-49ac-8d10-5b4d254d2b48");
+            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo(policyId);
             assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(now);
             assertThat(policyCaptor.getValue().getPermissions()).hasSize(1);
         }
@@ -171,7 +190,9 @@ class PolicyStoreServiceTest {
 
             // ARRANGE
             final OffsetDateTime now = OffsetDateTime.now();
-            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(REGISTER_POLICY_EXAMPLE_PAYLOAD);
+            final String policyId = "e917f5f-8dac-49ac-8d10-5b4d254d2b48";
+            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(
+                    REGISTER_POLICY_EXAMPLE_PAYLOAD.formatted(policyId));
 
             // ACT
             final OffsetDateTime validUntil = now.plusMonths(1);
@@ -182,7 +203,7 @@ class PolicyStoreServiceTest {
 
             // ASSERT
             verify(persistenceMock).save(eq("BPNL00000123ABCD"), policyCaptor.capture());
-            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("e917f5f-8dac-49ac-8d10-5b4d254d2b48");
+            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo(policyId);
             assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(validUntil);
             assertThat(policyCaptor.getValue().getPermissions()).isNotEmpty();
 
@@ -538,10 +559,47 @@ class PolicyStoreServiceTest {
                                                                                       notExistingPolicyId);
         }
 
+        @Test
+        void deletePolicy_whenFallbackPolicy_shouldReturnHttpStatus400() {
+            assertThatThrownBy(() -> testee.deletePolicy(CONFIGURED_DEFAULT_POLICY_ID)).isInstanceOf(
+                                                                                               ResponseStatusException.class)
+                                                                                       .hasMessageContaining(
+                                                                                               "400 BAD_REQUEST")
+                                                                                       .hasMessageContaining(
+                                                                                               CONFIGURED_DEFAULT_POLICY_ID);
+        }
+
+        @Test
+        void deletePolicyForEachBpn_whenFallbackPolicy_shouldReturnHttpStatus400() {
+            assertThatThrownBy(() -> testee.deletePolicyForEachBpn(CONFIGURED_DEFAULT_POLICY_ID,
+                    List.of("BPNL1234567890AB", "BPNL1234567890CD"))).isInstanceOf(ResponseStatusException.class)
+                                                                     .hasMessageContaining("400 BAD_REQUEST")
+                                                                     .hasMessageContaining(
+                                                                             CONFIGURED_DEFAULT_POLICY_ID);
+        }
+
     }
 
     @Nested
     class UpdatePoliciesTests {
+
+        @Test
+        void updatePolicies_whenFallbackPolicy_shouldReturnHttpStatus400() {
+            assertThatThrownBy(() -> testee.updatePolicies(
+                    new UpdatePolicyRequest(OffsetDateTime.now(clock), List.of("BPNL1234567890AB", "BPNL1234567890CD"),
+                            List.of(CONFIGURED_DEFAULT_POLICY_ID)))).isInstanceOf(ResponseStatusException.class)
+                                                                    .hasMessageContaining("400 BAD_REQUEST")
+                                                                    .hasMessageContaining(CONFIGURED_DEFAULT_POLICY_ID);
+        }
+
+        @Test
+        void updatePolicy_whenFallbackPolicy_shouldReturnHttpStatus400() {
+            assertThatThrownBy(() -> testee.updatePolicy(CONFIGURED_DEFAULT_POLICY_ID, OffsetDateTime.now(clock),
+                    List.of("BPNL1234567890AB", "BPNL1234567890CD"))).isInstanceOf(ResponseStatusException.class)
+                                                                     .hasMessageContaining("400 BAD_REQUEST")
+                                                                     .hasMessageContaining(
+                                                                             CONFIGURED_DEFAULT_POLICY_ID);
+        }
 
         @Test
         void updatePolicies_shouldUpdateBpnAndValidUntil() {

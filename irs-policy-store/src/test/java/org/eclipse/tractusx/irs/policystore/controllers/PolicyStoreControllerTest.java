@@ -68,7 +68,7 @@ public class PolicyStoreControllerTest {
                 "@context": {
                     "odrl": "http://www.w3.org/ns/odrl/2/"
                 },
-                "@id": "e917f5f-8dac-49ac-8d10-5b4d254d2b48",
+                "@id": "%s",
                 "policy": {
                     "odrl:permission": [
                         {
@@ -118,7 +118,8 @@ public class PolicyStoreControllerTest {
         void registerAllowedPolicy() {
             // arrange
             final OffsetDateTime now = OffsetDateTime.now();
-            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(REGISTER_POLICY_EXAMPLE_PAYLOAD);
+            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(
+                    REGISTER_POLICY_EXAMPLE_PAYLOAD.formatted("e917f5f-8dac-49ac-8d10-5b4d254d2b48"));
 
             // act
             final CreatePolicyRequest request = new CreatePolicyRequest(now.plusMinutes(1), null,

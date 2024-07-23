@@ -41,6 +41,7 @@ import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.exceptions.ResourceDoesNotExistException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -89,7 +90,7 @@ public class PolicyPersistence {
         final var policies = readAll(bpn);
         final var modifiedPolicies = policies.stream().filter(p -> !p.getPolicyId().equals(policyId)).toList();
         if (policies.size() == modifiedPolicies.size()) {
-            throw new PolicyStoreException("Policy with id '" + policyId + "' doesn't exists!");
+            throw new ResourceDoesNotExistException("Policy with id '%s' doesn't exists!".formatted(policyId));
         }
         save(bpn, modifiedPolicies);
     }
