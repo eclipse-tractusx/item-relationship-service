@@ -109,6 +109,8 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         final Policy policy = edcTransformer.transformToIrsPolicy(policyJson);
         policy.setValidUntil(request.validUntil());
 
+        handleTrialToModifyFallbackPolicy(policy.getPolicyId());
+
         registeredPolicy = doRegisterPolicy(policy,
                 request.businessPartnerNumber() == null ? BPN_DEFAULT : request.businessPartnerNumber());
 
