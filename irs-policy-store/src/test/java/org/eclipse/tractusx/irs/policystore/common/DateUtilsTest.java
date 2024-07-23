@@ -26,13 +26,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class DateUtilsTest {
 
@@ -60,7 +63,6 @@ class DateUtilsTest {
         );
     }
 
-    @NotNull
     private static OffsetDateTime atStartOfDay(final String date) {
         return LocalDate.parse(date).atStartOfDay().atOffset(ZoneOffset.UTC);
     }
@@ -90,7 +92,6 @@ class DateUtilsTest {
         );
     }
 
-    @NotNull
     private static OffsetDateTime atEndOfDay(final String dateStr) {
         return LocalDate.parse(dateStr).atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC);
     }
@@ -113,6 +114,34 @@ class DateUtilsTest {
     public void testIsDateWithoutTimeWithInvalidDate() {
         assertThatThrownBy(() -> DateUtils.isDateWithoutTime("invalid-date")).isInstanceOf(
                 IllegalArgumentException.class).hasMessageContaining("Invalid date format: invalid-date");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "3333-11-11T11:11:11.111Z",
+                             "3333-11-",
+                             "2222",
+                             "asdf"
+    })
+    void testInvalidDate(final String referenceDateStr) {
+        final ThrowingCallable call = () -> DateUtils.isDateAfter(OffsetDateTime.now(), referenceDateStr);
+        assertThatThrownBy(call).isInstanceOf(IllegalArgumentException.class)
+                                .hasMessageContaining("Invalid date")
+                                .hasMessageContaining("refer to the documentation")
+                                .hasCauseInstanceOf(DateTimeParseException.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "   \t",
+                             " ",
+                             ""
+    })
+    @NullSource
+    void testInvalidDateBlank(final String referenceDateStr) {
+        final ThrowingCallable call = () -> DateUtils.isDateAfter(OffsetDateTime.now(), referenceDateStr);
+        assertThatThrownBy(call).isInstanceOf(IllegalArgumentException.class)
+                                .hasMessageContaining("Invalid date")
+                                .hasMessageContaining("must not be blank")
+                                .hasNoCause();
     }
 
 }
