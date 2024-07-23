@@ -95,25 +95,24 @@ class DateUtilsTest {
         return LocalDate.parse(dateStr).atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC);
     }
 
-    @Test
-    public void testIsDateWithoutTimeWithDateOnly() {
-        assertThat(DateUtils.isDateWithoutTime("2023-07-23")).isTrue();
+    @ParameterizedTest
+    @MethodSource("provideDatesForIsDateWithoutTime")
+    public void isDateWithoutTime(final String dateString, final boolean expected) {
+        assertThat(DateUtils.isDateWithoutTime(dateString)).isEqualTo(expected);
     }
 
-    @Test
-    public void testIsDateWithoutTimeWithDateTime() {
-        assertThat(DateUtils.isDateWithoutTime("2023-07-23T10:15:30+01:00")).isFalse();
+    static Stream<Arguments> provideDatesForIsDateWithoutTime() {
+        return Stream.of( //
+                Arguments.of("2023-07-23", true),  //
+                Arguments.of("2023-07-23T10:15:30+01:00", false), //
+                Arguments.of("2023-07-23T10:15:30Z", false) //
+        );
     }
 
     @Test
     public void testIsDateWithoutTimeWithInvalidDate() {
         assertThatThrownBy(() -> DateUtils.isDateWithoutTime("invalid-date")).isInstanceOf(
                 IllegalArgumentException.class).hasMessageContaining("Invalid date format: invalid-date");
-    }
-
-    @Test
-    public void testIsDateWithoutTimeWithDifferentFormatDateTime() {
-        assertThat(DateUtils.isDateWithoutTime("2023-07-23T10:15:30Z")).isFalse();
     }
 
 }
