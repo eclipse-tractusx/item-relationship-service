@@ -50,6 +50,9 @@ public final class DateUtils {
     }
 
     public static boolean isDateAfter(final OffsetDateTime dateTime, final String referenceDateString) {
+        if (StringUtils.isBlank(referenceDateString)) {
+            throw new IllegalArgumentException("Invalid date: must not be blank!");
+        }
         if (isDateWithoutTime(referenceDateString)) {
             return dateTime.isAfter(toOffsetDateTimeAtEndOfDay(referenceDateString));
         } else {
@@ -99,7 +102,7 @@ public final class DateUtils {
             return false;
         } catch (DateTimeParseException e) {
             log.trace(e.getMessage(), e);
-            throw new IllegalArgumentException("Invalid date format: " + referenceDateString);
+            throw new IllegalArgumentException("Invalid date format: " + referenceDateString, e);
         }
     }
 }

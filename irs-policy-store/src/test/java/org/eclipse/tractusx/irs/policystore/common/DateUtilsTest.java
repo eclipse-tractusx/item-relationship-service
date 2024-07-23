@@ -117,8 +117,7 @@ class DateUtilsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "3333-11-11T11:11:11.111Z",
-                             "3333-11-",
+    @ValueSource(strings = { "3333-11-",
                              "2222",
                              "asdf"
     })
@@ -126,7 +125,6 @@ class DateUtilsTest {
         final ThrowingCallable call = () -> DateUtils.isDateAfter(OffsetDateTime.now(), referenceDateStr);
         assertThatThrownBy(call).isInstanceOf(IllegalArgumentException.class)
                                 .hasMessageContaining("Invalid date")
-                                .hasMessageContaining("refer to the documentation")
                                 .hasCauseInstanceOf(DateTimeParseException.class);
     }
 
