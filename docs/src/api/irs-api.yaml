@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: 5.3.0
+  version: 5.4.0
 servers:
 - url: http://localhost:8080
 security:
@@ -1042,19 +1042,21 @@ paths:
       - Policy Store API
   /irs/policies/paged:
     get:
-      description: |
-        Fetch a page of policies with options to filter and sort.
-
-        - **Filtering:**
-          `search=<property>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<value>`.
-          Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
-
-        - **Sorting:**
-          `sort=<property>,[asc|desc]`.
-          Example: `sort=BPN,asc&sort=policyId,desc`.
-
-        - **Paging:**
-          Example: `page=1&size=20`
+      description: "Fetch a page of policies with options to filter and sort.\n \n\
+        Example:\n```\nsearch=BPN,STARTS_WITH,BPNL12&search=validUntil,AFTER_LOCAL_DATE,2024-12-11&sort=validUntil,asc&sort=BPN,asc\n\
+        ```\n \n### Filtering\n \n`search=<Field>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<Value>`.\n\
+        \ \nExample: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.\n\
+        \ \n| Field        | Supported Operations                     | Value Format\
+        \         |\n|--------------|------------------------------------------|----------------------|\n\
+        | `BPN`        | `EQUALS`, `STARTS_WITH`                  | any string   \
+        \        |\n| `policyId`   | `EQUALS`, `STARTS_WITH`                  | any\
+        \ string           |\n| `action`     | `EQUALS`                          \
+        \       | `use` or `access`    |\n| `createdOn`  | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`\
+        \  | `yyyy-MM-dd`         |\n| `validUntil` | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`\
+        \  | `yyyy-MM-dd`         |\n\n### Sorting\n`sort=[BPN|policyId|action|createdOn|validUntil],[asc|desc]`.\n\
+        \ \nExample: `sort=BPN,asc&sort=policyId,desc`. _(default: `BPN,asc`)_\n\n\
+        ### Paging\n \nExample: `page=1&size=20` _(default page size: 10, maximal\
+        \ page size: 1000)_\n"
       operationId: getPoliciesPaged
       parameters:
       - description: List of business partner numbers. This may also contain the value
@@ -1096,7 +1098,8 @@ paths:
           description: Authorization refused by server.
       security:
       - api_key: []
-      summary: Find policies.
+      summary: "Find registered policies that should be accepted in EDC negotiation\
+        \ (with filtering, sorting and paging)."
       tags:
       - Policy Store API
   /irs/policies/{policyId}:

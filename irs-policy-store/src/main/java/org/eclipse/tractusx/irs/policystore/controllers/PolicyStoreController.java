@@ -262,20 +262,38 @@ public class PolicyStoreController {
 
     @GetMapping("/policies/paged")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Find policies.", //
+    @Operation(summary = "Find registered policies that should be accepted in EDC negotiation "
+            + "(with filtering, sorting and paging).", //
                description = """
                        Fetch a page of policies with options to filter and sort.
+                       \s
+                       Example:
+                       ```
+                       search=BPN,STARTS_WITH,BPNL12&search=validUntil,AFTER_LOCAL_DATE,2024-12-11&sort=validUntil,asc&sort=BPN,asc
+                       ```
+                       \s
+                       ### Filtering
+                       \s
+                       `search=<Field>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<Value>`.
+                       \s
+                       Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
+                       \s
+                       | Field        | Supported Operations                     | Value Format         |
+                       |--------------|------------------------------------------|----------------------|
+                       | `BPN`        | `EQUALS`, `STARTS_WITH`                  | any string           |
+                       | `policyId`   | `EQUALS`, `STARTS_WITH`                  | any string           |
+                       | `action`     | `EQUALS`                                 | `use` or `access`    |
+                       | `createdOn`  | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd`         |
+                       | `validUntil` | `BEFORE_LOCAL_DATE`, `AFTER_LOCAL_DATE`  | `yyyy-MM-dd`         |
                        
-                       - **Filtering:**
-                         `search=<property>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<value>`.
-                         Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
+                       ### Sorting
+                       `sort=[BPN|policyId|action|createdOn|validUntil],[asc|desc]`.
+                       \s
+                       Example: `sort=BPN,asc&sort=policyId,desc`. _(default: `BPN,asc`)_
                        
-                       - **Sorting:**
-                         `sort=<property>,[asc|desc]`.
-                         Example: `sort=BPN,asc&sort=policyId,desc`.
-                       
-                       - **Paging:**
-                         Example: `page=1&size=20`
+                       ### Paging
+                       \s
+                       Example: `page=1&size=20` _(default page size: 10, maximal page size: 1000)_
                        """, //
                security = @SecurityRequirement(name = API_KEY), //
                tags = { POLICY_API_TAG }, //
