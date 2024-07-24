@@ -76,3 +76,30 @@ jobs:
         with:
           files: |
             result.xml
+
+      - name: Run ESS tests
+        if: always()
+        env:
+          IRS_HOST: ${{ 'https://irs.int.demo.catena-x.net' }}
+          IRS_ESS_HOST: ${{ github.event.inputs.irs-ess-host || 'https://irs-ess.int.demo.catena-x.net' }}
+          REGULAR_USER_API_KEY: ${{ secrets.INT_REGULAR_USER_API_KEY }}
+          ADMIN_USER_API_KEY: ${{ secrets.INT_ADMIN_USER_API_KEY }}
+          GLOBAL_ASSET_ID_AS_PLANNED: ${{ github.event.inputs.global-asset-id-asPlanned || 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e' }}
+          BPN_AS_PLANNED: ${{ github.event.inputs.bpn-asPlanned || 'BPNL00000003AYRE' }}
+          GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb' }}
+          BPN_AS_BUILT: ${{ github.event.inputs.bpn-asBuilt || 'BPNL00000003AYRE' }}
+        run: |
+          python -m pytest local/testing/api-tests/irs-ess-api-tests.tavern.yaml --junitxml=tavern-ess-results.xml
+
+      - name: Mask credentials
+        if: always()
+        run: |
+          sed "s/access_tok.*:s = '.*'//g" tavern-ess-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > ess-result.xml
+
+      - name: Publish Tavern Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        if: always()
+        with:
+          files: |
+            ess-result.xml
+
