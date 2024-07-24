@@ -4,7 +4,7 @@
 ## Industry Core Committee  
 
 IRS is part of the Industry Core. Please contact the Industry Core Committee  
-* [ICC](icc@catena-x.net)
+* ICC <icc@catena-x.net>
 
 ## Contact the [project developers](AUTHORS.md) via the project's "dev" list.
 
