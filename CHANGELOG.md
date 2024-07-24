@@ -20,6 +20,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Improved documentation for `GET /irs/policies/paged` endpoint. #639
 - Cleanup in IrsApplicationTest.generatedOpenApiMatchesContract 
   (removed obsolete ignoringFields, improved assertion message)
+- Allow local URLs as IRS Job complete callback URLs. eclipse-tractusx/traceability-foss#511
 
 ## [5.4.0] - 2024-07-22
 
