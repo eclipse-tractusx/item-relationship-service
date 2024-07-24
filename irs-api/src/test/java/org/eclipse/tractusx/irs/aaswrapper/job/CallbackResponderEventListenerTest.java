@@ -177,6 +177,37 @@ class CallbackResponderEventListenerTest {
     }
 
     @Test
+    void shouldCallCallbackUrlIfIsInternalAndStateCompletedAndJobProcessingFinishedEvent() throws URISyntaxException {
+        // given
+        final String callbackUrlTemplate = "https://internal:1234/callback?id={id}&state={state}";
+        final String jobId = UUID.randomUUID().toString();
+        final JobState jobState = JobState.COMPLETED;
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId,
+                jobState.name(), callbackUrlTemplate, Optional.empty());
+        // when
+        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        final String expectedCallbackUrl = "https://internal:1234/callback?id=" + jobId + "&state=" + jobState;
+        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+    }
+
+    @Test
+    void shouldNotCallCallbackUrlIfTldIsNotValidAndStateCompletedAndJobProcessingFinishedEvent() {
+        // given
+        final String callbackUrlTemplateWithInvalidTld = "https://domain.unknown/callback?id={id}&state={state}";
+        final String jobId = UUID.randomUUID().toString();
+        final JobState jobState = JobState.COMPLETED;
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId,
+                jobState.name(), callbackUrlTemplateWithInvalidTld, Optional.empty());
+        // when
+        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        verifyNoInteractions(this.restTemplate);
+    }
+
+    @Test
     void shouldNotCallCallbackUrlIfCallbackUrlIsMissing() {
         // given
         final String emptyCallbackUrlTemplate = "";

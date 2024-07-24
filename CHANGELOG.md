@@ -20,11 +20,13 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Improved documentation for `GET /irs/policies/paged` endpoint. #639
 - Cleanup in IrsApplicationTest.generatedOpenApiMatchesContract 
   (removed obsolete ignoringFields, improved assertion message)
+- Allow local URLs as IRS Job complete callback URLs. eclipse-tractusx/traceability-foss#511
 
 ## [5.4.0] - 2024-07-22
 
 ### Changed
 - Default policies are now configured using JSON in accordance with the ODRL schema. #542
+- Improved the exception handling for modification attempts on read-only default policies. Such actions now result in a 400 BAD REQUEST response with a user-friendly error message. #734
 
 ## [5.3.0] - 2024-07-15
 
