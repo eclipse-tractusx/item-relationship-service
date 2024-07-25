@@ -35,10 +35,14 @@ EDC_UPLOAD_URL=$9
 
 EDC_DATAPLANE_URL=${10}
 
+bpn_regex_pattern='(BPN)(L|S|A)([a-zA-Z0-9]{12})'
+replacement=$PROVIDER_BPN
 
 upload_data() {
     local filePath="$1"
     local policyId="$2"
+
+    sed -i -E "s/$bpn_regex_pattern/$replacement/g" "$filePath"
 
     python "$SCRIPT_PATH" \
         -f "$filePath" \
