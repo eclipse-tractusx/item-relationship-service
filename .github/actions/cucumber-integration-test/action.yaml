@@ -52,6 +52,12 @@ runs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Prepare expected files
+        run: |
+          chmod +x ./local/testing/testdata/prepare-expected-files.sh
+          ./local/testing/testdata/prepare-expected-files.sh "BPNL00000003AYRE"
+        shell: bash
+
       - name: Run Tests with Maven
         shell: bash
         env:

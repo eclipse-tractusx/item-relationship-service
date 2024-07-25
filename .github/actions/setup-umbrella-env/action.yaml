@@ -132,12 +132,6 @@ runs:
           "http://umbrella-dataprovider-edc-dataplane:8081"
       shell: bash
 
-    - name: Prepare expected files
-      run: |
-        chmod +x ./local/testing/testdata/prepare-expected-files.sh
-        ./local/testing/testdata/prepare-expected-files.sh "BPNL00000003AYRE"
-      shell: bash
-
     - name: Wait for deployment
       id: deployment-ready
       shell: bash
