@@ -1345,6 +1345,44 @@ A number of Grafana dashboards are deployed automatically, to display data about
 * API metrics
 * Functional information about IRS Jobs
 
+## Testing concepts
+
+### Umbrella
+
+The [umbrella chart](https://github.com/eclipse-tractusx/tractus-x-umbrella) provides a pre-configured catena-x network which includes all necessary components for the IRS to work.
+
+For IRS this includes:
+
+* Central Idp
+* Edc Provider
+  * Digital Twin Registry
+  * Submodel Backend
+  * EDC
+  * Vault
+* EDC Consumer
+  * EDC
+  * Vault
+* Discovery Service
+* EDC Discovery *
+* IATP *
+* BDRS
+* Semantic Hub
+
+Services marked with * are currently mocked, since there is no FOSS-Component available for IATP/DIM and the configuration and data seeding for EDC Discovery is not possible at the moment.
+
+These Service are used together with the IRS Helm Chart to provide a E2E Testing Infrastructure which can be spun up directly in a GitHub Workflow to execute E2E Tests against.
+
+The action <https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/actions/setup-umbrella-env/action.yaml> creates this environment and seeds Testdata for IRS use-cases directly to the EDC Provider components.
+After Umbrella setup and seeding, the IRS docker image is built based on the branch, the workflow is run from, and the IRS helm chart from the same branch is installed.
+This ensures, that features on branches can be tested as well.
+
+The workflows [tavern-UMBRELLA.yaml](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml) and [cucumber-integration-test-UMBRELLA.yaml](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/cucumber-integration-test-UMBRELLA.yaml) use the action to execute the tests.
+Test results are automatically added to the workflow summary and in case of the cucumber tests uploaded to the [IRS Cucumber Report](https://reports.cucumber.io/report-collections/b82bcadd-0d19-41c4-ae1a-c623e259c36f)
+
+Due to limitations in the IATP mock, the only way of using multiple BPNs in the test data is to spin up multiple EDC provider instances.
+However, the chart is used inside GitHub Workflows, so compute resources are limited.
+For this reason, the IRS test data was changed to include only data pointing to a single BPN.
+
 ## Quality requirements
 
 The quality scenarios in this section depict the fundamental quality goals as well as other required quality properties. They allow the evaluation of decision alternatives.
