@@ -25,7 +25,7 @@
               "value": 20
             },
             "hasAlternatives": false,
-            "businessPartner": "BPNL00000003AYRE",
+            "businessPartner": "BPNL00000003B3NX",
             "createdOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z"
           },
@@ -36,7 +36,7 @@
               "value": 0.2341
             },
             "hasAlternatives": false,
-            "businessPartner": "BPNL00000003AYRE",
+            "businessPartner": "BPNL00000003AZQP",
             "createdOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z"
           }
@@ -50,7 +50,7 @@
       "payload": {
         "localIdentifiers": [
           {
-            "value": "BPNL00000003AYRE",
+            "value": "BPNL00000003B2OM",
             "key": "manufacturerId"
           },
           {
@@ -175,7 +175,7 @@
       "payload": {
         "localIdentifiers": [
           {
-            "value": "BPNL00000003AYRE",
+            "value": "BPNL00000003B0Q0",
             "key": "batchId"
           }
         ],
@@ -218,7 +218,7 @@
               "value": 0.1908
             },
             "hasAlternatives": false,
-            "businessPartner": "BPNL00000003AYRE",
+            "businessPartner": "BPNL00000003B0Q0",
             "createdOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z"
           }
@@ -232,7 +232,7 @@
       "payload": {
         "localIdentifiers": [
           {
-            "value": "BPNL00000003AYRE",
+            "value": "BPNL00000003B3NX",
             "key": "manufacturerId"
           },
           {
@@ -302,7 +302,7 @@
       "payload": {
         "localIdentifiers": [
           {
-            "value": "BPNL00000003AYRE",
+            "value": "BPNL00000003AXS3",
             "key": "batchId"
           }
         ],
@@ -371,7 +371,7 @@
       "payload": {
         "localIdentifiers": [
           {
-            "value": "BPNL00000003AYRE",
+            "value": "BPNL00000003B0Q0",
             "key": "batchId"
           }
         ],
