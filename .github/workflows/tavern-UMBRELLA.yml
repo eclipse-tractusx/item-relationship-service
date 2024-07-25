@@ -1,0 +1,119 @@
+#
+#  Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+#  Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+#
+#  See the NOTICE file(s) distributed with this work for additional
+#  information regarding copyright ownership.
+#
+#  This program and the accompanying materials are made available under the
+#  terms of the Apache License, Version 2.0 which is available at
+#  https://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+#
+#  SPDX-License-Identifier: Apache-2.0
+#
+name: Tavern IRS API Umbrella test
+
+on:
+  workflow_dispatch: # Trigger manually
+  schedule:
+    - cron: '0 1 * * 1-5' # At 01:00 on every day-of-week from Monday through Friday.
+
+# Cancel previous Test executions if a new one is triggered.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup env
+        id: setup-env
+        uses: ./.github/actions/setup-umbrella-env
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.10.7
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install pytest
+          pip install py
+          pip install tavern
+          pip list
+
+      - name: Run IRS tests
+        env:
+          IRS_HOST: 'http://localhost:8080'
+          IRS_ESS_HOST: 'http://localhost:8080'
+          REGULAR_USER_API_KEY: 'password'
+          ADMIN_USER_API_KEY: 'password'
+          REGULAR_USER_API_KEY_ESS: 'password'
+          ADMIN_USER_API_KEY_ESS: 'password'
+          GLOBAL_ASSET_ID_AS_PLANNED: 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e'
+          GLOBAL_ASSET_ID_ESS_AS_BUILT: 'urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7'
+          BPN_ESS_AS_BUILT: 'BPNL00000003CRHK'
+          BPN_ESS_INCIDENT: 'BPNS00000003B6LU'
+          BPN_AS_PLANNED: 'BPNL00000003AYRE'
+          GLOBAL_ASSET_ID_AS_BUILT: 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c'
+          BPN_AS_BUILT: 'BPNL00000003AYRE'
+        run: |
+          python -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
+
+      - name: Mask credentials
+        if: always()
+        run: |
+          sed "s/access_tok.*:s = '.*'//g" tavern-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > result.xml
+
+      - name: Publish Tavern Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        if: always()
+        with:
+          files: |
+            result.xml
+
+      - name: Run ESS tests
+        if: always() && steps.setup-env.outcome == 'success'
+        env:
+          IRS_HOST: 'http://localhost:8080'
+          IRS_ESS_HOST: 'http://localhost:8080'
+          REGULAR_USER_API_KEY: 'password'
+          ADMIN_USER_API_KEY: 'password'
+          REGULAR_USER_API_KEY_ESS: 'password'
+          ADMIN_USER_API_KEY_ESS: 'password'
+          GLOBAL_ASSET_ID_AS_PLANNED: 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e'
+          GLOBAL_ASSET_ID_ESS_AS_BUILT: 'urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7'
+          BPN_ESS_AS_BUILT: 'BPNL00000003CRHK'
+          BPN_ESS_INCIDENT: 'BPNS00000003B6LU'
+          BPN_AS_PLANNED: 'BPNL00000003AYRE'
+          GLOBAL_ASSET_ID_AS_BUILT: 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c'
+          BPN_AS_BUILT: 'BPNL00000003AYRE'
+        run: |
+          python -m pytest local/testing/api-tests/irs-ess-api-tests.tavern.yaml --junitxml=tavern-ess-results.xml
+
+      - name: Mask credentials
+        if: always()
+        run: |
+          sed "s/access_tok.*:s = '.*'//g" tavern-ess-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > ess-result.xml
+
+      - name: Publish Tavern Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        if: always()
+        with:
+          files: |
+            ess-result.xml
+
+
+      - name: Attach logs
+        if: always() && steps.setup-env.outcome == 'success'
+        uses: ./.github/actions/umbrella-irs-logs
