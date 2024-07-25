@@ -49,14 +49,13 @@ jobs:
     needs: check-config
     uses: ./.github/workflows/cucumber-integration-test-xray.yaml
     secrets:
-      # TODO set secrets in GH
       regularUserApiKey: ${{ secrets.INT_REGULAR_USER_API_KEY }}
       adminUserApiKey: ${{ secrets.INT_ADMIN_USER_API_KEY }}
       cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
       jiraUser: ${{ secrets.jiraUser }}
       jiraPassword: ${{ secrets.jiraPassword }}
     with:
-      executionFilter: "!Ignore & !INACTIVE & INTEGRATION_TEST & INT"
-      # JIRA filter 10001: project = TRI AND type = Test AND "Test Type" = Cucumber TODO set correct filter description
+      executionFilter: "!Ignore& !INACTIVE & IRS & INT & POLICY_STORE"
+      # JIRA filter 10001: project = CXTM AND labels = "INT" AND labels = "IRS" AND status = Ready AND testType = Cucumber
       exportFilter: 10001
 
