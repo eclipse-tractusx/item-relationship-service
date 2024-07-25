@@ -13,7 +13,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Fixed already merged implementation from _"Access and Usage Policy Validation flow correction. #757"_ 
   where fallback to default policy was not implemented correctly.
 - Improved exception handling concerning invalid date format in search parameters for `GET /irs/policies/paged`. #639
-- Change default policy to include full namespace `https://w3id.org/catenax/policy/` instead of `cx-policy:` 
+- Change policy to include full namespace `https://w3id.org/catenax/policy/` instead of `cx-policy:` 
   in some remaining code places (in context of #794).
 
 ### Changed
