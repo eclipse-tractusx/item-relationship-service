@@ -122,7 +122,6 @@ runs:
         kubectl port-forward svc/umbrella-dataprovider-submodelserver 9999:8080 --namespace e2e-testing &
       shell: bash
 
-
     - name: Setup test data
       run: |
         chmod +x ./local/testing/testdata/upload-testdata.sh
@@ -131,6 +130,12 @@ runs:
           "http://umbrella-dataprovider-dtr:8080/api/v3" "http://localhost:4444/api/v3" \
           "http://umbrella-dataprovider-edc-controlplane:8084" "http://localhost:8888" \
           "http://umbrella-dataprovider-edc-dataplane:8081"
+      shell: bash
+
+    - name: Prepare expected files
+      run: |
+        chmod +x ./local/testing/testdata/prepare-expected-files.sh
+        ./local/testing/testdata/prepare-expected-files.sh "BPNL00000003AYRE"
       shell: bash
 
     - name: Wait for deployment
