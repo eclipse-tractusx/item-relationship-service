@@ -62,7 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Change default policy to include full namespace `https://w3id.org/catenax/policy/` instead of `cx-policy:`
+- Change default policy to include full namespace `https://w3id.org/catenax/policy/` instead of `cx-policy:` 
+  (in context of #794).
 
 ## [7.3.0] - 2024-07-15
 
