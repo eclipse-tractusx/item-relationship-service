@@ -41,14 +41,14 @@
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
     {
       "catenaXId": "urn:uuid:bec0a457-4d6b-4c1c-88f7-125d04f04d68",
-      "bpnl": "BPNL00000003AYRE",
+      "bpnl": "BPNL00000007QG00",
       "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt": [
         {
           "catenaXId": "urn:uuid:bec0a457-4d6b-4c1c-88f7-125d04f04d68",
           "childItems": [
             {
               "catenaXId": "urn:uuid:589d7f27-d200-4009-b24c-27b0f4b81528",
-              "businessPartner": "BPNL00000003AYRE",
+              "businessPartner": "BPNL00000007RI31",
               "hasAlternatives": false,
               "quantity": {
                 "value": 20.0,
@@ -59,7 +59,7 @@
             },
             {
               "catenaXId": "urn:uuid:6e709d64-bdc7-49f4-a87d-4e1f7e2c3b7c",
-              "businessPartner": "BPNL00000003AYRE",
+              "businessPartner": "BPNL00000003CSAP",
               "hasAlternatives": false,
               "validityPeriod": {
                 "validFrom": "2023-03-21T08:17:29.187+01:00",
@@ -100,7 +100,7 @@
     },
     {
       "catenaXId": "urn:uuid:589d7f27-d200-4009-b24c-27b0f4b81528",
-      "bpnl": "BPNL00000003AYRE",
+      "bpnl": "BPNL00000007RI31",
       "urn:samm:io.catenax.single_level_bom_as_built:3.1.0#SingleLevelBomAsBuilt": [
         {
           "catenaXId": "urn:uuid:589d7f27-d200-4009-b24c-27b0f4b81528",
@@ -173,14 +173,14 @@
     },
     {
       "catenaXId": "urn:uuid:6e709d64-bdc7-49f4-a87d-4e1f7e2c3b7c",
-      "bpnl": "BPNL00000003AYRE",
+      "bpnl": "BPNL00000003CSAP",
       "urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt": [
         {
           "catenaXId": "urn:uuid:6e709d64-bdc7-49f4-a87d-4e1f7e2c3b7c",
           "childItems": [
             {
               "catenaXId": "urn:uuid:d23f278b-2d8b-4f11-af76-2a9a7bb91cfc",
-              "businessPartner": "BPNL00000003AYRE",
+              "businessPartner": "BPNL00000007RNYV",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -223,7 +223,7 @@
     },
     {
       "catenaXId": "urn:uuid:d23f278b-2d8b-4f11-af76-2a9a7bb91cfc",
-      "bpnl": "BPNL00000003AYRE",
+      "bpnl": "BPNL00000007RNYV",
       "urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt": [
         {
           "catenaXId": "urn:uuid:d23f278b-2d8b-4f11-af76-2a9a7bb91cfc",
