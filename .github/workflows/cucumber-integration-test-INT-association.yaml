@@ -6,7 +6,7 @@ on:
       executionFilter:
         description: 'Execution filter'
         required: false
-        default: '!Ignore & !INACTIVE & INTEGRATION_TEST & DEV'
+        default: '!Ignore& !INACTIVE & IRS & INT'
       exportFilter:
         description: 'Jira export filter'
         required: false
@@ -41,15 +41,15 @@ jobs:
             exit 1
           fi
         shell: bash
-      - name: Check if is defined jiraUser is defined
+      - name: Check if is defined IRS_XRAY_JIRA_USER is defined
         run: |
-          if [[ -z "${{ secrets.ASSOCIATION_TX_JIRA_USERNAME  }}" ]]; then
+          if [[ -z "${{ secrets.IRS_XRAY_JIRA_USER  }}" ]]; then
             echo "Error: Missing secret: Please configure IRS_XRAY_JIRA_USER."
             exit 1
           fi
-      - name: Check if is defined jiraUser is defined
+      - name: Check if is defined IRS_XRAY_JIRA_SECRET is defined
         run: |
-          if [[ -z "${{ secrets.ASSOCIATION_TX_JIRA_PASSWORD  }}" ]]; then
+          if [[ -z "${{ secrets.IRS_XRAY_JIRA_SECRET  }}" ]]; then
             echo "Error: Missing secret: Please configure IRS_XRAY_JIRA_SECRET."
             exit 1
           fi
@@ -61,10 +61,10 @@ jobs:
       regularUserApiKey: ${{ secrets.INT_REGULAR_USER_API_KEY }}
       adminUserApiKey: ${{ secrets.INT_ADMIN_USER_API_KEY }}
       cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
-      jiraUser: ${{ secrets.ASSOCIATION_TX_JIRA_USERNAME  }}
-      jiraPassword: ${{ secrets.ASSOCIATION_TX_JIRA_PASSWORD  }}
+      jiraUser: ${{ secrets.IRS_XRAY_JIRA_USER  }}
+      jiraPassword: ${{ secrets.IRS_XRAY_JIRA_SECRET  }}
     with:
-      executionFilter:  ${{ github.event.inputs.executionFilter || '!Ignore& !INACTIVE & IRS & INT & POLICY_STORE' }}
+      executionFilter:  ${{ github.event.inputs.executionFilter || '!Ignore& !INACTIVE & IRS & INT' }}
       # JIRA filter 10001: project = CXTM AND labels = "INT" AND labels = "IRS" AND status = Ready AND testType = Cucumber
       exportFilter: ${{ github.event.inputs.exportFilter || '10001' }}
 
