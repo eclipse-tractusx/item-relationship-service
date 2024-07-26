@@ -60,6 +60,7 @@ Feature: SingleLevelUsageAsBuilt
     Then I check, if the job has status "COMPLETED" within 20 minutes
     And I check, if "submodels" are equal to "TRI-1647-expected-submodels.json"
 
+  @Ignore # ignoring this test since the github workflow resources do not allow a test as big as this
   @UMBRELLA @INTEGRATION_TEST
   @TRI-767 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770 @TRI-1682
   Scenario: End 2 End for OEM-B (MB) [BPN:BPNL00000003AYRE] (SerialPart 3.0.0, SingleLevelBomAsBuilt 3.0.0 , Batch 3.0.0)
