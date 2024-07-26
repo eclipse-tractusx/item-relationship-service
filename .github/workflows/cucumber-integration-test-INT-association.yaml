@@ -43,13 +43,13 @@ jobs:
         shell: bash
       - name: Check if is defined jiraUser is defined
         run: |
-          if [[ -z "${{ secrets.IRS_XRAY_JIRA_USER }}" ]]; then
+          if [[ -z "${{ secrets.ASSOCIATION_TX_JIRA_USERNAME  }}" ]]; then
             echo "Error: Missing secret: Please configure IRS_XRAY_JIRA_USER."
             exit 1
           fi
       - name: Check if is defined jiraUser is defined
         run: |
-          if [[ -z "${{ secrets.IRS_XRAY_JIRA_SECRET }}" ]]; then
+          if [[ -z "${{ secrets.ASSOCIATION_TX_JIRA_PASSWORD  }}" ]]; then
             echo "Error: Missing secret: Please configure IRS_XRAY_JIRA_SECRET."
             exit 1
           fi
@@ -61,8 +61,8 @@ jobs:
       regularUserApiKey: ${{ secrets.INT_REGULAR_USER_API_KEY }}
       adminUserApiKey: ${{ secrets.INT_ADMIN_USER_API_KEY }}
       cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
-      jiraUser: ${{ secrets.jiraUser }}
-      jiraPassword: ${{ secrets.jiraPassword }}
+      jiraUser: ${{ secrets.ASSOCIATION_TX_JIRA_USERNAME  }}
+      jiraPassword: ${{ secrets.ASSOCIATION_TX_JIRA_PASSWORD  }}
     with:
       executionFilter:  ${{ github.event.inputs.executionFilter || '!Ignore& !INACTIVE & IRS & INT & POLICY_STORE' }}
       # JIRA filter 10001: project = CXTM AND labels = "INT" AND labels = "IRS" AND status = Ready AND testType = Cucumber
