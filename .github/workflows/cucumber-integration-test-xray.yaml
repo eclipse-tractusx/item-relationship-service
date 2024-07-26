@@ -48,7 +48,7 @@ jobs:
           JIRA_USERNAME: ${{ secrets.jiraUser }}
           JIRA_PASSWORD: ${{ secrets.jiraPassword }}
           EXPORT_FILTER: ${{ inputs.exportFilter }}
-          # Downloads all feature files of cucumber tests inside TRI project
+          # Downloads all IRS feature files of cucumber tests
         run: |
           token=$(curl -H "Content-Type: application/json" -X POST \
           --data "{ \"client_id\": \"$JIRA_USERNAME\",\"client_secret\": \"$JIRA_PASSWORD\" }" \
@@ -60,16 +60,20 @@ jobs:
           [[ $HTTP_RESULT == 200 || $HTTP_RESULT == 400 ]]
           echo "::set-output name=http_response::$HTTP_RESULT"
 
-      - name: Build with Maven
+      - name: Run Tests with Maven
         if: ${{ steps.download.outputs.http_response == '200' }}
         env:
-          KEYCLOAK_HOST: ${{ secrets.keycloakTokenUrl }}
-          KEYCLOAK_CLIENT_ID: ${{ secrets.clientId }}
-          KEYCLOAK_CLIENT_SECRET: ${{ secrets.clientSecret }}
+          REGULAR_USER_API_KEY: ${{ secrets.regularUserApiKey }}
+          ADMIN_USER_API_KEY: ${{ secrets.adminUserApiKey }}
           ISSUE_FILTER: ${{ inputs.executionFilter }}
+          CUCUMBER_PUBLISH_TOKEN: ${{ secrets.cucumberPublishToken }}
         run: |
           unzip -o features.zip -d irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features
-          mvn --batch-mode clean install -pl irs-cucumber-tests,irs-models -D"cucumber.filter.tags"="$ISSUE_FILTER"
+          
+          # workaround replacement since injecting the token via environment variable does not work
+          sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
+
+          mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
 
       - name: Submit results to Xray
         if: ${{ always() && steps.download.outputs.http_response == '200' }}
@@ -86,18 +90,6 @@ jobs:
           --header "Authorization: Bearer $token" \
           --data-binary '@irs-cucumber-tests/target/report.json' \
           "https://xray.cloud.getxray.app/api/v2/import/execution/cucumber"
-
-      - name: Run Tests with Maven
-        env:
-          REGULAR_USER_API_KEY: ${{ secrets.regularUserApiKey }}
-          ADMIN_USER_API_KEY: ${{ secrets.adminUserApiKey }}
-          ISSUE_FILTER: ${{ inputs.executionFilter }}
-          CUCUMBER_PUBLISH_TOKEN: ${{ secrets.cucumberPublishToken }}
-        run: |
-          # workaround replacement since injecting the token via environment variable does not work
-          sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
-
-          mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
 
       - name: Publish Cucumber Results
         uses: EnricoMi/publish-unit-test-result-action@v2.17.0
