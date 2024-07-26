@@ -26,7 +26,7 @@ Feature: BomLifecycle 'asPlanned' implementation
 
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-893 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770
+  @TRI-893
   Scenario: End 2 End for BomLifecycle 'asPlanned' Vehicle Model C for SAP [BPNL00000003AYRE]
     Given I register an IRS job for globalAssetId "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb" and BPN "BPNL00000003AYRE"
     And collectAspects "true"
@@ -41,7 +41,7 @@ Feature: BomLifecycle 'asPlanned' implementation
     And I check, if "submodels" are equal to "TRI-893-expected-submodels.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-891 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770
+  @TRI-891
   Scenario: End 2 End for BomLifecycle 'asPlanned' Vehicle Model B for MercedesBenz [BPNL00000003AYRE]
     Given I register an IRS job for globalAssetId "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b" and BPN "BPNL00000003AYRE"
     And collectAspects "true"
@@ -56,7 +56,7 @@ Feature: BomLifecycle 'asPlanned' implementation
     And I check, if "submodels" are equal to "TRI-891-expected-submodels.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-821 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770
+  @TRI-821
   Scenario: End 2 End for BomLifecycle 'asPlanned' Vehicle Model A for BMW [BPNL00000003AYRE]
     Given I register an IRS job for globalAssetId "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e" and BPN "BPNL00000003AYRE"
     And collectAspects "true"
