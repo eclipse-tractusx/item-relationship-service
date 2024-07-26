@@ -6,7 +6,7 @@ on:
       executionFilter:
         description: 'Execution filter'
         required: false
-        default: '!Ignore & !INACTIVE & INTEGRATION_TEST & DEV'
+        default: '!Ignore& !INACTIVE & IRS & INT'
       exportFilter:
         description: 'Jira export filter'
         required: false
