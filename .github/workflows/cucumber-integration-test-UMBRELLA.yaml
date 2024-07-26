@@ -21,6 +21,11 @@ name: IRS Umbrella Cucumber Integration test execution
 
 on:
   workflow_dispatch: # Trigger manually
+    inputs:
+      executionFilter:
+        description: 'Execution filter'
+        required: false
+        default: '!Ignore & !INACTIVE & INTEGRATION_TEST & UMBRELLA'
   push:
     branches:
       - 'main'
@@ -31,14 +36,6 @@ on:
       - 'docs/**'
       - 'local/**'
       - 'irs-load-tests/**'
-  pull_request:
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-      - '.config/**'
-      - 'docs/**'
-      - 'local/**'
-      - 'CHANGELOG.md'
 
 # Cancel previous Test executions if a new one is triggered.
 concurrency:
@@ -61,7 +58,7 @@ jobs:
           regularUserApiKey: "password"
           adminUserApiKey: "password"
           cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
-          executionFilter: "!Ignore & !INACTIVE & INTEGRATION_TEST & UMBRELLA"
+          executionFilter: ${{ github.event.inputs.executionFilter || '!Ignore & !INACTIVE & INTEGRATION_TEST & UMBRELLA' }}
 
       - name: Attach logs
         if: always() && steps.setup-env.outcome == 'success'
