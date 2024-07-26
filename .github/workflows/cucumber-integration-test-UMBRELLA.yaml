@@ -27,13 +27,18 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
-      - 'charts/**'
       - '.config/**'
       - 'docs/**'
       - 'local/**'
       - 'irs-load-tests/**'
-  schedule:
-    - cron: '0 2 * * 1-5' # At 02:00 on every day-of-week from Monday through Friday.
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - '.config/**'
+      - 'docs/**'
+      - 'local/**'
+      - 'CHANGELOG.md'
 
 # Cancel previous Test executions if a new one is triggered.
 concurrency:
