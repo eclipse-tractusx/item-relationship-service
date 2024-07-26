@@ -2,6 +2,15 @@ name: IRS Association INT Cucumber Integration test execution
 
 on:
   workflow_dispatch: # Trigger manually
+    inputs:
+      executionFilter:
+        description: 'Execution filter'
+        required: false
+        default: '!Ignore & !INACTIVE & INTEGRATION_TEST & DEV'
+      exportFilter:
+        description: 'Jira export filter'
+        required: false
+        default: '10001'
 
 # Cancel previous Test executions if a new one is triggered.
 concurrency:
@@ -55,7 +64,7 @@ jobs:
       jiraUser: ${{ secrets.jiraUser }}
       jiraPassword: ${{ secrets.jiraPassword }}
     with:
-      executionFilter: "!Ignore& !INACTIVE & IRS & INT & POLICY_STORE"
+      executionFilter:  ${{ github.event.inputs.executionFilter || '!Ignore& !INACTIVE & IRS & INT & POLICY_STORE' }}
       # JIRA filter 10001: project = CXTM AND labels = "INT" AND labels = "IRS" AND status = Ready AND testType = Cucumber
-      exportFilter: 10001
+      exportFilter: ${{ github.event.inputs.exportFilter || '10001' }}
 
