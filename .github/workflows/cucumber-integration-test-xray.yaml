@@ -1,0 +1,132 @@
+name: IRS Cucumber Integration Test execution with Xray
+
+on:
+  workflow_call: # Trigger by another workflow
+    secrets:
+      regularUserApiKey:
+        required: true
+      adminUserApiKey:
+        required: true
+      cucumberPublishToken:
+        required: true
+      jiraUser:
+        required: true
+      jiraPassword:
+        required: true
+    inputs:
+      executionFilter:
+        required: true
+        type: string
+      exportFilter:
+        required: true
+        type: string
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Download Feature Files
+        id: download
+        env:
+          JIRA_USERNAME: ${{ secrets.jiraUser }}
+          JIRA_PASSWORD: ${{ secrets.jiraPassword }}
+          EXPORT_FILTER: ${{ inputs.exportFilter }}
+          # Downloads all IRS feature files of cucumber tests
+        run: |
+          token=$(curl -H "Content-Type: application/json" -X POST \
+          --data "{ \"client_id\": \"$JIRA_USERNAME\",\"client_secret\": \"$JIRA_PASSWORD\" }" \
+          https://xray.cloud.getxray.app/api/v2/authenticate | tr -d '"')
+          
+          export HTTP_RESULT=$(curl -s --show-error -w "%{http_code}" --header "Authorization: Bearer $token" \
+          "https://xray.cloud.getxray.app/api/v2/export/cucumber?filter=$EXPORT_FILTER&fz=true" -o features.zip)
+          
+          [[ $HTTP_RESULT == 200 || $HTTP_RESULT == 400 ]]
+          echo "::set-output name=http_response::$HTTP_RESULT"
+
+      - name: Run Tests with Maven
+        if: ${{ steps.download.outputs.http_response == '200' }}
+        env:
+          REGULAR_USER_API_KEY: ${{ secrets.regularUserApiKey }}
+          ADMIN_USER_API_KEY: ${{ secrets.adminUserApiKey }}
+          ISSUE_FILTER: ${{ inputs.executionFilter }}
+          CUCUMBER_PUBLISH_TOKEN: ${{ secrets.cucumberPublishToken }}
+        run: |
+          unzip -o features.zip -d irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features
+          
+          # workaround replacement since injecting the token via environment variable does not work
+          sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
+
+          mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
+
+      - name: Submit results to Xray
+        if: ${{ always() && steps.download.outputs.http_response == '200' }}
+        env:
+          JIRA_USERNAME: ${{ secrets.jiraUser }}
+          JIRA_PASSWORD: ${{ secrets.jiraPassword }}
+        run: |
+          token=$(curl -H "Content-Type: application/json" -X POST \
+          --data "{ \"client_id\": \"$JIRA_USERNAME\",\"client_secret\": \"$JIRA_PASSWORD\" }" \
+          https://xray.cloud.getxray.app/api/v2/authenticate | tr -d '"')
+          
+          curl --request POST \
+          --header 'Content-Type: application/json' \
+          --header "Authorization: Bearer $token" \
+          --data-binary '@irs-cucumber-tests/target/report.json' \
+          "https://xray.cloud.getxray.app/api/v2/import/execution/cucumber"
+
+      - name: Publish Cucumber Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.17.0
+        if: always()
+        with:
+          files: |
+            irs-cucumber-tests/target/cucumber-junit-report.xml
+
+      - name: Get Cucumber Report
+        if: always()
+        id: get-cucumber-report
+        run: |
+          grep -E "^│.*│$" irs-cucumber-tests/report-banner.txt > irs-cucumber-tests/cucumber-report.txt
+          sed -i 's/│//g' irs-cucumber-tests/cucumber-report.txt
+          cat irs-cucumber-tests/cucumber-report.txt
+          cat irs-cucumber-tests/cucumber-report.txt >> $GITHUB_STEP_SUMMARY
+
+      - name: Find previous comment in PR
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'View your Cucumber Report at'
+
+      - name: Create or update comment in PR
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: 'irs-cucumber-tests/cucumber-report.txt'
+          edit-mode: replace
+
+      - name: Upload Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          path: 'irs-cucumber-tests/target/report.html'

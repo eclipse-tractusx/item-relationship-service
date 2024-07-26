@@ -36,6 +36,6 @@ import org.junit.platform.suite.api.Suite;
 @ConfigurationParameter(key = PLUGIN_PUBLISH_TOKEN_PROPERTY_NAME, value = "CUCUMBER_TOKEN_IRS_PLACEHOLDER")
 @ConfigurationParameter(key = ANSI_COLORS_DISABLED_PROPERTY_NAME, value = "true")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME,
-                        value = "pretty,junit:target/cucumber-junit-report.xml,html:target/report.html")
+                        value = "pretty,junit:target/cucumber-junit-report.xml,html:target/report.html,json:target/report.json")
 public class RunCucumberTest {
 }
