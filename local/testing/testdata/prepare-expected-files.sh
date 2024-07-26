@@ -21,7 +21,7 @@
 
 PROVIDER_BPN=$1
 
-bpn_regex_pattern='(BPN)(L|S|A)([a-zA-Z0-9]{12})'
+bpn_regex_pattern='(BPNL)([a-zA-Z0-9]{12})'
 replacement=$PROVIDER_BPN
 directory="irs-cucumber-tests/src/test/resources/expected-files"
 
