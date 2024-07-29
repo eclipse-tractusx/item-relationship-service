@@ -41,7 +41,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
  * Tombstone with information about request failure
  */
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @Jacksonized
 @Schema(description = "Tombstone with information about request failure")
 public class Tombstone {
