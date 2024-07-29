@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -42,6 +43,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
 public class ProcessingError {
+
     private ProcessStep processStep;
     private String errorDetail;
     private ZonedDateTime lastAttempt;
@@ -58,5 +60,14 @@ public class ProcessingError {
     @JsonPOJOBuilder()
     public static class ProcessingErrorBuilder {
 
+        public ProcessingErrorBuilder withLastAttemptNow() {
+            return this.withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC));
+        }
+
+        public ProcessingErrorBuilder withRetryCounterAndLastAttemptNow(final int retryCount) {
+            return this.withLastAttemptNow().withRetryCounter(retryCount);
+        }
+
     }
+
 }
