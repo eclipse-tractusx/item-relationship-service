@@ -44,7 +44,7 @@ concurrency:
 
 jobs:
   execute-e2e-tests:
-    runs-on: ubuntu-latest
+    runs-on: tractusx-runner
     steps:
       - uses: actions/checkout@v4
 
