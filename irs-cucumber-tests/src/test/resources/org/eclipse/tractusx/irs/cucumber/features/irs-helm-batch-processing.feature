@@ -26,7 +26,7 @@ Feature: IRS Batch Processing
 
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1267 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770
+  @TRI-1267
   Scenario: Check correct job executions of batch processing (SingleLevelBomAsBuilt/SerialPart 3.0.0)
     Given I register an IRS batch job for globalAssetIds and BPNs:
       | globalAssetId                                 | bpn              |

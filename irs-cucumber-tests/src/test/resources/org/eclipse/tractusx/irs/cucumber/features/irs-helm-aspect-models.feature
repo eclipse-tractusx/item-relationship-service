@@ -26,7 +26,7 @@ Feature: IRS support for different aspect models
 
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1537 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770 @TRI-1682
+  @TRI-1537
   Scenario: BomLifecycle 'asBuilt' for testing "JustInSequencePart-Model [BPNL00000003AYRE]
     Given I register an IRS job for globalAssetId "urn:uuid:57be2fd7-501e-4fea-9f3b-a6c746c3579d" and BPN "BPNL00000003AYRE"
     And collectAspects "true"
@@ -40,7 +40,7 @@ Feature: IRS support for different aspect models
     And I check, if "submodels" are equal to "TRI-1537-expected-submodels.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1598 @TRI-1941 @TRI-1843 @TRI-1942 @TRI-873 @TRI-1770 @TRI-1682
+  @TRI-1598
   Scenario: BomLifecycle 'asBuilt' for testing "Batch"-Model [BPNL00000003AYRE]
     Given I register an IRS job for globalAssetId "urn:uuid:54d9154a-01a4-47f1-a798-57d86a5744fa" and BPN "BPNL00000003AYRE"
     And collectAspects "true"
@@ -55,7 +55,7 @@ Feature: IRS support for different aspect models
     And I check, if "submodels" are equal to "TRI-1598-expected-submodels.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1918 @TRI-1941 @TRI-1942 @TRI-1843 @TRI-1682 @TRI-1770 @TRI-873
+  @TRI-1918
   Scenario: End 2 End for aspects "3.0.0#SingleLevelBomAsBuilt"
     Given I register an IRS job for globalAssetId "urn:uuid:5cfb33e5-0a95-40e9-8cec-392ee6da7cf1" and BPN "BPNL00000003AYRE"
     And aspects :
@@ -71,7 +71,7 @@ Feature: IRS support for different aspect models
     And I check, if "submodels" are equal to "TRI-1918-expected-submodels.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1915 @TRI-1941 @TRI-1942 @TRI-1843 @TRI-1682 @TRI-1770 @TRI-873
+  @TRI-1915
   Scenario: End 2 End for aspects "3.0.0#SingleLevelBomAsPlanned", "2.0.0#PartAsPlanned"
     Given I register an IRS job for globalAssetId "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97" and BPN "BPNL00000003AYRE"
     And aspects :
@@ -88,7 +88,7 @@ Feature: IRS support for different aspect models
     And I check, if "submodels" are equal to "TRI-1915-expected-submodels.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1914 @TRI-1941 @TRI-1942 @TRI-1843 @TRI-1770 @TRI-1682 @TRI-873
+  @TRI-1914
   Scenario: End 2 End for aspects "3.0.0#Batch" with "1.0.0#PartSiteInformationAsBuilt"
     Given I register an IRS job for globalAssetId "urn:uuid:d78045d5-4ee7-4980-b24c-31dafeb6f54f" and BPN "BPNL00000003AYRE"
     And aspects :
@@ -104,7 +104,7 @@ Feature: IRS support for different aspect models
     And I check, if "submodels" are equal to "TRI-1914-expected-submodels.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1913 @TRI-1941 @TRI-1942 @TRI-1843 @TRI-1682 @TRI-1770 @TRI-873
+  @TRI-1913
   Scenario: End 2 End for aspects "3.0.0#JustInSequencePart", "3.0.0#SerialPart" with "1.0.0#PartSiteInformationAsBuilt"
     Given I register an IRS job for globalAssetId "urn:uuid:fc9a079f-1b55-4ccc-8649-e188f899bf39" and BPN "BPNL00000003AYRE"
     And aspects :
@@ -121,7 +121,7 @@ Feature: IRS support for different aspect models
     And I check, if "submodels" are equal to "TRI-1913-expected-submodels.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-528 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770 @TRI-1682
+  @TRI-528
   Scenario: End 2 End for aspect "MaterialForRecycling"
     Given I register an IRS job for globalAssetId "urn:uuid:4b4d41c3-7a7c-4544-b718-8167a70f517d" and BPN "BPNL00000003AYRE"
     And aspects :

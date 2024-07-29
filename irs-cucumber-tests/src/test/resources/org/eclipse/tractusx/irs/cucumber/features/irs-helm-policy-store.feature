@@ -25,7 +25,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-2005 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-2005
   Scenario: Policy Store API: Delete policy for BPN
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -68,7 +68,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-2004 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-2004
   Scenario: Policy Store API: Trying to register a policy without payload should fail (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -84,7 +84,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1996 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1996
   Scenario: Policy Store API: Try to update policy with invalid policyId (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -96,7 +96,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1995 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1995
   Scenario: Policy Store API: Try to delete policy with invalid policyId (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -107,7 +107,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1993 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1993
   Scenario: Policy Store API: Registering a duplicate policy for same BPNL fails (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -121,7 +121,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1988 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1988
   Scenario: Policy Store API: Try to register policy with invalid policyId (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -132,7 +132,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1984 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1984
   Scenario: Policy Store API: Updating policy for invalid BPNL (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -156,7 +156,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1981 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1981
   Scenario: Policy Store API: Registering policy for invalid BPNL (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -179,7 +179,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1966 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1966
   Scenario: Policy Store API: Fetching policies by BPNLs should fail for invalid BPNLs (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -214,7 +214,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1965 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1965
   Scenario: Policy Store API: Register policy without validUntil (bad case)
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -230,7 +230,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1955 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1955
   Scenario: Policy Store API: Delete some policies
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -288,7 +288,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1954 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1954
   Scenario: Policy Store API: Add policyId to given BPNs
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -320,7 +320,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1953 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1953
   Scenario: Policy Store API: Add BPN to policy
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -343,7 +343,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1952 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1952
   Scenario: Policy Store API:  Update a policy validUntil date for a policy that is associated to multiple BPNs
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -394,7 +394,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1951 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1951
   Scenario: Policy Store API: Update a policy validUntil date
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
@@ -411,7 +411,7 @@ Feature: IRS Policy Store
 
   @UMBRELLA @INTEGRATION_TEST
   @POLICY_STORE_API
-  @TRI-1950 @TRI-1843 @TRI-1941 @TRI-873
+  @TRI-1950
   Scenario: Policy Store API: Register policies
 		# cleanup
     Given no policies with prefix "aaaaaaaa-aaaa-aaaa-aaaa-" exist
