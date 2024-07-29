@@ -73,14 +73,14 @@ public class DigitalTwinDelegate extends AbstractDelegate {
 
         try {
             final var dtrKeys = List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()));
-            final var eithers = digitalTwinRegistryService.fetchShells(dtrKeys);
-            final var shell = eithers.stream()
+            final var shells = digitalTwinRegistryService.fetchShells(dtrKeys);
+            final var shell = shells.stream()
                                      // we use findFirst here,  because we query only for one
                                      // DigitalTwinRegistryKey here
                                      .map(Either::getOrNull)
                                      .filter(Objects::nonNull)
                                      .findFirst()
-                                     .orElseThrow(() -> shellNotFound(eithers));
+                                     .orElseThrow(() -> shellNotFound(shells));
 
             itemContainerBuilder.shell(
                     jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
