@@ -90,26 +90,20 @@ public class Tombstone {
 
     public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
             final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
-        final ProcessingError processingError = withProcessingError(processStep, retryCount, exception.getMessage(),
-                suppressed);
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(globalAssetId)
-                        .processingError(processingError)
+                        .processingError(ProcessingError.builder()
+                                                        .withProcessStep(processStep)
+                                                        .withRetryCounterAndLastAttemptNow(retryCount)
+                                                        .withErrorDetail(exception.getMessage())
+                                                        .withRootCauses(getRootErrorMessages(suppressed))
+                                                        .build())
                         .build();
     }
 
-    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
-            final String message, final Throwable... suppressed) {
-        final List<String> rootCauses = Arrays.stream(suppressed).map(Tombstone::getRootErrorMessages).toList();
-
-        return ProcessingError.builder()
-                              .withProcessStep(processStep)
-                              .withRetryCounter(retryCount)
-                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                              .withErrorDetail(message)
-                              .withRootCauses(rootCauses)
-                              .build();
+    private static List<String> getRootErrorMessages(final Throwable... throwables) {
+        return Arrays.stream(throwables).map(Tombstone::getRootErrorMessages).toList();
     }
 
     /**
