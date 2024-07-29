@@ -37,7 +37,6 @@ import net.datafaker.Faker;
 import org.assertj.core.api.SoftAssertions;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
-import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
@@ -455,14 +454,15 @@ class InMemoryJobStoreTest {
     }
 
     @Test
-    void checkLastModifiedOnAfterCreation() {
+    void checkLastModifiedOnAfterCreation() throws InterruptedException {
         // Arrange
         sut.create(job);
-        MultiTransferJob job1 = job.toBuilder().build();
+        final MultiTransferJob job1 = job.toBuilder().build();
 
         // Act
+        Thread.sleep(1);
         sut.addTransferProcess(job.getJobId().toString(), processId1);
-        MultiTransferJob job2 = sut.find(job.getJob().getId().toString()).get();
+        final MultiTransferJob job2 = sut.find(job.getJob().getId().toString()).get();
 
         // Assert
         assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
