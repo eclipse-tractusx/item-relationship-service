@@ -60,11 +60,13 @@ public class Tombstone {
     private final ProcessingError processingError;
     private final Map<String, Object> policy;
 
+    @Deprecated // TODO (mfischer) remove this method, use builder instead
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep) {
         return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep);
     }
 
+    @Deprecated // TODO (mfischer) remove this method, use builder instead
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep, final String businessPartnerNumber,
             final Map<String, Object> policy) {
@@ -72,22 +74,34 @@ public class Tombstone {
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(catenaXId)
-                        .processingError(withProcessingError(processStep, retryCount, exception.getMessage()))
+                        .processingError(ProcessingError.builder()
+                                                        .withProcessStep(processStep)
+                                                        .withRetryCounter(retryCount)
+                                                        .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                                                        .withErrorDetail(exception.getMessage())
+                                                        .build())
                         .businessPartnerNumber(businessPartnerNumber)
                         .policy(policy)
                         .build();
     }
 
+    @Deprecated // TODO (mfischer) remove this method, use builder instead
     public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
             final int retryCount, final ProcessStep processStep) {
 
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(catenaXId)
-                        .processingError(withProcessingError(processStep, retryCount, errorDetails))
+                        .processingError(ProcessingError.builder()
+                                                        .withProcessStep(processStep)
+                                                        .withRetryCounter(retryCount)
+                                                        .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                                                        .withErrorDetail(errorDetails)
+                                                        .build())
                         .build();
     }
 
+    @Deprecated // TODO (mfischer) remove this method, use builder instead
     public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
             final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
         return Tombstone.builder()
