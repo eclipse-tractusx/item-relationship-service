@@ -133,16 +133,6 @@ public class Tombstone {
         return ExceptionUtils.getRootCauseMessage(throwable);
     }
 
-    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
-            final String exception) {
-        return ProcessingError.builder()
-                              .withProcessStep(processStep)
-                              .withRetryCounter(retryCount)
-                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                              .withErrorDetail(exception)
-                              .build();
-    }
-
     private static boolean hasSuppressedExceptions(final Throwable exception) {
         return exception.getSuppressed().length > 0;
     }
