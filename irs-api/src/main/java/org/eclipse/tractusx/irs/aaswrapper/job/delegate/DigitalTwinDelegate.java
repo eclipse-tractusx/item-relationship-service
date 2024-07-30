@@ -64,11 +64,7 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             final PartChainIdentificationKey itemId) {
 
         if (StringUtils.isBlank(itemId.getBpn())) {
-            log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
-                    itemId.getGlobalAssetId());
-            return itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId.getGlobalAssetId(), null, "Can't get relationship without a BPN", 0,
-                            ProcessStep.DIGITAL_TWIN_REQUEST)).build();
+            return itemContainerBuilder.tombstone(createNoBpnProvidedTombstone(jobData, itemId)).build();
         }
 
         try {
@@ -99,6 +95,23 @@ public class DigitalTwinDelegate extends AbstractDelegate {
 
         // depth reached - stop processing
         return itemContainerBuilder.build();
+    }
+
+    private Tombstone createNoBpnProvidedTombstone(final JobParameter jobData, final PartChainIdentificationKey itemId) {
+        log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
+                itemId.getGlobalAssetId());
+
+        final ProcessingError error = ProcessingError.builder()
+                                                     .withProcessStep(ProcessStep.DIGITAL_TWIN_REQUEST)
+                                                     .withRetryCounterAndLastAttemptNow(0)
+                                                     .withErrorDetail("Can't get relationship without a BPN")
+                                                     .build();
+        return Tombstone.builder()
+                        .endpointURL(null)
+                        .catenaXId(itemId.getGlobalAssetId())
+                        .processingError(error)
+                        .businessPartnerNumber(jobData.getBpn())
+                        .build();
     }
 
     private static RegistryServiceException shellNotFound(final Collection<Either<Exception, Shell>> eithers) {
