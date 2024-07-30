@@ -102,7 +102,7 @@ public class Tombstone {
                         .build();
     }
 
-    private static List<String> getRootErrorMessages(final Throwable... throwables) {
+    public static List<String> getRootErrorMessages(final Throwable... throwables) {
         return Arrays.stream(throwables).map(Tombstone::getRootErrorMessages).toList();
     }
 
