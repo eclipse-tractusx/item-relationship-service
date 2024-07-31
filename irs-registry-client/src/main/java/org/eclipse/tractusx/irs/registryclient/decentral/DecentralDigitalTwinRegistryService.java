@@ -332,7 +332,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                     "%s occurred while looking up shell ids for bpn '%s'".formatted(e.getClass().getSimpleName(), bpn),
                     e);
         } catch (TimeoutException e) {
-            throw new RegistryServiceException("Timeout during shell ID lookup", e);
+            throw new RegistryServiceException("Timeout during shell ID lookup for bpn '%s'".formatted(bpn), e);
         }
     }
 

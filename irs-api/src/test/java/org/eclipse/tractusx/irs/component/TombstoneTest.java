@@ -128,18 +128,8 @@ class TombstoneTest {
     }
 
     private String zonedDateTimeExcerpt(ZonedDateTime dateTime) {
-        return new StringBuilder().append(dateTime.getYear())
-                                  .append("-")
-                                  .append(dateTime.getMonth())
-                                  .append("-")
-                                  .append(dateTime.getDayOfMonth())
-                                  .append("T")
-                                  .append(dateTime.getHour())
-                                  .append(":")
-                                  .append(dateTime.getMinute())
-                                  .append(":")
-                                  .append(dateTime.getSecond())
-                                  .toString();
+        return "%d-%s-%dT%d:%d:%d".formatted(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth(),
+                dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond());
     }
 
 }

@@ -19,19 +19,21 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.exceptions;
 
+import lombok.Getter;
 import org.eclipse.edc.policy.model.Policy;
 
 /**
- * This interface provides get-methods for fine-grained policy exceptions
+ * Policy exception with detail information
  */
-public interface PolicyException {
-    /**
-     * @return the corresponding bpn of the policy
-     */
-    String getBusinessPartnerNumber();
+@Getter
+public class PolicyException extends EdcClientException {
 
-    /**
-     * @return the policy that caused the exception
-     */
-    Policy getPolicy();
+    private final transient Policy policy;
+    private final String businessPartnerNumber;
+
+    public PolicyException(final String message, final Policy policy, final String businessPartnerNumber) {
+        super(message);
+        this.policy = policy;
+        this.businessPartnerNumber = businessPartnerNumber;
+    }
 }

@@ -35,6 +35,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.common.ExceptionUtils;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
@@ -64,23 +65,19 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             final PartChainIdentificationKey itemId) {
 
         if (StringUtils.isBlank(itemId.getBpn())) {
-            log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
-                    itemId.getGlobalAssetId());
-            return itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId.getGlobalAssetId(), null, "Can't get relationship without a BPN", 0,
-                            ProcessStep.DIGITAL_TWIN_REQUEST)).build();
+            return itemContainerBuilder.tombstone(createNoBpnProvidedTombstone(jobData, itemId)).build();
         }
 
         try {
             final var dtrKeys = List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()));
-            final var eithers = digitalTwinRegistryService.fetchShells(dtrKeys);
-            final var shell = eithers.stream()
+            final var shells = digitalTwinRegistryService.fetchShells(dtrKeys);
+            final var shell = shells.stream()
                                      // we use findFirst here,  because we query only for one
                                      // DigitalTwinRegistryKey here
                                      .map(Either::getOrNull)
                                      .filter(Objects::nonNull)
                                      .findFirst()
-                                     .orElseThrow(() -> shellNotFound(eithers));
+                                     .orElseThrow(() -> shellNotFound(shells));
 
             itemContainerBuilder.shell(
                     jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
@@ -99,6 +96,23 @@ public class DigitalTwinDelegate extends AbstractDelegate {
 
         // depth reached - stop processing
         return itemContainerBuilder.build();
+    }
+
+    private Tombstone createNoBpnProvidedTombstone(final JobParameter jobData, final PartChainIdentificationKey itemId) {
+        log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
+                itemId.getGlobalAssetId());
+
+        final ProcessingError error = ProcessingError.builder()
+                                                     .withProcessStep(ProcessStep.DIGITAL_TWIN_REQUEST)
+                                                     .withRetryCounterAndLastAttemptNow(0)
+                                                     .withErrorDetail("Can't get relationship without a BPN")
+                                                     .build();
+        return Tombstone.builder()
+                        .endpointURL(null)
+                        .catenaXId(itemId.getGlobalAssetId())
+                        .processingError(error)
+                        .businessPartnerNumber(jobData.getBpn())
+                        .build();
     }
 
     private static RegistryServiceException shellNotFound(final Collection<Either<Exception, Shell>> eithers) {

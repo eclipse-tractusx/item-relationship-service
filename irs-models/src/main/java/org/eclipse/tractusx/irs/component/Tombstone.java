@@ -41,12 +41,14 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
  * Tombstone with information about request failure
  */
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @Jacksonized
 @Schema(description = "Tombstone with information about request failure")
 public class Tombstone {
-    private static final NodeType NODE_TYPE = NodeType.TOMBSTONE;
+
     public static final int CATENA_X_ID_LENGTH = 45;
+
+    private static final NodeType NODE_TYPE = NodeType.TOMBSTONE;
 
     @Schema(description = "CATENA-X global asset id in the format urn:uuid:uuid4.",
             example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = CATENA_X_ID_LENGTH,
@@ -88,26 +90,20 @@ public class Tombstone {
 
     public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
             final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
-        final ProcessingError processingError = withProcessingError(processStep, retryCount, exception.getMessage(),
-                suppressed);
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(globalAssetId)
-                        .processingError(processingError)
+                        .processingError(ProcessingError.builder()
+                                                        .withProcessStep(processStep)
+                                                        .withRetryCounterAndLastAttemptNow(retryCount)
+                                                        .withErrorDetail(exception.getMessage())
+                                                        .withRootCauses(getRootErrorMessages(suppressed))
+                                                        .build())
                         .build();
     }
 
-    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
-            final String message, final Throwable... suppressed) {
-        final List<String> rootCauses = Arrays.stream(suppressed).map(Tombstone::getRootErrorMessages).toList();
-
-        return ProcessingError.builder()
-                              .withProcessStep(processStep)
-                              .withRetryCounter(retryCount)
-                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                              .withErrorDetail(message)
-                              .withRootCauses(rootCauses)
-                              .build();
+    private static List<String> getRootErrorMessages(final Throwable... throwables) {
+        return Arrays.stream(throwables).map(Tombstone::getRootErrorMessages).toList();
     }
 
     /**
