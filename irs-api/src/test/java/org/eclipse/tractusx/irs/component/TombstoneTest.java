@@ -31,11 +31,10 @@ import org.junit.jupiter.api.Test;
 class TombstoneTest {
 
     @Test
-    void fromTombstoneTest() {
+    void buildTombstoneTest() {
         // arrange
         final String catenaXId = "5e3e9060-ba73-4d5d-a6c8-dfd5123f4d99";
-        final IllegalArgumentException illegalArgumentException = new IllegalArgumentException(
-                "Some funny error occur");
+        final IllegalArgumentException exception = new IllegalArgumentException("Some funny error occur");
         final String endPointUrl = "http://localhost/dummy/interfaceinformation/urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final ProcessingError processingError = ProcessingError.builder()
@@ -53,9 +52,17 @@ class TombstoneTest {
                                                      .processingError(processingError)
                                                      .build();
 
-        //act
-        final Tombstone tombstone = Tombstone.from(catenaXId, endPointUrl, illegalArgumentException,
-                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(), ProcessStep.SUBMODEL_REQUEST);
+        // act
+        final int retryCount = RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts();
+        final ProcessingError error = ProcessingError.builder()
+                                                     .withProcessStep(ProcessStep.SUBMODEL_REQUEST)
+                                                     .withRetryCounterAndLastAttemptNow(retryCount)
+                                                     .withErrorDetail(exception.getMessage())
+                                                     .build();
+        final Tombstone tombstone = Tombstone.builder().endpointURL(endPointUrl)
+                                             .catenaXId(catenaXId)
+                                             .processingError(error)
+                                             .build();
 
         // assert
         assertThat(tombstone).isNotNull();
@@ -79,12 +86,22 @@ class TombstoneTest {
         final Throwable[] suppressed = exception.getSuppressed();
 
         // act
-        final Tombstone from = Tombstone.from("testId", "testUrl", exception, suppressed, 1,
-                ProcessStep.DIGITAL_TWIN_REQUEST);
+
+        final ProcessingError error = ProcessingError.builder()
+                                                     .withProcessStep(ProcessStep.DIGITAL_TWIN_REQUEST)
+                                                     .withRetryCounterAndLastAttemptNow(1)
+                                                     .withErrorDetail(exception.getMessage())
+                                                     .withRootCauses(Tombstone.getRootErrorMessages(suppressed))
+                                                     .build();
+        final Tombstone tombstone = Tombstone.builder()
+                                        .endpointURL("testUrl")
+                                        .catenaXId("testId")
+                                        .processingError(error)
+                                        .build();
 
         // assert
-        assertThat(from.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
-        assertThat(from.getProcessingError().getRootCauses()).contains("Exception: " + suppressedExceptionMessage);
+        assertThat(tombstone.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
+        assertThat(tombstone.getProcessingError().getRootCauses()).contains("Exception: " + suppressedExceptionMessage);
     }
 
     @Test
@@ -103,12 +120,21 @@ class TombstoneTest {
         final Throwable[] suppressed = exception.getSuppressed();
 
         // act
-        final Tombstone from = Tombstone.from("testId", "testUrl", exception, suppressed, 1,
-                ProcessStep.DIGITAL_TWIN_REQUEST);
+        final ProcessingError error = ProcessingError.builder()
+                                                     .withProcessStep(ProcessStep.DIGITAL_TWIN_REQUEST)
+                                                     .withRetryCounterAndLastAttemptNow(1)
+                                                     .withErrorDetail(exception.getMessage())
+                                                     .withRootCauses(Tombstone.getRootErrorMessages(suppressed))
+                                                     .build();
+        final Tombstone tombstone = Tombstone.builder()
+                                        .endpointURL("testUrl")
+                                        .catenaXId("testId")
+                                        .processingError(error)
+                                        .build();
 
         // assert
-        assertThat(from.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
-        assertThat(from.getProcessingError().getRootCauses()).contains("Exception: " + suppressedRootCause);
+        assertThat(tombstone.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
+        assertThat(tombstone.getProcessingError().getRootCauses()).contains("Exception: " + suppressedRootCause);
     }
 
     @Test
@@ -119,12 +145,22 @@ class TombstoneTest {
         final Throwable[] suppressed = exception.getSuppressed();
 
         // act
-        final Tombstone from = Tombstone.from("testId", "testUrl", exception, suppressed, 1,
-                ProcessStep.DIGITAL_TWIN_REQUEST);
+
+        final ProcessingError error = ProcessingError.builder()
+                                                     .withProcessStep(ProcessStep.DIGITAL_TWIN_REQUEST)
+                                                     .withRetryCounterAndLastAttemptNow(1)
+                                                     .withErrorDetail(exception.getMessage())
+                                                     .withRootCauses(Tombstone.getRootErrorMessages(suppressed))
+                                                     .build();
+        final Tombstone tombstone = Tombstone.builder()
+                                        .endpointURL("testUrl")
+                                        .catenaXId("testId")
+                                        .processingError(error)
+                                        .build();
 
         // assert
-        assertThat(from.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
-        assertThat(from.getProcessingError().getRootCauses()).isEmpty();
+        assertThat(tombstone.getProcessingError().getErrorDetail()).isEqualTo(exception.getMessage());
+        assertThat(tombstone.getProcessingError().getRootCauses()).isEmpty();
     }
 
     private String zonedDateTimeExcerpt(ZonedDateTime dateTime) {

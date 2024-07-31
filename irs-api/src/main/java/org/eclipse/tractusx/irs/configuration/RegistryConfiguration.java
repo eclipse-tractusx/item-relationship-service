@@ -80,7 +80,7 @@ public class RegistryConfiguration {
             try {
                 return facade.getEndpointReferencesForRegistryAsset(edcConnectorEndpoint, bpn);
             } catch (EdcClientException e) {
-                throw new EdcRetrieverException(e);
+                throw new EdcRetrieverException.Builder(e).withEdcUrl(edcConnectorEndpoint).withBpn(bpn).build();
             }
         };
 

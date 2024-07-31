@@ -57,6 +57,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer.ItemContainerBuilder;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Quantity;
@@ -90,11 +91,11 @@ class RelationshipDelegateTest {
                 new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                         "address")))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -118,11 +119,11 @@ class RelationshipDelegateTest {
                 new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       SINGLE_LEVEL_USAGE_AS_BUILT_2_0_0,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         SINGLE_LEVEL_USAGE_AS_BUILT_2_0_0,
+                                                                                         "address")))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -150,11 +151,11 @@ class RelationshipDelegateTest {
                 new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0,
+                                                                                         "address")))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -183,11 +184,10 @@ class RelationshipDelegateTest {
                 new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       aspectName,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         aspectName, "address")))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -233,11 +233,10 @@ class RelationshipDelegateTest {
                 new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       aspectName,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         aspectName, "address")))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -282,11 +281,10 @@ class RelationshipDelegateTest {
                 new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       aspectName,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         aspectName, "address")))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -313,11 +311,11 @@ class RelationshipDelegateTest {
 
     @Test
     void shouldPutTombstoneForMissingBpn() {
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                         "address")))));
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 new AASTransferProcess(), PartChainIdentificationKey.builder().globalAssetId("testId").build());
@@ -337,19 +335,23 @@ class RelationshipDelegateTest {
                 new EdcClientException("Unable to call endpoint"));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                         "address")))));
 
         // when
+        final PartChainIdentificationKey partChainIdentificationKey = createKey();
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), createKey());
+                new AASTransferProcess(), partChainIdentificationKey);
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(
+                partChainIdentificationKey.getBpn()); // TODO (mfischer) is this correct?
+        assertThat(result.getTombstones().get(0).getEndpointURL()).isEqualTo("address");
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.SUBMODEL_REQUEST);
@@ -361,19 +363,23 @@ class RelationshipDelegateTest {
         when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString(), any())).thenThrow(
                 new EdcClientException(new Exception("Payload did not match expected submodel")));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                         "address")))));
 
         // when
+        final PartChainIdentificationKey partChainIdentificationKey = createKey();
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), createKey());
+                new AASTransferProcess(), partChainIdentificationKey);
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(
+                partChainIdentificationKey.getBpn()); // TODO (mfischer) is this correct?
+        assertThat(result.getTombstones().get(0).getEndpointURL()).isEqualTo("address");
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.SUBMODEL_REQUEST);
@@ -383,22 +389,26 @@ class RelationshipDelegateTest {
     void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
         // given
         final String businessPartnerNumber = "BPNL000000011111";
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shell("", shellDescriptor(
-                                                                                               List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                       SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
-                                                                                                       "address")))));
+        final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                         .shell(shell("", shellDescriptor(
+                                                                                 List.of(submodelDescriptorWithDspEndpoint(
+                                                                                         SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                         "address")))));
 
         // when
         when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
                 new UsagePolicyPermissionException(List.of(), null, businessPartnerNumber));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
+        final PartChainIdentificationKey partChainIdentificationKey = createKey();
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), createKey());
+                new AASTransferProcess(), partChainIdentificationKey);
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(
+                businessPartnerNumber); // TODO (mfischer) is this correct or should it be the bpn from partChainIdentificationKey?
+        assertThat(result.getTombstones().get(0).getEndpointURL()).isEqualTo("address");
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(businessPartnerNumber);
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(

@@ -42,6 +42,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
+import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
 
 /**
  * Retrieves AAShell from Digital Twin Registry service and storing it inside {@link ItemContainer}.
@@ -72,22 +73,20 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             final var dtrKeys = List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()));
             final var shells = digitalTwinRegistryService.fetchShells(dtrKeys);
             final var shell = shells.stream()
-                                     // we use findFirst here,  because we query only for one
-                                     // DigitalTwinRegistryKey here
-                                     .map(Either::getOrNull)
-                                     .filter(Objects::nonNull)
-                                     .findFirst()
-                                     .orElseThrow(() -> shellNotFound(shells));
+                                    // we use findFirst here,  because we query only for one
+                                    // DigitalTwinRegistryKey here
+                                    .map(Either::getOrNull)
+                                    .filter(Objects::nonNull)
+                                    .findFirst()
+                                    .orElseThrow(() -> shellNotFound(shells));
 
             itemContainerBuilder.shell(
                     jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
+
         } catch (final RegistryServiceException | RuntimeException e) {
             // catching generic exception is intended here,
             // otherwise Jobs stay in state RUNNING forever
-            log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-            itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId.getGlobalAssetId(), null, e, e.getSuppressed(), retryCount,
-                            ProcessStep.DIGITAL_TWIN_REQUEST));
+            createShellEndpointCouldNotBeRetrievedTombstone(itemContainerBuilder, itemId, e);
         }
 
         if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
@@ -98,7 +97,35 @@ public class DigitalTwinDelegate extends AbstractDelegate {
         return itemContainerBuilder.build();
     }
 
-    private Tombstone createNoBpnProvidedTombstone(final JobParameter jobData, final PartChainIdentificationKey itemId) {
+    private void createShellEndpointCouldNotBeRetrievedTombstone(
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final PartChainIdentificationKey itemId,
+            final Exception exception) {
+
+        log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+
+        final List<String> rootErrorMessages = Tombstone.getRootErrorMessages(exception.getSuppressed());
+        final ProcessingError error = ProcessingError.builder()
+                                                     .withProcessStep(ProcessStep.DIGITAL_TWIN_REQUEST)
+                                                     .withRetryCounterAndLastAttemptNow(retryCount)
+                                                     .withErrorDetail(exception.getMessage())
+                                                     .withRootCauses(rootErrorMessages)
+                                                     .build();
+        String endpointURL = null; // TODO (mfischer) test
+        if (exception instanceof ShellNotFoundException) {
+            endpointURL = String.join("; ", ((ShellNotFoundException) exception).getCalledEndpoints());
+        }
+        final Tombstone tombstone = Tombstone.builder()
+                                             .endpointURL(endpointURL)
+                                             .catenaXId(itemId.getGlobalAssetId())
+                                             .processingError(error)
+                                             .businessPartnerNumber(itemId.getBpn())
+                                             .build();
+        itemContainerBuilder.tombstone(tombstone);
+    }
+
+
+    private Tombstone createNoBpnProvidedTombstone(final JobParameter jobData,
+            final PartChainIdentificationKey itemId) {
         log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
                 itemId.getGlobalAssetId());
 

@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -59,7 +60,8 @@ class EndpointDataForConnectorsServiceTest {
                                          .build();
 
     private static final EndpointDataReference CONNECTION_TWO_DATA_REF =  //
-            EndpointDataReference.Builder.newInstance().endpoint(CONNECTION_TWO_ADDRESS)
+            EndpointDataReference.Builder.newInstance()
+                                         .endpoint(CONNECTION_TWO_ADDRESS)
                                          .contractId(CONNECTION_TWO_CONTRACT_ID)
                                          .id("test1")
                                          .authKey(HttpHeaders.AUTHORIZATION)
@@ -96,7 +98,7 @@ class EndpointDataForConnectorsServiceTest {
 
         // a first endpoint failing (1)
         when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_ONE_ADDRESS, BPN)).thenThrow(
-                new EdcRetrieverException(new EdcClientException("EdcClientException")));
+                new EdcRetrieverException.Builder(new EdcClientException("EdcClientException")).build());
 
         // and a second endpoint returning successfully (2)
         when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_TWO_ADDRESS, BPN)).thenReturn(
@@ -135,12 +137,10 @@ class EndpointDataForConnectorsServiceTest {
 
         // GIVEN
         when(edcSubmodelFacade.getEndpointReferencesForAsset(anyString(), eq(BPN))).thenThrow(
-                new EdcRetrieverException(new EdcClientException("EdcClientException")));
+                new EdcRetrieverException.Builder(new EdcClientException("EdcClientException")).build());
 
         // WHEN
-        final var exceptions = new ArrayList<>();
-
-        // THEN
+        final List<Exception> exceptions = new ArrayList<>();
         final List<String> connectorEndpoints = List.of(CONNECTION_ONE_ADDRESS, CONNECTION_TWO_ADDRESS);
         sut.createFindEndpointDataForConnectorsFutures(connectorEndpoints, BPN) //
            .forEach(future -> {
@@ -151,7 +151,14 @@ class EndpointDataForConnectorsServiceTest {
                }
            });
 
-        assertThat(exceptions).hasSize(connectorEndpoints.size());
+        // THEN
+        assertThat(exceptions).hasSize(connectorEndpoints.size())
+                              .extracting(Exception::getCause)
+                              .allMatch(exception -> exception instanceof EdcRetrieverException)
+                              .extracting("bpn", "edcUrl")
+                              .containsExactlyInAnyOrder(tuple(BPN, CONNECTION_ONE_ADDRESS),
+                                      tuple(BPN, CONNECTION_TWO_ADDRESS));
+
     }
 
 }

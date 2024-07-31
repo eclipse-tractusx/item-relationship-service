@@ -53,6 +53,7 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.awaitility.Awaitility;
@@ -91,19 +92,24 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ContextConfiguration(initializers = IrsWireMockIntegrationTest.MinioConfigInitializer.class)
 @ActiveProfiles("integrationtest")
 class IrsWireMockIntegrationTest {
+
     public static final String SEMANTIC_HUB_URL = "http://semantic.hub/models";
     public static final String EDC_URL = "http://edc.test";
+
     private static final String ACCESS_KEY = "accessKey";
     private static final String SECRET_KEY = "secretKey";
     private static final MinioContainer minioContainer = new MinioContainer(
             new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
+
     @Autowired
     private IrsItemGraphQueryService irsService;
 
     @Autowired
     private SemanticHubService semanticHubService;
+
     @Autowired
     private EndpointDataReferenceStorage endpointDataReferenceStorage;
+
     @Autowired
     private CacheManager cacheManager;
 
@@ -212,6 +218,9 @@ class IrsWireMockIntegrationTest {
         assertThat(jobForJobId.getShells()).isEmpty();
         assertThat(jobForJobId.getRelationships()).isEmpty();
         assertThat(jobForJobId.getTombstones()).hasSize(1);
+        assertThat(jobForJobId.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(
+                TEST_BPN); // TODO (mfischer) is this correct?
+        // TODO (mfischer) also check for Endpoint URL
     }
 
     @Test
@@ -365,11 +374,15 @@ class IrsWireMockIntegrationTest {
         assertThat(jobForJobId.getShells()).isEmpty();
         assertThat(jobForJobId.getRelationships()).isEmpty();
         assertThat(jobForJobId.getSubmodels()).isEmpty();
+
         assertThat(jobForJobId.getTombstones()).hasSize(1);
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
         assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
                 "No EDC Endpoints could be discovered for BPN '%s'".formatted(TEST_BPN));
+        assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
+        assertThat(actualTombstone.getEndpointURL()).describedAs(
+                "endpoint url empty because it could not be discovered").isEmpty();
     }
 
     private void successfulRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
