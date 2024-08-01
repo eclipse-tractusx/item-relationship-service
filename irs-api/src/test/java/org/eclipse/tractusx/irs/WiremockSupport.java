@@ -19,8 +19,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -45,6 +47,7 @@ import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
@@ -57,6 +60,8 @@ import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 public class WiremockSupport {
 
     public static final String SUBMODEL_SUFFIX = "/\\$value";
+    public static final String CALLBACK_URL = "http://localhost/callback?id={id}&state={state}";
+    public static final String CALLBACK_PATH = "/callback";
 
     public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
         final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
@@ -91,6 +96,18 @@ public class WiremockSupport {
                           .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                           .collectAspects(true)
                           .direction(Direction.DOWNWARD)
+                          .build();
+    }
+
+    static RegisterJob jobRequest(final String globalAssetId, final String bpn, final int depth,
+            final String callbackUrl) {
+        return RegisterJob.builder()
+                          .key(PartChainIdentificationKey.builder().bpn(bpn).globalAssetId(globalAssetId).build())
+                          .depth(depth)
+                          .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
+                          .collectAspects(true)
+                          .direction(Direction.DOWNWARD)
+                          .callbackUrl(callbackUrl)
                           .build();
     }
 
@@ -134,8 +151,20 @@ public class WiremockSupport {
     }
 
     static void successfulDataRequests(final String assetId, final String fileName) {
-        stubFor(get(urlPathMatching(DtrWiremockSupport.DATAPLANE_PUBLIC_PATH + "/" + assetId+ SUBMODEL_SUFFIX)).willReturn(
+        stubFor(get(
+                urlPathMatching(DtrWiremockSupport.DATAPLANE_PUBLIC_PATH + "/" + assetId + SUBMODEL_SUFFIX)).willReturn(
                 responseWithStatus(200).withBodyFile(fileName)));
+    }
+
+    static void successfulCallbackRequest() {
+        stubFor(get(urlPathEqualTo(CALLBACK_PATH)).withQueryParam("id", matching(".*"))
+                                                  .withQueryParam("state", matching(".*"))
+                                                  .willReturn(responseWithStatus(200)));
+    }
+
+    static void verifyCallbackCall(final String jobId, final JobState state, final int times) {
+        verify(times, getRequestedFor(urlPathEqualTo(CALLBACK_PATH)).withQueryParam("id", equalTo(jobId))
+                                                                    .withQueryParam("state", equalTo(state.toString())));
     }
 
     static void successfulSemanticHubRequests() {
