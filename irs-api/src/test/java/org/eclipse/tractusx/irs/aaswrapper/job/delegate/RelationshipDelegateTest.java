@@ -61,6 +61,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer.ItemContainerBuilde
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Quantity;
+import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -132,12 +133,15 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
+
         final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
         assertThat(quantity.getQuantityNumber()).isEqualTo(20.0);
         assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:piece");
-        assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
+
+        final List<PartChainIdentificationKey> idsToProcess = aasTransferProcess.getIdsToProcess();
+        assertThat(idsToProcess).isNotEmpty();
+        assertThat(idsToProcess.get(0).getGlobalAssetId()).isNotEmpty();
+        assertThat(idsToProcess.get(0).getBpn()).isNotEmpty();
     }
 
     @Test
@@ -164,13 +168,15 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
+
         final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
         assertThat(quantity.getQuantityNumber()).isEqualTo(20.0);
         assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:piece");
-        assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isEqualTo(
-                "urn:uuid:56319907-28dc-440e-afcc-72d67ad343e7");
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isEqualTo("BPNL50096894aNXY");
+
+        final List<PartChainIdentificationKey> idsToProcess = aasTransferProcess.getIdsToProcess();
+        assertThat(idsToProcess).isNotEmpty();
+        assertThat(idsToProcess.get(0).getGlobalAssetId()).isEqualTo("urn:uuid:56319907-28dc-440e-afcc-72d67ad343e7");
+        assertThat(idsToProcess.get(0).getBpn()).isEqualTo("BPNL50096894aNXY");
     }
 
     @ParameterizedTest
@@ -197,12 +203,15 @@ class RelationshipDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getRelationships()).hasSize(1);
+
         final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
         assertThat(quantity.getQuantityNumber()).isEqualTo(20.0);
         assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:piece");
-        assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
+
+        final List<PartChainIdentificationKey> idsToProcess = aasTransferProcess.getIdsToProcess();
+        assertThat(idsToProcess).isNotEmpty();
+        assertThat(idsToProcess.get(0).getGlobalAssetId()).isNotEmpty();
+        assertThat(idsToProcess.get(0).getBpn()).isNotEmpty();
     }
 
     private static Stream<Arguments> relationshipParameters() {
@@ -246,12 +255,15 @@ class RelationshipDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getRelationships()).hasSize(1);
+
         final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
         assertThat(quantity.getQuantityNumber()).isEqualTo(20.0);
         assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:piece");
-        assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
+
+        final List<PartChainIdentificationKey> idsToProcess = aasTransferProcess.getIdsToProcess();
+        assertThat(idsToProcess).isNotEmpty();
+        assertThat(idsToProcess.get(0).getGlobalAssetId()).isNotEmpty();
+        assertThat(idsToProcess.get(0).getBpn()).isNotEmpty();
     }
 
     public static Stream<Arguments> relationshipParametersFutureVersions() {
@@ -294,12 +306,15 @@ class RelationshipDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getRelationships()).hasSize(1);
+
         final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
         assertThat(quantity.getQuantityNumber()).isEqualTo(2.5);
         assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:litre");
-        assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
+
+        final List<PartChainIdentificationKey> idsToProcess = aasTransferProcess.getIdsToProcess();
+        assertThat(idsToProcess).isNotEmpty();
+        assertThat(idsToProcess.get(0).getGlobalAssetId()).isNotEmpty();
+        assertThat(idsToProcess.get(0).getBpn()).isNotEmpty();
     }
 
     public static Stream<Arguments> relationshipParametersPreviousVersions() {
@@ -322,10 +337,15 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getTombstones()).hasSize(1);
-        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("testId");
-        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
-                ProcessStep.SUBMODEL_REQUEST);
+
+        final List<Tombstone> tombstones = result.getTombstones();
+        assertThat(tombstones).hasSize(1);
+
+        assertThat(tombstones.get(0).getEndpointURL()).isEqualTo("address");
+        assertThat(tombstones.get(0).getBusinessPartnerNumber()).isNull();
+
+        assertThat(tombstones.get(0).getCatenaXId()).isEqualTo("testId");
+        assertThat(tombstones.get(0).getProcessingError().getProcessStep()).isEqualTo(ProcessStep.SUBMODEL_REQUEST);
     }
 
     @Test
@@ -349,12 +369,14 @@ class RelationshipDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
-        assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(
-                partChainIdentificationKey.getBpn()); // TODO (mfischer) is this correct?
-        assertThat(result.getTombstones().get(0).getEndpointURL()).isEqualTo("address");
-        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
-        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
-                ProcessStep.SUBMODEL_REQUEST);
+
+        final Tombstone tombstone = result.getTombstones().get(0);
+
+        assertThat(tombstone.getBusinessPartnerNumber()).isEqualTo(partChainIdentificationKey.getBpn());
+        assertThat(tombstone.getEndpointURL()).isEqualTo("address");
+
+        assertThat(tombstone.getCatenaXId()).isEqualTo("itemId");
+        assertThat(tombstone.getProcessingError().getProcessStep()).isEqualTo(ProcessStep.SUBMODEL_REQUEST);
     }
 
     @Test
@@ -377,9 +399,11 @@ class RelationshipDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
+
         assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(
-                partChainIdentificationKey.getBpn()); // TODO (mfischer) is this correct?
+                partChainIdentificationKey.getBpn());
         assertThat(result.getTombstones().get(0).getEndpointURL()).isEqualTo("address");
+
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.SUBMODEL_REQUEST);
@@ -405,14 +429,18 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getTombstones()).hasSize(1);
-        assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(
+
+        final List<Tombstone> tombstones = result.getTombstones();
+        assertThat(tombstones).hasSize(1);
+
+        final Tombstone tombstone = tombstones.get(0);
+        assertThat(tombstone.getBusinessPartnerNumber()).isEqualTo(
                 businessPartnerNumber); // TODO (mfischer) is this correct or should it be the bpn from partChainIdentificationKey?
-        assertThat(result.getTombstones().get(0).getEndpointURL()).isEqualTo("address");
-        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
-        assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(businessPartnerNumber);
-        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
-                ProcessStep.USAGE_POLICY_VALIDATION);
+        assertThat(tombstone.getEndpointURL()).isEqualTo("address");
+
+        assertThat(tombstone.getCatenaXId()).isEqualTo("itemId");
+        assertThat(tombstone.getBusinessPartnerNumber()).isEqualTo(businessPartnerNumber);
+        assertThat(tombstone.getProcessingError().getProcessStep()).isEqualTo(ProcessStep.USAGE_POLICY_VALIDATION);
     }
 
     private static PartChainIdentificationKey createKey() {

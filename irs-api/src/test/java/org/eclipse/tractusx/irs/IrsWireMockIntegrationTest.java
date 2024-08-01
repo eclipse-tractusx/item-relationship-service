@@ -32,6 +32,7 @@ import static org.eclipse.tractusx.irs.WiremockSupport.encodedAssetIds;
 import static org.eclipse.tractusx.irs.WiremockSupport.randomUUID;
 import static org.eclipse.tractusx.irs.component.enums.AspectType.AspectTypesConstants.BATCH;
 import static org.eclipse.tractusx.irs.component.enums.AspectType.AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.EDC_DISCOVERY_PATH;
@@ -53,7 +54,6 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.awaitility.Awaitility;
@@ -215,12 +215,15 @@ class IrsWireMockIntegrationTest {
         verify(0, postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+
         assertThat(jobForJobId.getShells()).isEmpty();
         assertThat(jobForJobId.getRelationships()).isEmpty();
-        assertThat(jobForJobId.getTombstones()).hasSize(1);
-        assertThat(jobForJobId.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(
-                TEST_BPN); // TODO (mfischer) is this correct?
-        // TODO (mfischer) also check for Endpoint URL
+
+        final List<Tombstone> tombstones = jobForJobId.getTombstones();
+        assertThat(tombstones).hasSize(1);
+        assertThat(tombstones.get(0).getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
+        assertThat(tombstones.get(0).getEndpointURL()).describedAs(
+                "Endpoint URL should be empty because discovery not successful").isEmpty();
     }
 
     @Test
@@ -243,9 +246,15 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.verifyDiscoveryCalls(1);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+
         assertThat(jobForJobId.getShells()).isEmpty();
         assertThat(jobForJobId.getRelationships()).isEmpty();
-        assertThat(jobForJobId.getTombstones()).hasSize(1);
+
+        final List<Tombstone> tombstones = jobForJobId.getTombstones();
+        assertThat(tombstones).hasSize(1);
+        assertThat(tombstones.get(0).getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
+        assertThat(tombstones.get(0).getEndpointURL()).describedAs(
+                "Endpoint URL should be empty because discovery not successful").isEmpty();
     }
 
     @Test
@@ -287,7 +296,7 @@ class IrsWireMockIntegrationTest {
     }
 
     @Test
-    void shouldCreateDetailedTombstoneForMissmatchPolicy() {
+    void shouldCreateDetailedTombstoneForMismatchPolicy() {
         // Arrange
         final String globalAssetId = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
 
@@ -308,14 +317,22 @@ class IrsWireMockIntegrationTest {
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+
         assertThat(jobForJobId.getShells()).isEmpty();
         assertThat(jobForJobId.getRelationships()).isEmpty();
         assertThat(jobForJobId.getSubmodels()).isEmpty();
+
         assertThat(jobForJobId.getTombstones()).hasSize(1);
+
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
-        assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
-        assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
-                "UsagePolicyPermissionException: Policies [default-policy] did not match with policy from BPNL00000000TEST.");
+        assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
+        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL);
+
+        final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
+        assertThat(rootCauses).hasSize(1);
+        assertThat(rootCauses.get(0)).contains(
+                "UsagePolicyPermissionException: Policies [default-policy] did not match with policy from %s.".formatted(
+                        TEST_BPN));
     }
 
     @Test
@@ -340,13 +357,21 @@ class IrsWireMockIntegrationTest {
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+
         assertThat(jobForJobId.getShells()).isEmpty();
         assertThat(jobForJobId.getRelationships()).isEmpty();
         assertThat(jobForJobId.getSubmodels()).isEmpty();
-        assertThat(jobForJobId.getTombstones()).hasSize(1);
-        final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
-        assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
-        assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains("502 Bad Gateway");
+
+        final List<Tombstone> tombstones = jobForJobId.getTombstones();
+        assertThat(tombstones).hasSize(1);
+
+        final Tombstone actualTombstone = tombstones.get(0);
+        assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
+        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL);
+
+        final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
+        assertThat(rootCauses).hasSize(1);
+        assertThat(rootCauses.get(0)).contains("502 Bad Gateway");
     }
 
     @Test
@@ -371,18 +396,22 @@ class IrsWireMockIntegrationTest {
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+
         assertThat(jobForJobId.getShells()).isEmpty();
         assertThat(jobForJobId.getRelationships()).isEmpty();
         assertThat(jobForJobId.getSubmodels()).isEmpty();
 
         assertThat(jobForJobId.getTombstones()).hasSize(1);
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
-        assertThat(actualTombstone.getProcessingError().getRootCauses()).hasSize(1);
-        assertThat(actualTombstone.getProcessingError().getRootCauses().get(0)).contains(
-                "No EDC Endpoints could be discovered for BPN '%s'".formatted(TEST_BPN));
+
         assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
         assertThat(actualTombstone.getEndpointURL()).describedAs(
-                "endpoint url empty because it could not be discovered").isEmpty();
+                "Endpoint url empty because it could not be discovered").isEmpty();
+
+        final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
+        assertThat(rootCauses).hasSize(1);
+        assertThat(rootCauses.get(0)).contains(
+                "No EDC Endpoints could be discovered for BPN '%s'".formatted(TEST_BPN));
     }
 
     private void successfulRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
