@@ -23,12 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.bpn.validation;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.Job;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Tombstone;
+import org.eclipse.tractusx.irs.component.Tombstone.TombstoneBuilder;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
@@ -62,8 +66,7 @@ public final class IncidentValidation {
         try {
             partAsPlannedValidity = validatePartAsPlanned(completedJob);
         } catch (final AspectTypeNotFoundException e) {
-            final Tombstone tombstone = createValidationTombstone(e,
-                    completedJob.getJob().getGlobalAssetId().getGlobalAssetId());
+            final Tombstone tombstone = createValidationTombstone(e, completedJob);
             completedJob = completedJob.toBuilder().tombstone(tombstone).build();
             partAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
         }
@@ -74,8 +77,7 @@ public final class IncidentValidation {
         try {
             partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(investigationJob, completedJob);
         } catch (final ValidationException e) {
-            final Tombstone tombstone = createValidationTombstone(e,
-                    completedJob.getJob().getGlobalAssetId().getGlobalAssetId());
+            final Tombstone tombstone = createValidationTombstone(e, completedJob);
             completedJob = completedJob.toBuilder().tombstone(tombstone).build();
             partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
         }
@@ -126,16 +128,27 @@ public final class IncidentValidation {
                                            .getPayload());
     }
 
-    private static Tombstone createValidationTombstone(final ValidationException exception,
-            final String globalAssetId) {
+    private static Tombstone createValidationTombstone(final ValidationException exception, final Jobs completedJob) {
         log.warn("Validation failed. {}", exception.getMessage());
-        return Tombstone.builder().catenaXId(globalAssetId).endpointURL(null) // TODO (mfischer)  endpointUrl?
-                        .processingError(ProcessingError.builder()
+
+        final TombstoneBuilder tombstoneBuilder = Tombstone.builder();
+
+        tombstoneBuilder.catenaXId(completedJob.getJob().getGlobalAssetId().getGlobalAssetId());
+
+        // null because failure is before endpoint url is known
+        tombstoneBuilder.endpointURL(null);
+
+        tombstoneBuilder.processingError(ProcessingError.builder()
                                                         .withErrorDetail(exception.getMessage())
                                                         .withRetryCounterAndLastAttemptNow(0)
                                                         .withProcessStep(ProcessStep.ESS_VALIDATION)
-                                                        .build())
-                        // TODO (mfischer) .businessPartnerNumber() where to get it from
-                        .build();
+                                                        .build());
+        Optional.of(completedJob)
+                .map(Jobs::getJob)
+                .map(Job::getParameter)
+                .map(JobParameter::getBpn)
+                .ifPresent(tombstoneBuilder::businessPartnerNumber);
+
+        return tombstoneBuilder.build();
     }
 }
