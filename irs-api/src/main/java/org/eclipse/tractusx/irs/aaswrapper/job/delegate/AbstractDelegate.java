@@ -122,7 +122,7 @@ public abstract class AbstractDelegate {
 
         throw new EdcClientException(
                 String.format("Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
-                        connectorEndpoints.size(), String.join(", ", connectorEndpoints))); // TODO (mfischer)
+                        connectorEndpoints.size(), String.join(", ", connectorEndpoints)));
     }
 
 }

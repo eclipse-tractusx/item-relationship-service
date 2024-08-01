@@ -70,7 +70,7 @@ public class EdcCallbackController {
             final String contractId = endpointDataReference.getContractId();
             storeEdr(contractId, endpointDataReference);
         } catch (EdcClientException e) {
-            log.error("Could not deserialize Endpoint Data Reference {}", endpointDataReferenceCallback); // TODO (mfischer)???
+            log.error("Could not deserialize Endpoint Data Reference {}", endpointDataReferenceCallback);
         }
     }
 

@@ -203,7 +203,7 @@ class InvestigationJobProcessingEventListener {
                     investigationJobUpdate.withUnansweredNotifications(Collections.singletonList(new Notification(notificationId, bpn)));
                 } catch (final EdcClientException e) {
                     log.error("Exception during sending EDC notification.", e);
-                    investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN); // TODO (mfischer) ???
+                    investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
                 }
             });
         });
