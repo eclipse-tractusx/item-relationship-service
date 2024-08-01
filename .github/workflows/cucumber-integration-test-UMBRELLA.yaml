@@ -21,19 +21,21 @@ name: IRS Umbrella Cucumber Integration test execution
 
 on:
   workflow_dispatch: # Trigger manually
+    inputs:
+      executionFilter:
+        description: 'Execution filter'
+        required: false
+        default: '!Ignore & !INACTIVE & INTEGRATION_TEST & UMBRELLA'
   push:
     branches:
       - 'main'
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
-      - 'charts/**'
       - '.config/**'
       - 'docs/**'
       - 'local/**'
       - 'irs-load-tests/**'
-  schedule:
-    - cron: '0 2 * * 1-5' # At 02:00 on every day-of-week from Monday through Friday.
 
 # Cancel previous Test executions if a new one is triggered.
 concurrency:
@@ -42,7 +44,7 @@ concurrency:
 
 jobs:
   execute-e2e-tests:
-    runs-on: ubuntu-latest
+    runs-on: tractusx-runner
     steps:
       - uses: actions/checkout@v4
 
@@ -56,7 +58,7 @@ jobs:
           regularUserApiKey: "password"
           adminUserApiKey: "password"
           cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
-          executionFilter: "!Ignore & !INACTIVE & INTEGRATION_TEST & UMBRELLA"
+          executionFilter: ${{ github.event.inputs.executionFilter || '!Ignore & !INACTIVE & INTEGRATION_TEST & UMBRELLA' }}
 
       - name: Attach logs
         if: always() && steps.setup-env.outcome == 'success'

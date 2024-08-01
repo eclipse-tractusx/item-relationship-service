@@ -26,7 +26,7 @@ Feature: SingleLevelUsageAsBuilt
 
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1009 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770 @TRI-1682
+  @TRI-1009
   Scenario: End 2 End for upward direction and SingleLevelUsageAsBuilt
     Given I register an IRS job for globalAssetId "urn:uuid:97eb9ea6-7e66-4ad8-aefe-6ed8aa78ccce" and BPN "BPNL00000003AYRE"
     And direction "upward"
@@ -36,7 +36,7 @@ Feature: SingleLevelUsageAsBuilt
     And I check, if "relationships" are equal to "TRI-1009-expected-relationships.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-2035 @TRI-1942 @TRI-1843 @TRI-1682 @TRI-1770 @TRI-1941 @TRI-873
+  @TRI-2035
   Scenario: Tombstone for not found GlobalAssetId
     Given I register an IRS job for globalAssetId "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" and BPN "BPNL00000003AYRE"
     And depth 1
@@ -47,7 +47,7 @@ Feature: SingleLevelUsageAsBuilt
     And I check, if "tombstones" are equal to "TRI-2035-expected-tombstones.json"
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-1647 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770 @TRI-1682
+  @TRI-1647
   Scenario: End 2 End for aspect "TractionBatteryCode"
     Given I register an IRS job for globalAssetId "urn:uuid:8f5a73b3-766e-47c7-8780-4760a22329af" and BPN "BPNL00000003AYRE"
     And collectAspects "true"
@@ -60,8 +60,9 @@ Feature: SingleLevelUsageAsBuilt
     Then I check, if the job has status "COMPLETED" within 20 minutes
     And I check, if "submodels" are equal to "TRI-1647-expected-submodels.json"
 
+  @Ignore # ignoring this test since the github workflow resources do not allow a test as big as this
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-767 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770 @TRI-1682
+  @TRI-767
   Scenario: End 2 End for OEM-B (MB) [BPN:BPNL00000003AYRE] (SerialPart 3.0.0, SingleLevelBomAsBuilt 3.0.0 , Batch 3.0.0)
     Given I register an IRS job for globalAssetId "urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c" and BPN "BPNL00000003AYRE"
     And collectAspects "true"
@@ -81,7 +82,7 @@ Feature: SingleLevelUsageAsBuilt
     And I check, if submodels contains BPNL number "BPNL00000003AYRE" exactly 248 times
 
   @UMBRELLA @INTEGRATION_TEST
-  @TRI-704 @TRI-1941 @TRI-1942 @TRI-873 @TRI-1843 @TRI-1770 @TRI-1682
+  @TRI-704
   Scenario: End 2 End for Tier A (ZF) [BPN:BPNL00000003AYRE] (SerialPart 3.0.0, SingleLevelBomAsBuilt 3.0.0 , Batch 3.0.0)
     Given I register an IRS job for globalAssetId "urn:uuid:aeada37a-a1d8-4535-a476-5f5e1142e3fe" and BPN "BPNL00000003AYRE"
     And aspects :

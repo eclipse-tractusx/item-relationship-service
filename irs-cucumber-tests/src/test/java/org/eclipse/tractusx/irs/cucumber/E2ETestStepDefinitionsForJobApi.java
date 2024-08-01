@@ -318,12 +318,20 @@ public class E2ETestStepDefinitionsForJobApi {
 
     @Then("I check, if the batch contains {int} jobs")
     public void iCheckIfTheBatchContainsJobs(int jobSize) {
-        batchResponse = givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
-                                                                            .get("/irs/orders/" + orderId + "/batches/"
-                                                                                    + batchId)
-                                                                            .as(BatchResponse.class);
+        await().atMost(10, TimeUnit.SECONDS)
+               .with()
+               .pollInterval(Duration.ofSeconds(1L))
+               .until(() -> getBatchResponse().getJobs().size() == jobSize);
+        batchResponse = getBatchResponse();
 
         assertThat(batchResponse.getJobsInBatchChecksum()).isEqualTo(jobSize);
+    }
+
+    private BatchResponse getBatchResponse() {
+        return givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                   .get("/irs/orders/" + orderId + "/batches/"
+                                                                           + batchId)
+                                                                   .as(BatchResponse.class);
     }
 
     @Then("I check, if job parameter are set with aspects:")

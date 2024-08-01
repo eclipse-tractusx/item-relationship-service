@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+
 # Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
 # Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
 #
@@ -35,7 +35,7 @@ EDC_UPLOAD_URL=$9
 
 EDC_DATAPLANE_URL=${10}
 
-bpn_regex_pattern='(BPN)(L|S|A)([a-zA-Z0-9]{12})'
+bpn_regex_pattern='(BPNL)([a-zA-Z0-9]{12})'
 replacement=$PROVIDER_BPN
 
 upload_data() {
