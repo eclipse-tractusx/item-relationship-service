@@ -38,8 +38,7 @@ public class EdcRetrieverException extends Exception {
 
     private String edcUrl;
 
-    @Deprecated // TODO (mfischer) remove later, use the builder
-    public EdcRetrieverException(final Throwable cause) {
+    private EdcRetrieverException(final Throwable cause) {
         super(cause);
     }
 
