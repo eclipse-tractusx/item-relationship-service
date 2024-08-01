@@ -75,7 +75,7 @@ class CallbackResponderEventListener {
     @Async
     @EventListener
     public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
-        if (noCallbackUrlRegistered(jobProcessingFinishedEvent.callbackUrl())) {
+        if (StringUtils.isBlank(jobProcessingFinishedEvent.callbackUrl())) {
             return;
         }
         log.info("Processing of job has finished - attempting to notify job requestor");
@@ -96,7 +96,7 @@ class CallbackResponderEventListener {
     @Async
     @EventListener
     public void handleBatchProcessingFinishedEvent(final BatchProcessingFinishedEvent batchProcessingFinishedEvent) {
-        if (noCallbackUrlRegistered(batchProcessingFinishedEvent.callbackUrl())) {
+        if (StringUtils.isBlank(batchProcessingFinishedEvent.callbackUrl())) {
             return;
         }
         log.info("Processing of Batch has finished - attempting to notify requestor");
@@ -120,7 +120,7 @@ class CallbackResponderEventListener {
     @EventListener
     public void handleBatchOrderProcessingFinishedEvent(
             final BatchOrderProcessingFinishedEvent batchOrderProcessingFinishedEvent) {
-        if (noCallbackUrlRegistered(batchOrderProcessingFinishedEvent.callbackUrl())) {
+        if (StringUtils.isBlank(batchOrderProcessingFinishedEvent.callbackUrl())) {
             return;
         }
         log.info("Processing of Batch Order has finished - attempting to notify requestor");
@@ -177,10 +177,6 @@ class CallbackResponderEventListener {
         synchronized (completedCallbacks) {
             return !completedCallbacks.containsKey(key);
         }
-    }
-
-    private boolean noCallbackUrlRegistered(final String callbackUrl) {
-        return !StringUtils.isNotBlank(callbackUrl);
     }
 
     @SuppressWarnings("PMD.UseConcurrentHashMap")
