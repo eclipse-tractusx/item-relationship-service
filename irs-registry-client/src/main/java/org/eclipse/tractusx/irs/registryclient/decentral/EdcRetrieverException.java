@@ -32,7 +32,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter(AccessLevel.PRIVATE)
-public class EdcRetrieverException extends Exception {
+public final class EdcRetrieverException extends Exception {
 
     private String bpn;
 
