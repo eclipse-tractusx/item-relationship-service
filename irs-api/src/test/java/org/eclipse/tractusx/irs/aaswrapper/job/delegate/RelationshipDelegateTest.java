@@ -412,7 +412,8 @@ class RelationshipDelegateTest {
     @Test
     void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
         // given
-        final String businessPartnerNumber = "BPNL000000011111";
+
+        final PartChainIdentificationKey partChainIdentificationKey = createKey();
         final ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                          .shell(shell("", shellDescriptor(
                                                                                  List.of(submodelDescriptorWithDspEndpoint(
@@ -421,9 +422,8 @@ class RelationshipDelegateTest {
 
         // when
         when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
-                new UsagePolicyPermissionException(List.of(), null, businessPartnerNumber));
+                new UsagePolicyPermissionException(List.of(), null, partChainIdentificationKey.getBpn()));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
-        final PartChainIdentificationKey partChainIdentificationKey = createKey();
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 new AASTransferProcess(), partChainIdentificationKey);
 
@@ -434,12 +434,11 @@ class RelationshipDelegateTest {
         assertThat(tombstones).hasSize(1);
 
         final Tombstone tombstone = tombstones.get(0);
-        assertThat(tombstone.getBusinessPartnerNumber()).isEqualTo(
-                businessPartnerNumber); // TODO (mfischer) is this correct or should it be the bpn from partChainIdentificationKey?
+        assertThat(tombstone.getBusinessPartnerNumber()).isEqualTo(partChainIdentificationKey.getBpn());
         assertThat(tombstone.getEndpointURL()).isEqualTo("address");
 
         assertThat(tombstone.getCatenaXId()).isEqualTo("itemId");
-        assertThat(tombstone.getBusinessPartnerNumber()).isEqualTo(businessPartnerNumber);
+        assertThat(tombstone.getBusinessPartnerNumber()).isEqualTo(partChainIdentificationKey.getBpn());
         assertThat(tombstone.getProcessingError().getProcessStep()).isEqualTo(ProcessStep.USAGE_POLICY_VALIDATION);
     }
 
