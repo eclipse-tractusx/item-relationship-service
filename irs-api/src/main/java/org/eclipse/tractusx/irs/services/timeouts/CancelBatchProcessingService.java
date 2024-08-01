@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.services.timeouts;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,12 @@ public class CancelBatchProcessingService {
         log.info("Start scheduled timeout process for batchId: {}", batchId.toString());
         batchStore.find(batchId).ifPresent(batch -> {
             if (isBatchNotCompleted(batch.getBatchState())) {
-                cancelNotFinishedJobs(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList());
+                final List<UUID> jobIds = batch.getJobProgressList()
+                                               .stream()
+                                               .map(JobProgress::getJobId)
+                                               .filter(Objects::nonNull)
+                                               .toList();
+                cancelNotFinishedJobs(jobIds);
             }
         });
     }
@@ -75,7 +81,12 @@ public class CancelBatchProcessingService {
                                               .toList();
         batches.forEach(batch -> {
             if (isBatchNotCompleted(batch.getBatchState())) {
-                cancelNotFinishedJobs(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList());
+                final List<UUID> jobIds = batch.getJobProgressList()
+                                             .stream()
+                                             .map(JobProgress::getJobId)
+                                             .filter(Objects::nonNull)
+                                             .toList();
+                cancelNotFinishedJobs(jobIds);
             }
         });
     }

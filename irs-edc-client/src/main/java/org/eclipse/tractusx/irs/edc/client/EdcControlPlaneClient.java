@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -86,10 +86,10 @@ public class EdcControlPlaneClient {
         return responseBody;
     }
 
-    /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
+    /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset, final String bpn) {
         final var limit = config.getControlplane().getCatalogPageSize();
 
-        final CatalogRequest request = buildCatalogRequest(offset, providerConnectorUrl, limit);
+        final CatalogRequest request = buildCatalogRequest(offset, providerConnectorUrl, limit, bpn);
         return getCatalog(request);
     }
 
@@ -105,23 +105,26 @@ public class EdcControlPlaneClient {
         return edcTransformer.transformCatalog(catalog, StandardCharsets.UTF_8);
     }
 
-    private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit) {
+    private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit,
+            final String bpn) {
         final QuerySpec.Builder querySpec = QuerySpec.Builder.newInstance().offset(offset);
         if (config.getControlplane().getCatalogPageSize() > 0) {
             querySpec.limit(limit);
         }
         return CatalogRequest.Builder.newInstance()
-                                     .providerUrl(providerUrl)
+                                     .counterPartyAddress(providerUrl)
+                                     .counterPartyId(bpn)
                                      .protocol(DATASPACE_PROTOCOL_HTTP)
                                      .querySpec(querySpec.build())
                                      .build();
     }
 
-    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key,
-            final String value) {
+    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key, final String value,
+            final String bpn) {
         final QuerySpec querySpec = QuerySpec.Builder.newInstance().filter(new Criterion(key, "=", value)).build();
         final var catalogRequest = CatalogRequest.Builder.newInstance()
-                                                         .providerUrl(providerConnectorUrl)
+                                                         .counterPartyAddress(providerConnectorUrl)
+                                                         .counterPartyId(bpn)
                                                          .protocol(DATASPACE_PROTOCOL_HTTP)
                                                          .querySpec(querySpec)
                                                          .build();

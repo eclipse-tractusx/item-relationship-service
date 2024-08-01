@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,10 +26,22 @@ package org.eclipse.tractusx.irs.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.util.Base64;
+import java.util.List;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.Description;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
+import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
+import org.eclipse.tractusx.irs.edc.client.policy.Permission;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.junit.jupiter.api.Test;
 
 class StringMapperTest {
@@ -44,8 +56,7 @@ class StringMapperTest {
     @Test
     void shouldThrowParseExceptionWhenMappingToString() {
         final var object = new Object();
-        assertThatThrownBy(() -> StringMapper.mapToString(object)).isInstanceOf(
-                JsonParseException.class);
+        assertThatThrownBy(() -> StringMapper.mapToString(object)).isInstanceOf(JsonParseException.class);
     }
 
     @Test
@@ -61,4 +72,84 @@ class StringMapperTest {
         assertThatThrownBy(() -> StringMapper.mapFromString("test", Description.class)).isInstanceOf(
                 JsonParseException.class);
     }
+
+    @Test
+    void shouldMapFromBase64StringUsingTypeReference() {
+
+        // ARRANGE
+        final TypeReference<List<Policy>> listOfPoliciesType = new TypeReference<>() {
+        };
+
+        final String originalJsonStr = """
+                [{
+                    "policyId": "default-trace-policy",
+                    "createdOn": "2024-07-17T16:15:14.12345678Z",
+                    "validUntil": "9999-01-01T00:00:00.00000000Z",
+                    "permissions": [
+                        {
+                            "action": "use",
+                            "constraint": {
+                                "and": [
+                                    {
+                                        "leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                                        "operator": {
+                                            "@id": "eq"
+                                        },
+                                        "rightOperand": "traceability:1.0"
+                                    },
+                                    {
+                                        "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                                        "operator": {
+                                            "@id": "eq"
+                                        },
+                                        "rightOperand": "cx.core.industrycore:1"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }]
+                """;
+        final String originalJsonBase64 = new String(
+                Base64.getEncoder().encode(originalJsonStr.getBytes(StandardCharsets.UTF_8)));
+
+        // ACT
+        // convert back andConstraints forth to facilitate comparison
+        final List<Policy> listOfPolicies = StringMapper.mapFromBase64String(originalJsonBase64, listOfPoliciesType);
+        final String backToString = StringMapper.mapToString(listOfPolicies);
+        final List<Policy> backToObj = StringMapper.mapFromString(backToString, listOfPoliciesType);
+
+        // ASSERT
+        {
+            assertThat(listOfPolicies).hasSize(1);
+            assertThat(backToObj).hasSize(1);
+            assertThat(backToObj).usingRecursiveComparison().isEqualTo(listOfPolicies);
+
+            final Policy policy = listOfPolicies.get(0);
+            assertThat(policy.getPolicyId()).isEqualTo("default-trace-policy");
+            assertThat(policy.getValidUntil()).isEqualTo(OffsetDateTime.parse("9999-01-01T00:00:00.00000000Z"));
+            assertThat(policy.getCreatedOn()).isEqualTo(OffsetDateTime.parse("2024-07-17T16:15:14.12345678Z"));
+            assertThat(policy.getPermissions()).hasSize(1);
+
+            final Permission permission = policy.getPermissions().get(0);
+            assertThat(permission.getAction()).isEqualTo(PolicyType.USE);
+
+            final Constraints constraints = permission.getConstraint();
+            final List<Constraint> andConstraints = constraints.getAnd();
+            assertThat(andConstraints).hasSize(2);
+            {
+                final Constraint constraint = andConstraints.get(0);
+                assertThat(constraint.getLeftOperand()).isEqualTo("https://w3id.org/catenax/policy/FrameworkAgreement");
+                assertThat(constraint.getOperator().getOperatorType()).isEqualTo(OperatorType.EQ);
+                assertThat(constraint.getRightOperand()).isEqualTo("traceability:1.0");
+            }
+            {
+                final Constraint constraint = andConstraints.get(1);
+                assertThat(constraint.getLeftOperand()).isEqualTo("https://w3id.org/catenax/policy/UsagePurpose");
+                assertThat(constraint.getOperator().getOperatorType()).isEqualTo(OperatorType.EQ);
+                assertThat(constraint.getRightOperand()).isEqualTo("cx.core.industrycore:1");
+            }
+        }
+    }
+
 }

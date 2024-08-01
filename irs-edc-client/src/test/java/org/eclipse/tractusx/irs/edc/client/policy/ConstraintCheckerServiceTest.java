@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -33,12 +33,17 @@ import java.util.List;
 import org.eclipse.edc.policy.model.AndConstraint;
 import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.OrConstraint;
+import org.eclipse.tractusx.irs.edc.client.testutil.CamelCaseToSpacesDisplayNameGenerator;
 import org.eclipse.tractusx.irs.edc.client.testutil.TestConstants;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@DisplayNameGeneration(CamelCaseToSpacesDisplayNameGenerator.class)
 class ConstraintCheckerServiceTest {
 
-    ConstraintCheckerService cut = new ConstraintCheckerService();
+    private final ConstraintCheckerService cut = new ConstraintCheckerService();
 
     @Test
     void shouldAcceptSimpleAtomicConstraint() {
@@ -47,7 +52,7 @@ class ConstraintCheckerServiceTest {
         final AtomicConstraint simpleAtomicConstraint = createAtomicConstraint(TestConstants.PURPOSE,
                 TestConstants.ID_3_1_TRACE);
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
 
         assertThat(result).isTrue();
     }
@@ -60,7 +65,7 @@ class ConstraintCheckerServiceTest {
         final AtomicConstraint simpleAtomicConstraint = createAtomicConstraint(unknownLeftExpression,
                 TestConstants.ID_3_1_TRACE);
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
 
         assertThat(result).isFalse();
     }
@@ -73,7 +78,7 @@ class ConstraintCheckerServiceTest {
         final AtomicConstraint simpleAtomicConstraint = createAtomicConstraint(TestConstants.PURPOSE,
                 unknownRightExpression);
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(simpleAtomicConstraint));
 
         assertThat(result).isFalse();
     }
@@ -91,26 +96,49 @@ class ConstraintCheckerServiceTest {
                         new Operand(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
 
         assertThat(result).isTrue();
     }
 
-    @Test
-    void shouldNotAcceptAndConstraintWithOneLessElement() {
-        final AndConstraint andConstraint = createAndConstraint(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+    @Nested
+    @DisplayName("Tests asserting that for AND all must match in both ways (no subset match allowed)")
+    class SubsetAndTests {
+        @Test
+        void shouldNotAcceptAndConstraintWithOneMoreElement() {
 
-        final Policy acceptedPolicy = createPolicyWithAndConstraint(
-                List.of(new Operand(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, TestConstants.STATUS_ACTIVE),
-                        new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+            final AndConstraint andConstraint = createAndConstraint(
+                    List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                                    TestConstants.STATUS_ACTIVE),
+                            createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+            final Policy acceptedPolicy = createPolicyWithAndConstraint(
+                    List.of(new Operand(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, TestConstants.STATUS_ACTIVE),
+                            new Operand(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
+                            new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        assertThat(result).isFalse();
+            final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+
+            assertThat(result).isFalse();
+        }
+
+        @Test
+        void shouldNotAcceptAndConstraintWithOneLessElement() {
+
+            final AndConstraint andConstraint = createAndConstraint(
+                    List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                                    TestConstants.STATUS_ACTIVE),
+                            createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
+                            createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+            final Policy acceptedPolicy = createPolicyWithAndConstraint(
+                    List.of(new Operand(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, TestConstants.STATUS_ACTIVE),
+                            new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+            final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+
+            assertThat(result).isFalse();
+        }
     }
 
     @Test
@@ -127,7 +155,7 @@ class ConstraintCheckerServiceTest {
                         new Operand(unknownLeftExpression, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(andConstraint));
 
         assertThat(result).isFalse();
     }
@@ -144,7 +172,7 @@ class ConstraintCheckerServiceTest {
                         new Operand(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(orConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(orConstraint));
 
         assertThat(result).isTrue();
     }
@@ -161,35 +189,78 @@ class ConstraintCheckerServiceTest {
                 List.of(new Operand(unknownLeftExpression, TestConstants.STATUS_ACTIVE),
                         new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
 
-        boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(orConstraint));
+        final boolean result = cut.hasAllConstraint(acceptedPolicy, List.of(orConstraint));
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldBeNullsafeOnNoAnd() {
+        final OrConstraint orConstraint = createOrConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+        final AndConstraint andConstraint = createAndConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+        final List<Operand> operands = List.of(new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE));
+        final List<Constraint> constraints = operands.stream()
+                                                     .map(operand -> new Constraint(operand.left(),
+                                                             new Operator(OperatorType.EQ), operand.right()))
+                                                     .toList();
+
+        final Policy acceptedOrPolicy = createPolicyWithConstraint(new Constraints(null, constraints));
+        final boolean result = cut.hasAllConstraint(acceptedOrPolicy, List.of(orConstraint, andConstraint));
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldBeNullsafeOnNoOr() {
+
+        final OrConstraint orConstraint = createOrConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+        final AndConstraint andConstraint = createAndConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+        final List<Operand> operands = List.of(new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE));
+        final List<Constraint> constraints = operands.stream()
+                                                     .map(operand -> new Constraint(operand.left(),
+                                                             new Operator(OperatorType.EQ), operand.right()))
+                                                     .toList();
+        final Policy acceptedAndPolicy = createPolicyWithConstraint(new Constraints(constraints, null));
+
+        final boolean result = cut.hasAllConstraint(acceptedAndPolicy, List.of(orConstraint, andConstraint));
 
         assertThat(result).isFalse();
     }
 
     private Policy createPolicyWithAndConstraint(List<Operand> operands) {
-        List<Constraint> and = operands.stream()
-                                       .map(operand -> new Constraint(operand.left, OperatorType.EQ,
-                                               List.of(operand.right)))
-                                       .toList();
-        Constraints constraints = new Constraints(and, new ArrayList<>());
+        final List<Constraint> and = operands.stream()
+                                             .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
+                                                     operand.right))
+                                             .toList();
+        final Constraints constraints = new Constraints(and, new ArrayList<>());
         return createPolicyWithConstraint(constraints);
     }
 
     private Policy createPolicyWithOrConstraint(List<Operand> operands) {
-        List<Constraint> or = operands.stream()
-                                      .map(operand -> new Constraint(operand.left, OperatorType.EQ,
-                                              List.of(operand.right)))
-                                      .toList();
-        Constraints constraints = new Constraints(new ArrayList<>(), or);
+        final List<Constraint> or = operands.stream()
+                                            .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
+                                                    operand.right))
+                                            .toList();
+        final Constraints constraints = new Constraints(new ArrayList<>(), or);
         return createPolicyWithConstraint(constraints);
     }
 
     private Policy createPolicyWithConstraint(Constraints constraints) {
-        List<Constraints> constraintsList = List.of(constraints);
-        Permission permission = new Permission(PolicyType.ACCESS, constraintsList);
-        List<Permission> permissions = List.of(permission);
+        final Permission permission = new Permission(PolicyType.ACCESS, constraints);
+        final List<Permission> permissions = List.of(permission);
         final String policyId = "policyId";
-        return new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now().plusYears(1), permissions);
+        return org.eclipse.tractusx.irs.edc.client.policy.Policy.builder()
+                                                                .policyId(policyId)
+                                                                .validUntil(OffsetDateTime.now().plusYears(1))
+                                                                .createdOn(OffsetDateTime.now())
+                                                                .permissions(permissions)
+                                                                .build();
     }
 
     public AndConstraint createAndConstraint(final List<org.eclipse.edc.policy.model.Constraint> constraints) {

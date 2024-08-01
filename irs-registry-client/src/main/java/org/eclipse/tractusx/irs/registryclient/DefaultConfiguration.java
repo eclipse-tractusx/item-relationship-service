@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,13 +27,23 @@ import java.time.Clock;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import io.github.resilience4j.retry.RetryRegistry;
+import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
+import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
+import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.decentral.EdcEndpointReferenceRetriever;
 import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -51,6 +61,9 @@ import org.springframework.web.client.RestTemplate;
  * IRS configuration settings. Sets up the digital twin registry client.
  */
 @Configuration
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 public class DefaultConfiguration {
 
     public static final String DIGITAL_TWIN_REGISTRY_REST_TEMPLATE = "digitalTwinRegistryRestTemplate";
@@ -81,9 +94,10 @@ public class DefaultConfiguration {
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
             final ConnectorEndpointsService connectorEndpointsService,
             final EndpointDataForConnectorsService endpointDataForConnectorsService,
-            final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient) {
+            final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient,
+            final EdcConfiguration edcConfiguration) {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService, endpointDataForConnectorsService,
-                decentralDigitalTwinRegistryClient);
+                decentralDigitalTwinRegistryClient, edcConfiguration);
     }
 
     @Bean
@@ -103,13 +117,33 @@ public class DefaultConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
-        return new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
+
+        final EdcEndpointReferenceRetriever edcEndpointReferenceRetriever = (edcConnectorEndpoint, bpn) -> {
             try {
-                return facade.getEndpointReferenceForAsset(edcConnectorEndpoint, assetType, assetValue);
+                return facade.getEndpointReferencesForRegistryAsset(edcConnectorEndpoint, bpn);
             } catch (EdcClientException e) {
                 throw new EdcRetrieverException(e);
             }
-        });
+        };
+
+        return new EndpointDataForConnectorsService(edcEndpointReferenceRetriever);
+    }
+
+    @Bean
+    public EdcSubmodelFacade edcSubmodelFacade(final EdcSubmodelClient client, final EdcConfiguration config) {
+        return new EdcSubmodelFacade(client, config);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
+    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
+            final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
+            final AsyncPollingService pollingService, final RetryRegistry retryRegistry,
+            final EDCCatalogFacade catalogFacade,
+            final EndpointDataReferenceCacheService endpointDataReferenceCacheService) {
+
+        return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
+                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
     @Bean

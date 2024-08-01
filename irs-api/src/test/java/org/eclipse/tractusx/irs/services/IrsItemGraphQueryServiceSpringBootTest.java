@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,15 +25,18 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
+import static org.eclipse.tractusx.irs.util.TestMother.EXISTING_GLOBAL_ASSET_ID;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATTERY_PRODUCT_DESCRIPTION_1_0_1;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspectAndCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDirection;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepth;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
@@ -70,19 +73,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
                 properties = { "digitalTwinRegistry.type=central" })
-@ActiveProfiles(profiles = { "test",
-                             "stubtest"
-})
+@ActiveProfiles(profiles = { "test", "stubtest", "local" })
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 
@@ -106,18 +102,12 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @MockBean
     private ConnectorEndpointsService connectorEndpointsService;
 
-    private static AspectModel getAspectModel(final String aspect, final String urn) {
-        return AspectModel.builder().name(aspect).urn(urn).build();
-    }
-
     @BeforeEach
     void setUp() throws SchemaNotFoundException {
         final List<AspectModel> models = List.of(
-                getAspectModel(AspectType.SERIAL_PART.toString(), "urn:bamm:io.catenax.serial_part:1.0.0#SerialPart"),
-                getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(),
-                        "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription"),
-                getAspectModel(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString(),
-                        "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt"));
+                getAspectModel(AspectType.SERIAL_PART.toString(), SERIAL_PART_3_0_0),
+                getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(), BATTERY_PRODUCT_DESCRIPTION_1_0_1),
+                getAspectModel(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString(), SINGLE_LEVEL_BOM_AS_BUILT_3_0_0));
         final AspectModels aspectModels = new AspectModels(models, "2023-02-13T08:18:11.990659500Z");
         when(semanticsHubFacade.getAllAspectModels()).thenReturn(aspectModels);
     }
@@ -145,9 +135,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("https://connector.endpoint.nl"));
-        final RegisterJob registerJob = registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", 100,
-                List.of(AspectType.SERIAL_PART.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
-                        AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), true, false, Direction.DOWNWARD);
+        final RegisterJob registerJob = registerJob(EXISTING_GLOBAL_ASSET_ID, 100,
+                List.of(SERIAL_PART_3_0_0, BATTERY_PRODUCT_DESCRIPTION_1_0_1, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0),
+                true, false, Direction.DOWNWARD);
         when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
                 List.of("singleLevelBomAsBuilt"));
 
@@ -169,7 +159,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
                 List.of("https://connector.endpoint.nl"));
 
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
-                List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));
+                List.of(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0));
         when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
                 List.of("singleLevelBomAsBuilt"));
 
@@ -186,10 +176,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
-        final RegisterJob registerJob = registerJobWithDepthAndAspect(1, null);
+        final RegisterJob registerJob = registerJobWithDepthAndAspect(1, List.of());
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("http://localhost/discovery"));
-        setSecurityContext();
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -204,7 +193,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithUpwardDirectionShouldBuildRelationships() {
         // given
-        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:819816fe-7346-49a5-b528-cec5b5367a71",
+        final RegisterJob registerJob = registerJobWithDirection(EXISTING_GLOBAL_ASSET_ID,
                 Direction.UPWARD);
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("http://localhost/discovery"));
@@ -241,8 +230,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         jobStore.create(multiTransferJob);
 
-        setSecurityContext();
-
         assertThat(service.cancelJobById(jobId)).isNotNull();
 
         final Optional<MultiTransferJob> fetchedJob = jobStore.find(idAsString);
@@ -258,9 +245,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithoutAspectsShouldUseDefault() {
         // given
-        final String defaultAspectType = AspectType.SERIAL_PART.toString();
-        final List<String> emptyAspectTypeFilterList = List.of();
-        final RegisterJob registerJob = registerJobWithDepthAndAspect(null, emptyAspectTypeFilterList);
+        final RegisterJob registerJob = registerJobWithDepthAndAspect(10, List.of());
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("http://localhost/discovery"));
 
@@ -270,18 +255,28 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         assertThat(multiTransferJob).isPresent();
-        assertThat(multiTransferJob.get().getJobParameter().getAspects()).contains(defaultAspectType);
+        assertThat(multiTransferJob.get().getJobParameter().getAspects()).isEmpty();
         assertThat(multiTransferJob.get().getJobParameter().isCollectAspects()).isFalse();
     }
 
     @Test
-    void shouldThrowIllegalArgumentExceptionForLifecycleAsPlannedAndDirectionUpward() {
-        final RegisterJob registerJob = new RegisterJob();
-        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).build());
-        registerJob.setDirection(Direction.UPWARD);
+    void registerJobWithUpwardDirectionAsPlannedShouldBuildRelationships() {
+        // given
+        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
+                Direction.UPWARD);
         registerJob.setBomLifecycle(BomLifecycle.AS_PLANNED);
 
-        assertThrows(IllegalArgumentException.class, () -> service.registerItemJob(registerJob));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
+
+        // when
+        final JobHandle registeredJob = service.registerItemJob(registerJob);
+
+        // then
+        given().ignoreException(ResponseStatusException.class)
+               .await()
+               .atMost(5, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getId()), greaterThan(0));
     }
 
     @Test
@@ -295,23 +290,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     private int getRelationshipsSize(final UUID jobId) {
-        setSecurityContext();
         return service.getJobForJobId(jobId, false).getRelationships().size();
     }
 
-    private static void setSecurityContext() {
-        JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
-        Jwt token = mock(Jwt.class);
-        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("admin_irs")));
-        when(jwtAuthenticationToken.getToken()).thenReturn(token);
-        when(token.getClaim("clientId")).thenReturn("test-client-id");
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
-        SecurityContextHolder.setContext(securityContext);
-    }
-
     private int getSubmodelsSize(final UUID jobId) {
-        setSecurityContext();
         return service.getJobForJobId(jobId, false).getSubmodels().size();
     }
 
@@ -337,8 +319,11 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     private int getTombstonesSize(final UUID jobId) {
-        setSecurityContext();
         return service.getJobForJobId(jobId, false).getTombstones().size();
+    }
+
+    private static AspectModel getAspectModel(final String aspect, final String urn) {
+        return AspectModel.builder().name(aspect).urn(urn).build();
     }
 
 }

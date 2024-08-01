@@ -1,77 +1,46 @@
 {
-    "submodels" : [
-        {
-            "identification": "urn:uuid:6c71839b-3bca-4df6-bbd6-2496cf37ce6c",
-            "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-            "payload": {
-                "component": [
-                    {
-                        "materialName": "Carbon Steel",
-                        "recycledContent": 35,
-                        "materialClass": "1.1.2",
-                        "quantity": {
-                            "unit": "unit:kilogram",
-                            "value": 72.843
-                        },
-                        "aggregateState": "solid",
-                        "materialAbbreviation": "CS2"
-                    },
-                    {
-                        "materialName": "Oil",
-                        "recycledContent": 4,
-                        "materialClass": "9.2",
-                        "quantity": {
-                            "unit": "unit:kilogram",
-                            "value": 6.9
-                        },
-                        "aggregateState": "liquid",
-                        "materialAbbreviation": "SAE40"
-                    },
-                    {
-                        "materialName": "Copper",
-                        "recycledContent": 10,
-                        "materialClass": "3.1",
-                        "quantity": {
-                            "unit": "unit:kilogram",
-                            "value": 1.2
-                        },
-                        "aggregateState": "solid",
-                        "materialAbbreviation": "CO7"
-                    }
-                ]
-            }
-        },
-        {
-            "identification": "urn:uuid:d4df8f2a-2993-4e73-b140-b1698e9a905b",
-            "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-            "payload": {
-                "materialName": "Engineering Plastics",
-                "materialClass": "5.1",
-                "component": [
-                    {
-                        "materialName": "PA66",
-                        "recycledContent": 33,
-                        "materialClass": "5.1",
-                        "quantity": {
-                            "unit": "unit:percent",
-                            "value": 70
-                        },
-                        "aggregateState": "solid",
-                        "materialAbbreviation": "PA66"
-                    },
-                    {
-                        "materialName": "GF-Faser",
-                        "recycledContent": 20,
-                        "materialClass": "5.1",
-                        "quantity": {
-                            "unit": "unit:percent",
-                            "value": 30
-                        },
-                        "aggregateState": "solid",
-                        "materialAbbreviation": "GF30"
-                    }
-                ]
-            }
-        }
-    ]
+  "submodels": [
+    {
+      "identification": "urn:uuid:755ff4a4-f04a-4f30-b245-9ab0c7e050d1",
+      "aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
+      "payload": {
+        "component": [
+          {
+            "materialName": "Carbon Steel",
+            "recycledContent": 40,
+            "materialClass": "1.1.2",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 72.843
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "CS2"
+          },
+          {
+            "materialName": "Oil",
+            "recycledContent": 18,
+            "materialClass": "9.2",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 6.9
+            },
+            "aggregateState": "liquid",
+            "materialAbbreviation": "SAE40"
+          },
+          {
+            "materialName": "Copper",
+            "recycledContent": 53,
+            "materialClass": "3.1",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 1.2
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "CO7"
+          }
+        ]
+      }
+    }
+  ]
 }

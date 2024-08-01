@@ -1,9 +1,9 @@
-# Copyright (c) 2021,2022,2023
+# Copyright (c) 2022,2024
 #       2022: ZF Friedrichshafen AG
 #       2022: ISTOS GmbH
-#       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+#       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
 #       2022,2023: BOSCH AG
-# Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+# Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -20,13 +20,12 @@
 # * SPDX-License-Identifier: Apache-2.0
 
 # Dependencies
-FROM maven:3-openjdk-18-slim AS maven
+FROM maven:3-eclipse-temurin-17-alpine AS maven
 ARG BUILD_TARGET=irs-api
 
 WORKDIR /build
 
 COPY .config .config
-COPY .mvn .mvn
 COPY pom.xml .
 
 COPY irs-policy-store irs-policy-store
@@ -49,18 +48,13 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET 
 
 
 # Copy the jar and build image
-FROM eclipse-temurin:20-jre-alpine AS irs-api
-
-RUN apk upgrade --no-cache libssl3 libcrypto3
-
-ARG UID=10000
-ARG GID=3000
+FROM eclipse-temurin:17-jre-alpine AS irs-api
 
 WORKDIR /app
 
 COPY --chmod=755 --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
 
-USER ${UID}:${GID}
+USER 10000:3000
 
 ENTRYPOINT ["java", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]
 

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -56,20 +56,26 @@ public class EdcRegistration {
     private final String essBaseUrl;
     private final String apiKeyHeader;
     private final String apiKeySecret;
-    private final String managementPath;
+    private final String assetsPath;
+    private final String policydefinitionsPath;
+    private final String contractdefinitionsPath;
 
     public EdcRegistration(@Qualifier("noErrorRestTemplate") final RestTemplate restTemplate,
             @Value("${ess.localEdcEndpoint}") final String edcProviderUrl,
             @Value("${ess.irs.url}") final String essBaseUrl,
             @Value("${irs-edc-client.controlplane.api-key.header}") final String apiKeyHeader,
             @Value("${irs-edc-client.controlplane.api-key.secret}") final String apiKeySecret,
-            @Value("${ess.managementPath}") final String managementPath) {
+            @Value("${ess.assetsPath}") final String assetsPath,
+            @Value("${ess.policydefinitionsPath}") final String policydefinitionsPath,
+            @Value("${ess.contractdefinitionsPath}") final String contractdefinitionsPath) {
         this.restTemplate = restTemplate;
         this.edcProviderUrl = edcProviderUrl;
         this.essBaseUrl = essBaseUrl;
         this.apiKeyHeader = apiKeyHeader;
         this.apiKeySecret = apiKeySecret;
-        this.managementPath = managementPath;
+        this.assetsPath = assetsPath;
+        this.policydefinitionsPath = policydefinitionsPath;
+        this.contractdefinitionsPath = contractdefinitionsPath;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -106,15 +112,15 @@ public class EdcRegistration {
     private void registerAsset(final String assetId, final String notificationType, final String path) {
         final var body = """
                 {
-                    "@context": {},
-                    "asset": {
-                        "@id": "%s",
-                        "properties": {
-                            "description": "ESS notification endpoint",
-                            "contenttype": "application/json",
-                            "notificationtype":"%s",
-                            "notificationmethod": "receive"
-                        }
+                    "@context": {
+                        "@vocab": "https://w3id.org/edc/v0.0.1/ns/"
+                    },
+                    "@id": "%s",
+                    "properties": {
+                        "description": "ESS notification endpoint",
+                        "contenttype": "application/json",
+                        "notificationtype":"%s",
+                        "notificationmethod": "receive"
                     },
                     "dataAddress": {
                         "baseUrl": "%s",
@@ -124,8 +130,8 @@ public class EdcRegistration {
                     }
                 }
                 """.formatted(assetId, notificationType, essBaseUrl + path);
-        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/assets", HttpMethod.POST,
-                toEntity(body), String.class);
+        final var entity = restTemplate.exchange(edcProviderUrl + assetsPath, HttpMethod.POST, toEntity(body),
+                String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification asset registered successfully.");
@@ -138,35 +144,44 @@ public class EdcRegistration {
 
     private void registerPolicy(final String policyId) {
         final var body = """
-                  {
-                      "@context": {
-                        "odrl": "http://www.w3.org/ns/odrl/2/"
-                      },
-                      "@id": "%s",
-                      "policy": {
-                        "odrl:permission": [
-                          {
-                            "odrl:action": "USE",
-                            "odrl:constraint": {
-                              "@type": "AtomicConstraint",
-                              "odrl:or": [
-                                {
-                                  "@type": "Constraint",
-                                  "odrl:leftOperand": "PURPOSE",
-                                  "odrl:operator": {
-                                    "@id": "odrl:eq"
-                                  },
-                                  "odrl:rightOperand": "ID 3.0 Trace"
-                                }
-                              ]
+                {
+                  "@context": {
+                    "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+                    "cx-policy": "https://w3id.org/catenax/policy/",
+                    "odrl": "http://www.w3.org/ns/odrl/2/"
+                  },
+                  "@id": "%s",
+                  "policy": {
+                    "@type": "odrl:Set",
+                    "odrl:permission": [
+                      {
+                        "odrl:action": "use",
+                        "odrl:constraint": {
+                          "@type": "AtomicConstraint",
+                          "odrl:and": [
+                            {
+                              "odrl:leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                              "odrl:operator": {
+                                "@id": "odrl:eq"
+                              },
+                              "odrl:rightOperand": "traceability:1.0"
+                            },
+                            {
+                              "odrl:leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                              "odrl:operator": {
+                                "@id": "odrl:eq"
+                              },
+                              "odrl:rightOperand": "cx.core.industrycore:1"
                             }
-                          }
-                        ]
+                          ]
+                        }
                       }
+                    ]
                   }
+                }
                 """.formatted(policyId);
-        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/policydefinitions",
-                HttpMethod.POST, toEntity(body), String.class);
+        final var entity = restTemplate.exchange(edcProviderUrl + policydefinitionsPath, HttpMethod.POST,
+                toEntity(body), String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification policy registered successfully.");
@@ -190,8 +205,8 @@ public class EdcRegistration {
                 }
                 """.formatted(contractId, contractId, assetId);
 
-        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/contractdefinitions",
-                HttpMethod.POST, toEntity(body), String.class);
+        final var entity = restTemplate.exchange(edcProviderUrl + contractdefinitionsPath, HttpMethod.POST,
+                toEntity(body), String.class);
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification contract definition registered successfully.");
         } else {
@@ -215,7 +230,7 @@ public class EdcRegistration {
 
     private boolean assetIsNotRegisteredYet(final String assetId) {
         if (restTemplate != null && StringUtils.isNotBlank(edcProviderUrl)) {
-            final var url = edcProviderUrl + managementPath + "/assets/request";
+            final var url = edcProviderUrl + assetsPath + "/request";
             log.info("Requesting asset from EDC provider with url {}", url);
             final String filter = """
                     {

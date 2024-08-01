@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,7 +38,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 /**
  * Batch model
  */
-@Schema(description = "Batch model.")
+@Schema(description = "Batch model.", example = BatchResponse.EXAMPLE)
 @Value
 @Builder
 @AllArgsConstructor
@@ -46,6 +46,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 public class BatchResponse {
 
     private static final int UUID_LENGTH = 36;
+    public static final String EXAMPLE = "{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"batchNumber\"=1, \"batchProcessingState\"=\"COMPLETED\", \"batchTotal\"=1, \"completedOn\"=\"2022-02-03T14:48:54.709Z\", \"jobs\"=[{\"completedOn\"=\"2022-02-03T14:48:54.709Z\", \"id\"=\"6c311d29-5753-46d4-b32c-19b918ea93b0\", \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"state\"=\"COMPLETED\"}], \"jobsInBatchChecksum\"=1, \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"totalJobs\"=1}";
 
     @Schema(description = "Id of the order.", minLength = UUID_LENGTH,
             maxLength = UUID_LENGTH, implementation = UUID.class,

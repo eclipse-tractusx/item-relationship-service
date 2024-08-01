@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,12 +40,14 @@ import lombok.extern.jackson.Jacksonized;
 public class Submodel {
     private String identification;
     private String aspectType;
+    private String contractAgreementId;
     private Map<String, Object> payload;
 
-    public static Submodel from(final String identification, final String aspectType, final Map<String, Object> payload) {
+    public static Submodel from(final String identification, final String aspectType, final String contractAgreementId, final Map<String, Object> payload) {
         return Submodel.builder()
                        .identification(identification)
                        .aspectType(aspectType)
+                       .contractAgreementId(contractAgreementId)
                        .payload(payload)
                        .build();
     }

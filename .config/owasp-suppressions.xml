@@ -28,4 +28,18 @@
         <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
         <vulnerabilityName>CVE-2023-22006</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Only used in tests.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com.jayway.jsonpath/json-path@2.8.0$</packageUrl>
+        <vulnerabilityName>CVE-2023-51074</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Dataspace components for models and JSON ID transformer, therefore OAUTH not relevant.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org.eclipse.edc.connector.core@0.6.0$</packageUrl>
+        <vulnerabilityName>CVE-2024-4536</vulnerabilityName>
+    </suppress>
 </suppressions>

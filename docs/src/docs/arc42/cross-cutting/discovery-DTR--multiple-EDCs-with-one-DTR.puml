@@ -1,0 +1,40 @@
+@startuml
+participant IRS
+participant DiscoveryService
+participant "EDC Provider 1" as EDCProvider1
+participant "EDC Provider 2" as EDCProvider2
+participant "EDC Provider 3" as EDCProvider3
+participant DTR
+
+IRS -> DiscoveryService: Get EDCs for BPN
+DiscoveryService -> IRS: Return list of 3 EDCs
+
+par
+    group CatalogRequestEDC1
+        '== EDC Control Plane ==
+        IRS -> EDCProvider1: Query for DTR contract offer
+        EDCProvider1 -> IRS: No offer
+    end
+
+    else
+
+    group CatalogRequestEDC2
+        '== EDC Control Plane ==
+        IRS -> EDCProvider2: Query for DTR contract offer
+        EDCProvider2 -> IRS: No offer
+    end
+
+    else
+
+    group CatalogRequestEDC3
+        '== EDC Control Plane ==
+        IRS -> EDCProvider3: Query for DTR contract offer
+        EDCProvider3 -> IRS: DTR contract offer
+        IRS -> EDCProvider3: Negotiate contract
+
+        '== EDC Data Plane ==
+        IRS -> DTR: Query for DT
+        DTR -> IRS: DT
+    end
+end
+@enduml

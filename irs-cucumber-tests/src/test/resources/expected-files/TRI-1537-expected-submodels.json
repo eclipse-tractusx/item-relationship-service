@@ -1,28 +1,41 @@
 {
-    "submodels": [
-        {
-            "identification": "urn:uuid:e336fdab-1c22-4968-ba91-a5b011ed0e9b",
-            "aspectType": "urn:bamm:io.catenax.just_in_sequence_part:1.0.0#JustInSequencePart",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "59144578DSQ",
-                        "key": "jisNumber"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:805daf66-3f24-4fa8-9b00-f940fb0b3f19",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "customerPartId": "PRT-12345",
-                    "classification": "product",
-                    "nameAtManufacturer": "Door Key",
-                    "nameAtCustomer": "Door Key"
-                }
+  "submodels": [
+    {
+      "identification": "urn:uuid:d24501dd-7ce7-4433-a50f-87673d11e5b0",
+      "aspectType": "urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
+      "contractAgreementId": "2f477d8a-5efa-4d87-86b9-8dd36215fd22",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "81939668QMA",
+            "key": "jisNumber"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000000BJTL",
+              "function": "production"
             }
+          ]
+        },
+        "catenaXId": "urn:uuid:57be2fd7-501e-4fea-9f3b-a6c746c3579d",
+        "partTypeInformation": {
+          "manufacturerPartId": "123-0.740-3434-A",
+          "customerPartId": "PRT-12345",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left",
+          "nameAtCustomer": "side element A"
         }
-    ]
+      }
+    }
+  ]
 }

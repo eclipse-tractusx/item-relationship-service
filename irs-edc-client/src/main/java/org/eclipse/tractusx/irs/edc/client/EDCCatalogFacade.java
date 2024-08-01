@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
-
 import org.springframework.stereotype.Component;
 
 /**
@@ -52,6 +52,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class EDCCatalogFacade {
 
+    public static final String NAMESPACE_DSPACE_PARTICIPANT_ID = "https://w3id.org/dspace/v0.8/participantId";
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
 
@@ -66,15 +67,23 @@ public class EDCCatalogFacade {
                                                                    .findFirst()
                                                                    .orElseThrow();
         final var builder = CatalogItem.builder()
-                                       .itemId(dataset.getId())
+                                       .itemId(pageableCatalog.getId())
                                        .offerId(stringPolicyEntry.getKey())
-                                       .assetPropId(dataset.getProperty(NAMESPACE_EDC_ID).toString())
-                                       .policy(stringPolicyEntry.getValue());
-        if (pageableCatalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
-            builder.connectorId(
-                    pageableCatalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString());
-        }
+                                       .assetPropId(dataset.getId())
+                                       .policy(stringPolicyEntry.getValue())
+                                       .connectorId(getParticipantId(pageableCatalog));
+
         return builder.build();
+    }
+
+    private static String getParticipantId(final Catalog catalog) {
+        if (catalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
+            return catalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString();
+        } else if (catalog.getProperties().containsKey(NAMESPACE_DSPACE_PARTICIPANT_ID)) {
+            return catalog.getProperties().get(NAMESPACE_DSPACE_PARTICIPANT_ID).toString();
+        } else {
+            return catalog.getParticipantId();
+        }
     }
 
     /**
@@ -89,32 +98,24 @@ public class EDCCatalogFacade {
         final Catalog catalog = controlPlaneClient.getCatalog(catalogRequest);
         return mapToCatalogItems(catalog);
     }
-    
+
     private static List<CatalogItem> mapToCatalogItems(final Catalog catalog) {
-        if (catalog.getDatasets() == null) {
-            return List.of();
-        } else {
+        return emptyIfNull(catalog.getDatasets()).stream().map(dataset -> {
+            final Map.Entry<String, Policy> offer = dataset.getOffers().entrySet().stream().findFirst().orElseThrow();
+            final Policy policy = offer.getValue()
+                                       .toBuilder()
+                                       .assigner(getParticipantId(catalog))
+                                       .target(dataset.getId())
+                                       .build();
 
-            return catalog.getDatasets().stream().map(contractOffer -> {
-                final Map.Entry<String, Policy> offer = contractOffer.getOffers()
-                                                                     .entrySet()
-                                                                     .stream()
-                                                                     .findFirst()
-                                                                     .orElseThrow();
-                final var catalogItem = CatalogItem.builder()
-                                                   .itemId(contractOffer.getId())
-                                                   .assetPropId(contractOffer.getProperty(NAMESPACE_EDC_ID).toString())
-                                                   .connectorId(catalog.getId())
-                                                   .offerId(offer.getKey())
-                                                   .policy(offer.getValue());
-                if (catalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
-                    catalogItem.connectorId(
-                            catalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString());
-                }
-
-                return catalogItem.build();
-            }).toList();
-        }
+            return CatalogItem.builder()
+                              .itemId(dataset.getId())
+                              .assetPropId(dataset.getId())
+                              .offerId(offer.getKey())
+                              .policy(policy)
+                              .connectorId(getParticipantId(catalog))
+                              .build();
+        }).toList();
     }
 
     /**
@@ -123,14 +124,16 @@ public class EDCCatalogFacade {
      *
      * @param connectorUrl The EDC Connector from which the Catalog will be requested
      * @param target       The target assetID which will be searched for
+     * @param bpn          The BPN of the company to which the EDC Connector belongs
      * @return The list of catalog Items up to the point where the target CatalogItem is included.
      */
-    public List<CatalogItem> fetchCatalogItemsUntilMatch(final String connectorUrl, final String target) {
+    public List<CatalogItem> fetchCatalogItemsUntilMatch(final String connectorUrl, final String target,
+            final String bpn) {
         int offset = 0;
         final int pageSize = config.getControlplane().getCatalogPageSize();
 
         log.info("Get catalog from EDC provider.");
-        final Catalog pageableCatalog = controlPlaneClient.getCatalog(connectorUrl, offset);
+        final Catalog pageableCatalog = controlPlaneClient.getCatalog(connectorUrl, offset, bpn);
         final List<Dataset> datasets = new ArrayList<>(pageableCatalog.getDatasets());
 
         boolean isLastPage = pageableCatalog.getDatasets().size() < pageSize;
@@ -139,7 +142,7 @@ public class EDCCatalogFacade {
 
         while (!isLastPage && !isTheSamePage && optionalContractOffer.isEmpty()) {
             offset += pageSize;
-            final Catalog newPageableCatalog = controlPlaneClient.getCatalog(connectorUrl, offset);
+            final Catalog newPageableCatalog = controlPlaneClient.getCatalog(connectorUrl, offset, bpn);
             isTheSamePage = theSameCatalog(pageableCatalog, newPageableCatalog);
             isLastPage = newPageableCatalog.getDatasets().size() < pageSize;
             optionalContractOffer = findOfferIfExist(target, newPageableCatalog);
@@ -153,33 +156,38 @@ public class EDCCatalogFacade {
         return datasets.stream().map(dataset -> createCatalogItem(pageableCatalog, dataset)).toList();
     }
 
-    public List<CatalogItem> fetchCatalogById(final String connectorUrl, final String target) {
-        return fetchCatalogByFilter(connectorUrl, NAMESPACE_EDC_ID, target);
+    /**
+     * @param connectorUrl The EDC Connector from which the Catalog will be requested
+     * @param target       The target assetID which will be searched for
+     * @param bpn          The BPN of the company to which the EDC Connector belongs
+     * @return The list of catalog Items matching the target id
+     * @deprecated
+     */
+    @Deprecated(since = "5.0.0")
+    public List<CatalogItem> fetchCatalogById(final String connectorUrl, final String target, final String bpn) {
+        return fetchCatalogByFilter(connectorUrl, NAMESPACE_EDC_ID, target, bpn);
     }
 
-    public List<CatalogItem> fetchCatalogByFilter(final String connectorUrl, final String key, final String value) {
-        final Catalog catalog = controlPlaneClient.getCatalogWithFilter(connectorUrl, key, value);
+    @SuppressWarnings("PMD.UseObjectForClearerAPI") // TODO (ds-jhartmann) see https://github.com/eclipse-tractusx/item-relationship-service/issues/547
+    public List<CatalogItem> fetchCatalogByFilter(final String connectorUrl, final String key, final String value,
+            final String bpn) {
+        final Catalog catalog = controlPlaneClient.getCatalogWithFilter(connectorUrl, key, value, bpn);
         return mapToCatalogItems(catalog);
     }
 
     private Optional<Dataset> findOfferIfExist(final String target, final Catalog catalog) {
-        return catalog.getDatasets()
-                      .stream()
-                      .filter(dataset -> dataset.getProperty(NAMESPACE_EDC_ID).toString().equals(target))
-                      .findFirst();
+        return emptyIfNull(catalog.getDatasets()).stream()
+                                                 .filter(dataset -> target.equals(dataset.getId()))
+                                                 .findFirst();
     }
 
     private boolean theSameCatalog(final Catalog pageableCatalog, final Catalog newPageableCatalog) {
-        final Set<String> previousOffers = pageableCatalog.getDatasets()
-                                                          .stream()
-                                                          .map(dataset -> dataset.getProperty(NAMESPACE_EDC_ID)
-                                                                                 .toString())
-                                                          .collect(toSet());
-        final Set<String> nextOffers = newPageableCatalog.getDatasets()
-                                                         .stream()
-                                                         .map(dataset -> dataset.getProperty(NAMESPACE_EDC_ID)
-                                                                                .toString())
-                                                         .collect(toSet());
+        final Set<String> previousOffers = emptyIfNull(pageableCatalog.getDatasets()).stream()
+                                                                                     .map(Dataset::getId)
+                                                                                     .collect(toSet());
+        final Set<String> nextOffers = emptyIfNull(newPageableCatalog.getDatasets()).stream()
+                                                                                    .map(Dataset::getId)
+                                                                                    .collect(toSet());
         return previousOffers.equals(nextOffers);
     }
 }

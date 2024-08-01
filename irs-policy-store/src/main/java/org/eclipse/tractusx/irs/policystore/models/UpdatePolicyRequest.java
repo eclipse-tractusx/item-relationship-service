@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,15 +24,36 @@
 package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import org.eclipse.tractusx.irs.policystore.validators.ListOfPolicyIds;
+import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
 
 /**
  * Request object for policy update
- *
  */
-@Schema(description = "Request to add a policy")
-public record UpdatePolicyRequest(@Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil) {
+@Schema(description = "Request to update a policy")
+@Builder
+public record UpdatePolicyRequest(
 
+        @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations.") //
+        @NotNull //
+        @Future(message = "must be in future") //
+        OffsetDateTime validUntil, //
+
+        @Schema(description = "Business Partner Number (BPN).") //
+        @ValidListOfBusinessPartnerNumbers //
+        List<String> businessPartnerNumbers, //
+
+        @Schema(description = "The IDs of the policies to be updated.") //
+        @NotNull //
+        @NotEmpty //
+        @ListOfPolicyIds //
+        List<String> policyIds //
+) {
 }

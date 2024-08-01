@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,11 +24,19 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestConstants.FRAMEWORK_AGREEMENT_TEST;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestConstants.ID_3_1_TRACE;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestConstants.MEMBERSHIP;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestConstants.PURPOSE;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestConstants.STATUS_ACTIVE;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAndConstraintPolicy;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAtomicConstraint;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAtomicConstraintPolicy;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createOrConstraintPolicy;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createXOneConstraintPolicy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
@@ -36,249 +44,268 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.tractusx.irs.edc.client.testutil.TestConstants;
+import org.eclipse.tractusx.irs.edc.client.testutil.CamelCaseToSpacesDisplayNameGenerator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@DisplayNameGeneration(CamelCaseToSpacesDisplayNameGenerator.class)
 @ExtendWith(MockitoExtension.class)
 class PolicyCheckerServiceTest {
 
     private PolicyCheckerService policyCheckerService;
+
     @Mock
     private AcceptedPoliciesProvider policyStore;
 
     @BeforeEach
     void setUp() {
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(TestConstants.ID_3_0_TRACE), OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY),
-                        OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
         policyCheckerService = new PolicyCheckerService(policyStore, new ConstraintCheckerService());
     }
 
-    @Test
-    void shouldRejectWrongPolicy() {
-        // given
-        final String unknownRightExpression = "Wrong_Trace";
-        Policy policy = createAtomicConstraintPolicy(TestConstants.PURPOSE, unknownRightExpression);
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+    @Nested
+    class IsValidTests {
 
-        // then
-        assertThat(result).isFalse();
-    }
+        @Test
+        void shouldRejectWrongPolicy() {
+            // given
+            final String unknownRightExpression = "Wrong_Trace";
+            final Policy policy = createAtomicConstraintPolicy(PURPOSE, unknownRightExpression);
 
-    @Test
-    void shouldRejectWhenPolicyStoreIsEmpty() {
-        // given
-        Policy policy = createAtomicConstraintPolicy(TestConstants.PURPOSE, TestConstants.ID_3_0_TRACE);
-        when(policyStore.getAcceptedPolicies()).thenReturn(List.of());
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+            // when
+            final boolean valid = policyCheckerService.isValid(policy, "bpn");
+            // then
+            assertThat(valid).isFalse();
+        }
 
-        // then
-        assertThat(result).isFalse();
-    }
+        @Test
+        void shouldRejectWhenPolicyStoreIsEmpty() {
+            // given
+            final Policy policy = createAtomicConstraintPolicy(PURPOSE, ID_3_1_TRACE);
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(List.of());
+            // when
+            final boolean valid = policyCheckerService.isValid(policy, "bpn");
+            // then
+            assertThat(valid).isFalse();
+        }
 
-    @Test
-    void shouldConfirmValidPolicyWhenWildcardIsSet() {
-        // given
-        final String wildcardPolicyId = "*";
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(TestConstants.ID_3_0_TRACE), OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(wildcardPolicyId), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAtomicConstraintPolicy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                TestConstants.STATUS_ACTIVE);
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+        @Test
+        void shouldRejectAndConstraintsWhenOnlyOneMatch() {
+            // given
 
-        // then
-        assertThat(result).isTrue();
-    }
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
 
-    @Test
-    void shouldRejectWhenWildcardIsPartOfPolicy() {
-        // given
-        final String invalidWildcardPolicy = "Policy*";
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(invalidWildcardPolicy), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAtomicConstraintPolicy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                TestConstants.STATUS_ACTIVE);
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+            final var policyList = List.of(
+                    new AcceptedPolicy(policy("policy1", List.of(constraint1, constraint2), Collections.emptyList()),
+                            OffsetDateTime.now().plusYears(1)));
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
-        // then
-        assertThat(result).isFalse();
-    }
+            final Policy policy = createAndConstraintPolicy(
+                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
+                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
+            // when
+            final boolean valid = policyCheckerService.isValid(policy, "bpn");
 
-    @Test
-    void shouldRejectAndConstraintsWhenOnlyOneMatch() {
-        // given
-        final var policyList = List.of(new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY),
-                        OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER),
-                        OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAndConstraintPolicy(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+            // then
+            assertThat(valid).isFalse();
+        }
 
-        // then
-        assertThat(result).isFalse();
-    }
+        @Test
+        void shouldRejectAndConstraintsWhenAcceptedPolicyContainsSuperSetOfProvidedPolicy() {
+            // given
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(MEMBERSHIP, new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint3 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+            final var policyList = List.of(
+                    new AcceptedPolicy(policy("and-policy", List.of(constraint1, constraint2, constraint3), List.of()),
+                            OffsetDateTime.now().plusYears(1)));
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
-    @Test
-    void shouldAcceptAndConstraintsWhenAcceptedPolicyContainsMoreConstraintsSuperSetOfProvidedPolicy() {
-        // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final var policyList = List.of(
-                new AcceptedPolicy(policy("and-policy", List.of(constraint1, constraint2, constraint3), List.of()),
-                        OffsetDateTime.now().plusYears(1)));
+            final Policy policy = createAndConstraintPolicy(
+                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
+                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
 
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAndConstraintPolicy(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+            // when
+            final boolean valid = policyCheckerService.isValid(policy, "bpn");
 
-        // then
-        assertThat(result).isTrue();
-    }
+            // then
+            assertThat(valid).isFalse();
+        }
 
-    @Test
-    void shouldAcceptOrConstraintsWhenAcceptedPolicyContainsMoreConstraintsSuperSetOfProvidedPolicy() {
-        // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final var policyList = List.of(
-                new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
-                        OffsetDateTime.now().plusYears(1)));
+        @Test
+        void shouldAcceptOrConstraintsWhenAcceptedPolicyContainsMoreConstraintsSuperSetOfProvidedPolicy() {
+            // given
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(MEMBERSHIP, new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint3 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+            final var policyList = List.of(
+                    new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
+                            OffsetDateTime.now().plusYears(1)));
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createOrConstraintPolicy(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+            final Policy policy = createOrConstraintPolicy(
+                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
+                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
 
-        // then
-        assertThat(result).isTrue();
-    }
+            // when
+            final boolean valid = policyCheckerService.isValid(policy, "bpn");
 
-    @Test
-    void shouldAcceptConstraintsWithDefaultPolicy() {
-        // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
+            // then
+            assertThat(valid).isTrue();
+        }
 
-        final var policyList = List.of(new AcceptedPolicy(
-                policy("default-policy", List.of(constraint1, constraint2, constraint3),
-                        List.of(constraint1, constraint2, constraint3)), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        @Test
+        void shouldAcceptConstraintsWithDefaultPolicy() {
+            // given
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(MEMBERSHIP, new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint3 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
 
-        Policy policy = createOrConstraintPolicy(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+            final var policyList = List.of(new AcceptedPolicy(
+                    policy("default-policy", List.of(constraint1, constraint2, constraint3),
+                            List.of(constraint1, constraint2, constraint3)), OffsetDateTime.now().plusYears(1)));
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
-        // then
-        assertThat(result).isTrue();
-    }
+            final Policy policy = createOrConstraintPolicy(
+                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
+                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
 
-    @Test
-    void shouldRejectOrConstraintsWhenNoneMatch() {
-        // given
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TEST), OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER),
-                        OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAndConstraintPolicy(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+            // when
+            final boolean valid = policyCheckerService.isValid(policy, "bpn");
 
-        // then
-        assertThat(result).isFalse();
-    }
+            // then
+            assertThat(valid).isTrue();
+        }
 
-    @Test
-    void shouldRejectXOneConstraintsWhenNoneMatch() {
-        // given
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TEST), OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER),
-                        OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createXOneConstraintPolicy(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+        @Test
+        void shouldRejectOrConstraintsWhenNoneMatch() {
+            // given
 
-        // then
-        assertThat(result).isFalse();
-    }
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TEST, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
 
-    @Test
-    void shouldRejectXOneConstraintsWhenMoreThanOneMatch() {
-        // given
-        final var policyList = List.of(new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY),
-                        OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(TestConstants.MEMBERSHIP), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createXOneConstraintPolicy(
-                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                                TestConstants.STATUS_ACTIVE),
-                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
-        // when
-        boolean result = policyCheckerService.isValid(policy);
+            final var policyList = List.of(
+                    new AcceptedPolicy(policy("policy1", Collections.emptyList(), List.of(constraint1, constraint2)),
+                            OffsetDateTime.now().plusYears(1)));
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
-        // then
-        assertThat(result).isFalse();
-    }
+            final Policy policy = createAndConstraintPolicy(
+                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
+                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
 
-    private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(final String policyId) {
-        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(policyId, OffsetDateTime.now(),
-                OffsetDateTime.now().plusYears(1), Collections.emptyList());
+            // when
+            final boolean valid = policyCheckerService.isValid(policy, "bpn");
+
+            // then
+            assertThat(valid).isFalse();
+        }
+
+        @Test
+        void shouldRejectXOneConstraintsBecauseXOneIsNotSupported() {
+            // given
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+
+            final var policyList = List.of(
+                    new AcceptedPolicy(policy("policy1", Collections.emptyList(), List.of(constraint1, constraint2)),
+                            OffsetDateTime.now().plusYears(1)),
+                    new AcceptedPolicy(policy("policy2", List.of(constraint1, constraint2), Collections.emptyList()),
+                            OffsetDateTime.now().plusYears(1)));
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
+
+            final Policy policy = createXOneConstraintPolicy(
+                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
+                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
+
+            // when
+            final boolean valid = policyCheckerService.isValid(policy, "bpn");
+
+            // then
+            assertThat(valid).isFalse();
+        }
+
     }
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(final String policyId,
             final List<Constraint> andConstraint, final List<Constraint> orConstraint) {
-        final List<Constraints> constraints = List.of(new Constraints(andConstraint, orConstraint));
+
+        final Constraints constraints = new Constraints(andConstraint, orConstraint);
         final List<Permission> permissions = List.of(new Permission(PolicyType.USE, constraints));
-        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(policyId, OffsetDateTime.now(),
-                OffsetDateTime.now().plusYears(1), permissions);
+        return org.eclipse.tractusx.irs.edc.client.policy.Policy.builder()
+                                                                .policyId(policyId)
+                                                                .validUntil(OffsetDateTime.now().plusYears(1))
+                                                                .createdOn(OffsetDateTime.now())
+                                                                .permissions(permissions)
+                                                                .build();
+    }
+
+    @Nested
+    class ExpirationTests {
+
+        @Test
+        void shouldHaveNoExpiredConstraints() {
+            // given
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(MEMBERSHIP, new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint3 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+            final var policyList = List.of(
+                    new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
+                            OffsetDateTime.now().plusYears(1)));
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
+
+            final Policy policy = createOrConstraintPolicy(
+                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
+                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
+
+            // when
+            final boolean expired = policyCheckerService.isExpired(policy, "bpn");
+
+            // then
+            assertThat(expired).isFalse();
+        }
+
+        @Test
+        void shouldHaveExpiredConstraints() {
+            // given
+            final Constraint constraint1 = new Constraint(FRAMEWORK_AGREEMENT_TRACEABILITY,
+                    new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint2 = new Constraint(MEMBERSHIP, new Operator(OperatorType.EQ), STATUS_ACTIVE);
+            final Constraint constraint3 = new Constraint(FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                    STATUS_ACTIVE);
+            final var policyList = List.of(
+                    new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
+                            OffsetDateTime.now().minusYears(1)));
+            when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
+
+            final Policy policy = createOrConstraintPolicy(
+                    List.of(createAtomicConstraint(FRAMEWORK_AGREEMENT_TRACEABILITY, STATUS_ACTIVE),
+                            createAtomicConstraint(MEMBERSHIP, STATUS_ACTIVE)));
+
+            // when
+            final boolean expired = policyCheckerService.isExpired(policy, "bpn");
+
+            // then
+            assertThat(expired).isTrue();
+        }
     }
 
 }

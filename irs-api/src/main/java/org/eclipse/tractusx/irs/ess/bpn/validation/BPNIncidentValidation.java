@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,11 +29,11 @@ import java.util.NoSuchElementException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.eclipse.tractusx.irs.ess.service.SupplyChainImpacted;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
 import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
+import org.eclipse.tractusx.irs.ess.service.SupplyChainImpacted;
 
 /**
  * Validation for BPNs.
@@ -77,13 +77,13 @@ public final class BPNIncidentValidation {
      * @return Yes, if one or more of the siteIds of PartAsPlanned matches the incident BPNs.
      * No, if none of the job siteIds matches the incident BPNs.
      * Unknown if PartAsPlanned contains no siteIds.
-     * @throws InvalidAspectTypeFormatException if any of the sites does not contain a catenaXSiteId
+     * @throws InvalidAspectTypeFormatException if any of the sites does not contain a catenaXsiteId
      */
     public static SupplyChainImpacted jobContainsIncidentBPNSs(
             final PartSiteInformationAsPlanned partSiteInformationAsPlanned, final List<String> incidentBPNs)
             throws InvalidAspectTypeFormatException {
-        if (partSiteInformationAsPlanned.sites().stream().anyMatch(site -> site.catenaXSiteId() == null)) {
-            throw new InvalidAspectTypeFormatException("'PartSiteInformationAsPlanned' exists, but catenaXSiteId could not be found.");
+        if (partSiteInformationAsPlanned.sites().stream().anyMatch(site -> site.catenaXsiteId() == null)) {
+            throw new InvalidAspectTypeFormatException("'PartSiteInformationAsPlanned' exists, but catenaXsiteId could not be found.");
         }
         final List<String> siteIds = partSiteInformationAsPlanned.getCatenaXSiteId();
         try {

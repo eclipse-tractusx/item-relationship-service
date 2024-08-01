@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,18 +23,24 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.ACTIVE_MEMBERSHIP;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.PURPOSE_ID_3_1_TRACE;
+
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.Bpn;
-import org.eclipse.tractusx.irs.component.FetchedItems;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
@@ -48,6 +54,7 @@ import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Quantity;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
 import org.eclipse.tractusx.irs.component.Tombstone;
@@ -59,18 +66,24 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInfor
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
+import org.eclipse.tractusx.irs.edc.client.policy.Permission;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.ess.service.NotificationSummary;
+import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -91,12 +104,21 @@ public class OpenApiExamples {
     private static final String SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE = "supply_chain_impacted";
     private static final String SUPPLY_CHAIN_IMPACTED_KEY = "supplyChainImpacted";
     private static final String SUPPLY_CHAIN_IMPACTER_RESULT = "YES";
+    private static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT = SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+    private static final String SERIAL_PART_ASPECT = SemanticModelNames.SERIAL_PART_3_0_0;
     private static final int FETCHED_ITEMS_SIZE = 3;
     private static final int NO_RUNNING_OR_FAILED_ITEMS = 0;
     private static final int SENT_NOTIFICATIONS_SIZE = 6;
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
+        components.addExamples("error-response-500", toExample(ErrorResponse.builder()
+                                                                            .withMessages(
+                                                                                    List.of("InternalServerError"))
+                                                                            .withError("Internal Server Error")
+                                                                            .withStatusCode(
+                                                                                    HttpStatus.INTERNAL_SERVER_ERROR)
+                                                                            .build()));
         components.addExamples("error-response-400", toExample(ErrorResponse.builder()
                                                                             .withMessages(
                                                                                     List.of("BadRequestException"))
@@ -130,22 +152,44 @@ public class OpenApiExamples {
         components.addExamples("canceled-job-response", createCanceledJobResponse());
         components.addExamples("complete-job-list-processing-state", createJobListProcessingState());
         components.addExamples("aspect-models-list", createAspectModelsResult());
+        components.addExamples("get-policies-paged-result", createPageOfPolicies());
+    }
+
+    private Example createPageOfPolicies() {
+        final PageImpl<PolicyWithBpn> page = new PageImpl<>(List.of(new PolicyWithBpn("BPNL1234567890AB",
+                Policy.builder()
+                      .policyId("13a8523f-c80a-40b8-9e43-faab47fbceaa")
+                      .createdOn(OffsetDateTime.parse("2024-07-08T12:01:19.4677109+02:00"))
+                      .validUntil(OffsetDateTime.parse("2025-07-08T12:01:19.4677109+02:00"))
+                      .permissions(createPermissions())
+                      .build())), PageRequest.of(1, 10), 1);
+        return toExample(page);
+    }
+
+    private List<Permission> createPermissions() {
+        return List.of(new Permission(PolicyType.USE, createConstraints()),
+                new Permission(PolicyType.ACCESS, createConstraints()));
+    }
+
+    private Constraints createConstraints() {
+        return new Constraints(Collections.emptyList(),
+                List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE, PURPOSE_ID_3_1_TRACE));
     }
 
     private Example createAspectModelsResult() {
         final AspectModel assemblyPartRelationship = AspectModel.builder()
                                                                 .name("SingleLevelBomAsBuilt")
-                                                                .urn("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt")
-                                                                .version("1.0.0")
+                                                                .urn(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT)
+                                                                .version("3.0.0")
                                                                 .status("RELEASED")
-                                                                .type("BAMM")
+                                                                .type("SAMM")
                                                                 .build();
         final AspectModel serialPart = AspectModel.builder()
                                                   .name("SerialPart")
-                                                  .urn("urn:bamm:io.catenax.serial_part:1.0.0#SerialPart")
-                                                  .version("1.0.0")
+                                                  .urn(SERIAL_PART_ASPECT)
+                                                  .version("3.0.0")
                                                   .status("RELEASED")
-                                                  .type("BAMM")
+                                                  .type("SAMM")
                                                   .build();
 
         return toExample(AspectModels.builder()
@@ -175,7 +219,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.ERROR)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
@@ -192,7 +235,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.RUNNING)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
@@ -208,7 +250,7 @@ public class OpenApiExamples {
         return JobParameter.builder()
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .depth(1)
-                           .aspects(List.of(AspectType.SERIAL_PART.toString(), AspectType.ADDRESS_ASPECT.toString()))
+                           .aspects(List.of(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT, SERIAL_PART_ASPECT))
                            .direction(Direction.DOWNWARD)
                            .collectAspects(false)
                            .build();
@@ -235,12 +277,10 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.COMPLETED)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                      .completedOn(EXAMPLE_ZONED_DATETIME)
-                                     .owner("")
                                      .summary(createSummary())
                                      .parameter(createJobParameter())
                                      .exception(createJobException())
@@ -259,12 +299,10 @@ public class OpenApiExamples {
                                              .id(UUID.fromString(JOB_ID))
                                              .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                              .state(JobState.COMPLETED)
-                                             .owner("")
                                              .createdOn(EXAMPLE_ZONED_DATETIME)
                                              .startedOn(EXAMPLE_ZONED_DATETIME)
                                              .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                              .completedOn(EXAMPLE_ZONED_DATETIME)
-                                             .owner("")
                                              .summary(createSummary())
                                              .parameter(createJobParameter())
                                              .exception(createJobException())
@@ -281,7 +319,6 @@ public class OpenApiExamples {
                                                                                         .completed(FETCHED_ITEMS_SIZE)
                                                                                         .failed(NO_RUNNING_OR_FAILED_ITEMS)
                                                                                         .build(),
-                FetchedItems.builder().completed(FETCHED_ITEMS_SIZE).failed(NO_RUNNING_OR_FAILED_ITEMS).build(),
                 SENT_NOTIFICATIONS_SIZE, SENT_NOTIFICATIONS_SIZE);
         final Job job = essJobsJobs.getJob().toBuilder().summary(newSummary).build();
         return toExample(essJobsJobs.toBuilder().job(job).build());
@@ -289,6 +326,7 @@ public class OpenApiExamples {
 
     private Submodel createEssSubmodel() {
         return Submodel.builder()
+                       .contractAgreementId(EXAMPLE_ID)
                        .aspectType(SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE)
                        .identification(SUBMODEL_IDENTIFICATION)
                        .payload(Map.of(SUPPLY_CHAIN_IMPACTED_KEY, SUPPLY_CHAIN_IMPACTER_RESULT))
@@ -348,20 +386,33 @@ public class OpenApiExamples {
 
     private Submodel createSubmodel() {
         return Submodel.builder()
-                       .aspectType("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0")
+                       .contractAgreementId(EXAMPLE_ID)
+                       .aspectType(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT)
                        .identification(SUBMODEL_IDENTIFICATION)
-                       .payload(createAssemblyPartRelationshipPayloadMap())
+                       .payload(createSingleLevelBomAsBuiltPayloadMap())
                        .build();
     }
 
-    private Map<String, Object> createAssemblyPartRelationshipPayloadMap() {
-        final String assemblyPartRelationshipPayload =
-                "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                        + "\"childItems\": [ { \"createdOn\": \"2022-02-03T14:48:54.709Z\", \"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                        + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
-                        + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
-
-        return new JsonUtil().fromString(assemblyPartRelationshipPayload, Map.class);
+    private Map<String, Object> createSingleLevelBomAsBuiltPayloadMap() {
+        final String singleLevelBomAsBuiltPayload = """
+                  {
+                  "catenaXId": "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
+                  "childItems": [
+                    {
+                      "catenaXId": "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
+                      "quantity": {
+                        "value": 20.0,
+                        "unit": "unit:piece"
+                      },
+                      "hasAlternatives": false,
+                      "createdOn": "2022-02-03T14:48:54.709Z",
+                      "businessPartner": "BPNL00012345aNXY",
+                      "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+                    }
+                  ]
+                }
+                """;
+        return new JsonUtil().fromString(singleLevelBomAsBuiltPayload, Map.class);
     }
 
     private Tombstone createTombstone() {
@@ -377,22 +428,25 @@ public class OpenApiExamples {
                         .build();
     }
 
-    private AssetAdministrationShellDescriptor createShell() {
-        return AssetAdministrationShellDescriptor.builder()
-                                                 .description(List.of(LangString.builder()
-                                                                                .language("en")
-                                                                                .text("The shell for a vehicle")
-                                                                                .build()))
-                                                 .globalAssetId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
-                                                 .idShort("future concept x")
-                                                 .id("urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8")
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .name("engineserialid")
-                                                                                                 .value("12309481209312")
-                                                                                                 .build()))
-                                                 .submodelDescriptors(List.of(createBaseSubmodelDescriptor(),
-                                                         createPartSubmodelDescriptor()))
-                                                 .build();
+    private Shell createShell() {
+        return new Shell(EXAMPLE_ID, AssetAdministrationShellDescriptor.builder()
+                                                                       .description(List.of(LangString.builder()
+                                                                                                      .language("en")
+                                                                                                      .text("The shell for a vehicle")
+                                                                                                      .build()))
+                                                                       .globalAssetId(
+                                                                               "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
+                                                                       .idShort("future concept x")
+                                                                       .id("urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8")
+                                                                       .specificAssetIds(
+                                                                               List.of(IdentifierKeyValuePair.builder()
+                                                                                                             .name("engineserialid")
+                                                                                                             .value("12309481209312")
+                                                                                                             .build()))
+                                                                       .submodelDescriptors(
+                                                                               List.of(createBaseSubmodelDescriptor(),
+                                                                                       createPartSubmodelDescriptor()))
+                                                                       .build());
     }
 
     private Relationship createRelationship() {
@@ -436,7 +490,7 @@ public class OpenApiExamples {
                                  .semanticId(Reference.builder()
                                                       .keys(List.of(SemanticId.builder()
                                                                               .type("ExternalReference")
-                                                                              .value("urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned")
+                                                                              .value(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT)
                                                                               .build()))
                                                       .type("ModelReference")
                                                       .build())
@@ -470,7 +524,7 @@ public class OpenApiExamples {
                                  .semanticId(Reference.builder()
                                                       .keys(List.of(SemanticId.builder()
                                                                               .type("Submodel")
-                                                                              .value("urn:bamm:com.catenax.vehicle:0.1.1#PartDetails")
+                                                                              .value("urn:bamm:io.catenax.vehicle:0.1.1#PartDetails")
                                                                               .build()))
                                                       .type("ModelReference")
                                                       .build())
@@ -484,7 +538,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.CANCELED)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)

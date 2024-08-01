@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,13 +31,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-
 /**
- * InMemory storage for endpoint data references.
+ * In-memory storage for endpoint data references.
+ * Values are held either by assetId or contractAgreementId.
  */
 @Service("irsEdcClientEndpointDataReferenceStorage")
 public class EndpointDataReferenceStorage {
@@ -50,8 +50,8 @@ public class EndpointDataReferenceStorage {
         this.storageDuration = storageDuration;
     }
 
-    public void put(final String contractAgreementId, final EndpointDataReference dataReference) {
-        storageMap.put(contractAgreementId, new ExpiringContainer(Instant.now(), dataReference));
+    public void put(final String storageId, final EndpointDataReference dataReference) {
+        storageMap.put(storageId, new ExpiringContainer(Instant.now(), dataReference));
         cleanup();
     }
 
@@ -68,8 +68,8 @@ public class EndpointDataReferenceStorage {
         });
     }
 
-    public Optional<EndpointDataReference> remove(final String contractAgreementId) {
-        return Optional.ofNullable(storageMap.remove(contractAgreementId)).map(ExpiringContainer::getDataReference);
+    public Optional<EndpointDataReference> get(final String storageId) {
+        return Optional.ofNullable(storageMap.get(storageId)).map(ExpiringContainer::getDataReference);
     }
 
     /**

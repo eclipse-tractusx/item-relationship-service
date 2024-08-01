@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,10 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -92,26 +90,10 @@ public class AssetAdministrationShellDescriptor {
      * @return ManufacturerId value from Specific Asset Ids
      */
     public Optional<String> findManufacturerId() {
-        return this.specificAssetIds.stream()
-                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getName()))
-                                    .map(IdentifierKeyValuePair::getValue)
-                                    .findFirst();
-    }
-
-    /**
-     * @param aspectTypes the aspect types which should be filtered by
-     * @return AssetAdministrationShellDescriptor with filtered submodel descriptors
-     */
-    public AssetAdministrationShellDescriptor withFilteredSubmodelDescriptors(final List<String> aspectTypes) {
-        final List<String> filterAspectTypes = new ArrayList<>(aspectTypes);
-
-        if (notContainsSingleLevelBomAsBuilt(filterAspectTypes)) {
-            filterAspectTypes.add(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
-            log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
-        }
-
-        this.setSubmodelDescriptors(this.filterDescriptorsByAspectTypes(filterAspectTypes));
-        return this;
+        return specificAssetIds.stream()
+                               .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getName()))
+                               .map(IdentifierKeyValuePair::getValue)
+                               .findFirst();
     }
 
     /**
@@ -133,32 +115,9 @@ public class AssetAdministrationShellDescriptor {
      */
     public List<SubmodelDescriptor> filterDescriptorsByAspectTypes(final List<String> aspectTypes) {
         log.info("Filtering for Aspect Types '{}'", aspectTypes);
-        return this.submodelDescriptors.stream()
-                                       .filter(submodelDescriptor -> aspectTypes.stream()
-                                                                                .anyMatch(type -> isMatching(
-                                                                                        submodelDescriptor, type)))
-
-                                       .toList();
+        return submodelDescriptors.stream()
+                                  .filter(submodelDescriptor -> aspectTypes.stream().anyMatch(submodelDescriptor::isAspect))
+                                  .toList();
     }
 
-    private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {
-        final Optional<String> submodelAspectType = Optional.ofNullable(submodelDescriptor.getSemanticId().getKeys())
-                                                            .flatMap(key -> key.stream().findFirst())
-                                                            .map(SemanticId::getValue);
-        return submodelAspectType.map(
-                semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter)
-                        || semanticId.equals(aspectTypeFilter)).orElse(false);
-    }
-
-    private boolean contains(final String semanticId, final String aspectTypeFilter) {
-        // https://stackoverflow.com/a/3752693
-        final String[] split = aspectTypeFilter.split("(?=\\p{Lu})");
-        final String join = String.join("_", split).toLowerCase(Locale.ROOT);
-        log.debug("lower case aspect: '{}'", join);
-        return semanticId.contains(join);
-    }
-
-    private boolean notContainsSingleLevelBomAsBuilt(final List<String> filterAspectTypes) {
-        return !filterAspectTypes.contains(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
-    }
 }

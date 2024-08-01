@@ -1,0 +1,45 @@
+name: IRS INT Cucumber Integration test execution
+
+on:
+  workflow_dispatch: # Trigger manually
+
+# Cancel previous Test executions if a new one is triggered.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  check-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if INT_REGULAR_USER_API_KEY is defined
+        run: |
+          if [[ -z "${{ secrets.INT_REGULAR_USER_API_KEY }}" ]]; then
+            echo "Error: Missing secret: Please configure INT_REGULAR_USER_API_KEY."
+            exit 1
+          fi
+      - name: Check if INT_ADMIN_USER_API_KEY is defined
+        run: |
+          if [[ -z "${{ secrets.INT_ADMIN_USER_API_KEY }}" ]]; then
+            echo "Error: Missing secret: Please configure INT_ADMIN_USER_API_KEY."
+            exit 1
+          fi
+      - name: Check if IRS_CUCUMBER_PUBLISH_TOKEN is defined
+        run: |
+          if [[ -z "${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}" ]]; then
+            echo "Error: Missing secret: Please configure IRS_CUCUMBER_PUBLISH_TOKEN."
+            exit 1
+          fi
+        shell: bash
+
+  trigger-integration-test:
+    needs: check-config
+    uses: ./.github/workflows/cucumber-integration-test.yaml
+    secrets:
+      regularUserApiKey: ${{ secrets.INT_REGULAR_USER_API_KEY }}
+      adminUserApiKey: ${{ secrets.INT_ADMIN_USER_API_KEY }}
+      cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
+    with:
+      executionFilter: "!Ignore & !INACTIVE & INTEGRATION_TEST & INT"
+

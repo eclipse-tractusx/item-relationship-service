@@ -1,0 +1,80 @@
+{
+  "submodels": [
+    {
+      "identification": "urn:uuid:8b7de5ef-8375-4e96-ae6d-b18056904b06",
+      "aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+      "contractAgreementId": "73994bcc-6cb6-4140-9cee-54a6b660a8d5",
+      "payload": {
+        "catenaXId": "urn:uuid:5cfb33e5-0a95-40e9-8cec-392ee6da7cf1",
+        "childItems": [
+          {
+            "catenaXId": "urn:uuid:f1fee963-a7d5-44d1-9f95-f4e1dc54abeb",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 20
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003AYRE",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          },
+          {
+            "catenaXId": "urn:uuid:767d64ef-56b0-4e06-a497-d00c9b02ff32",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 20
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003AYRE",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          },
+          {
+            "catenaXId": "urn:uuid:44b06c32-dcc2-4e35-bc2b-1141aa5fe164",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 20
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003AYRE",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          },
+          {
+            "catenaXId": "urn:uuid:24166ca3-2945-475d-92aa-f532d0080b5c",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 20
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003AYRE",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          },
+          {
+            "catenaXId": "urn:uuid:293f2a17-a911-46b9-b725-abccd57a6be6",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 20
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003AYRE",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          },
+          {
+            "catenaXId": "urn:uuid:fc16c963-a307-46ee-9059-a6fea87425dc",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 20
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003AYRE",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ]
+      }
+    }
+  ]
+}

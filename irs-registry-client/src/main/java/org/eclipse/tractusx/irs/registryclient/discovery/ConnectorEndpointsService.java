@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -44,28 +44,35 @@ public class ConnectorEndpointsService {
     private final DiscoveryFinderClient discoveryFinderClient;
     private static final String CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME = "connector_endpoint_service_cache";
 
+    /**
+     * Get EDCs for BPN.
+     *
+     * @param bpn the BPN
+     * @return list of EDC URLs
+     */
     @Cacheable(CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME)
     public List<String> fetchConnectorEndpoints(final String bpn) {
+
         if (StringUtils.isBlank(bpn)) {
             log.warn("BPN was null, cannot search for any connector endpoints. Returning empty list.");
             return List.of();
         }
 
         log.info("Requesting connector endpoints for BPN {}", bpn);
-        final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
-        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
-                                                                                .endpoints();
-        final List<String> providedBpn = List.of(bpn);
+
+        final var onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
+        final var discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn).endpoints();
         final var endpoints = discoveryEndpoints.stream()
                                                 .flatMap(
                                                         discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
-                                                                                                          discoveryEndpoint.endpointAddress(), providedBpn)
+                                                                                                          discoveryEndpoint.endpointAddress(), List.of(bpn))
                                                                                                   .stream()
                                                                                                   .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
                                                                                                                                                   .equals(bpn))
                                                                                                   .map(EdcDiscoveryResult::connectorEndpoint))
                                                 .flatMap(List::stream)
                                                 .toList();
+
         log.info("Discovered the following endpoints for BPN '{}': '{}'", bpn, String.join(", ", endpoints));
         return endpoints;
     }

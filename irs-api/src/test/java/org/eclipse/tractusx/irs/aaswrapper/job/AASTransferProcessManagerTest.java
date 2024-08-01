@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,7 +38,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
-import org.eclipse.tractusx.irs.util.TestMother;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,13 +46,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AASTransferProcessManagerTest {
 
-    private final TestMother generate = new TestMother();
-
     DigitalTwinDelegate digitalTwinProcessor = mock(DigitalTwinDelegate.class);
     ExecutorService pool = mock(ExecutorService.class);
 
     final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinProcessor, pool,
-            new InMemoryBlobStore());
+            new InMemoryBlobStore(), new JsonUtil());
 
     @Test
     void shouldExecuteThreadForProcessing() {

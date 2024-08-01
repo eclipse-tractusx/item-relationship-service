@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,7 +42,7 @@ class JsonLdConfigurationTest {
         final JsonLdConfiguration jsonLdConfiguration = new JsonLdConfiguration();
         final TitaniumJsonLd titaniumJsonLd = jsonLdConfiguration.titaniumJsonLd(jsonLdConfiguration.monitor());
         final JsonObject build = Json.createObjectBuilder()
-                                     .add("dct", "https://purl.org/dc/terms/")
+                                     .add("dct", "http://purl.org/dc/terms/")
                                      .add("tx", "https://w3id.org/tractusx/v0.0.1/ns/")
                                      .add("edc", "https://w3id.org/edc/v0.0.1/ns/")
                                      .add("dcat", "https://www.w3.org/ns/dcat/")
@@ -69,7 +69,7 @@ class JsonLdConfigurationTest {
                                                                           .leftExpression(
                                                                                   new LiteralExpression("idsc:PURPOSE"))
                                                                           .rightExpression(
-                                                                                  new LiteralExpression("ID 3.0 Trace"))
+                                                                                  new LiteralExpression("ID 3.1 Trace"))
                                                                           .build();
         final ObjectMapper objectMapper = new JsonLdConfiguration().objectMapper();
         final String s = objectMapper.writeValueAsString(atomicConstraint);

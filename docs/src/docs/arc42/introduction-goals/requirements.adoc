@@ -9,9 +9,10 @@ The IRS is a:
 - Data chain provider
 
 == Substantial Features
-- provide a top-down BoM asBuilt tree structure along the submodel "SingleLevelBomAsBuilt"
+- provide a top-down BoM asBuilt tree structure along the submodel https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built["SingleLevelBomAsBuilt"]
 - usage of EDC consumer for communicating with the Catena-X network
 - functionality of IRS provider will be handled by providers submodel servers
 - federated IRS service
 - 'asBuild' BoM of serialized components
 - provides endpoints for submodel-descriptors
+- start recursive Environmental and Social Standard investigations throughout the network based on the "asPlanned" lifecycle

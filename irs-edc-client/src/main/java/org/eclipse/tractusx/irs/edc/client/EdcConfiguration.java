@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,15 +38,24 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class EdcConfiguration {
 
+    private static final int ASYNC_TIMEOUT_MINUTES_DEFAULT = 10;
+
     private ControlplaneConfig controlplane = new ControlplaneConfig();
     private SubmodelConfig submodel = new SubmodelConfig();
     private String callbackUrl;
+
+    private Duration asyncTimeout = Duration.ofMinutes(ASYNC_TIMEOUT_MINUTES_DEFAULT);
+
+    public Long getAsyncTimeoutMillis() {
+        return asyncTimeout.toMillis();
+    }
 
     /**
      * Container for controlplane config
      */
     @Data
     public static class ControlplaneConfig {
+
         private EndpointConfig endpoint = new EndpointConfig();
 
         private String providerSuffix;
@@ -67,8 +76,12 @@ public class EdcConfiguration {
             private String data;
             private String catalog;
             private String contractNegotiation;
+            private String asset;
+            private String contractDefinition;
+            private String policyDefinition;
             private String transferProcess;
             private String stateSuffix;
+            private String contractAgreements;
 
         }
 
@@ -92,7 +105,7 @@ public class EdcConfiguration {
         private Duration requestTtl;
 
         private String urnPrefix;
+        private String submodelSuffix;
     }
-
 
 }

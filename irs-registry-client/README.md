@@ -1,10 +1,12 @@
+[[Back to IRS main README](../README.md)]
+
 # Digital Twin Registry Client Library
 
 This library assists in communicating with the Digital Twin Registry in a central or decentral approach.
 
 In the decentral approach, it also handles the communication via the Discovery Finder and EDC.
 
-The library is based on Spring Boot and uses its configuration features.
+The library is based on [Spring Boot](https://spring.io/projects/spring-boot) and uses its configuration features.
 
 ## Usage
 
@@ -26,7 +28,7 @@ Add the following configuration to your `application.yaml`:
 
 ```yaml
 digitalTwinRegistryClient:
-  type: "central" # or "decentral"
+  type: "decentral"  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
 
   discoveryFinderUrl: "" # required if type is "decentral"
 
@@ -37,6 +39,7 @@ digitalTwinRegistryClient:
 
 irs-edc-client:
   callback-url: "" # The URL where the EDR token callback will be sent to. This defaults to {BASE_URL}/internal/endpoint-data-reference. If you want to use a different mapping, you can override it with irs-edc-client.callback.mapping.
+  asyncTimeout: PT10M # Timout for future.get requests as ISO 8601 Duration  
   controlplane:
     request-ttl: PT10M # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
@@ -61,24 +64,13 @@ irs-edc-client:
 
 
   catalog:
-    # IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.
-    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-    acceptedPolicies:
-      - leftOperand: "PURPOSE"
-        operator: "eq"
-        rightOperand: "ID 3.0 Trace"
-      - leftOperand: "PURPOSE"
-        operator: "eq"
-        rightOperand: "ID 3.1 Trace"
-      - leftOperand: "PURPOSE"
-        operator: "eq"
-        rightOperand: R2_Traceability
-      - leftOperand: "FrameworkAgreement.traceability"
-        operator: "eq"
-        rightOperand: "active"
-      - leftOperand: "Membership"
-        operator: "eq"
-        rightOperand: "active"
+    # IRS will only negotiate contracts for offers with a policy as defined in the Policy Store.
+    # The following configuration value allows the definition of default policies to be used
+    # if no policy has been defined via the Policy Store API.
+    # If the policy check fails, a tombstone will be created and this node will not be processed.
+    # The value must be Base64 encoded here.
+    acceptedPolicies: "W3sKICAgICJwb2xpY3lJZCI6ICJkZWZhdWx0LXRyYWNlLXBvbGljeSIsCiAgICAiY3JlYXRlZE9uIjogIjIwMjQtMDctMTdUMTY6MTU6MTQuMTIzNDU2NzhaIiwKICAgICJ2YWxpZFVudGlsIjogIjk5OTktMDEtMDFUMDA6MDA6MDAuMDAwMDAwMDBaIiwKICAgICJwZXJtaXNzaW9ucyI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJhY3Rpb24iOiAidXNlIiwKICAgICAgICAgICAgImNvbnN0cmFpbnQiOiB7CiAgICAgICAgICAgICAgICAiYW5kIjogWwogICAgICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAgICAgImxlZnRPcGVyYW5kIjogImh0dHBzOi8vdzNpZC5vcmcvY2F0ZW5heC9wb2xpY3kvRnJhbWV3b3JrQWdyZWVtZW50IiwKICAgICAgICAgICAgICAgICAgICAgICAgIm9wZXJhdG9yIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgIkBpZCI6ICJlcSIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgInJpZ2h0T3BlcmFuZCI6ICJ0cmFjZWFiaWxpdHk6MS4wIgogICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgICAgICAibGVmdE9wZXJhbmQiOiAiaHR0cHM6Ly93M2lkLm9yZy9jYXRlbmF4L3BvbGljeS9Vc2FnZVB1cnBvc2UiLAogICAgICAgICAgICAgICAgICAgICAgICAib3BlcmF0b3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiQGlkIjogImVxIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAicmlnaHRPcGVyYW5kIjogImN4LmNvcmUuaW5kdXN0cnljb3JlOjEiCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgXQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgXQp9XQ=="
+
 
 ```
 

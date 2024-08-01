@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,7 +23,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.data;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Objects;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -39,6 +45,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringMapper {
+
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
+
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {
@@ -56,12 +65,37 @@ public class StringMapper {
         }
     }
 
+    public static <T> T mapFromBase64String(final String value, final TypeReference<T> typeReference) {
+        if (value == null) {
+            return null;
+        }
+        return mapFromString(fromBase64(value), typeReference);
+    }
+
     public static <T> T mapFromString(final String value, final Class<T> clazz) {
         try {
             return MAPPER.readValue(value, clazz);
         } catch (final JsonProcessingException e) {
             throw new JsonParseException(e);
         }
+    }
+
+    public static <T> T mapFromString(final String value, final TypeReference<T> typeReference) {
+        try {
+            return MAPPER.readValue(value, typeReference);
+        } catch (final JsonProcessingException e) {
+            throw new JsonParseException(e);
+        }
+    }
+
+    public static String toBase64(final String str) {
+        Objects.requireNonNull(str);
+        return new String(Base64.getEncoder().encode(str.trim().getBytes(CHARSET)));
+    }
+
+    public static String fromBase64(final String value) {
+        Objects.requireNonNull(value);
+        return new String(Base64.getDecoder().decode(value.trim()), CHARSET);
     }
 
 }

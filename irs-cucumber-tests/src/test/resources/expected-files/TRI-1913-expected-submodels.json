@@ -1,0 +1,83 @@
+{
+  "submodels": [
+    {
+      "identification": "urn:uuid:0d298774-a215-411e-9587-0e97fe100e6e",
+      "aspectType": "urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
+      "contractAgreementId": "f73e1829-5aec-4bbd-88ad-360fb139e67a",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "29825269KCX",
+            "key": "jisNumber"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000000BJTL",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:fc9a079f-1b55-4ccc-8649-e188f899bf39",
+        "partTypeInformation": {
+          "manufacturerPartId": "123-0.740-3434-A",
+          "customerPartId": "PRT-12345",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left",
+          "nameAtCustomer": "side element A"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:7175849b-bfec-4d0c-bc51-d12687ee7852",
+      "aspectType": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
+      "contractAgreementId": "a40d01cc-f19f-4216-9cb3-785fc4798689",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000000BJTL",
+            "key": "manufacturerId"
+          },
+          {
+            "value": "NO-097885571011173114989419",
+            "key": "partInstanceId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "DEU",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003CSGV",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:fc9a079f-1b55-4ccc-8649-e188f899bf39",
+        "partTypeInformation": {
+          "manufacturerPartId": "95657762-59",
+          "customerPartId": "95657762-59",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Door Key",
+          "nameAtCustomer": "Door Key"
+        },
+        "itemVersion": "05"
+      }
+    }
+  ]
+}

@@ -7,19 +7,22 @@ skinparam nodesep 150
 skinparam ranksep 150
 skinparam defaultFontName "Architects daughter"
 
+actor IrsApiConsumer
 
 package [**OEM**] <<CatenaX Company>> as consumer {
 
     package [**IRS-Application**] <<IRS System>> as irs_component {
 	    component [**IRS**] <<System>> as IRS
 	    component [**EDC (Consumer)**] <<System>> as EDC
+	    component [**Policy Store**] as policy_store
     }
 
     package [**OEM-Tier**] <<OEM Data Provider>> as oem_provider {
         component [**EDC (Provider)**] <<System>> as EDCProviderOEM
         component [**SubmodelServer**] <<System>> as SubmodelServerOEM
         component [**decentral Digital Twin Registry**] <<System>> as DT_REG_OEM
-        }
+        component [**IRS-ESS**] <<System>> as EssOEM
+    }
 
 }
 
@@ -30,43 +33,45 @@ package [**CatenaX-Network**] as network {
     component [**EDC Discovery Service**] <<System>> as edc_discovery
     component [**Discovery Finder**] <<System>> as discovery_finder
     component [**Semantic Hub**] <<System>> as semantic_hub
-    component [**BPDM**] <<System>> as bpdm
 }
 
 package [**N-Tier**] <<CatenaX Data Provider Company>> as provider {
     component [**EDC (Provider)**] <<System>> as EDCProvider
     component [**SubmodelServer**] <<System>> as SubmodelServer
     component [**decentral Digital Twin Registry**] <<System>> as DT_REG
+    component [**IRS-ESS**] <<System>> as EssProvider
 }
 
-actor IrsApiConsumer
-
-IrsApiConsumer -l(0- IRS : **[01]**
+IrsApiConsumer -r(0- IRS : **[01]**
 IrsApiConsumer <.r.> IAM_IRS  : **[02]**
 IAM_IRS  <..> Portal_IdP  : **[03]**
 
 EDCProviderOEM <-> SubmodelServerOEM : **[04]**
 EDCProviderOEM <--> DT_REG_OEM : **[05]**
+EDCProviderOEM <--> EssOEM : **[17]**
 miw <..> EDCProviderOEM  : **[12]**
 
 IRS <.d.> EDC  : **[06]**
 IRS <..> IAM_IRS : **[07]**
 IRS <..> edc_discovery  : **[08]**
 
+
 IRS <..> discovery_finder  : **[09]**
 IRS <..> semantic_hub  : **[10]**
-IRS <..> bpdm  : **[11]**
-EDC <..> miw  : **[12]**
-EDC <..> EDCProvider  : **[13]**
-EDC <..> EDCProviderOEM  : **[13]**
+EDC <..> miw  : **[11]**
+EDC <..> EDCProvider  : **[12]**
+EDC <..> EDCProviderOEM  : **[12]**
 
-miw <..> EDCProvider  : **[14]**
-EDCProvider <--> SubmodelServer : **[15]**
-EDCProvider <--> DT_REG : **[16]**
+miw <..> EDCProvider  : **[13]**
+EDCProvider <--> SubmodelServer : **[14]**
+EDCProvider <--> DT_REG : **[15]**
+EDCProvider <-> EssProvider : **[16]**
+
+IRS <...> policy_store : **[17]**
+IrsApiConsumer -r(0- policy_store : **[18]**
 
 miw -[hidden]d- IAM_IRS
 miw -[hidden]r- discovery_finder
 discovery_finder -[hidden]d- edc_discovery
-bpdm -[hidden]d- semantic_hub
 
 @enduml

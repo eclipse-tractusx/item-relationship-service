@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,6 +31,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,7 +54,7 @@ public class RegisterJob {
     private static final String MAX_TREE_DEPTH_DESC = "100";
     private static final int MIN_TREE_DEPTH = 1;
     private static final int MAX_TREE_DEPTH = 100;
-    private static final String ASPECT_MODEL_REGEX = "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
+    private static final String ASPECT_MODEL_REGEX = "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
 
     @NotNull
     @Valid
@@ -63,8 +64,10 @@ public class RegisterJob {
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @ArraySchema(schema = @Schema(implementation = String.class), maxItems = Integer.MAX_VALUE)
-    private List<String> aspects;
+    @ArraySchema(arraySchema = @Schema(description = "List of aspect names that will be collected if \\<collectAspects\\> flag is set to true.",
+                                       example = "[\"urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt\"]",
+                                       implementation = String.class, pattern = ASPECT_MODEL_REGEX), maxItems = Integer.MAX_VALUE)
+    private List<@Pattern(regexp = ASPECT_MODEL_REGEX) String> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,
             description = "Max depth of the item graph returned. If no depth is set item graph with max depth is returned.")
@@ -78,8 +81,11 @@ public class RegisterJob {
     @Schema(description = "Flag to specify whether aspects should be requested and collected. Default is false.")
     private boolean collectAspects;
 
-    @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.")
+    @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.", deprecated = true)
     private boolean lookupBPNs;
+
+    @Schema(description = "Flag enables and disables auditing, including provisioning of ContractAgreementId inside submodels and shells objects. Default is true.")
+    private boolean auditContractNegotiation = true;
 
     @URL(regexp = "^(http|https).*")
     @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: id and state.",

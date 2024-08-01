@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,8 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameterAuditContractNegotiation;
+import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,9 +35,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import io.github.resilience4j.core.functions.Either;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
@@ -52,7 +56,7 @@ class DigitalTwinDelegateTest {
     void shouldFillItemContainerWithShell() throws RegistryServiceException {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))));
+                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
@@ -61,13 +65,43 @@ class DigitalTwinDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
+        assertThat(result.getShells().get(0).contractAgreementId()).isNull();
     }
 
-    private static PartChainIdentificationKey createKey() {
-        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
+    @Test
+    void shouldFillItemContainerWithShellAndContractAgreementIdWhenAuditFlag() throws RegistryServiceException {
+        // given
+        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
+                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
+
+        // when
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(),
+                jobParameterAuditContractNegotiation(), new AASTransferProcess("id", 0), createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getShells()).isNotEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
+        assertThat(result.getShells().get(0).contractAgreementId()).isNotNull();
     }
-    private static PartChainIdentificationKey createKeyWithoutBpn() {
-        return PartChainIdentificationKey.builder().globalAssetId("itemId").build();
+
+    @Test
+    void shouldFillItemContainerWithShellAndSubmodelDescriptorsWhenDepthReached()
+            throws RegistryServiceException {
+        // given
+        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
+                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
+        final JobParameter jobParameter = JobParameter.builder().depth(1).aspects(List.of()).build();
+
+        // when
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter,
+                new AASTransferProcess("id", 1), createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getShells()).isNotEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
     }
 
     @Test
@@ -100,9 +134,17 @@ class DigitalTwinDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
-        assertThat(result.getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo("Can't get relationship without a BPN");
+        assertThat(result.getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo(
+                "Can't get relationship without a BPN");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.DIGITAL_TWIN_REQUEST);
     }
 
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
+    }
+
+    private static PartChainIdentificationKey createKeyWithoutBpn() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").build();
+    }
 }

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,8 @@ package org.eclipse.tractusx.irs.ess.service;
 
 import java.util.Locale;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
@@ -36,13 +38,15 @@ public enum SupplyChainImpacted {
     UNKNOWN("Unknown");
 
     @Getter
+    @JsonValue
     private final String description;
 
     SupplyChainImpacted(final String description) {
         this.description = description;
     }
 
-    static SupplyChainImpacted fromString(final String name) {
+    @JsonCreator
+    public static SupplyChainImpacted fromString(final String name) {
         return SupplyChainImpacted.valueOf(name.toUpperCase(Locale.ROOT));
     }
 

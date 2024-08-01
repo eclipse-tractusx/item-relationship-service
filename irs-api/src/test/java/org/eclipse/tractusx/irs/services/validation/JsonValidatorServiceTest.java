@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -33,12 +33,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 
 class JsonValidatorServiceTest {
 
-    private final JsonValidatorService testee = new JsonValidatorService(new JsonUtil());
+    private final JsonValidatorService testee = new JsonValidatorService();
+
+    @Test
+    void shouldFailWhenSchemaIsInThirdVerAndPayloadInSecondVer() throws Exception {
+        final String schema = readFile("/json-schema/slab-v3.0.0.json");
+        final String payload = readFile("/__files/integrationtesting/singleLevelBomAsBuilt#2.0.0.json");
+
+        final ValidationResult result = testee.validate(schema, payload);
+
+        assertThat(result.isValid()).isFalse();
+    }
 
     @Test
     void shouldValidateAssemblyPartRelationship() throws Exception {

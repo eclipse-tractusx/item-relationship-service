@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,11 +25,15 @@ package org.eclipse.tractusx.irs.component;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.tractusx.irs.component.enums.NodeType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 
@@ -37,12 +41,14 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
  * Tombstone with information about request failure
  */
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @Jacksonized
 @Schema(description = "Tombstone with information about request failure")
 public class Tombstone {
-    private static final NodeType NODE_TYPE = NodeType.TOMBSTONE;
+
     public static final int CATENA_X_ID_LENGTH = 45;
+
+    private static final NodeType NODE_TYPE = NodeType.TOMBSTONE;
 
     @Schema(description = "CATENA-X global asset id in the format urn:uuid:uuid4.",
             example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = CATENA_X_ID_LENGTH,
@@ -50,26 +56,94 @@ public class Tombstone {
             pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     private final String catenaXId;
     private final String endpointURL;
+    private final String businessPartnerNumber;
     private final ProcessingError processingError;
+    private final Map<String, Object> policy;
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep) {
         return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep);
     }
 
-    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
-            final int retryCount, final ProcessStep processStep) {
+    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
+            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber,
+            final Map<String, Object> policy) {
 
-        final ProcessingError processingError = ProcessingError.builder()
-                                                               .withProcessStep(processStep)
-                                                               .withRetryCounter(retryCount)
-                                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                                               .withErrorDetail(errorDetails)
-                                                               .build();
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(catenaXId)
-                        .processingError(processingError)
+                        .processingError(withProcessingError(processStep, retryCount, exception.getMessage()))
+                        .businessPartnerNumber(businessPartnerNumber)
+                        .policy(policy)
                         .build();
+    }
+
+    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
+            final int retryCount, final ProcessStep processStep) {
+
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(catenaXId)
+                        .processingError(withProcessingError(processStep, retryCount, errorDetails))
+                        .build();
+    }
+
+    public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
+            final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(globalAssetId)
+                        .processingError(ProcessingError.builder()
+                                                        .withProcessStep(processStep)
+                                                        .withRetryCounterAndLastAttemptNow(retryCount)
+                                                        .withErrorDetail(exception.getMessage())
+                                                        .withRootCauses(getRootErrorMessages(suppressed))
+                                                        .build())
+                        .build();
+    }
+
+    private static List<String> getRootErrorMessages(final Throwable... throwables) {
+        return Arrays.stream(throwables).map(Tombstone::getRootErrorMessages).toList();
+    }
+
+    /**
+     * Search for the root cause or suppressed exception as long as there is a cause or suppressed exception.
+     * Stop after a depth of 10 to prevent endless loop.
+     *
+     * @param throwable the exception with a nested or suppressed exception
+     * @return the root cause, eiter suppressed or nested
+     */
+    private static String getRootErrorMessages(final Throwable throwable) {
+        final Throwable cause = throwable.getCause();
+
+        if (cause != null) {
+            Throwable rootCause = cause;
+            int depth = 0;
+            final int maxDepth = 10;
+            while ((rootCause.getCause() != null || hasSuppressedExceptions(rootCause)) && depth < maxDepth) {
+                if (hasSuppressedExceptions(rootCause)) {
+                    rootCause = rootCause.getSuppressed()[0];
+                } else {
+                    rootCause = rootCause.getCause();
+                }
+                depth++;
+            }
+            return ExceptionUtils.getRootCauseMessage(rootCause);
+        }
+        return ExceptionUtils.getRootCauseMessage(throwable);
+    }
+
+    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
+            final String exception) {
+        return ProcessingError.builder()
+                              .withProcessStep(processStep)
+                              .withRetryCounter(retryCount)
+                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                              .withErrorDetail(exception)
+                              .build();
+    }
+
+    private static boolean hasSuppressedExceptions(final Throwable exception) {
+        return exception.getSuppressed().length > 0;
     }
 }

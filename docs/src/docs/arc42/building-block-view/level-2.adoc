@@ -30,12 +30,16 @@ include::../../../uml-diagrams/building-block-view/level-2-int.puml[]
 
 |BlobstorePersistence
 |Interface for storing data blobs.
+
+|Policy Store
+|The *Policy Store* provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers.
+
 |===
 
 
 == RecursiveJobHandler
 
-The *RecursiveJobHandler* component provide the logic to build jobs with recursive logic to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.
+The *RecursiveJobHandler* component provide the logic to build jobs recursively to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.
 
 === Component diagram
 
@@ -96,6 +100,26 @@ include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-
 
 |ExecutorService
 |The ExecutorService enables the simultaneous execution of requests of transfer processes.
+|===
+
+== AASTransferProcessManager
+
+The AASTransferProcessManager coordinates creation of Runnables which are then passed to the ExecutorService for asynchronous and parallel execution.
+The Runnable consists of different Delegates which are each responsible for requesting certain types of data.
+
+=== Component diagram
+[plantuml, level-2-int-transfer-process-delegate, format=svg]
+....
+include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-delegate.puml[]
+....
+
+=== Component description
+|===
+|Components |Description
+|DigitalTwinDelegate | Request the digital twin for the globalAssetId. The result is stored in "shells" of the job response.
+|RelationshipDelegate| Request the payload for relationship aspects, found in the DTR. Relationships are mapped to the internal linkedItem data structure of IRS and validated to be within the supported major Traversal Aspect version range which can be found in the technical context.
+The result is stored in "relationships" of the job response.
+|SubmodelDelegate | Request the payload for the other semantic models requested by the Job. The result is stored in "submodels" of the job response.
 |===
 
 == ESS controller

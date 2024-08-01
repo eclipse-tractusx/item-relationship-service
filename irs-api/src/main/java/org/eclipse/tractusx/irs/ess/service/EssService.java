@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,13 +30,13 @@ import java.util.function.Predicate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.RegisterJob;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
@@ -56,18 +56,21 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class EssService {
 
+    public static final String PART_AS_PLANNED = SemanticModelNames.PART_AS_PLANNED_1_0_1;
+    public static final String PART_SITE_INFORMATION_AS_PLANNED = SemanticModelNames.PART_SITE_INFORMATION_AS_PLANNED_1_0_0;
+
     private final IrsItemGraphQueryService irsItemGraphQueryService;
-    private final SecurityHelperService securityHelperService;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final JobStore jobStore;
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
-        return startIrsJob(request, null, securityHelperService.getClientIdClaim());
+        return startIrsJob(request, null);
     }
 
-    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request, final UUID batchId, final String owner) {
-        final JobHandle jobHandle = irsItemGraphQueryService.registerItemJob(bpnInvestigations(request.getKey(), request.getBomLifecycle()), batchId, owner);
+    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request, final UUID batchId) {
+        final JobHandle jobHandle = irsItemGraphQueryService.registerItemJob(
+                bpnInvestigations(request.getKey(), request.getBomLifecycle()), batchId);
 
         final UUID createdJobId = jobHandle.getId();
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(createdJobId.toString());
@@ -85,14 +88,6 @@ public class EssService {
 
         if (job.isPresent()) {
             final BpnInvestigationJob bpnInvestigationJob = job.get();
-            if (!securityHelperService.isAdmin() && !bpnInvestigationJob.getJobSnapshot()
-                                                                        .getJob()
-                                                                        .getOwner()
-                                                                        .equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                        "Cannot access investigation job with id " + jobId + " due to missing privileges.");
-            }
-
             return updateState(bpnInvestigationJob);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No investigation job exists with id " + jobId);
@@ -109,7 +104,7 @@ public class EssService {
 
         investigationJob.ifPresent(job -> {
             final String originalNotificationId = notification.getHeader().getOriginalNotificationId();
-            job.withAnsweredNotification(originalNotificationId);
+            job.withAnsweredNotification(notification);
             final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().getResult())
                                                                 .map(Object::toString);
 
@@ -124,9 +119,10 @@ public class EssService {
                 job = job.complete();
             }
 
-            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
-            recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
-
+            bpnInvestigationJobCache.store(jobId,
+                    job.update(job.getJobSnapshot(), supplyChainImpacted));
+            recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted,
+                    notification.getContent().getBpn(), notification.getContent().getHops());
         });
     }
 
@@ -161,7 +157,10 @@ public class EssService {
     private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(
             final EdcNotification<ResponseNotificationContent> notification) {
         return investigationJob -> investigationJob.getUnansweredNotifications()
-                                                   .contains(notification.getHeader().getOriginalNotificationId());
+                                                   .stream()
+                                                   .map(Notification::notificationId)
+                                                   .anyMatch(notificationId -> notificationId.equals(
+                                                           notification.getHeader().getOriginalNotificationId()));
     }
 
     private RegisterJob bpnInvestigations(final PartChainIdentificationKey key, final BomLifecycle bomLifecycle) {
@@ -169,8 +168,7 @@ public class EssService {
                           .key(key)
                           .bomLifecycle(bomLifecycle != null ? bomLifecycle : BomLifecycle.AS_PLANNED)
                           .depth(1)
-                          .aspects(List.of(AspectType.PART_SITE_INFORMATION_AS_PLANNED.toString(),
-                                  AspectType.PART_AS_PLANNED.toString()))
+                          .aspects(List.of(PART_SITE_INFORMATION_AS_PLANNED, PART_AS_PLANNED))
                           .collectAspects(true)
                           .build();
     }

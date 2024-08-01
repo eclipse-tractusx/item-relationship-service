@@ -1,0 +1,155 @@
+# Copyright (c) 2022,2024
+#       2022: ZF Friedrichshafen AG
+#       2022: ISTOS GmbH
+#       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+#       2022,2023: BOSCH AG
+# Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0. *
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "irs.fullname" . }}-configmap
+  namespace: {{ .Values.namespace }}
+data:
+  application.yaml: |-
+    # Config overriding Spring Boot configuration
+    {{- if not .Values.config.override }}
+    server:
+      trustedPort: {{ .Values.service.trustedPort }}
+
+    irs:
+      apiUrl: {{ tpl (.Values.irsUrl | default "http://localhost") . | quote }}
+      security:
+        api:
+          keys:
+            admin: {{ tpl (.Values.apiKeyAdmin | default "") . | quote }}
+            regular: {{ tpl (.Values.apiKeyRegular | default "") . | quote }}
+
+    blobstore:
+      endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
+      accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+      secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+
+    policystore:
+      persistence:
+        endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
+        accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+        secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+
+    spring:
+      security:
+        oauth2:
+          client:
+            registration:
+              semantics:
+                authorization-grant-type: client_credentials
+                client-id: "${SEMANTICS_OAUTH2_CLIENT_ID}" # taken from secret ENV
+                client-secret: "${SEMANTICS_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+              discovery:
+                authorization-grant-type: client_credentials
+                client-id: ${DISCOVERY_OAUTH2_CLIENT_ID} # taken from secret ENV
+                client-secret: ${DISCOVERY_OAUTH2_CLIENT_SECRET} # taken from secret ENV
+            provider:
+              semantics:
+                token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
+              discovery:
+                token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
+
+    digitalTwinRegistry:
+      descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
+      shellLookupEndpoint: {{ tpl (.Values.digitalTwinRegistry.shellLookupEndpoint | default "") . | quote }}
+      shellDescriptorTemplate: {{ .Values.digitalTwinRegistry.shellDescriptorTemplate | default "" | quote }}
+      lookupShellsTemplate: {{ .Values.digitalTwinRegistry.lookupShellsTemplate | default "" | quote }}
+      type: {{ tpl (.Values.digitalTwinRegistry.type | default "") . | quote }}
+      oAuthClientId: {{ .Values.digitalTwinRegistry.oAuthClientId | default "discovery" }}
+      discovery:
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "discovery" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+        discoveryFinderUrl: {{ tpl (.Values.discovery.discoveryFinderUrl | default "") . | quote }} # The endpoint to discover EDC endpoints to a particular BPN.
+
+    semanticshub:
+      url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
+      pageSize: {{ tpl (.Values.semanticshub.pageSize | default "100") . }}
+      modelJsonSchemaEndpoint: {{ tpl (.Values.semanticshub.modelJsonSchemaEndpoint | default "") . | quote }}
+      defaultUrns: {{ tpl (.Values.semanticshub.defaultUrns | default "") . | quote }}
+      oAuthClientId: {{ .Values.semanticshub.oAuthClientId | default "semantics" }}
+      {{- if .Values.semanticshub.localModels }}
+      localModelDirectory: /app/semantic-models
+      {{- end }}
+
+    irs-edc-client:
+      callback:
+        mapping: {{ .Values.edc.callbackMapping | default "/internal/endpoint-data-reference" | quote }}
+      callback-url: {{ tpl (.Values.edc.callbackurl | default (printf "http://%s%s" .Release.Name "-item-relationship-service:8181/internal/endpoint-data-reference")) . | quote }}
+      asyncTimeout: {{ tpl .Values.edc.asyncTimeout . | default "PT10M" | quote }}
+      controlplane:
+        request-ttl: {{ .Values.edc.controlplane.request.ttl | default "PT10M" | quote }}
+        endpoint:
+          data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-tractusx-connector-controlplane:8081/management")) . | quote }}
+          catalog: {{ .Values.edc.controlplane.endpoint.catalog | default "/v2/catalog/request" | quote }}
+          contract-negotiation: {{ .Values.edc.controlplane.endpoint.contractnegotiation | default "/v2/contractnegotiations" | quote }}
+          transfer-process: {{ .Values.edc.controlplane.endpoint.transferprocess | default "/v2/transferprocesses" | quote }}
+          state-suffix: {{ .Values.edc.controlplane.endpoint.statesuffix | default "/state" | quote }}
+          contract-agreements: {{ .Values.edc.controlplane.endpoint.contractAgreements | default "/v2/contractagreements" | quote }}
+        provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
+        catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
+        catalog-page-size: {{ .Values.edc.controlplane.catalog.pagesize }}
+        api-key:
+          header: {{ tpl (.Values.edc.controlplane.apikey.header | default "") . | quote }}
+          secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV
+
+      submodel:
+        request-ttl: {{ tpl .Values.edc.submodel.request.ttl . | default "PT10M" | quote }}
+        urn-prefix: {{ tpl (.Values.edc.submodel.urnprefix | default "/urn") . | quote }}
+        submodel-suffix: {{ tpl (.Values.edc.submodel.suffix | default "/$value") . | quote }}
+
+      catalog:
+        acceptedPolicies: {{ .Values.edc.catalog.acceptedPolicies | trim | b64enc | quote }}
+      discoveryFinderClient:
+        cacheTTL: {{ .Values.edc.discoveryFinderClient.cacheTTL | quote }}
+      connectorEndpointService:
+        cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | quote }}
+    ess:
+      localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
+      localEdcEndpoint: {{ tpl (.Values.ess.edc.host | default "") . | quote }}
+      assetsPath: {{ tpl (.Values.ess.assetsPath | default "/management/v3/assets") . | quote }}
+      policydefinitionsPath: {{ tpl (.Values.ess.policydefinitionsPath | default "/management/v2/policydefinitions") . | quote }}
+      contractdefinitionsPath: {{ tpl (.Values.ess.contractdefinitionsPath | default "/management/v2/contractdefinitions") . | quote }}
+      irs:
+        url: {{ tpl (.Values.irsUrl | default "") . | quote }}
+      discovery:
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "discovery" }}
+        {{- if .Values.ess.mockEdcResult }}
+        mockEdcResult:
+        {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 10 }}
+        {{- end }}
+        {{- if .Values.ess.mockRecursiveEdcAsset }}
+        mockRecursiveEdcAsset: {{ tpl (.Values.ess.mockRecursiveEdcAsset) . | quote }}
+        {{- end }}
+    {{- if .Values.management.health.dependencies.enabled }}
+    management:
+      health:
+        dependencies:
+          enabled: {{ .Values.management.health.dependencies.enabled | default false }}
+          urls:
+            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 12 }}
+    {{- end }}
+    {{- end }}
+
+    {{- if .Values.config.content }}
+    {{- tpl (toYaml .Values.config.content) . | nindent 4 }}
+    {{- end }}

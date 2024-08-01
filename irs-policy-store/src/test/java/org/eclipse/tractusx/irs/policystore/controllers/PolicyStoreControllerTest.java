@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,102 +24,228 @@
 package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.ACTIVE_MEMBERSHIP;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.PURPOSE_ID_3_1_TRACE;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
+import jakarta.json.JsonObject;
+import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
-import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
-import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
+import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.services.PolicyPagingService;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
+import org.eclipse.tractusx.irs.policystore.testutil.PolicyStoreTestUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
-class PolicyStoreControllerTest {
+public class PolicyStoreControllerTest {
+
+    public static final String REGISTER_POLICY_EXAMPLE_PAYLOAD = """
+            {
+                "@context": {
+                    "odrl": "http://www.w3.org/ns/odrl/2/"
+                },
+                "@id": "%s",
+                "policy": {
+                    "odrl:permission": [
+                        {
+                            "odrl:action": "use",
+                            "odrl:constraint": {
+                                "odrl:and": [
+                                    {
+                                        "odrl:leftOperand": "Membership",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
+                                        },
+                                        "odrl:rightOperand": "active"
+                                    },
+                                    {
+                                        "odrl:leftOperand": "PURPOSE",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
+                                        },
+                                        "odrl:rightOperand": "ID 3.1 Trace"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+            """;
 
     private PolicyStoreController testee;
 
     @Mock
-    private PolicyStoreService service;
+    private PolicyStoreService policyStoreServiceMock;
+
+    @Mock
+    private PolicyPagingService policyPagingServiceMock;
 
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreController(service);
+        testee = new PolicyStoreController(policyStoreServiceMock, policyPagingServiceMock,
+                mock(HttpServletRequest.class));
     }
 
-    @Test
-    void registerAllowedPolicy() {
-        // arrange
-        final CreatePolicyRequest request = new CreatePolicyRequest("policyId", OffsetDateTime.now(), createPermissions());
+    @Nested
+    class RegisterPolicyTests {
 
-        // act
-        testee.registerAllowedPolicy(request);
+        @Test
+        void registerAllowedPolicy() {
+            // arrange
+            final OffsetDateTime now = OffsetDateTime.now();
+            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(
+                    REGISTER_POLICY_EXAMPLE_PAYLOAD.formatted("e917f5f-8dac-49ac-8d10-5b4d254d2b48"));
 
-        // assert
-        verify(service).registerPolicy(request);
+            // act
+            final CreatePolicyRequest request = new CreatePolicyRequest(now.plusMinutes(1), null,
+                    jsonObject.get("policy").asJsonObject());
+            when(policyStoreServiceMock.registerPolicy(request)).thenReturn(Policy.builder().policyId("dummy").build());
+            final CreatePoliciesResponse createPoliciesResponse = testee.registerAllowedPolicy(request);
+
+            // assert
+            verify(policyStoreServiceMock).registerPolicy(request);
+            assertThat(createPoliciesResponse.policyId()).isEqualTo("dummy");
+        }
     }
 
-    @Test
-    void getPolicies() {
-        // arrange
-        final List<Policy> policies = List.of(new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
-        when(service.getStoredPolicies()).thenReturn(policies);
+    @Nested
+    class GetPoliciesPagedTests {
 
-        // act
-        final var returnedPolicies = testee.getPolicies();
+        @Test
+        void pageSizeTooLarge() {
+            assertThatThrownBy(() -> testee.getPoliciesPaged(PageRequest.of(0, PolicyStoreController.MAX_PAGE_SIZE + 1),
+                    Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
+                                             .hasMessageContaining("Page size too large");
+        }
 
-        // assert
-        assertThat(returnedPolicies).isEqualTo(policies);
+        @Test
+        void pageSizeTooLow() {
+            assertThatThrownBy(
+                    () -> testee.getPoliciesPaged(PageRequest.of(0, 0), Collections.emptyList())).isInstanceOf(
+                    IllegalArgumentException.class).hasMessageContaining("Page size must not be less than one");
+        }
     }
 
-    @Test
-    void deleteAllowedPolicy() {
-        // act
-        testee.deleteAllowedPolicy("testId");
+    @Nested
+    class GetPoliciesTests {
 
-        // assert
-        verify(service).deletePolicy("testId");
+        @Test
+        void getPolicies() {
+            // arrange
+            final String policyId = randomPolicyId();
+            final List<Policy> policies = List.of(Policy.builder()
+                                                        .policyId(policyId)
+                                                        .createdOn(OffsetDateTime.now())
+                                                        .validUntil(OffsetDateTime.now())
+                                                        .permissions(createPermissions())
+                                                        .build());
+            final String bpn = "bpn1";
+            when(policyStoreServiceMock.getPolicies(List.of(bpn))).thenReturn(Map.of(bpn, policies));
+
+            // act
+            final Map<String, List<PolicyResponse>> returnedPolicies = testee.getPolicies(List.of(bpn));
+
+            // assert
+            assertThat(returnedPolicies.get(bpn)).isEqualTo(
+                    policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
+        }
+
+        @Test
+        void getAllPolicies() {
+            // arrange
+            final String policyId = randomPolicyId();
+            final List<Policy> policies = List.of(Policy.builder()
+                                                        .policyId(policyId)
+                                                        .createdOn(OffsetDateTime.now())
+                                                        .validUntil(OffsetDateTime.now())
+                                                        .permissions(createPermissions())
+                                                        .build());
+            final String bpn = "bpn1";
+            when(policyStoreServiceMock.getPolicies(null)).thenReturn(Map.of(bpn, policies));
+
+            // act
+            final Map<String, List<PolicyResponse>> returnedPolicies = testee.getPolicies(null);
+
+            // assert
+            assertThat(returnedPolicies).containsEntry(bpn,
+                    policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
+        }
     }
 
-    @Test
-    void updateAllowedPolicy() {
-        // arrange
-        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now());
+    @Nested
+    class DeletePolicyTests {
 
-        // act
-        final String policyId = "policyId";
-        testee.updateAllowedPolicy(policyId, request);
+        @Test
+        void deleteAllowedPolicy() {
+            // act
+            testee.deleteAllowedPolicy("testId");
 
-        // assert
-        verify(service).updatePolicy(policyId, request);
+            // assert
+            verify(policyStoreServiceMock).deletePolicy("testId");
+        }
+    }
+
+    @Nested
+    class UpdatePolicyTests {
+
+        @Test
+        void updateAllowedPolicy() {
+            // arrange
+            final String policyId = "policyId";
+            final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now(), List.of("bpn"),
+                    List.of(policyId));
+
+            // act
+            testee.updateAllowedPolicy(request);
+
+            // assert
+            verify(policyStoreServiceMock).updatePolicies(request);
+        }
+
+        /*
+         There are no null and empty tests for the list of business partner numbers and the list of policy IDs
+         because this is done via jakarta validation.
+        */
+
     }
 
     private List<Permission> createPermissions() {
-        return List.of(
-                new Permission(PolicyType.USE, List.of(createConstraints())),
-                new Permission(PolicyType.ACCESS, List.of(createConstraints()))
-        );
+        return List.of(new Permission(PolicyType.USE, createConstraints()),
+                new Permission(PolicyType.ACCESS, createConstraints()));
     }
 
     private Constraints createConstraints() {
-        return new Constraints(
-                Collections.emptyList(),
-                List.of(
-                        new Constraint("Membership", OperatorType.EQ, List.of("active")),
-                        new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active")),
-                        new Constraint("PURPOSE", OperatorType.EQ, List.of("ID 3.1 Trace")))
-        );
+        return new Constraints(Collections.emptyList(),
+                List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE, PURPOSE_ID_3_1_TRACE));
     }
+
+    private static String randomPolicyId() {
+        return UUID.randomUUID().toString();
+    }
+
 }

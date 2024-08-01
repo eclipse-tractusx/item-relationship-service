@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -97,6 +97,18 @@ class SemanticsHubClientImplTest {
     }
 
     @Test
+    void shouldReadJsonSchemaFromFilesystemWithUrlSafeFileName() throws SchemaNotFoundException {
+        final String path = Objects.requireNonNull(
+                getClass().getResource("/json-schema/dXJuOnNhbW06aW8uY2F0ZW5heC5zaW5nbGVfbGV2ZWxfYm9tX2FzX3BsYW5uZWQ6My4wLjAjU2luZ2xlTGV2ZWxCb21Bc1BsYW5uZWQ")).getPath();
+
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("", new File(path).getParent()));
+
+        final String resultJsonSchema = testee.getModelJsonSchema("urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned");
+
+        assertThat(resultJsonSchema).isNotBlank().contains("http://json-schema.org/draft-04/schema");
+    }
+
+    @Test
     void shouldReadJsonSchemaFromSemanticHubThenFilesystem() throws SchemaNotFoundException {
         final String path = Objects.requireNonNull(
                 getClass().getResource("/json-schema/assemblyPartRelationship-v1.1.0.json")).getPath();
@@ -163,14 +175,18 @@ class SemanticsHubClientImplTest {
         final var testee = new SemanticsHubClientImpl(restTemplate, config("", new File(path).getPath()));
         final AspectModel serialPartTypization = new AspectModel(
                 "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization", "1.0.0",
-                "SerialPartTypization", SemanticsHubClientImpl.LOCAL_MODEL_TYPE,
+                "SerialPartTypization", SemanticsHubClientImpl.LOCAL_MODEL_TYPE_BAMM,
+                SemanticsHubClientImpl.LOCAL_MODEL_STATUS);
+        final AspectModel singleLevelBomAsBuilt = new AspectModel(
+                "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned", "3.0.0",
+                "SingleLevelBomAsPlanned", SemanticsHubClientImpl.LOCAL_MODEL_TYPE_SAMM,
                 SemanticsHubClientImpl.LOCAL_MODEL_STATUS);
 
         // Act
         final List<AspectModel> allAspectModels = testee.getAllAspectModels();
 
         // Assert
-        assertThat(allAspectModels).hasSize(1).contains(serialPartTypization);
+        assertThat(allAspectModels).hasSize(2).contains(serialPartTypization).contains(singleLevelBomAsBuilt);
     }
 
     @Test

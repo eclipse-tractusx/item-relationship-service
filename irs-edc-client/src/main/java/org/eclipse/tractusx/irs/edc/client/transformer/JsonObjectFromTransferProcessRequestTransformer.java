@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -56,7 +56,7 @@ public class JsonObjectFromTransferProcessRequestTransformer
     public @Nullable JsonObject transform(@NotNull final TransferProcessRequest dto, @NotNull final TransformerContext context) {
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
         builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_ASSET_ID, dto.getAssetId())
-               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ADDRESS, dto.getConnectorAddress())
+               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_COUNTER_PARTY_ADDRESS, dto.getCounterPartyAddress())
                .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONTRACT_ID, dto.getContractId())
                .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_DATA_DESTINATION,
                        context.transform(dto.getDataDestination(), JsonObject.class))
@@ -66,6 +66,9 @@ public class JsonObjectFromTransferProcessRequestTransformer
         Optional.ofNullable(dto.getConnectorId())
                 .ifPresent(s -> builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ID,
                         dto.getConnectorId()));
+        Optional.ofNullable(dto.getTransferType())
+                .ifPresent(s -> builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_TRANSFER_TYPE,
+                        dto.getTransferType()));
         Optional.ofNullable(dto.getCallbackAddresses())
                 .ifPresent(s -> builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CALLBACK_ADDRESSES,
                         asArray(dto.getCallbackAddresses(), context)));

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,7 +29,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -78,14 +80,17 @@ public class MinioBlobPersistence implements BlobPersistence {
         this(bucketName, createClient(endpoint, accessKey, secretKey), daysToLive);
     }
 
-    public MinioBlobPersistence(final String bucketName, final MinioClient client, final int daysToLive) throws BlobPersistenceException {
+    public MinioBlobPersistence(final String bucketName, final MinioClient client, final int daysToLive)
+            throws BlobPersistenceException {
         this.bucketName = bucketName;
         this.minioClient = client;
         this.daysToLive = daysToLive;
 
         try {
             createBucketIfNotExists(bucketName);
-        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException
+                 | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException
+                 | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to create min.io client", e);
         }
     }
@@ -140,7 +145,9 @@ public class MinioBlobPersistence implements BlobPersistence {
                                                .stream(byteArrayInputStream, byteArrayInputStream.available(), -1)
                                                .build());
             log.debug("Saving to bucket name {} with object name {}", bucketName, targetBlobName);
-        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException
+                 | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException
+                 | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to store blob", e);
         }
     }
@@ -155,7 +162,8 @@ public class MinioBlobPersistence implements BlobPersistence {
                 return Optional.empty();
             }
             throw createLoadFailedException(e);
-        } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+        } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException
+                 | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw createLoadFailedException(e);
         }
         try (response) {
@@ -163,7 +171,31 @@ public class MinioBlobPersistence implements BlobPersistence {
         } catch (IOException e) {
             throw createLoadFailedException(e);
         }
+    }
 
+    /**
+     * @return Map of bpn to matching blobs
+     */
+    @Override
+    public Map<String, byte[]> getAllBlobs() throws BlobPersistenceException {
+        final Iterable<Result<Item>> items = getItems();
+        final Map<String, byte[]> result = new ConcurrentHashMap<>();
+
+        for (final Result<Item> item : items) {
+            try {
+                final String objectName = item.get().objectName();
+                try (GetObjectResponse response = minioClient.getObject(
+                        GetObjectArgs.builder().bucket(bucketName).object(objectName).build())) {
+                    result.put(objectName, response.readAllBytes());
+                }
+            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException
+                     | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException
+                     | XmlParserException e) {
+                throw createLoadFailedException(e);
+            }
+        }
+
+        return result;
     }
 
     private BlobPersistenceException createLoadFailedException(final Throwable cause) {
@@ -194,7 +226,8 @@ public class MinioBlobPersistence implements BlobPersistence {
             } else {
                 throw new BlobPersistenceException("Encountered error while trying to delete blob", e);
             }
-        } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+        } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException
+                 | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to delete blob", e);
         }
     }
@@ -203,7 +236,9 @@ public class MinioBlobPersistence implements BlobPersistence {
         processIds.forEach(processId -> {
             try {
                 minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(processId).build());
-            } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException | ErrorResponseException e) {
+            } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException
+                     | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException
+                     | ErrorResponseException e) {
                 log.info("No object data with process Id {} found", processId);
             }
         });
@@ -221,10 +256,16 @@ public class MinioBlobPersistence implements BlobPersistence {
     private Stream<Item> getItem(final Result<Item> result) {
         try {
             return Stream.of(result.get());
-        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException
+                 | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException
+                 | InternalException e) {
             log.error("Encountered error while trying to retrieve result content", e);
             return Stream.empty();
         }
+    }
+
+    private Iterable<Result<Item>> getItems() {
+        return minioClient.listObjects(ListObjectsArgs.builder().bucket(bucketName).build());
     }
 
 }

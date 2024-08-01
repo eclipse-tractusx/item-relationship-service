@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.ess.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.ess.service.EdcRegistration.ASSET_ID_REQUEST_RECURSIVE;
+import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -42,9 +43,11 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -87,27 +90,6 @@ class InvestigationJobProcessingEventListenerTest {
     @Captor
     ArgumentCaptor<EdcNotification<NotificationContent>> edcNotificationCaptor;
 
-    private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
-        return AssetAdministrationShellDescriptor.builder()
-                                                 .globalAssetId(catenaXId)
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .name("manufacturerId")
-                                                                                                 .value(bpn)
-                                                                                                 .build()))
-                                                 .build();
-    }
-
-    private static Relationship createRelationship(final String lifecycle, final String bpn, final String parentId,
-            final String childId) {
-        return Relationship.builder()
-                           .aspectType(lifecycle)
-                           .bpn(bpn)
-                           .catenaXId(GlobalAssetIdentification.of(parentId))
-                           .linkedItem(
-                                   LinkedItem.builder().childCatenaXId(GlobalAssetIdentification.of(childId)).build())
-                           .build();
-    }
-
     @BeforeEach
     void mockInit() {
         createMockForJobIdAndShell(jobId, "bpn", List.of(createRelationship("SingleLevelBomAsPlanned", "BPN123",
@@ -119,7 +101,7 @@ class InvestigationJobProcessingEventListenerTest {
         // given
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
                 JobState.COMPLETED.name(), "", Optional.empty());
@@ -129,7 +111,7 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
-                any(EdcNotification.class));
+                any(EdcNotification.class), any());
     }
 
     @Test
@@ -139,7 +121,7 @@ class InvestigationJobProcessingEventListenerTest {
                 List.of(createRelationship("asPlanned", null, "testParent", "testChild")));
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
                 JobState.COMPLETED.name(), "", Optional.empty());
@@ -148,7 +130,8 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.UNKNOWN));
+        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.UNKNOWN), eq("bpn"),
+                eq(0));
     }
 
     @Test
@@ -159,7 +142,7 @@ class InvestigationJobProcessingEventListenerTest {
                         createRelationship("asPlanned", null, "parentId2", "childId2")));
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
                 JobState.COMPLETED.name(), "", Optional.empty());
@@ -169,7 +152,7 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
-                any(EdcNotification.class));
+                any(EdcNotification.class), any());
     }
 
     @Test
@@ -178,7 +161,7 @@ class InvestigationJobProcessingEventListenerTest {
         createMockForJobIdAndShell(jobId, "bpn",
                 List.of(createRelationship("asPlanned", "BPN1", "parentId1", "childId1")));
         final String edcBaseUrl = "http://edc-server-url.com";
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
@@ -189,7 +172,7 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq("notify-request-asset-recursive"),
-                edcNotificationCaptor.capture());
+                edcNotificationCaptor.capture(), any());
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
         final InvestigationNotificationContent content = (InvestigationNotificationContent) edcNotificationCaptor.getValue()
@@ -209,7 +192,7 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
     }
 
     @Test
@@ -224,8 +207,9 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
-        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
+        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO), eq("bpn"),
+                eq(0));
     }
 
     @Test
@@ -242,7 +226,7 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
     }
 
     @Test
@@ -254,7 +238,7 @@ class InvestigationJobProcessingEventListenerTest {
                         "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e")));
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(
                 recursiveJobId.toString(), JobState.COMPLETED.name(), "", Optional.empty());
@@ -264,7 +248,7 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq(ASSET_ID_REQUEST_RECURSIVE),
-                edcNotificationCaptor.capture());
+                edcNotificationCaptor.capture(), any());
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
     }
@@ -275,7 +259,7 @@ class InvestigationJobProcessingEventListenerTest {
         createMockForJobIdAndShell(jobId, "bpn",
                 List.of(createRelationship("asPlanned", "BPN1", "parentId1", "childId1")), List.of("BPN1", "BPN2"));
         final String edcBaseUrl = "http://edc-server-url.com";
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
@@ -286,14 +270,14 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq("notify-request-asset-recursive"),
-                edcNotificationCaptor.capture());
+                edcNotificationCaptor.capture(), any());
         final InvestigationNotificationContent content = (InvestigationNotificationContent) edcNotificationCaptor.getValue()
                                                                                                                  .getContent();
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
         assertThat(content.getIncidentBPNSs()).containsAll(List.of("BPN1", "BPN2"));
         assertThat(content.getConcernedCatenaXIds()).containsAll(List.of("childId1"));
-        verify(this.edcSubmodelFacade, times(1)).sendNotification(any(), any(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(any(), any(), any(EdcNotification.class), any());
     }
 
     @Test
@@ -308,7 +292,7 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(finishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
         final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(jobId);
         assertThat(job).isPresent();
         assertThat(job.get().getJobSnapshot().getTombstones()).hasSize(2);
@@ -326,11 +310,11 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(finishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
         final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(jobId);
         assertThat(job).isPresent();
         assertThat(job.get().getJobSnapshot().getTombstones()).hasSize(1);
-        assertThat(job.get().getJobSnapshot().getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo("'PartSiteInformationAsPlanned' exists, but catenaXSiteId could not be found.");
+        assertThat(job.get().getJobSnapshot().getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo("'PartSiteInformationAsPlanned' exists, but catenaXsiteId could not be found.");
     }
 
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
@@ -342,7 +326,7 @@ class InvestigationJobProcessingEventListenerTest {
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
             final List<Relationship> relationships, final List<String> incindentBPNSs, final List<Submodel> submodels) {
         createMockJob(mockedJobId, relationships, incindentBPNSs, submodels,
-                List.of(createShell(UUID.randomUUID().toString(), mockedShell)));
+                List.of(shell("", createShell(UUID.randomUUID().toString(), mockedShell))));
     }
 
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
@@ -361,16 +345,17 @@ class InvestigationJobProcessingEventListenerTest {
     private void createMockForJobIdAndShells(final UUID mockedJobId, final List<String> bpns,
             final List<Submodel> submodels) {
         createMockJob(mockedJobId, List.of(), List.of("BPNS000000000DDD"), submodels,
-                bpns.stream().map(bpn -> createShell(UUID.randomUUID().toString(), bpn)).toList());
+                bpns.stream().map(bpn -> shell("", createShell(UUID.randomUUID().toString(), bpn))).toList());
     }
 
     private void createMockJob(final UUID mockedJobId, final List<Relationship> relationships,
             final List<String> incindentBPNSs, final List<Submodel> submodels,
-            final List<AssetAdministrationShellDescriptor> shells) {
+            final List<Shell> shells) {
         final Jobs jobs = Jobs.builder()
                               .job(Job.builder()
                                       .id(mockedJobId)
                                       .globalAssetId(GlobalAssetIdentification.of("dummyGlobalAssetId"))
+                                      .parameter(JobParameter.builder().bpn("bpn").build())
                                       .build())
                               .relationships(relationships)
                               .shells(shells)
@@ -393,13 +378,13 @@ class InvestigationJobProcessingEventListenerTest {
                       "functionValidUntil": "2025-02-08T04:30:48.000Z",
                       "function": "production",
                       "functionValidFrom": "2019-08-21T02:10:36.000Z",
-                      "catenaXSiteId": "BPNS000004711DMY"
+                      "catenaXsiteId": "BPNS000004711DMY"
                     }
                   ]
                 }
                 """;
         return Submodel.from("test2",
-                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
+                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned", "cid",
                 StringMapper.mapFromString(partSiteInformationAsPlannedRaw, Map.class));
     }
 
@@ -417,7 +402,7 @@ class InvestigationJobProcessingEventListenerTest {
                 }
                 """;
         return Submodel.from("test2",
-                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
+                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned", "cid",
                 StringMapper.mapFromString(partSiteInformationAsPlannedRaw, Map.class));
     }
 
@@ -436,8 +421,29 @@ class InvestigationJobProcessingEventListenerTest {
                   }
                 }
                 """;
-        return Submodel.from("test1", "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+        return Submodel.from("test1", "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned", "cid",
                 StringMapper.mapFromString(partAsPlannedRaw, Map.class));
+    }
+
+    private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
+        return AssetAdministrationShellDescriptor.builder()
+                                                 .globalAssetId(catenaXId)
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                                                                 .name("manufacturerId")
+                                                                                                 .value(bpn)
+                                                                                                 .build()))
+                                                 .build();
+    }
+
+    private static Relationship createRelationship(final String lifecycle, final String bpn, final String parentId,
+            final String childId) {
+        return Relationship.builder()
+                           .aspectType(lifecycle)
+                           .bpn(bpn)
+                           .catenaXId(GlobalAssetIdentification.of(parentId))
+                           .linkedItem(
+                                   LinkedItem.builder().childCatenaXId(GlobalAssetIdentification.of(childId)).build())
+                           .build();
     }
 
 }

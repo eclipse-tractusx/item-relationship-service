@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,19 +40,19 @@ public class NegotiationResponse {
 
     @JsonProperty("@id")
     private String responseId;
-    @JsonProperty("edc:contractAgreementId")
+    @JsonProperty("contractAgreementId")
     private String contractAgreementId;
-    @JsonProperty("edc:counterPartyAddress")
+    @JsonProperty("counterPartyAddress")
     private String counterPartyAddress;
-    @JsonProperty("edc:errorDetail")
+    @JsonProperty("errorDetail")
     private String errorDetail;
-    @JsonProperty("edc:protocol")
+    @JsonProperty("protocol")
     private String protocol;
-    @JsonProperty("edc:state")
+    @JsonProperty("state")
     private String state;
-    @JsonProperty("edc:type")
+    @JsonProperty("type")
     private String type;
-    @JsonProperty("edc:callbackAddresses")
+    @JsonProperty("callbackAddresses")
     private List<String> callbackAddresses;
 
 }

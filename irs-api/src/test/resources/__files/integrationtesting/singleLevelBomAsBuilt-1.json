@@ -1,0 +1,16 @@
+{
+  "catenaXId": "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc",
+  "childItems": [
+    {
+      "catenaXId": "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5",
+      "quantity": {
+        "value": 0.2014,
+        "unit": "unit:kilogram"
+      },
+      "hasAlternatives": true,
+      "businessPartner": "BPNL00000000TEST",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+    }
+  ]
+}

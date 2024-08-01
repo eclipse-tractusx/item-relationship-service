@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
@@ -74,6 +75,7 @@ class InvestigationJobProcessingEventListener {
     private final String localEdcEndpoint;
     private final List<String> mockRecursiveEdcAssets;
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
+    private static final int FIRST_HOP = 0;
 
     /* package */ InvestigationJobProcessingEventListener(final IrsItemGraphQueryService irsItemGraphQueryService,
             final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade edcSubmodelFacade,
@@ -116,9 +118,10 @@ class InvestigationJobProcessingEventListener {
                         investigationResult.supplyChainImpacted())) {
                     bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate.complete());
                     recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
-                            investigationResult.supplyChainImpacted());
+                            investigationResult.supplyChainImpacted(), job.getJobParameter().getBpn(),
+                            FIRST_HOP);
                 } else {
-                    triggerInvestigationOnNextLevel(investigationResult.completedJob(), investigationJobUpdate);
+                    triggerInvestigationOnNextLevel(investigationResult.completedJob(), investigationJobUpdate, job.getJobParameter().getBpn());
                     bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
                 }
             });
@@ -149,7 +152,7 @@ class InvestigationJobProcessingEventListener {
     }
 
     private void triggerInvestigationOnNextLevel(final Jobs completedJob,
-            final BpnInvestigationJob investigationJobUpdate) {
+            final BpnInvestigationJob investigationJobUpdate, final String jobBpn) {
         log.debug("Triggering investigation on the next level.");
         if (anyBpnIsMissingFromRelationship(completedJob)) {
             log.error("One or more Relationship items did not contain a BPN.");
@@ -172,12 +175,12 @@ class InvestigationJobProcessingEventListener {
                     + "Updating SupplyChainImpacted to {}", SupplyChainImpacted.UNKNOWN);
             investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
             recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
-                    SupplyChainImpacted.UNKNOWN);
+                    SupplyChainImpacted.UNKNOWN, jobBpn, FIRST_HOP);
         } else if (resolvedBPNs.isEmpty()) {
             log.info("No BPNs could not be found. Updating SupplyChainImpacted to {}", SupplyChainImpacted.UNKNOWN);
             investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
             recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
-                    SupplyChainImpacted.UNKNOWN);
+                    SupplyChainImpacted.UNKNOWN, jobBpn, FIRST_HOP);
         } else {
             log.debug("Sending notification for BPNs '{}'", bpns);
             sendNotifications(completedJob, investigationJobUpdate, bpns);
@@ -197,7 +200,7 @@ class InvestigationJobProcessingEventListener {
                 try {
                     final String notificationId = sendEdcNotification(bpn, url,
                             investigationJobUpdate.getIncidentBpns(), globalAssetIds);
-                    investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
+                    investigationJobUpdate.withUnansweredNotifications(Collections.singletonList(new Notification(notificationId, bpn)));
                 } catch (final EdcClientException e) {
                     log.error("Exception during sending EDC notification.", e);
                     investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
@@ -218,10 +221,10 @@ class InvestigationJobProcessingEventListener {
         final EdcNotificationResponse response;
         if (isRecursiveMockAsset || isNotMockAsset) {
             log.debug("Sending recursive notification");
-            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset-recursive", notification);
+            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset-recursive", notification, bpn);
         } else {
             log.debug("Sending mock recursive notification");
-            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset", notification);
+            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset", notification, bpn);
         }
         if (response.deliveredSuccessfully()) {
             log.info("Successfully sent notification with id '{}' to EDC endpoint '{}'.", notificationId, url);

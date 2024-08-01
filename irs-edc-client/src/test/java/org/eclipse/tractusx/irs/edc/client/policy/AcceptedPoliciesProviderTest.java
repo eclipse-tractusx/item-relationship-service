@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,7 +37,7 @@ class AcceptedPoliciesProviderTest {
 
     @Test
     void getAcceptedPolicies() {
-        final var acceptedPolicies = testee.getAcceptedPolicies();
+        final var acceptedPolicies = testee.getAcceptedPolicies("testBpn");
 
         assertThat(acceptedPolicies).isEmpty();
     }
@@ -45,23 +45,25 @@ class AcceptedPoliciesProviderTest {
     @Test
     void shouldReturnStoredPolicies() {
         testee.addAcceptedPolicies(List.of(policy()));
-        final var acceptedPolicies = testee.getAcceptedPolicies();
+        final var acceptedPolicies = testee.getAcceptedPolicies("testBpn");
 
         assertThat(acceptedPolicies).hasSize(1);
     }
+
     @Test
     void shouldRemoveStoredPolicies() {
         testee.addAcceptedPolicies(List.of(policy()));
-        final var acceptedPolicies = testee.getAcceptedPolicies();
+        final var acceptedPolicies = testee.getAcceptedPolicies("testBpn");
 
         assertThat(acceptedPolicies).hasSize(1);
 
         testee.removeAcceptedPolicies(acceptedPolicies);
 
-        assertThat(testee.getAcceptedPolicies()).isEmpty();
+        assertThat(testee.getAcceptedPolicies("testBpn")).isEmpty();
     }
+
     @NotNull
     private static AcceptedPolicy policy() {
-        return new AcceptedPolicy(new Policy(), OffsetDateTime.now());
+        return new AcceptedPolicy(Policy.builder().build(), OffsetDateTime.now());
     }
 }

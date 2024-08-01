@@ -5,12 +5,13 @@ on:
     inputs:
       version-type:
         type: choice
-        description: Type of version increment
+        description: Type of version increment. 'none' will release the current -SNAPSHOT version without increment.
         required: true
         options:
           - 'major'
           - 'minor'
           - 'patch'
+          - 'none'
       is-release-version:
         type: boolean
         required: true
@@ -26,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -51,6 +52,12 @@ jobs:
             patch=0
           elif [ "$TYPE" == "patch" ]; then
             patch=$((patch + 1))
+          elif [ "$TYPE" == "none" ]; then
+            if [ $IS_RELEASE_VERSION = 'false' ]; then
+              echo "Invalid increment type. Type 'none' is only supported in combination with 'is-release-version=true'."
+              exit 1
+            fi
+            echo "Skipping version increment, only remove -SNAPSHOT"
           else
             echo "Invalid increment type. Use 'major', 'minor', or 'patch'."
             exit 1
@@ -58,6 +65,10 @@ jobs:
           new_version="${major}.${minor}.${patch}-SNAPSHOT"
           if [ $IS_RELEASE_VERSION = 'true' ]; then
             new_version="${major}.${minor}.${patch}"
+          fi
+          if [ $new_version == $CURRENT_VERSION ]; then
+            echo "New version $new_version is equal to current version $CURRENT_VERSION."
+            exit 1
           fi
           echo NEXT_VERSION="$new_version" >> $GITHUB_ENV
 
@@ -67,8 +78,12 @@ jobs:
         run: |-
           sed -i -e 's#<irs-registry-client\.version>.*</irs-registry-client\.version>#<irs-registry-client\.version>'$VERSION'</irs-registry-client\.version>#g' pom.xml
 
+      - name: Update DEPENDENCIES
+        run: |
+          mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES -P dash
+
       - name: Create PR for irs-registry-client version update
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "chore(dependencies): Update irs-registry-client to ${{ env.NEXT_VERSION }}"
           branch: chore/update-irs-registry-client-${{ env.NEXT_VERSION }}

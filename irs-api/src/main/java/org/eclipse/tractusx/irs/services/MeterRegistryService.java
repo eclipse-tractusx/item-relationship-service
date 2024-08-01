@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -169,7 +169,7 @@ public class MeterRegistryService {
 
     public void setNumberOfJobsInJobStore(final Long size) {
         this.numbersOfJobsInJobStore.set(size);
-        log.debug("Current size of Job in JobStore is {}", size);
+        log.trace("Current size of Job in JobStore is {}", size);
     }
 
     public void setMeasuredMethodExecutionTime(final String tag, final long duration) {
@@ -186,7 +186,7 @@ public class MeterRegistryService {
     }
 
     public void setStateSnapShot(final JobState state, final long value) {
-        log.debug("Update State {} snapshot to {} ", state, value);
+        log.trace("Update State {} snapshot to {} ", state, value);
         switch (state) {
             case COMPLETED:
                 snapshotCompletedValue.set(value);
@@ -201,7 +201,7 @@ public class MeterRegistryService {
                 snapshotFailedValue.set(value);
                 break;
             default:
-                log.debug("Unused State {} value {} ", state, value);
+                log.trace("Unused State {} value {} ", state, value);
                 break;
         }
     }
