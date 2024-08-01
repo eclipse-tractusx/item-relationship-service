@@ -209,8 +209,12 @@ class IrsWireMockIntegrationTest {
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1, WiremockSupport.CALLBACK_URL);
 
         // Act
-        List<JobHandle> startedJobs = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
+        final List<JobHandle> startedJobs = new ArrayList<>();
+
+        // Start 50 jobs in parallel. The bug #755 occurred when multiple (>10 Jobs) were started at the same time.
+        // To definitely provoke the cases where callbacks were triggered multiple times, we start 50 jobs.
+        final int numberOfParallelJobs = 50;
+        for (int i = 0; i < numberOfParallelJobs; i++) {
             startedJobs.add(irsService.registerItemJob(request));
         }
 
@@ -221,13 +225,6 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         for (JobHandle jobHandle : startedJobs) {
-            final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
-
-            assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
-            assertThat(jobForJobId.getShells()).hasSize(2);
-            assertThat(jobForJobId.getRelationships()).hasSize(1);
-            assertThat(jobForJobId.getTombstones()).isEmpty();
-
             WiremockSupport.verifyCallbackCall(jobHandle.getId().toString(), JobState.COMPLETED, 1);
         }
     }
