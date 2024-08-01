@@ -76,7 +76,7 @@ jobs:
           sed "s/access_tok.*:s = '.*'//g" tavern-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > result.xml
 
       - name: Publish Tavern Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        uses: EnricoMi/publish-unit-test-result-action@v2.17.0
         if: always()
         with:
           files: |
@@ -107,7 +107,7 @@ jobs:
           sed "s/access_tok.*:s = '.*'//g" tavern-ess-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > ess-result.xml
 
       - name: Publish Tavern Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        uses: EnricoMi/publish-unit-test-result-action@v2.17.0
         if: always()
         with:
           files: |
