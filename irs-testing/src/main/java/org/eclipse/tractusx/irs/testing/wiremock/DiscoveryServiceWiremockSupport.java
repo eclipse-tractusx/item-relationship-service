@@ -49,7 +49,7 @@ public final class DiscoveryServiceWiremockSupport {
     }
 
     public static MappingBuilder postEdcDiscovery200() {
-        return postEdcDiscovery200(List.of(CONTROLPLANE_PUBLIC_URL));
+        return postEdcDiscovery200(CONTROLPLANE_PUBLIC_URL);
     }
 
     public static MappingBuilder postEdcDiscovery200(final String... edcUrls) {
