@@ -26,6 +26,9 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.NO_ERROR_REST_TEMPLATE;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -60,87 +63,120 @@ class CallbackResponderEventListener {
     public static final String INVALID_CALLBACK_URL = "Invalid callback url '{}'.";
     private final UrlValidator urlValidator;
     private final RestTemplate restTemplate;
+    private final Map<String, Long> completedCallbacks;
 
     /* package */ CallbackResponderEventListener(
             @Qualifier(NO_ERROR_REST_TEMPLATE) final RestTemplate noErrorRestTemplate) {
         this.urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
         this.restTemplate = noErrorRestTemplate;
+        this.completedCallbacks = new HashMap<>();
     }
 
     @Async
     @EventListener
     public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
-        if (thereIsCallbackUrlRegistered(jobProcessingFinishedEvent.callbackUrl())) {
-            log.info("Processing of job has finished - attempting to notify job requestor");
-
-            final URI callbackUri = buildCallbackUri(jobProcessingFinishedEvent.callbackUrl(),
-                    jobProcessingFinishedEvent.jobId(), JobState.valueOf(jobProcessingFinishedEvent.jobState()));
-            if (urlValidator.isValid(callbackUri.toString())) {
-                log.info("Got callback url {} for jobId {} with state {}", callbackUri,
-                        jobProcessingFinishedEvent.jobId(), jobProcessingFinishedEvent.jobState());
-
-                try {
-                    final ResponseEntity<Void> callbackResponse = restTemplate.getForEntity(callbackUri, Void.class);
-                    log.info("Callback url pinged, received http status: {}, jobId {}", callbackResponse.getStatusCode(), jobProcessingFinishedEvent.jobId());
-                } catch (final ResourceAccessException resourceAccessException) {
-                    log.warn("Callback url is not reachable - connection timed out, jobId {}", jobProcessingFinishedEvent.jobId());
-                }
-            } else {
-                log.warn(INVALID_CALLBACK_URL, callbackUri);
-            }
+        if (StringUtils.isBlank(jobProcessingFinishedEvent.callbackUrl())) {
+            return;
         }
+        log.info("Processing of job has finished - attempting to notify job requestor");
+
+        final URI callbackUri = buildCallbackUri(jobProcessingFinishedEvent.callbackUrl(),
+                jobProcessingFinishedEvent.jobId(), JobState.valueOf(jobProcessingFinishedEvent.jobState()));
+
+        if (!urlValidator.isValid(callbackUri.toString())) {
+            log.warn(INVALID_CALLBACK_URL, callbackUri);
+            return;
+        }
+
+        log.info("Got callback url '{}' for jobId '{}' with state '{}'", callbackUri, jobProcessingFinishedEvent.jobId(),
+                jobProcessingFinishedEvent.jobState());
+        sendCallback(callbackUri, jobProcessingFinishedEvent.jobId());
     }
 
     @Async
     @EventListener
     public void handleBatchProcessingFinishedEvent(final BatchProcessingFinishedEvent batchProcessingFinishedEvent) {
-        if (thereIsCallbackUrlRegistered(batchProcessingFinishedEvent.callbackUrl())) {
-            log.info("Processing of Batch has finished - attempting to notify requestor");
-
-            final URI callbackUri = buildCallbackUri(batchProcessingFinishedEvent.callbackUrl(), batchProcessingFinishedEvent.batchOrderId(),
-                    batchProcessingFinishedEvent.batchId(), batchProcessingFinishedEvent.batchOrderState(), batchProcessingFinishedEvent.batchState());
-            if (urlValidator.isValid(callbackUri.toString())) {
-                log.info("Got callback url {} for orderId {} with orderState {} and batchId {} with batchState {}", callbackUri,
-                        batchProcessingFinishedEvent.batchOrderId(), batchProcessingFinishedEvent.batchOrderState(), batchProcessingFinishedEvent.batchId(), batchProcessingFinishedEvent.batchState());
-
-                try {
-                    final ResponseEntity<Void> callbackResponse = restTemplate.getForEntity(callbackUri, Void.class);
-                    log.info("Callback url pinged, received http status: {}, orderId {} batchId {}", callbackResponse.getStatusCode(), batchProcessingFinishedEvent.batchOrderId(), batchProcessingFinishedEvent.batchId());
-                } catch (final ResourceAccessException resourceAccessException) {
-                    log.warn("Callback url is not reachable - connection timed out, orderId {} batchId {}", batchProcessingFinishedEvent.batchOrderId(), batchProcessingFinishedEvent.batchId());
-                }
-            } else {
-                log.warn(INVALID_CALLBACK_URL, callbackUri);
-            }
+        if (StringUtils.isBlank(batchProcessingFinishedEvent.callbackUrl())) {
+            return;
         }
+        log.info("Processing of Batch has finished - attempting to notify requestor");
+
+        final URI callbackUri = buildCallbackUri(batchProcessingFinishedEvent.callbackUrl(),
+                batchProcessingFinishedEvent.batchOrderId(), batchProcessingFinishedEvent.batchId(),
+                batchProcessingFinishedEvent.batchOrderState(), batchProcessingFinishedEvent.batchState());
+
+        if (!urlValidator.isValid(callbackUri.toString())) {
+            log.warn(INVALID_CALLBACK_URL, callbackUri);
+            return;
+        }
+
+        log.info("Got callback url '{}' for orderId '{}' with orderState '{}' and batchId '{}' with batchState '{}'", callbackUri,
+                batchProcessingFinishedEvent.batchOrderId(), batchProcessingFinishedEvent.batchOrderState(),
+                batchProcessingFinishedEvent.batchId(), batchProcessingFinishedEvent.batchState());
+        sendCallback(callbackUri, batchProcessingFinishedEvent.batchId().toString());
     }
 
     @Async
     @EventListener
-    public void handleBatchOrderProcessingFinishedEvent(final BatchOrderProcessingFinishedEvent batchOrderProcessingFinishedEvent) {
-        if (thereIsCallbackUrlRegistered(batchOrderProcessingFinishedEvent.callbackUrl())) {
-            log.info("Processing of Batch Order has finished - attempting to notify requestor");
+    public void handleBatchOrderProcessingFinishedEvent(
+            final BatchOrderProcessingFinishedEvent batchOrderProcessingFinishedEvent) {
+        if (StringUtils.isBlank(batchOrderProcessingFinishedEvent.callbackUrl())) {
+            return;
+        }
+        log.info("Processing of Batch Order has finished - attempting to notify requestor");
 
-            final URI callbackUri = buildCallbackUri(batchOrderProcessingFinishedEvent.callbackUrl(), batchOrderProcessingFinishedEvent.batchOrderId(),
-                    null, batchOrderProcessingFinishedEvent.batchOrderState(), null);
-            if (urlValidator.isValid(callbackUri.toString())) {
-                log.info("Got callback url {} for orderId {} with orderState {}", callbackUri,
-                        batchOrderProcessingFinishedEvent.batchOrderId(), batchOrderProcessingFinishedEvent.batchOrderState());
+        final URI callbackUri = buildCallbackUri(batchOrderProcessingFinishedEvent.callbackUrl(),
+                batchOrderProcessingFinishedEvent.batchOrderId(), null,
+                batchOrderProcessingFinishedEvent.batchOrderState(), null);
+        if (!urlValidator.isValid(callbackUri.toString())) {
+            log.warn(INVALID_CALLBACK_URL, callbackUri);
+            return;
+        }
 
-                try {
-                    final ResponseEntity<Void> callbackResponse = restTemplate.getForEntity(callbackUri, Void.class);
-                    log.info("Callback url pinged, received http status: {}, orderId {}", callbackResponse.getStatusCode(), batchOrderProcessingFinishedEvent.batchOrderId());
-                } catch (final ResourceAccessException resourceAccessException) {
-                    log.warn("Callback url is not reachable - connection timed out, jobId {}", batchOrderProcessingFinishedEvent.batchOrderId());
-                }
-            } else {
-                log.warn(INVALID_CALLBACK_URL, callbackUri);
+        log.info("Got callback url '{}' for orderId '{}' with orderState '{}'", callbackUri,
+                batchOrderProcessingFinishedEvent.batchOrderId(), batchOrderProcessingFinishedEvent.batchOrderState());
+        sendCallback(callbackUri, batchOrderProcessingFinishedEvent.batchOrderId().toString());
+
+    }
+
+    private void sendCallback(final URI callbackUri, final String key) {
+        if (callbackNotSentYet(key)) {
+            addJobToSentCallbacks(key);
+            cleanupValuesOlderThan(Duration.ofHours(1));
+            try {
+                final ResponseEntity<Void> callbackResponse = restTemplate.getForEntity(callbackUri, Void.class);
+                log.info("Callback url '{}' pinged, received http status: '{}'", callbackUri,
+                        callbackResponse.getStatusCode());
+            } catch (final ResourceAccessException resourceAccessException) {
+                log.warn("Callback url '{}' is not reachable - connection timed out.", callbackUri);
             }
+        } else {
+            log.info("Callback for url '{}' is already sent.", callbackUri);
         }
     }
 
-    private boolean thereIsCallbackUrlRegistered(final String callbackUrl) {
-        return StringUtils.isNotBlank(callbackUrl);
+    private void addJobToSentCallbacks(final String key) {
+        final LocalDateTime currentTime = LocalDateTime.now();
+        synchronized (completedCallbacks) {
+            completedCallbacks.put(key, currentTime.toEpochSecond(ZoneOffset.UTC));
+        }
+
+    }
+
+    private void cleanupValuesOlderThan(final Duration otherDuration) {
+        final LocalDateTime currentTime = LocalDateTime.now();
+        synchronized (completedCallbacks) {
+            completedCallbacks.entrySet()
+                              .removeIf(entry ->
+                                      Duration.between(LocalDateTime.ofEpochSecond(entry.getValue(), 0, ZoneOffset.UTC),
+                                              currentTime).compareTo(otherDuration) > 0);
+        }
+    }
+
+    private boolean callbackNotSentYet(final String key) {
+        synchronized (completedCallbacks) {
+            return !completedCallbacks.containsKey(key);
+        }
     }
 
     @SuppressWarnings("PMD.UseConcurrentHashMap")
@@ -155,7 +191,8 @@ class CallbackResponderEventListener {
     }
 
     @SuppressWarnings("PMD.UseConcurrentHashMap")
-    private URI buildCallbackUri(final String callbackUrl, final UUID orderId, final UUID batchId, final ProcessingState orderState, final ProcessingState batchState) {
+    private URI buildCallbackUri(final String callbackUrl, final UUID orderId, final UUID batchId,
+            final ProcessingState orderState, final ProcessingState batchState) {
         final Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("orderId", orderId);
         uriVariables.put("batchId", batchId);
