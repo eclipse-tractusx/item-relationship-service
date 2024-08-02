@@ -23,7 +23,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 
@@ -45,7 +48,15 @@ public final class DiscoveryServiceWiremockSupport {
     }
 
     public static MappingBuilder postEdcDiscovery200() {
-        return postEdcDiscovery200(TEST_BPN, List.of(CONTROLPLANE_PUBLIC_URL));
+        return postEdcDiscovery200(List.of(CONTROLPLANE_PUBLIC_URL));
+    }
+
+    public static MappingBuilder postEdcDiscovery200(final String... edcUrls) {
+        return postEdcDiscovery200(Arrays.asList(edcUrls));
+    }
+
+    public static MappingBuilder postEdcDiscovery200(final List<String> edcUrls) {
+        return postEdcDiscovery200(TEST_BPN, edcUrls);
     }
 
     public static MappingBuilder postEdcDiscovery200Empty() {
@@ -79,20 +90,35 @@ public final class DiscoveryServiceWiremockSupport {
                 responseWithStatus(STATUS_CODE_OK).withBody(discoveryFinderResponse(EDC_DISCOVERY_URL)));
     }
 
-    public static String discoveryFinderResponse(final String discoveryFinderUrl) {
+    public static MappingBuilder postDiscoveryFinder200(final String... edcUrls) {
+        return post(urlPathEqualTo(DISCOVERY_FINDER_PATH)).willReturn(
+                responseWithStatus(STATUS_CODE_OK).withBody(discoveryFinderResponse(edcUrls)));
+    }
+
+    public static String discoveryFinderResponse(final String... discoveryFinderUrls) {
+
+        final String endpoints = Arrays.stream(discoveryFinderUrls)
+                                       .map(endpointAddress -> {
+                                           final String resourceId = UUID.randomUUID().toString();
+                                           return """
+                                                        {
+                                                          "type": "bpn",
+                                                          "description": "Service to discover EDC to a particular BPN",
+                                                          "endpointAddress": "%s",
+                                                          "documentation": "http://.../swagger/index.html",
+                                                          "resourceId": "%s"
+                                                        }
+                                                   """.formatted(endpointAddress, resourceId);
+                                       })
+                                       .collect(Collectors.joining(","));
+
         return """
                 {
                    "endpoints": [
-                     {
-                       "type": "bpn",
-                       "description": "Service to discover EDC to a particular BPN",
-                       "endpointAddress": "%s",
-                       "documentation": "http://.../swagger/index.html",
-                       "resourceId": "316417cd-0fb5-4daf-8dfa-8f68125923f1"
-                     }
+                     %s
                    ]
                  }
-                """.formatted(discoveryFinderUrl);
+                """.formatted(endpoints);
     }
 
     public static MappingBuilder postDiscoveryFinder404() {
