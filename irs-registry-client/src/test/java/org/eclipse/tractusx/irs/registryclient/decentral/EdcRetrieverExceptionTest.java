@@ -21,23 +21,25 @@ package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class EdcRetrieverExceptionTest {
 
     @Test
-    void test() throws EdcRetrieverException {
+    void testBuildEdcRetrieverException() {
 
-        final EdcRetrieverException build = new EdcRetrieverException.Builder(
-                new IllegalArgumentException("my illegal arg")).withEdcUrl("my url").withBpn("my bpn").build();
+        final String causeMessage = "my illegal arg";
+        final IllegalArgumentException cause = new IllegalArgumentException(causeMessage);
+        final String expectedUrl = "my url";
+        final String expectedBpn = "my bpn";
 
-        assertThat(build.getBpn()).isEqualTo("my bpn");
-        assertThat(build.getEdcUrl()).isEqualTo("my url");
+        final EdcRetrieverException builtException = new EdcRetrieverException.Builder(cause).withEdcUrl(expectedUrl)
+                                                                                             .withBpn(expectedBpn)
+                                                                                             .build();
 
-        Assertions.assertThatThrownBy(() -> {
-            throw build;
-        }).hasMessageContaining("my illegal arg");
+        assertThat(builtException.getBpn()).isEqualTo(expectedBpn);
+        assertThat(builtException.getEdcUrl()).isEqualTo(expectedUrl);
+        assertThat(builtException).hasMessageContaining(causeMessage);
 
     }
 }
