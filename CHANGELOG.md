@@ -16,6 +16,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Change policy to include full namespace `https://w3id.org/catenax/policy/` instead of `cx-policy:` 
   in some remaining code places (in context of #794).
 - Fixed flaky test `InMemoryJobStoreTest.checkLastModifiedOnAfterCreation()` (PR#857).
+- Fixed occasion where completed Job callbacks are called multiple times. #755
 
 ### Changed
 

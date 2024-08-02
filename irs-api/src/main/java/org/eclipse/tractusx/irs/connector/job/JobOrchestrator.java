@@ -30,7 +30,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
@@ -250,19 +249,22 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private void publishJobProcessingFinishedEventIfFinished(final String jobId) {
-        jobStore.find(jobId).ifPresent(job -> {
-            if (job.getJob().getState().equals(JobState.COMPLETED) || job.getJob()
-                                                                         .getState()
-                                                                         .equals(JobState.ERROR)) {
+        jobStore.find(jobId).ifPresentOrElse(job -> {
+            if (JobState.COMPLETED.equals(job.getJob().getState()) || JobState.ERROR.equals(job.getJob().getState())) {
+                log.info("Publishing JobProcessingFinishedEvent for job '{}' with status '{}'.", job.getJobIdString(),
+                        job.getJob().getState());
                 applicationEventPublisher.publishEvent(
                         new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getState().name(),
                                 job.getJobParameter().getCallbackUrl(), job.getBatchId()));
+            } else {
+                log.warn("Could not publish JobProcessingFinishedEvent. Job '{}' not in state COMPLETED or ERROR.",
+                        jobId);
             }
-        });
+        }, () -> log.warn("Could not publish JobProcessingFinishedEvent. Job '{}' not present.", jobId));
     }
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
-        return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
+        return dataRequests.map(r -> startTransfer(job, r)).toList().size();
     }
 
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
