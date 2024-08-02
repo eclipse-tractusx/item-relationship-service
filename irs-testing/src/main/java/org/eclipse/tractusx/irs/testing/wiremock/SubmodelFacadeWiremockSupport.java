@@ -29,6 +29,7 @@ import java.util.List;
 /**
  * WireMock configurations and requests used for testing the EDC Flow.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class SubmodelFacadeWiremockSupport {
     public static final String PATH_CATALOG = "/catalog/request";
     public static final String PATH_NEGOTIATE = "/contractnegotiations";
