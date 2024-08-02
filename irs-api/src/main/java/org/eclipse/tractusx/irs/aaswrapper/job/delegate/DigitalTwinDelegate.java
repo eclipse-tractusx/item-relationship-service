@@ -101,7 +101,9 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             final ItemContainer.ItemContainerBuilder itemContainerBuilder, final PartChainIdentificationKey itemId,
             final Exception exception) {
 
+        // TODO (mfischer) is this log message and method name correct?
         log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+        log.debug(exception.getMessage(), exception);
 
         final List<String> rootErrorMessages = Tombstone.getRootErrorMessages(exception.getSuppressed());
         final ProcessingError error = ProcessingError.builder()
