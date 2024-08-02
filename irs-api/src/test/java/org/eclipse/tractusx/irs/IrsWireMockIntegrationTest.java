@@ -52,6 +52,7 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_TRANSFER;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -193,6 +194,45 @@ class IrsWireMockIntegrationTest {
         assertThat(jobForJobId.getShells()).hasSize(2);
         assertThat(jobForJobId.getRelationships()).hasSize(1);
         assertThat(jobForJobId.getTombstones()).isEmpty();
+    }
+
+    @Test
+    void shouldSendOneCallbackAfterJobCompletion() {
+        // Arrange
+        final String globalAssetIdLevel1 = "globalAssetId";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+        WiremockSupport.successfulCallbackRequest();
+
+        successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
+
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1, WiremockSupport.CALLBACK_URL);
+
+        // Act
+        final List<JobHandle> startedJobs = new ArrayList<>();
+
+        // Start 50 jobs in parallel. The bug #755 occurred when multiple (>10 Jobs) were started at the same time.
+        // To definitely provoke the cases where callbacks were triggered multiple times, we start 50 jobs.
+        final int numberOfParallelJobs = 50;
+        for (int i = 0; i < numberOfParallelJobs; i++) {
+            startedJobs.add(irsService.registerItemJob(request));
+        }
+
+        for (JobHandle jobHandle : startedJobs) {
+            assertThat(jobHandle.getId()).isNotNull();
+            waitForCompletion(jobHandle);
+        }
+
+        // Assert
+        for (JobHandle jobHandle : startedJobs) {
+            WiremockSupport.verifyCallbackCall(jobHandle.getId().toString(), JobState.COMPLETED, 1);
+        }
     }
 
     @Test
@@ -505,7 +545,7 @@ class IrsWireMockIntegrationTest {
     private void waitForCompletion(final JobHandle jobHandle) {
         Awaitility.await()
                   .timeout(Duration.ofSeconds(35))
-                  .pollInterval(Duration.ofSeconds(1))
+                  .pollInterval(Duration.ofMillis(500))
                   .until(() -> irsService.getJobForJobId(jobHandle.getId(), false)
                                          .getJob()
                                          .getState()
