@@ -409,6 +409,9 @@ class IrsWireMockIntegrationTest {
         assertThat(actualTombstone.getEndpointURL()).describedAs("Tombstone should contain all EDC URLs")
                                                     .isEqualTo(String.join("; ", edcUrls));
 
+        final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
+        assertThat(rootCauses).hasSize(edcUrls.size());
+        edcUrls.forEach(edcUrl -> assertThat(rootCauses).anyMatch(rootCause -> rootCause.contains(edcUrl)));
     }
 
     @Test

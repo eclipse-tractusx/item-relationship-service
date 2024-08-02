@@ -23,9 +23,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -58,34 +61,35 @@ public class Tombstone {
     private final Map<String, Object> policy;
 
     public static List<String> getRootErrorMessages(final Throwable... throwables) {
-        return Arrays.stream(throwables).map(Tombstone::getRootErrorMessages).toList();
+        return Arrays.stream(throwables).flatMap(throwable -> getRootErrorMessages(throwable).stream()).toList();
     }
 
     /**
-     * Search for the root cause or suppressed exception as long as there is a cause or suppressed exception.
+     * Search for the root causes or suppressed exception as long as there is a cause or suppressed exception.
      * Stop after a depth of 10 to prevent endless loop.
      *
      * @param throwable the exception with a nested or suppressed exception
-     * @return the root cause, eiter suppressed or nested
+     * @return the root causes, eiter suppressed or nested
      */
-    private static String getRootErrorMessages(final Throwable throwable) {
+    private static Set<String> getRootErrorMessages(final Throwable throwable) {
         final Throwable cause = throwable.getCause();
 
         if (cause != null) {
-            Throwable rootCause = cause;
+            final List<Throwable> causes = new ArrayList<>();
             int depth = 0;
             final int maxDepth = 10;
-            while ((rootCause.getCause() != null || hasSuppressedExceptions(rootCause)) && depth < maxDepth) {
-                if (hasSuppressedExceptions(rootCause)) {
-                    rootCause = rootCause.getSuppressed()[0];
+            while ((cause.getCause() != null || hasSuppressedExceptions(cause)) && depth < maxDepth) {
+                if (hasSuppressedExceptions(cause)) {
+                    causes.addAll(Arrays.asList(cause.getSuppressed()));
                 } else {
-                    rootCause = rootCause.getCause();
+                    causes.add(cause.getCause());
                 }
                 depth++;
             }
-            return ExceptionUtils.getRootCauseMessage(rootCause);
+            return causes.stream().map(ExceptionUtils::getRootCauseMessage).collect(Collectors.toSet());
         }
-        return ExceptionUtils.getRootCauseMessage(throwable);
+
+        return Set.of(ExceptionUtils.getRootCauseMessage(throwable));
     }
 
     private static boolean hasSuppressedExceptions(final Throwable exception) {
