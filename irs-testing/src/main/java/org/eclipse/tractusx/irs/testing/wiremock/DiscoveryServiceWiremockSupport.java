@@ -91,7 +91,7 @@ public final class DiscoveryServiceWiremockSupport {
                 responseWithStatus(STATUS_CODE_OK).withBody(discoveryFinderResponse(EDC_DISCOVERY_URL)));
     }
 
-    public static MappingBuilder postDiscoveryFinder200(final String... edcUrls) {
+    public static MappingBuilder postDiscoveryFinder200(final String... discoveryFinderUrls) {
         return post(urlPathEqualTo(DISCOVERY_FINDER_PATH)).willReturn(
                 responseWithStatus(STATUS_CODE_OK).withBody(discoveryFinderResponse(edcUrls)));
     }
