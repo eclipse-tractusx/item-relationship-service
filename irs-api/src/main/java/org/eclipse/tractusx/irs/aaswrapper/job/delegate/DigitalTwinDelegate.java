@@ -110,10 +110,12 @@ public class DigitalTwinDelegate extends AbstractDelegate {
                                                      .withErrorDetail(exception.getMessage())
                                                      .withRootCauses(rootErrorMessages)
                                                      .build();
-        String endpointURL = null; // TODO (mfischer) test
+
+        String endpointURL = null;
         if (exception instanceof ShellNotFoundException) {
             endpointURL = String.join("; ", ((ShellNotFoundException) exception).getCalledEndpoints());
         }
+
         final Tombstone tombstone = Tombstone.builder()
                                              .endpointURL(endpointURL)
                                              .catenaXId(itemId.getGlobalAssetId())
@@ -122,7 +124,6 @@ public class DigitalTwinDelegate extends AbstractDelegate {
                                              .build();
         itemContainerBuilder.tombstone(tombstone);
     }
-
 
     private Tombstone createNoBpnProvidedTombstone(final JobParameter jobData,
             final PartChainIdentificationKey itemId) {
