@@ -83,9 +83,13 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             itemContainerBuilder.shell(
                     jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
 
+        } catch (final ShellNotFoundException e) {
+            log.info("Shell not found for item: {}. Creating Tombstone.", itemId);
+            createShellNotFoundTombstone(itemContainerBuilder, itemId, e);
         } catch (final RegistryServiceException | RuntimeException e) {
             // catching generic exception is intended here,
             // otherwise Jobs stay in state RUNNING forever
+            log.info("Shell could not be retrieved for item: {}. Creating Tombstone.", itemId);
             createShellEndpointCouldNotBeRetrievedTombstone(itemContainerBuilder, itemId, e);
         }
 
@@ -97,13 +101,22 @@ public class DigitalTwinDelegate extends AbstractDelegate {
         return itemContainerBuilder.build();
     }
 
+    private void createShellNotFoundTombstone(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
+            final PartChainIdentificationKey itemId, final ShellNotFoundException exception) {
+        final String endpointURL = String.join("; ", exception.getCalledEndpoints());
+        final Tombstone tombstone = createTombstone(itemId, exception, endpointURL);
+        itemContainerBuilder.tombstone(tombstone);
+    }
+
     private void createShellEndpointCouldNotBeRetrievedTombstone(
             final ItemContainer.ItemContainerBuilder itemContainerBuilder, final PartChainIdentificationKey itemId,
             final Exception exception) {
+        final Tombstone tombstone = createTombstone(itemId, exception, /* endpoint URL is unknown here */ null);
+        itemContainerBuilder.tombstone(tombstone);
+    }
 
-        // TODO (mfischer) is this log message and method name correct?
-        log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-        log.debug(exception.getMessage(), exception);
+    private Tombstone createTombstone(final PartChainIdentificationKey itemId, final Exception exception,
+            final String endpointURL) {
 
         final List<String> rootErrorMessages = Tombstone.getRootErrorMessages(exception.getSuppressed());
         final ProcessingError error = ProcessingError.builder()
@@ -113,18 +126,12 @@ public class DigitalTwinDelegate extends AbstractDelegate {
                                                      .withRootCauses(rootErrorMessages)
                                                      .build();
 
-        String endpointURL = null;
-        if (exception instanceof ShellNotFoundException) {
-            endpointURL = String.join("; ", ((ShellNotFoundException) exception).getCalledEndpoints());
-        }
-
-        final Tombstone tombstone = Tombstone.builder()
-                                             .endpointURL(endpointURL)
-                                             .catenaXId(itemId.getGlobalAssetId())
-                                             .processingError(error)
-                                             .businessPartnerNumber(itemId.getBpn())
-                                             .build();
-        itemContainerBuilder.tombstone(tombstone);
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(itemId.getGlobalAssetId())
+                        .processingError(error)
+                        .businessPartnerNumber(itemId.getBpn())
+                        .build();
     }
 
     private Tombstone createNoBpnProvidedTombstone(final JobParameter jobData,
