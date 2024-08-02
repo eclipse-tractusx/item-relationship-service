@@ -33,6 +33,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 /**
  * WireMock configurations and requests used for testing the Discovery Service flow.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class DiscoveryServiceWiremockSupport {
     public static final String CONTROLPLANE_PUBLIC_URL = "https://test.edc.io";
     public static final String EDC_DISCOVERY_PATH = "/edcDiscovery";
