@@ -375,6 +375,43 @@ class IrsWireMockIntegrationTest {
     }
 
     @Test
+    void whenEmptyCatalogIsReturnedFromAllEndpoints() {
+        // Arrange
+        final String globalAssetId = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
+        final List<String> edcUrls = List.of("https://test.edc1.io", "https://test.edc2.io");
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery(edcUrls);
+
+        edcUrls.forEach(edcUrl -> emptyCatalog(TEST_BPN, edcUrl));
+
+        // Act
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetId, TEST_BPN, 4);
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle);
+        final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
+
+        // Assert
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getSubmodels()).isEmpty();
+
+        final List<Tombstone> tombstones = jobForJobId.getTombstones();
+        assertThat(tombstones).hasSize(1);
+
+        final Tombstone actualTombstone = tombstones.get(0);
+        assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
+        assertThat(actualTombstone.getEndpointURL()).describedAs("Tombstone should contain all EDC URLs")
+                                                    .isEqualTo(String.join("; ", edcUrls));
+
+    }
+
+    @Test
     void shouldCreateDetailedTombstoneForDiscoveryErrors() {
         // Arrange
         final String globalAssetId = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
@@ -410,8 +447,7 @@ class IrsWireMockIntegrationTest {
 
         final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
         assertThat(rootCauses).hasSize(1);
-        assertThat(rootCauses.get(0)).contains(
-                "No EDC Endpoints could be discovered for BPN '%s'".formatted(TEST_BPN));
+        assertThat(rootCauses.get(0)).contains("No EDC Endpoints could be discovered for BPN '%s'".formatted(TEST_BPN));
     }
 
     private void successfulRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
@@ -460,6 +496,10 @@ class IrsWireMockIntegrationTest {
 
     private void failedNegotiation() {
         SubmodelFacadeWiremockSupport.prepareFailingCatalog();
+    }
+
+    private void emptyCatalog(final String bpn, final String edcUrl) {
+        SubmodelFacadeWiremockSupport.prepareEmptyCatalog(bpn, edcUrl);
     }
 
     private void waitForCompletion(final JobHandle jobHandle) {
