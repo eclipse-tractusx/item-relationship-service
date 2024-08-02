@@ -93,25 +93,23 @@ public final class DiscoveryServiceWiremockSupport {
 
     public static MappingBuilder postDiscoveryFinder200(final String... discoveryFinderUrls) {
         return post(urlPathEqualTo(DISCOVERY_FINDER_PATH)).willReturn(
-                responseWithStatus(STATUS_CODE_OK).withBody(discoveryFinderResponse(edcUrls)));
+                responseWithStatus(STATUS_CODE_OK).withBody(discoveryFinderResponse(discoveryFinderUrls)));
     }
 
     public static String discoveryFinderResponse(final String... discoveryFinderUrls) {
 
-        final String endpoints = Arrays.stream(discoveryFinderUrls)
-                                       .map(endpointAddress -> {
-                                           final String resourceId = UUID.randomUUID().toString();
-                                           return """
-                                                        {
-                                                          "type": "bpn",
-                                                          "description": "Service to discover EDC to a particular BPN",
-                                                          "endpointAddress": "%s",
-                                                          "documentation": "http://.../swagger/index.html",
-                                                          "resourceId": "%s"
-                                                        }
-                                                   """.formatted(endpointAddress, resourceId);
-                                       })
-                                       .collect(Collectors.joining(","));
+        final String endpoints = Arrays.stream(discoveryFinderUrls).map(endpointAddress -> {
+            final String resourceId = UUID.randomUUID().toString();
+            return """
+                         {
+                           "type": "bpn",
+                           "description": "Service to discover EDC to a particular BPN",
+                           "endpointAddress": "%s",
+                           "documentation": "http://.../swagger/index.html",
+                           "resourceId": "%s"
+                         }
+                    """.formatted(endpointAddress, resourceId);
+        }).collect(Collectors.joining(","));
 
         return """
                 {
