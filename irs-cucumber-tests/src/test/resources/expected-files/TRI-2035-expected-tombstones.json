@@ -2,8 +2,8 @@
   "tombstones": [
     {
       "catenaXId": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-      "endpointURL": null,
-      "businessPartnerNumber": null,
+      "endpointURL": "http://umbrella-dataprovider-edc-controlplane:8084",
+      "businessPartnerNumber": "BPNL00000003AYRE",
       "processingError": {
         "processStep": "DigitalTwinRequest",
         "errorDetail": "Unable to find any of the requested shells",
