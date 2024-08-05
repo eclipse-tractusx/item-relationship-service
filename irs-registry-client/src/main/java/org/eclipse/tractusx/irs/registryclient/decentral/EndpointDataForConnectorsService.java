@@ -78,7 +78,8 @@ public class EndpointDataForConnectorsService {
             return edcSubmodelFacade.getEndpointReferencesForAsset(edcUrl, bpn);
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
-            return List.of(CompletableFuture.failedFuture(e));
+            return List.of(CompletableFuture.failedFuture(
+                    new EdcRetrieverException.Builder(e).withBpn(bpn).withEdcUrl(edcUrl).build()));
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());

@@ -17,6 +17,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   in some remaining code places (in context of #794).
 - Fixed flaky test `InMemoryJobStoreTest.checkLastModifiedOnAfterCreation()` (PR#857).
 - Fixed occasion where completed Job callbacks are called multiple times. #755
+- BPN and endpointURL(s) are set in the tombstone now. #841
 
 ### Changed
 

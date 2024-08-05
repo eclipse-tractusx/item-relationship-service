@@ -109,6 +109,7 @@ public abstract class AbstractDelegate {
     private SubmodelDescriptor getSubmodel(final EdcSubmodelFacade submodelFacade,
             final Endpoint digitalTwinRegistryEndpoint, final List<String> connectorEndpoints, final String bpn)
             throws EdcClientException {
+
         for (final String connectorEndpoint : connectorEndpoints) {
             try {
                 return submodelFacade.getSubmodelPayload(connectorEndpoint,
@@ -118,6 +119,7 @@ public abstract class AbstractDelegate {
                 log.info("EdcClientException while accessing digitalTwinRegistryEndpoint '{}'", connectorEndpoint, e);
             }
         }
+
         throw new EdcClientException(
                 String.format("Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
                         connectorEndpoints.size(), String.join(", ", connectorEndpoints)));

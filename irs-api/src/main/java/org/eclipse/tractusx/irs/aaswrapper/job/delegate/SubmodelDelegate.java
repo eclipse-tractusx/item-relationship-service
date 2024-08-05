@@ -27,13 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
@@ -107,17 +107,21 @@ public class SubmodelDelegate extends AbstractDelegate {
     private List<Submodel> getSubmodels(final SubmodelDescriptor submodelDescriptor,
             final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId, final String bpn,
             final boolean auditContractNegotiation) {
+
         final List<Submodel> submodels = new ArrayList<>();
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
 
+            final String endpointURL = endpoint.getProtocolInformation().getHref();
             if (StringUtils.isBlank(bpn)) {
                 log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.", itemId);
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
-                        "Can't get submodel without a BPN", retryCount, ProcessStep.SUBMODEL_REQUEST));
+                final ProcessingError error = createProcessingError(ProcessStep.SUBMODEL_REQUEST, retryCount,
+                        "Can't get submodel without a BPN");
+                itemContainerBuilder.tombstone(createTombstone(itemId, null, endpointURL, error));
                 return;
             }
 
             try {
+
                 final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
                 final org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor submodel = requestSubmodel(
                         submodelFacade, connectorEndpointsService, endpoint, bpn);
@@ -129,32 +133,69 @@ public class SubmodelDelegate extends AbstractDelegate {
                 if (validationResult.isValid()) {
                     submodels.add(Submodel.from(submodelDescriptor.getId(), submodelDescriptor.getAspectType(),
                             contractAgreementId, jsonUtil.fromString(submodelRawPayload, Map.class)));
+
                 } else {
-                    final String errors = String.join(", ", validationResult.getValidationErrors());
-                    itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
-                            new IllegalArgumentException("Submodel payload validation failed. " + errors), 0,
-                            ProcessStep.SCHEMA_VALIDATION));
+                    final String errorDetail = "Submodel payload validation failed. %s".formatted(
+                            String.join(", ", validationResult.getValidationErrors()));
+                    final ProcessingError error = createProcessingError(ProcessStep.SCHEMA_VALIDATION, 0, errorDetail);
+                    final Tombstone tombstone = createTombstone(itemId, bpn, endpointURL, error);
+                    itemContainerBuilder.tombstone(tombstone);
                 }
+
             } catch (final JsonParseException e) {
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e,
-                        RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(), ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+                final ProcessingError error = createProcessingError(ProcessStep.SCHEMA_VALIDATION, retryCount,
+                        e.getMessage());
+                final Tombstone tombstone = createTombstone(itemId, bpn, endpointURL, error);
+                itemContainerBuilder.tombstone(tombstone);
+
             } catch (final SchemaNotFoundException | InvalidSchemaException | RestClientException e) {
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                        ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
+                final ProcessingError error = createProcessingError(ProcessStep.SCHEMA_REQUEST, 0, e.getMessage());
+                itemContainerBuilder.tombstone(createTombstone(itemId, bpn, endpointURL, error));
+
             } catch (final UsagePolicyPermissionException | UsagePolicyExpiredException e) {
                 log.info("Encountered usage policy permission exception: {}. Creating Tombstone.", e.getMessage());
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                        ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
-                        jsonUtil.asMap(e.getPolicy())));
+                final Map<String, Object> policy = jsonUtil.asMap(e.getPolicy());
+                final ProcessingError error = createProcessingError(ProcessStep.USAGE_POLICY_VALIDATION, 0,
+                        e.getMessage());
+                final Tombstone tombstone = Tombstone.builder()
+                                                     .endpointURL(endpointURL)
+                                                     .catenaXId(itemId)
+                                                     .processingError(error)
+                                                     .businessPartnerNumber(e.getBusinessPartnerNumber())
+                                                     .policy(policy)
+                                                     .build();
+                itemContainerBuilder.tombstone(tombstone);
+
             } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                        ProcessStep.SUBMODEL_REQUEST));
+                final ProcessingError error = createProcessingError(ProcessStep.SUBMODEL_REQUEST, 0, e.getMessage());
+                final Tombstone tombstone = createTombstone(itemId, bpn, endpointURL, error);
+                itemContainerBuilder.tombstone(tombstone);
             }
         });
+
         return submodels;
+    }
+
+    private Tombstone createTombstone(final String itemId, final String bpn, final String endpointURL,
+            final ProcessingError error) {
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(itemId)
+                        .processingError(error)
+                        .businessPartnerNumber(bpn)
+                        .build();
+    }
+
+    private ProcessingError createProcessingError(final ProcessStep processStep, final int retryCount,
+            final String errorDetail) {
+        return ProcessingError.builder()
+                              .withProcessStep(processStep)
+                              .withRetryCounterAndLastAttemptNow(retryCount)
+                              .withErrorDetail(errorDetail)
+                              .build();
     }
 
     @Nullable

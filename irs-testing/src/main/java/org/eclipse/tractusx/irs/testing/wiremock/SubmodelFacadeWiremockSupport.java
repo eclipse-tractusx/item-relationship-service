@@ -29,6 +29,7 @@ import java.util.List;
 /**
  * WireMock configurations and requests used for testing the EDC Flow.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class SubmodelFacadeWiremockSupport {
     public static final String PATH_CATALOG = "/catalog/request";
     public static final String PATH_NEGOTIATE = "/contractnegotiations";
@@ -119,6 +120,38 @@ public final class SubmodelFacadeWiremockSupport {
     public static void prepareFailingCatalog() {
         stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(
                 WireMockConfig.responseWithStatus(STATUS_CODE_BAD_GATEWAY).withBody("")));
+    }
+
+    public static void prepareEmptyCatalog(final String bpn, final String edcUrl) {
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(
+                WireMockConfig.responseWithStatus(STATUS_CODE_OK).withBody("""
+                        {
+                            "@id": "6af0d267-aaed-4d2e-86bb-adf391597fbe",
+                            "@type": "dcat:Catalog",
+                            "dspace:participantId": "%s",
+                            "dcat:dataset": [],
+                            "dcat:service": {
+                                "@id": "75b09a2c-e7f9-4d15-bd67-334c50f35c48",
+                                "@type": "dcat:DataService",
+                                "dcat:endpointDescription": "dspace:connector",
+                                "dcat:endpointUrl": "%s",
+                                "dct:terms": "dspace:connector",
+                                "dct:endpointUrl": "%s"
+                            },
+                            "participantId": "%s",
+                            "@context": {
+                                "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+                                "edc": "https://w3id.org/edc/v0.0.1/ns/",
+                                "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                                "tx-auth": "https://w3id.org/tractusx/auth/",
+                                "cx-policy": "https://w3id.org/catenax/policy/",
+                                "dcat": "http://www.w3.org/ns/dcat#",
+                                "dct": "http://purl.org/dc/terms/",
+                                "odrl": "http://www.w3.org/ns/odrl/2/",
+                                "dspace": "https://w3id.org/dspace/v0.8/"
+                            }
+                        }
+                        """.formatted(bpn, edcUrl, edcUrl, bpn))));
     }
 
     private static String startTransferProcessResponse(final String transferProcessId) {

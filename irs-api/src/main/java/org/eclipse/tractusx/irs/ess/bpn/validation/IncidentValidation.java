@@ -23,11 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.bpn.validation;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.Job;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Tombstone;
+import org.eclipse.tractusx.irs.component.Tombstone.TombstoneBuilder;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
@@ -55,12 +60,14 @@ public final class IncidentValidation {
      */
     public static InvestigationResult getResult(final BpnInvestigationJob investigationJob, final Jobs job,
             final UUID completedJobId) {
+
         SupplyChainImpacted partAsPlannedValidity;
         Jobs completedJob = job;
         try {
             partAsPlannedValidity = validatePartAsPlanned(completedJob);
         } catch (final AspectTypeNotFoundException e) {
-            completedJob = createTombstone(e, completedJob);
+            final Tombstone tombstone = createValidationTombstone(e, completedJob);
+            completedJob = completedJob.toBuilder().tombstone(tombstone).build();
             partAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
         }
         log.info("Local validation of PartAsPlanned Validity was done for job {}. with result {}.", completedJobId,
@@ -70,13 +77,16 @@ public final class IncidentValidation {
         try {
             partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(investigationJob, completedJob);
         } catch (final ValidationException e) {
-            completedJob = createTombstone(e, completedJob);
+            final Tombstone tombstone = createValidationTombstone(e, completedJob);
+            completedJob = completedJob.toBuilder().tombstone(tombstone).build();
             partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
         }
+
         log.info("Local validation of PartSiteInformationAsPlanned Validity was done for job {}. with result {}.",
                 completedJobId, partSiteInformationAsPlannedValidity);
 
         final SupplyChainImpacted supplyChainImpacted = partAsPlannedValidity.or(partSiteInformationAsPlannedValidity);
+
         log.debug("Supply Chain Validity result of {} and {} resulted in {}", partAsPlannedValidity,
                 partSiteInformationAsPlannedValidity, supplyChainImpacted);
         return new InvestigationResult(completedJob, supplyChainImpacted);
@@ -118,10 +128,27 @@ public final class IncidentValidation {
                                            .getPayload());
     }
 
-    private static Jobs createTombstone(final ValidationException exception, final Jobs completedJob) {
+    private static Tombstone createValidationTombstone(final ValidationException exception, final Jobs completedJob) {
         log.warn("Validation failed. {}", exception.getMessage());
-        final Tombstone tombstone = Tombstone.from(completedJob.getJob().getGlobalAssetId().getGlobalAssetId(), null, exception,
-                0, ProcessStep.ESS_VALIDATION);
-        return completedJob.toBuilder().tombstone(tombstone).build();
+
+        final TombstoneBuilder tombstoneBuilder = Tombstone.builder();
+
+        tombstoneBuilder.catenaXId(completedJob.getJob().getGlobalAssetId().getGlobalAssetId());
+
+        // null because failure is before endpoint url is known
+        tombstoneBuilder.endpointURL(null);
+
+        tombstoneBuilder.processingError(ProcessingError.builder()
+                                                        .withErrorDetail(exception.getMessage())
+                                                        .withRetryCounterAndLastAttemptNow(0)
+                                                        .withProcessStep(ProcessStep.ESS_VALIDATION)
+                                                        .build());
+        Optional.of(completedJob)
+                .map(Jobs::getJob)
+                .map(Job::getParameter)
+                .map(JobParameter::getBpn)
+                .ifPresent(tombstoneBuilder::businessPartnerNumber);
+
+        return tombstoneBuilder.build();
     }
 }

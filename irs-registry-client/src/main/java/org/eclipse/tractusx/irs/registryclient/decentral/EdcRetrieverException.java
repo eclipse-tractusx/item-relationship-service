@@ -23,11 +23,49 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Thrown in case of error in EDC communication
  */
-public class EdcRetrieverException extends Exception {
-    public EdcRetrieverException(final Throwable cause) {
+@Getter
+@Setter(AccessLevel.PRIVATE)
+public final class EdcRetrieverException extends Exception {
+
+    private String bpn;
+
+    private String edcUrl;
+
+    private EdcRetrieverException(final Throwable cause) {
         super(cause);
     }
+
+    /**
+     * Builder for {@link EdcRetrieverException}
+     */
+    public static class Builder {
+
+        private final EdcRetrieverException exception;
+
+        public Builder(final Throwable cause) {
+            this.exception = new EdcRetrieverException(cause);
+        }
+
+        public Builder withBpn(final String bpn) {
+            this.exception.setBpn(bpn);
+            return this;
+        }
+
+        public Builder withEdcUrl(final String edcUrl) {
+            this.exception.setEdcUrl(edcUrl);
+            return this;
+        }
+
+        public EdcRetrieverException build() {
+            return this.exception;
+        }
+    }
+
 }

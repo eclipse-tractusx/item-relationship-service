@@ -116,6 +116,11 @@ public class WiremockSupport {
         stubFor(DiscoveryServiceWiremockSupport.postEdcDiscovery200());
     }
 
+    static void successfulDiscovery(final List<String> edcUrls) {
+        stubFor(DiscoveryServiceWiremockSupport.postDiscoveryFinder200());
+        stubFor(DiscoveryServiceWiremockSupport.postEdcDiscovery200(edcUrls));
+    }
+
     static void failedEdcDiscovery() {
         stubFor(DiscoveryServiceWiremockSupport.postDiscoveryFinder200());
         stubFor(DiscoveryServiceWiremockSupport.postEdcDiscovery200Empty());

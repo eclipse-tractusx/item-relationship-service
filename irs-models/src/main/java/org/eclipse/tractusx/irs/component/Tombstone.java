@@ -23,8 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +33,6 @@ import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.tractusx.irs.component.enums.NodeType;
-import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 
 /**
  * Tombstone with information about request failure
@@ -60,49 +57,7 @@ public class Tombstone {
     private final ProcessingError processingError;
     private final Map<String, Object> policy;
 
-    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
-            final int retryCount, final ProcessStep processStep) {
-        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep);
-    }
-
-    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
-            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber,
-            final Map<String, Object> policy) {
-
-        return Tombstone.builder()
-                        .endpointURL(endpointURL)
-                        .catenaXId(catenaXId)
-                        .processingError(withProcessingError(processStep, retryCount, exception.getMessage()))
-                        .businessPartnerNumber(businessPartnerNumber)
-                        .policy(policy)
-                        .build();
-    }
-
-    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
-            final int retryCount, final ProcessStep processStep) {
-
-        return Tombstone.builder()
-                        .endpointURL(endpointURL)
-                        .catenaXId(catenaXId)
-                        .processingError(withProcessingError(processStep, retryCount, errorDetails))
-                        .build();
-    }
-
-    public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable exception,
-            final Throwable[] suppressed, final int retryCount, final ProcessStep processStep) {
-        return Tombstone.builder()
-                        .endpointURL(endpointURL)
-                        .catenaXId(globalAssetId)
-                        .processingError(ProcessingError.builder()
-                                                        .withProcessStep(processStep)
-                                                        .withRetryCounterAndLastAttemptNow(retryCount)
-                                                        .withErrorDetail(exception.getMessage())
-                                                        .withRootCauses(getRootErrorMessages(suppressed))
-                                                        .build())
-                        .build();
-    }
-
-    private static List<String> getRootErrorMessages(final Throwable... throwables) {
+    public static List<String> getRootErrorMessages(final Throwable... throwables) {
         return Arrays.stream(throwables).map(Tombstone::getRootErrorMessages).toList();
     }
 
@@ -131,16 +86,6 @@ public class Tombstone {
             return ExceptionUtils.getRootCauseMessage(rootCause);
         }
         return ExceptionUtils.getRootCauseMessage(throwable);
-    }
-
-    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
-            final String exception) {
-        return ProcessingError.builder()
-                              .withProcessStep(processStep)
-                              .withRetryCounter(retryCount)
-                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                              .withErrorDetail(exception)
-                              .build();
     }
 
     private static boolean hasSuppressedExceptions(final Throwable exception) {
