@@ -104,7 +104,7 @@ Install the Umbrella chart
 ```bash
 helm dependency update charts/tx-data-provider
 helm dependency update charts/umbrella
-helm install umbrella charts/umbrella -f charts/umbrella/values-adopter-irs.yaml -n e2e-testing --create-namespace
+helm install umbrella charts/umbrella -f charts/umbrella/values-adopter-irs.yaml -n e2e-testing --create-namespace --set iatpmock.image.repository=tractusx/iatp-mock --set iatpmock.image.tag=testing
 ```
 
 (Optional) Build IRS Docker image from local
