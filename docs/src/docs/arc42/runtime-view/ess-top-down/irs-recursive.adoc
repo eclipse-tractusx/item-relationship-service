@@ -1,0 +1,5 @@
+The IRS recursive approach is a decentral approach of retrieving and aggregating data throughout the Catena-X network.
+
+The core functionality is based on notifications which are exchanged between multiple IRS instances. The notifications trigger an investigation on the next level down the supply chain and return aggregated data containing, e.g. simple information about whether a certain BPN is part of the supply chain or not.
+
+Investigations triggered on the next level down the supply chain can trigger further investigations themselves, hence the name _IRS recursive_.

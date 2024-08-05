@@ -1,3 +1,9 @@
+IRS Iterative is the main IRS mode for retrieving data chains throughout the Catena-X network. The core functionality can be summed up in three steps:
+
+1. Start the process with a provided globalAssetId and BPN combination, and required submodels to request.
+2. Retrieve the EDC endpoint for the BPN, search the catalog for the Digital Twin Registry contract Offer and search the DTR for the provided BPN.
+3. Retrieve the relationship submodel for the requested lifecycle and direction and repeat step 1 with the globalAssetIds and BPNs from the relationship submodel linked data until the desired depth is reached or no more relationships could be found.
+
 [plantuml, target=overall, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/api-call-asynchrous-sequence.puml[]
