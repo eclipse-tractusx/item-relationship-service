@@ -5,10 +5,10 @@
 This section describes the iterative flow, the main processes of the IRS, and explains how data is transferred and processed when a job is executed.
 
 include::irs-iterative/irs-iterative.adoc[leveloffset=+1]
-include::irs-iterative/scenario-1.adoc[leveloffset=+1]
-include::irs-iterative/scenario-2.adoc[leveloffset=+1]
-include::irs-iterative/scenario-3.adoc[leveloffset=+1]
-include::irs-iterative/scenario-4.adoc[leveloffset=+1]
+include::irs-iterative/scenario-1.adoc[leveloffset=+2]
+include::irs-iterative/scenario-2.adoc[leveloffset=+2]
+include::irs-iterative/scenario-3.adoc[leveloffset=+2]
+include::irs-iterative/scenario-4.adoc[leveloffset=+2]
 
 == IRS Recursive
 
@@ -16,5 +16,5 @@ This section covers the main processes of the IRS in a recursive scenario in a n
 This recursive scenario is illustrated using the various use cases realized in the scenario.
 
 include::ess-top-down/ess-top-down.adoc[leveloffset=+1]
-include::ess-top-down/ess-top-down-scenario-1.adoc[leveloffset=+1]
-include::ess-top-down/ess-top-down-scenario-2.adoc[leveloffset=+1]
+include::ess-top-down/ess-top-down-scenario-1.adoc[leveloffset=+2]
+include::ess-top-down/ess-top-down-scenario-2.adoc[leveloffset=+2]
