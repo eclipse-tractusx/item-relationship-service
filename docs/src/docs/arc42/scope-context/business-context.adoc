@@ -12,3 +12,8 @@ The IRS API is being consumed by the dismantler dashboard and other parties whic
 The IRS retrieves data from the Catena-X network (using the necessary infrastructure, see Technical Context), aggregates it and provides it back to the consumers. This connection is mandatory. If the Catena-X services are unavailable, the IRS cannot perform any work.
 
 As of now, the IRS uses its own IAM credentials to gather the required data. This might be changed to use the consumer credentials in the future.
+
+== Submodels
+A Semantic Aspect Meta Model (SAMM) (see https://docs.bosch-semantic-stack.com/oss/samm-specification.html[samm-specification]), also known as semantic model ,aspect model or submodel, is a standardized specification to describe certain attributes of a physical part. Notable aspect models for the IRS use-case are BOMs (which parts are directly built into a part) and usages (in which parts is a part built into).
+
+Available aspect models in the catena-x context can be found in the https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main[sldt-semantic-models repository].
