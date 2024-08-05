@@ -15,6 +15,7 @@ include::irs-iterative/scenario-4.adoc[leveloffset=+2]
 This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.
 
+include::ess-top-down/irs-recursive.adoc[leveloffset=+1]
 include::ess-top-down/ess-top-down.adoc[leveloffset=+1]
 include::ess-top-down/ess-top-down-scenario-1.adoc[leveloffset=+2]
 include::ess-top-down/ess-top-down-scenario-2.adoc[leveloffset=+2]
