@@ -35,3 +35,5 @@ Test results are automatically added to the workflow summary and in case of the 
 Due to limitations in the IATP mock, the only way of using multiple BPNs in the test data is to spin up multiple EDC provider instances.
 However, the chart is used inside GitHub Workflows, so compute resources are limited.
 For this reason, the IRS test data was changed to include only data pointing to a single BPN.
+
+For instructions on how to use the Umbrella Chart locally, see https://github.com/eclipse-tractusx/item-relationship-service/blob/main/INSTALL.md#local-installation-with-umbrella[INSTALL.md]

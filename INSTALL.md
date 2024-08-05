@@ -59,6 +59,7 @@ Create a new application in ArgoCD and point it to your repository / Helm chart 
 A detailed instruction on how to configure the IRS and EDC can be found here: [Administration Guide](https://eclipse-tractusx.github.io/item-relationship-service/docs/administration/administration-guide.html)
 
 ## Local Installation
+
 IRS provides a local setup which can be deployed to kubernetes.
 This setup includes all third-party services which IRS uses and interacts with.
 
@@ -67,3 +68,96 @@ Instructions can be found here [README](README.md).
 ## Sample Calls
 
 Sample calls can be found here [USAGE](USAGE.md).
+
+## Local Installation with Umbrella
+
+The eclipse-tractusx/umbrella chart provides a pre-configured Helm Chart with many Tractus-X Services. To integrate IRS
+with this Chart, run the following steps:
+
+For detailed instructions on how to set up the umbrella chart, see the chapters "Cluster setup" and "Network setup" in
+the umbrella [README.md](https://github.com/eclipse-tractusx/tractus-x-umbrella/blob/main/charts/umbrella/README.md).
+
+Clone the [Umbrella repo](https://github.com/eclipse-tractusx/tractus-x-umbrella) (only required once):
+
+```
+git clone https://github.com/eclipse-tractusx/tractus-x-umbrella.git
+```
+
+Check out
+the [IRS umbrella integration branch](https://github.com/eclipse-tractusx/tractus-x-umbrella/tree/chore/e2e-irs-preparation):
+
+```
+cd tractus-x-umbrella/
+git fetch origin
+git checkout -b chore/e2e-irs-preparation origin/chore/e2e-irs-preparation
+```
+
+Build the required images for IATP mock.
+
+```bash
+eval $(minikube docker-env)
+docker build iatp-mock/ -t tractusx/iatp-mock:testing --platform linux/amd64
+```
+
+Install the Umbrella chart
+
+```bash
+helm dependency update charts/tx-data-provider
+helm dependency update charts/umbrella
+helm install umbrella charts/umbrella -f charts/umbrella/values-adopter-irs.yaml -n e2e-testing --create-namespace
+```
+
+(Optional) Build IRS Docker image from local
+
+```bash
+docker build . -t tractusx/irs-api:local
+```
+
+Install the IRS Helm Chart with the local Docker image
+
+```bash
+helm dependency update ./charts/item-relationship-service
+helm install irs ./charts/item-relationship-service --namespace e2e-testing -f ./charts/item-relationship-service/values-umbrella.yaml --set image.repository=tractusx/irs-api -- set image.tag=local
+```
+
+Or use the latest released version
+
+```bash
+helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service 
+helm install irs irs/item-relationship-service --namespace e2e-testing -f ./charts/item-relationship-service/values-umbrella.yaml --set image.repository=tractusx/irs-api --set image.tag=latest
+```
+
+### upload testdata
+
+To upload testdata, first forward the dataprovider pods to your localhost:
+
+```bash
+kubectl port-forward svc/umbrella-dataprovider-dtr 4444:8080 --namespace e2e-testing &
+kubectl port-forward svc/umbrella-dataprovider-edc-controlplane 8888:8081 --namespace e2e-testing &
+kubectl port-forward svc/umbrella-dataprovider-submodelserver 9999:8080 --namespace e2e-testing
+```
+
+then use the testdata upload script to seed the dataprovider services with testdata:
+
+```bash
+./local/testing/testdata/upload-testdata.sh "TEST2" "BPNL00000003AYRE" "BPNL00000003AZQP" \
+  "http://umbrella-dataprovider-submodelserver:8080" "http://localhost:9999" \
+  "http://umbrella-dataprovider-dtr:8080/api/v3" "http://localhost:4444/api/v3" \
+  "http://umbrella-dataprovider-edc-controlplane:8084" "http://localhost:8888" \
+  "http://umbrella-dataprovider-edc-dataplane:8081"
+```
+
+Now forward the IRS service port to access the API:
+
+```bash
+kubectl port-forward svc/irs-item-relationship-service 8080:8080 --namespace e2e-testing
+```
+
+### Uninstall
+
+To uninstall the IRS and Umbrella chart
+
+```bash
+helm uninstall irs --namespace e2e-testing
+helm uninstall umbrella --namespace e2e-testing
+```
