@@ -47,7 +47,7 @@ env:
 
 jobs:
   execute-e2e-tests:
-    runs-on: "{{ env.RUNNER }}"
+    runs-on: "${{ env.RUNNER }}"
     steps:
       - uses: actions/checkout@v4
 
