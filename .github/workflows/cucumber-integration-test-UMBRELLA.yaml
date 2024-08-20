@@ -42,9 +42,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  RUNNER: ${{ github.repository == 'eclipse-tractusx/item-relationship-service' && 'tractusx-runner' || 'ubuntu-latest' }}
+
 jobs:
   execute-e2e-tests:
-    runs-on: tractusx-runner
+    runs-on: $RUNNER
     steps:
       - uses: actions/checkout@v4
 
