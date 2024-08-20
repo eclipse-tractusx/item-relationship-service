@@ -34,7 +34,7 @@ env:
 
 jobs:
   test:
-    runs-on: $RUNNER
+    runs-on: "{{ env.RUNNER }}"
     steps:
       - uses: actions/checkout@v4
 
