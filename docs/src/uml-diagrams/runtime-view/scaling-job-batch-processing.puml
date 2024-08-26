@@ -19,8 +19,8 @@ BatchController --> CreationBatchService: create batches
 CreationBatchService -> CreationBatchService: split into parallel executable working packages
 
 rnote right
-    Currently this is not limited.
-    Limit of e.g. 5 jobs in parallel needs to be added.
+    As is: parallel processes are not limited
+    To be: limit of e.g. 5 jobs in parallel
 end note
 
 loop
