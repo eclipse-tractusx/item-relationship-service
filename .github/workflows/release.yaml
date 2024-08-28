@@ -73,7 +73,7 @@ jobs:
 
           # insert new comparison below uppermost one
           sed -i "$((latest_comparison_url_line_number+1)) s|^|[${{ inputs.irs-version }}]: \
-          https://github.com/eclipse-tractusx/item-relationship-service/compare/$previous_irs_version...${{ inputs.irs-version }}\n|" ${{ env.CHANGELOG_PATH }}        
+          ${{ github.server_url }}/${{ github.repository }}/compare/$previous_irs_version...${{ inputs.irs-version }}\n|" ${{ env.CHANGELOG_PATH }}        
 
           # replace placeholder
           placeholder_line_number=$(cat -n ${{ env.CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")

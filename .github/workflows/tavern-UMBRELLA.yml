@@ -31,7 +31,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: tractusx-runner
+    runs-on: "${{ github.repository == 'eclipse-tractusx/item-relationship-service' && 'tractusx-runner' || 'ubuntu-latest' }}"
     steps:
       - uses: actions/checkout@v4
 
