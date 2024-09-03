@@ -48,7 +48,7 @@ jobs:
 
       - name: Create pull request
         if: ${{ env.was_file_changed }} == 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           add-paths: |
             DEPENDENCIES
