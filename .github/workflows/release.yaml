@@ -142,7 +142,7 @@ jobs:
           echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Update docs and Helm chart for release
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: 'chore(docs): updated docs and Helm chart for IRS release ${{ inputs.irs-version }}'
           branch: action/update-for-release-${{ inputs.irs-version }}
