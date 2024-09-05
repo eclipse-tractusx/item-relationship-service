@@ -19,6 +19,11 @@ on:
     tags:
       - '**'
 
+concurrency:
+  # cancel older running jobs on the same branch
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   push-image-to-registry:
     permissions:
@@ -33,8 +38,8 @@ jobs:
       repository_name: "item-relationship-service"
       service_name: "irs-api"
       dockerfile_path: "./Dockerfile"
-      environment: "int"
-      push: false
+      environment: "test"
+      push: true
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
