@@ -92,7 +92,7 @@ jobs:
           "https://xray.cloud.getxray.app/api/v2/import/execution/cucumber"
 
       - name: Publish Cucumber Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.17.0
+        uses: EnricoMi/publish-unit-test-result-action@v2.17.1
         if: always()
         with:
           files: |
