@@ -38,7 +38,7 @@ jobs:
       repository_name: "item-relationship-service"
       service_name: "irs-api"
       dockerfile_path: "./Dockerfile"
-      environment: "test"
+      environment: "lower-env-acr"
       push: true
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
