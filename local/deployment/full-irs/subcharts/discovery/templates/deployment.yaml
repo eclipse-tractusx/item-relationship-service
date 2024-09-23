@@ -61,9 +61,6 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          env:
-            - name: DISCOVERY_TYPE
-              value: { { .Values.discovery.type | quote } }
           livenessProbe:
             httpGet:
               path: /__admin
