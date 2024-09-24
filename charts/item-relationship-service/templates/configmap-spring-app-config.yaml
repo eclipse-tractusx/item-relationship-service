@@ -80,6 +80,7 @@ data:
       discovery:
         oAuthClientId: {{ .Values.discovery.oAuthClientId | default "discovery" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
         discoveryFinderUrl: {{ tpl (.Values.discovery.discoveryFinderUrl | default "") . | quote }} # The endpoint to discover EDC endpoints to a particular BPN.
+        type: {{ .Values.discovery.type | default "bpnl" }} # Type to discover EDC of type "bpnl".
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}

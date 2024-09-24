@@ -110,8 +110,9 @@ public class DefaultConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
-    public ConnectorEndpointsService connectorEndpointsService(final DiscoveryFinderClient discoveryFinderClient) {
-        return new ConnectorEndpointsService(discoveryFinderClient);
+    public ConnectorEndpointsService connectorEndpointsService(final DiscoveryFinderClient discoveryFinderClient,
+            @Value("${digitalTwinRegistryClient.discovery.type:}") final String discoveryType) {
+        return new ConnectorEndpointsService(discoveryFinderClient, discoveryType);
     }
 
     @Bean

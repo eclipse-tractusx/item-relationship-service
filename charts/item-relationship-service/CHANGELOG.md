@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Added the discovery type configurable (discovery.type) default value as bpnl. (#12). 
+
 ## [7.4.1] - 2024-08-19
 
 ### Changed

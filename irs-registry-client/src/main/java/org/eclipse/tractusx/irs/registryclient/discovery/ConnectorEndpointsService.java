@@ -43,6 +43,7 @@ public class ConnectorEndpointsService {
 
     private final DiscoveryFinderClient discoveryFinderClient;
     private static final String CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME = "connector_endpoint_service_cache";
+    private final String discoveryType;
 
     /**
      * Get EDCs for BPN.
@@ -60,7 +61,7 @@ public class ConnectorEndpointsService {
 
         log.info("Requesting connector endpoints for BPN {}", bpn);
 
-        final var onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
+        final var onlyBpn = new DiscoveryFinderRequest(List.of(discoveryType));
         final var discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn).endpoints();
         final var endpoints = discoveryEndpoints.stream()
                                                 .flatMap(
