@@ -93,7 +93,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
         final var discoveryFinderClient = new DiscoveryFinderClientImpl(DISCOVERY_FINDER_URL, restTemplate);
-        final var connectorEndpointsService = new ConnectorEndpointsService(discoveryFinderClient);
+        final var connectorEndpointsService = new ConnectorEndpointsService(discoveryFinderClient, "bpnl");
         final var endpointDataForConnectorsService = new EndpointDataForConnectorsService(
                 edcEndpointReferenceRetrieverMock);
         final var decentralDigitalTwinRegistryClient = new DecentralDigitalTwinRegistryClient(restTemplate,

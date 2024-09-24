@@ -132,6 +132,7 @@ digitalTwinRegistry:
 discovery:
   oAuthClientId: discovery  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   discoveryFinderUrl:  # "https://<discovery-finder-url>
+  type: "bpnl"  # discovery type to find bpnl type in EDC discovery
 
 semanticshub:
   url:  # https://<semantics-hub-url>
