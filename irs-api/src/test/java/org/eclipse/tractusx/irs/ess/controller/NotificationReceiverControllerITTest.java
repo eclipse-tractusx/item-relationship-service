@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -24,23 +20,14 @@
 package org.eclipse.tractusx.irs.ess.controller;
 
 import static io.restassured.RestAssured.given;
-import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-
-import java.util.List;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import jakarta.servlet.http.HttpServletRequest;
-import org.eclipse.tractusx.irs.ControllerTest;
 import org.eclipse.tractusx.irs.TestConfig;
-import org.eclipse.tractusx.irs.common.auth.IrsRoles;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
-import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
-import org.eclipse.tractusx.irs.ess.service.EssRecursiveService;
+import org.eclipse.tractusx.irs.configuration.security.AuthenticationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,28 +46,20 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ActiveProfiles(profiles = { "test", "local" })
 @Import(TestConfig.class)
 @ExtendWith({ MockitoExtension.class, SpringExtension.class })
-class EssRecursiveControllerTest extends ControllerTest {
+public class NotificationReceiverControllerITTest {
 
-    private final String path = "/ess/notification/receive-recursive";
-
-    @MockBean
-    private EssRecursiveService essRecursiveService;
+    private final String path = "/ess/notification/receive";
 
     @LocalServerPort
     private int port;
+
+    @MockBean
+    private AuthenticationService authenticationService;
 
     @BeforeEach
     public void configureRestAssured() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
-    }
-
-    @Test
-    void shouldHandleRecursiveBpnInvestigationByNotification() throws Exception {
-        authenticateWith(IrsRoles.VIEW_IRS);
-
-        given().port(port).contentType(ContentType.JSON).body(prepareNotification()).post(path)
-               .then().statusCode(CREATED.value());
     }
 
     @Test
@@ -90,30 +69,9 @@ class EssRecursiveControllerTest extends ControllerTest {
 
         given().port(port)
                .contentType(ContentType.JSON)
-               .body(prepareNotification())
+               .body(" ")
                .post(path)
                .then()
                .statusCode(UNAUTHORIZED.value());
     }
-
-    private EdcNotification<InvestigationNotificationContent> prepareNotification() {
-        final EdcNotificationHeader header = EdcNotificationHeader.builder()
-                                                                  .notificationId("notification-id")
-                                                                  .senderEdc("senderEdc")
-                                                                  .senderBpn("senderBpn")
-                                                                  .recipientBpn("recipientBpn")
-                                                                  .replyAssetId("ess-response-asset")
-                                                                  .replyAssetSubPath("")
-                                                                  .notificationType("ess-supplier-request")
-                                                                  .build();
-
-        return EdcNotification.<InvestigationNotificationContent>builder()
-                              .header(header)
-                              .content(InvestigationNotificationContent.builder()
-                                                                       .concernedCatenaXIds(List.of("cat1", "cat2"))
-                                                                       .incidentBPNSs(List.of("BPNS000000000BBB"))
-                                                                       .build())
-                              .build();
-    }
-
 }
