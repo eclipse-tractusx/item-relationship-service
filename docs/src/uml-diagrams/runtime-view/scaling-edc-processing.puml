@@ -1,0 +1,35 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+
+autonumber "<b>[00]"
+
+participant "EDC Client" as IRS
+participant "EDC Cache" as edc_cache
+participant "EDC" as EDC
+
+IRS -> EDC: Request Contract Offers {filter": "type=digitalTwinRegistry"}
+IRS <-- EDC: Contract Offer
+
+IRS -> edc_cache: get EDR Token
+
+group EDC negotiation and transfer process
+    rnote right edc_cache
+        replace traditional token negotiation with EDR API
+        this makes reuse of existing negotiations more efficient
+    end note
+
+    edc_cache -> EDC: Negotiate Contract for Offer
+    edc_cache <-- EDC: Contract Negotiation (Contract Agreement ID))
+
+    edc_cache -> EDC: Initiate Transfer with Agreement ID
+    edc_cache <-- EDC: Transfer Process ID
+
+    edc_cache <-- EDC : EDR Token callback
+end
+
+IRS <-- edc_cache: EDR Token
+
+@enduml
