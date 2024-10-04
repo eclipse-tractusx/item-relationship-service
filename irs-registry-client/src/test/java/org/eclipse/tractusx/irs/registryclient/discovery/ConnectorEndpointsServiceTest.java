@@ -36,7 +36,7 @@ import org.mockito.Mockito;
 class ConnectorEndpointsServiceTest {
 
     private final DiscoveryFinderClient essDiscoveryFinderClient = Mockito.mock(DiscoveryFinderClient.class);
-    private final ConnectorEndpointsService service = new ConnectorEndpointsService(essDiscoveryFinderClient);
+    private final ConnectorEndpointsService service = new ConnectorEndpointsService(essDiscoveryFinderClient, "bpnl" );
 
     @Test
     void shouldFindConnectorEndpoints() {
