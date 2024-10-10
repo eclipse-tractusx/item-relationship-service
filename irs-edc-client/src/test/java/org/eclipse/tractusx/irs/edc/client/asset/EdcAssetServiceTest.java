@@ -51,6 +51,7 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.EdcAssetAlreadyExistsException;
+import org.eclipse.tractusx.irs.edc.client.model.EdcTechnicalServiceAuthentication;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +84,7 @@ class EdcAssetServiceTest {
 
     @BeforeEach
     void setUp() {
-        TitaniumJsonLd jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
+        final TitaniumJsonLd jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
         jsonLd.registerNamespace("odrl", "http://www.w3.org/ns/odrl/2/");
         jsonLd.registerNamespace("dct", "http://purl.org/dc/terms/");
         jsonLd.registerNamespace("tx", "https://w3id.org/tractusx/v0.0.1/ns/");
@@ -99,29 +100,29 @@ class EdcAssetServiceTest {
     @Test
     void testAssetCreateRequestStructure() throws JSONException {
 
-        Map<String, Object> properties = Map.of("https://w3id.org/edc/v0.0.1/ns/description",
+        final Map<String, Object> properties = Map.of("https://w3id.org/edc/v0.0.1/ns/description",
                 "endpoint to qualityinvestigation receive", "https://w3id.org/edc/v0.0.1/ns/contenttype",
                 "application/json", "https://w3id.org/edc/v0.0.1/ns/policy-id", "use-eu",
                 "https://w3id.org/edc/v0.0.1/ns/type", "receive", "https://w3id.org/edc/v0.0.1/ns/notificationtype",
                 "qualityinvestigation", "https://w3id.org/edc/v0.0.1/ns/notificationmethod", "receive");
 
-        DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                     .type(DATA_ADDRESS_TYPE_HTTP_DATA)
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/type", "HttpData")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/baseUrl",
+        final DataAddress dataAddress = DataAddress.Builder.newInstance()
+                                                           .type(DATA_ADDRESS_TYPE_HTTP_DATA)
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/type", "HttpData")
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/baseUrl",
                                                              "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/proxyMethod", "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/proxyBody", "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/method", "POST")
-                                                     .build();
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/proxyMethod", "true")
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/proxyBody", "true")
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/method", "POST")
+                                                           .build();
 
-        Asset asset = Asset.Builder.newInstance()
-                                   .id("Asset1")
-                                   .contentType("Asset")
-                                   .properties(properties)
-                                   .dataAddress(dataAddress)
-                                   .build();
-        JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
+        final Asset asset = Asset.Builder.newInstance()
+                                         .id("Asset1")
+                                         .contentType("Asset")
+                                         .properties(properties)
+                                         .dataAddress(dataAddress)
+                                         .build();
+        final JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
 
         JSONAssert.assertEquals("""
                 {
@@ -159,28 +160,28 @@ class EdcAssetServiceTest {
     @Test
     void testRegistryAssetCreateRequestStructure() throws JSONException {
 
-        Map<String, Object> properties = Map.of("http://purl.org/dc/terms/type",
+        final Map<String, Object> properties = Map.of("http://purl.org/dc/terms/type",
                 Map.of("@id", "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry"),
                 "https://w3id.org/catenax/ontology/common#version", "3.0", "https://w3id.org/edc/v0.0.1/ns/type",
                 "data.core.digitalTwinRegistry");
 
-        DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                     .type(DATA_ADDRESS_TYPE_HTTP_DATA)
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/type", "HttpData")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/baseUrl",
+        final DataAddress dataAddress = DataAddress.Builder.newInstance()
+                                                           .type(DATA_ADDRESS_TYPE_HTTP_DATA)
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/type", "HttpData")
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/baseUrl",
                                                              "https://test.dtr/registry")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/proxyMethod", "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/proxyBody", "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/method", "POST")
-                                                     .build();
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/proxyMethod", "true")
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/proxyBody", "true")
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/method", "POST")
+                                                           .build();
 
-        Asset asset = Asset.Builder.newInstance()
-                                   .id("Asset1")
-                                   .contentType("Asset")
-                                   .properties(properties)
-                                   .dataAddress(dataAddress)
-                                   .build();
-        JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
+        final Asset asset = Asset.Builder.newInstance()
+                                         .id("Asset1")
+                                         .contentType("Asset")
+                                         .properties(properties)
+                                         .dataAddress(dataAddress)
+                                         .build();
+        final JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
 
         JSONAssert.assertEquals("""
                 {
@@ -221,15 +222,15 @@ class EdcAssetServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
-        String baseUrl = "http://test.test";
-        String assetName = "asset1";
-        NotificationMethod notificationMethod = NotificationMethod.RECEIVE;
-        NotificationType notificationType = NotificationType.QUALITY_ALERT;
+        final String baseUrl = "http://test.test";
+        final String assetName = "asset1";
+        final NotificationMethod notificationMethod = NotificationMethod.RECEIVE;
+        final NotificationType notificationType = NotificationType.QUALITY_ALERT;
         when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
                 ResponseEntity.ok("test"));
 
         // when
-        String assetId = service.createNotificationAsset(baseUrl, assetName, notificationMethod, notificationType);
+        final String assetId = service.createNotificationAsset(baseUrl, assetName, notificationMethod, notificationType, null);
 
         // then
         assertThat(assetId).isNotBlank();
@@ -244,14 +245,14 @@ class EdcAssetServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
-        String baseUrl = "http://test.test";
-        String assetName = "asset1";
-        Notification updateQualityAlertNotification = Notification.UPDATE_QUALITY_ALERT_NOTIFICATION;
+        final String baseUrl = "http://test.test";
+        final String assetName = "asset1";
+        final Notification updateQualityAlertNotification = Notification.UPDATE_QUALITY_ALERT_NOTIFICATION;
         when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
                 ResponseEntity.ok("test"));
 
         // when
-        String assetId = service.createNotificationAsset(baseUrl, assetName, updateQualityAlertNotification);
+        final String assetId = service.createNotificationAsset(baseUrl, assetName, updateQualityAlertNotification);
 
         // then
         assertThat(assetId).isNotBlank();
@@ -273,13 +274,13 @@ class EdcAssetServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
-        String baseUrl = "http://test.test";
-        String assetName = "asset1";
+        final String baseUrl = "http://test.test";
+        final String assetName = "asset1";
         when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
                 ResponseEntity.ok("test"));
 
         // when
-        String assetId = service.createDtrAsset(baseUrl, assetName);
+        final String assetId = service.createDtrAsset(baseUrl, assetName);
 
         // then
         assertThat(assetId).isNotBlank();
@@ -291,13 +292,13 @@ class EdcAssetServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
-        String baseUrl = "http://test.test";
-        String assetName = "asset1";
+        final String baseUrl = "http://test.test";
+        final String assetName = "asset1";
         when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
                 ResponseEntity.ok("test"));
 
         // when
-        String assetId = service.createSubmodelAsset(baseUrl, assetName);
+        final String assetId = service.createSubmodelAsset(baseUrl, assetName);
 
         // then
         assertThat(assetId).isNotBlank();
@@ -309,7 +310,7 @@ class EdcAssetServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
-        String assetId = "id";
+        final String assetId = "id";
 
         // when
         service.deleteAsset(assetId);
@@ -324,8 +325,8 @@ class EdcAssetServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
-        String baseUrl = "http://test.test";
-        String assetName = "asset1";
+        final String baseUrl = "http://test.test";
+        final String assetName = "asset1";
         doThrow(HttpClientErrorException.create("Surprise", HttpStatus.BAD_REQUEST, "", null, null, null)).when(
                 restTemplate).postForEntity(any(String.class), any(String.class), any());
 
@@ -339,8 +340,8 @@ class EdcAssetServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
-        String baseUrl = "http://test.test";
-        String assetName = "asset1";
+        final String baseUrl = "http://test.test";
+        final String assetName = "asset1";
         doThrow(HttpClientErrorException.create("Surprise", HttpStatus.CONFLICT, "", null, null, null)).when(
                 restTemplate).postForEntity(any(String.class), any(String.class), any());
 
@@ -354,11 +355,44 @@ class EdcAssetServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
-        String assetId = "id";
+        final String assetId = "id";
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 
         // when/then
         assertThrows(DeleteEdcAssetException.class, () -> service.deleteAsset(assetId));
+    }
+
+    @Test
+    void givenCreateNotificationAssetIncludingAuthentication_whenOk_ThenReturnCreatedAssetId() throws CreateEdcAssetException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
+        final String baseUrl = "http://test.test";
+        final String assetName = "asset1";
+        final NotificationMethod notificationMethod = NotificationMethod.RECEIVE;
+        final NotificationType notificationType = NotificationType.QUALITY_ALERT;
+        when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
+                ResponseEntity.ok("test"));
+
+        final EdcTechnicalServiceAuthentication edcTechnicalServiceAuthentication = EdcTechnicalServiceAuthentication.builder()
+                                                                                                                           .technicalServiceApiKey("apiKeyValue").build();
+
+        // when
+        final String assetId = service.createNotificationAsset(baseUrl, assetName, notificationMethod, notificationType, edcTechnicalServiceAuthentication);
+
+        // then
+        assertThat(assetId).isNotBlank();
+        final String expectedRequestPayload = expectedCreateNotificationAssetIncludingAuthenticationPayload(assetId,
+                Notification.RECEIVE_QUALITY_ALERT_NOTIFICATION);
+        verify(restTemplate, times(1)).postForEntity(MANAGEMENT_ASSETS_PATH, expectedRequestPayload, String.class);
+    }
+
+    private static String expectedCreateNotificationAssetIncludingAuthenticationPayload(final String assetId,
+            final Notification notification) {
+        return """
+                {"@id":"%s","@type":"edc:Asset","edc:properties":{"edc:policy-id":"use-eu","dct:type":{"@id":"https://w3id.org/catenax/taxonomy#%s"},"edc:description":"asset1","https://w3id.org/catenax/ontology/common#version":"1.2","edc:id":"%s","edc:contenttype":"application/json"},"edc:dataAddress":{"@type":"edc:DataAddress","edc:method":"POST","edc:type":"HttpData","edc:proxyMethod":"true","edc:proxyBody":"true","header:x-technical-service-key":"apiKeyValue","edc:baseUrl":"http://test.test"},"@context":{"odrl":"http://www.w3.org/ns/odrl/2/","dct":"http://purl.org/dc/terms/","tx":"https://w3id.org/tractusx/v0.0.1/ns/","edc":"https://w3id.org/edc/v0.0.1/ns/","dcat":"https://www.w3.org/ns/dcat/","dspace":"https://w3id.org/dspace/v0.8/","cx-policy":"https://w3id.org/catenax/policy/"}}""".formatted(
+                assetId, notification.getValue(), assetId);
     }
 
     ObjectMapper objectMapper() {
