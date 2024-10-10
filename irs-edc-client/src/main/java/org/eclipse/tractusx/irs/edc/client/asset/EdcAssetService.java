@@ -39,7 +39,6 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetE
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.EdcAssetAlreadyExistsException;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
-import org.eclipse.tractusx.irs.edc.client.model.EdcTechnicalServiceAuthentication;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -65,7 +64,6 @@ public class EdcAssetService {
     private static final String ASSET_DATA_ADDRESS_PROXY_BODY = NAMESPACE_EDC + "proxyBody";
     private static final String ASSET_DATA_ADDRESS_PROXY_PATH = NAMESPACE_EDC + "proxyPath";
     private static final String ASSET_DATA_ADDRESS_PROXY_QUERY_PARAMS = NAMESPACE_EDC + "proxyQueryParams";
-    private static final String ASSET_DATA_ADDRESS_TECHNICAL_SERVICE_API_KEY = "header:x-technical-service-key";
     private static final String ASSET_DATA_ADDRESS_METHOD = NAMESPACE_EDC + "method";
     private static final String ASSET_PROPERTY_DESCRIPTION = NAMESPACE_EDC + "description";
     private static final String ASSET_PROPERTY_CONTENT_TYPE = NAMESPACE_EDC + "contenttype";
@@ -87,17 +85,16 @@ public class EdcAssetService {
     private final RestTemplate restTemplate;
 
     public String createNotificationAsset(final String baseUrl, final String assetName,
-            final NotificationMethod notificationMethod, final NotificationType notificationType, final EdcTechnicalServiceAuthentication edcTechnicalServiceAuthentication)
+            final NotificationMethod notificationMethod, final NotificationType notificationType)
             throws CreateEdcAssetException {
         final Notification notification = Notification.toNotification(notificationMethod, notificationType);
-        final Asset request = createNotificationAssetRequest(assetName, baseUrl, notification,
-                edcTechnicalServiceAuthentication);
+        final Asset request = createNotificationAssetRequest(assetName, baseUrl, notification);
         return sendRequest(request);
     }
 
     public String createNotificationAsset(final String baseUrl, final String assetName, final Notification notification)
             throws CreateEdcAssetException {
-        final Asset request = createNotificationAssetRequest(assetName, baseUrl, notification, null);
+        final Asset request = createNotificationAssetRequest(assetName, baseUrl, notification);
         return sendRequest(request);
     }
 
@@ -146,30 +143,24 @@ public class EdcAssetService {
     }
 
     private Asset createNotificationAssetRequest(final String assetName, final String baseUrl,
-            final Notification notification, final EdcTechnicalServiceAuthentication edcTechnicalServiceAuthentication) {
+            final Notification notification) {
         final String assetId = UUID.randomUUID().toString();
         final Map<String, Object> properties = Map.of(ASSET_PROPERTY_DESCRIPTION, assetName,
                 ASSET_PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE, ASSET_PROPERTY_POLICY_ID, DEFAULT_POLICY_ID,
                 ASSET_PROPERTY_COMMON_VERSION_KEY, ASSET_PROPERTY_NOTIFICATION_VERSION, ASSET_PROPERTY_DCAT_TYPE,
                 Map.of("@id", JsonLdConfiguration.NAMESPACE_CX_TAXONOMY + notification.getValue()));
 
-        final DataAddress.Builder dataAddressBuilder = DataAddress.Builder.newInstance()
-                                                                          .type(DATA_ADDRESS_TYPE_HTTP_DATA) // Address type HTTP
-                                                                          .property(EDC_DATA_ADDRESS_TYPE_PROPERTY,
-                                                                                  DATA_ADDRESS_TYPE_HTTP_DATA) // Address type property
-                                                                          .property(ASSET_DATA_ADDRESS_BASE_URL,
-                                                                                  baseUrl) // Base URL
-                                                                          .property(ASSET_DATA_ADDRESS_PROXY_METHOD,
-                                                                                  Boolean.TRUE.toString()) // Enable proxy method
-                                                                          .property(ASSET_DATA_ADDRESS_PROXY_BODY,
-                                                                                  Boolean.TRUE.toString()) // Enable proxy body
-                                                                          .property(ASSET_DATA_ADDRESS_METHOD,
-                                                                                  DEFAULT_METHOD); // Default method (e.g., GET, POST)
-
-        enrichOptionalEdcApiAuthenticationToDataAddress(edcTechnicalServiceAuthentication, dataAddressBuilder);
-
-        final DataAddress dataAddress = dataAddressBuilder.build();
-
+        final DataAddress dataAddress = DataAddress.Builder.newInstance()
+                                                           .type(DATA_ADDRESS_TYPE_HTTP_DATA)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY,
+                                                                   DATA_ADDRESS_TYPE_HTTP_DATA)
+                                                           .property(ASSET_DATA_ADDRESS_BASE_URL, baseUrl)
+                                                           .property(ASSET_DATA_ADDRESS_PROXY_METHOD,
+                                                                   Boolean.TRUE.toString())
+                                                           .property(ASSET_DATA_ADDRESS_PROXY_BODY,
+                                                                   Boolean.TRUE.toString())
+                                                           .property(ASSET_DATA_ADDRESS_METHOD, DEFAULT_METHOD)
+                                                           .build();
         return Asset.Builder.newInstance()
                             .id(assetId)
                             .contentType("Asset")
@@ -230,13 +221,5 @@ public class EdcAssetService {
                             .properties(properties)
                             .dataAddress(dataAddress)
                             .build();
-    }
-
-    private static void enrichOptionalEdcApiAuthenticationToDataAddress(
-            final EdcTechnicalServiceAuthentication edcTechnicalServiceAuthentication, final DataAddress.Builder dataAddressBuilder) {
-        if (edcTechnicalServiceAuthentication != null && edcTechnicalServiceAuthentication.getTechnicalServiceApiKey() != null
-                && !edcTechnicalServiceAuthentication.getTechnicalServiceApiKey().isEmpty()) {
-            dataAddressBuilder.property(ASSET_DATA_ADDRESS_TECHNICAL_SERVICE_API_KEY, edcTechnicalServiceAuthentication.getTechnicalServiceApiKey());
-        }
     }
 }
