@@ -13,6 +13,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) (#12)
 - secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
 
+### Added
+- Added api key authentication for edc notification requests
+
 ## [5.4.1] - 2024-08-19
 
 ### Fixed
