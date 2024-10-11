@@ -7,7 +7,6 @@ on:
       - '**/*.md'
       - '**/*.txt'
       - '.config/**'
-      - '.github/**'
       - 'docs/**'
       - 'local/**'
 
@@ -16,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      contents: read
 
     name: changelog-check
     steps:
