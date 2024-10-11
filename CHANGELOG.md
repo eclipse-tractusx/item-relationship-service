@@ -11,6 +11,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed 
 
 - Build href URL correctly for accessing submodel assets #889
+- Resolve Null pointer exception while registering the company #888
 
 ## [5.4.1] - 2024-08-19
 
