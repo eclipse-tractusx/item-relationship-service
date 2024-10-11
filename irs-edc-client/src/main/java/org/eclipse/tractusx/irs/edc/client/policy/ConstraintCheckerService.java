@@ -23,11 +23,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
 import org.eclipse.edc.policy.model.AndConstraint;
 import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.Constraint;
@@ -60,8 +58,8 @@ public class ConstraintCheckerService {
     private boolean isSameAs(final Constraint constraint, final Constraints acceptedConstraints) {
 
         if (constraint instanceof AtomicConstraint atomicConstraint) {
-            return acceptedConstraints.getOr().stream().anyMatch(p -> isSameAs(atomicConstraint, p))
-                    || acceptedConstraints.getAnd().stream().anyMatch(p -> isSameAs(atomicConstraint, p));
+            return ListUtils.emptyIfNull(acceptedConstraints.getOr()).stream().anyMatch(p -> isSameAs(atomicConstraint, p))
+                    || ListUtils.emptyIfNull(acceptedConstraints.getAnd()).stream().anyMatch(p -> isSameAs(atomicConstraint, p));
         }
 
         if (constraint instanceof AndConstraint andConstraint) {
@@ -74,15 +72,15 @@ public class ConstraintCheckerService {
 
             return andConstraint.getConstraints()
                                 .stream()
-                                .allMatch(constr -> isInList(constr, Optional.ofNullable(acceptedConstraints.getAnd())
-                                                                             .orElse(Collections.emptyList())));
+                                .allMatch(constr -> isInList(constr,
+                                        ListUtils.emptyIfNull(acceptedConstraints.getAnd())));
         }
 
         if (constraint instanceof OrConstraint orConstraint) {
             return orConstraint.getConstraints()
                                .stream()
-                               .anyMatch(constr -> isInList(constr, Optional.ofNullable(acceptedConstraints.getOr())
-                                                                            .orElse(Collections.emptyList())));
+                               .anyMatch(constr -> isInList(constr,
+                                       ListUtils.emptyIfNull(acceptedConstraints.getOr())));
         }
 
         return false;
@@ -108,5 +106,4 @@ public class ConstraintCheckerService {
                                         .build()
                                         .isValid();
     }
-
 }

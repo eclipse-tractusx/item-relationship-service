@@ -12,6 +12,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) (#12)
 - secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
+- Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists (#24)
 
 ### Added
 - Added api key authentication for edc notification requests
