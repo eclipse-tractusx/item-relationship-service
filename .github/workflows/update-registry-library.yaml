@@ -83,7 +83,7 @@ jobs:
           mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES -P dash
 
       - name: Create PR for irs-registry-client version update
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore(dependencies): Update irs-registry-client to ${{ env.NEXT_VERSION }}"
           branch: chore/update-irs-registry-client-${{ env.NEXT_VERSION }}
