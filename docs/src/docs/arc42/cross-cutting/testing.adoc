@@ -1,5 +1,19 @@
 = Testing concepts
 
+== How to test a feature
+
+Features in IRS are tested by unit, integration and end-to-end tests.
+We maintain a unit and integration tests coverage of at lease 80% which has to be kept up for new features.
+
+To test integration with the whole IRS flow, we provide https://github.com/eclipse-tractusx/item-relationship-service/blob/main/irs-api/src/test/java/org/eclipse/tractusx/irs/IrsWireMockIntegrationTest.java[Wiremock integration tests] where all third-party services are mocked.
+This test can be extended with your desired configuration to maintain full coverage.
+
+End-to-end tests are conducted via https://taverntesting.github.io/[Tavern] and https://cucumber.io/[Cucumber].
+
+Cucumber feature files are located in https://github.com/eclipse-tractusx/item-relationship-service/tree/main/irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features[irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features] and executed with a GitHub workflow https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/cucumber-integration-test-UMBRELLA.yaml[cucumber-integration-test-UMBRELLA.yaml].
+
+Tavern Tests are located in https://github.com/eclipse-tractusx/item-relationship-service/tree/main/local/testing/api-tests[local/testing/api-tests] and executed with a GitHub workflow https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml[tavern-UMBRELLA.yml].
+
 == Umbrella
 
 The https://github.com/eclipse-tractusx/tractus-x-umbrella[umbrella chart] provides a pre-configured catena-x network which includes all necessary components for the IRS to work.
@@ -35,3 +49,5 @@ Test results are automatically added to the workflow summary and in case of the 
 Due to limitations in the IATP mock, the only way of using multiple BPNs in the test data is to spin up multiple EDC provider instances.
 However, the chart is used inside GitHub Workflows, so compute resources are limited.
 For this reason, the IRS test data was changed to include only data pointing to a single BPN.
+
+For instructions on how to use the Umbrella Chart locally, see https://github.com/eclipse-tractusx/item-relationship-service/blob/main/INSTALL.md#local-installation-with-umbrella[INSTALL.md]
