@@ -27,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -45,6 +47,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -52,7 +57,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class EdcSubmodelFacadeTest {
 
     private final static String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
-    private final static String SUBMODEL_SUFIX = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
+    private final static String DATAPLANE_URL = "https://edc.dataplane.test/public/submodel";
     private final static String ASSET_ID = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
 
     private EdcSubmodelFacade testee;
@@ -60,7 +65,8 @@ class EdcSubmodelFacadeTest {
     @Mock
     private EdcSubmodelClient client;
 
-    private final EdcConfiguration config = new EdcConfiguration();
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private EdcConfiguration config;
 
     @BeforeEach
     public void beforeEach() {
@@ -79,8 +85,8 @@ class EdcSubmodelFacadeTest {
             when(client.getSubmodelPayload(any(), any(), any(), any())).thenReturn(future);
 
             // act
-            ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelPayload(CONNECTOR_ENDPOINT,
-                    SUBMODEL_SUFIX, ASSET_ID, "bpn");
+            ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelPayload(CONNECTOR_ENDPOINT, DATAPLANE_URL,
+                    ASSET_ID, "bpn");
 
             // assert
             assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -93,8 +99,8 @@ class EdcSubmodelFacadeTest {
             when(client.getSubmodelPayload(any(), any(), any(), any())).thenThrow(e);
 
             // act
-            ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelPayload(CONNECTOR_ENDPOINT,
-                    SUBMODEL_SUFIX, ASSET_ID, "bpn");
+            ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelPayload(CONNECTOR_ENDPOINT, DATAPLANE_URL,
+                    ASSET_ID, "bpn");
 
             // assert
             assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -106,16 +112,73 @@ class EdcSubmodelFacadeTest {
             // arrange
             final CompletableFuture<SubmodelDescriptor> future = mock(CompletableFuture.class);
             final InterruptedException e = new InterruptedException();
+            when(config.getAsyncTimeoutMillis()).thenReturn(1000L);
             when(future.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS)).thenThrow(e);
             when(client.getSubmodelPayload(any(), any(), any(), any())).thenReturn(future);
 
             // act
-            testee.getSubmodelPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID, "bpn");
+            testee.getSubmodelPayload(CONNECTOR_ENDPOINT, DATAPLANE_URL, ASSET_ID, "bpn");
 
             // assert
             assertThat(Thread.currentThread().isInterrupted()).isTrue();
         }
 
+        @Test
+        void shouldAppendSubmodelSuffixPathCorrectly() throws EdcClientException {
+            // Arrange
+            final String connectorEndpoint = "https://connector.endpoint.com";
+            final String dataplaneUrl = "https://edc.dataplane.test/public/submodel?content=value&extent=withBlobValue";
+            final CompletableFuture<SubmodelDescriptor> future = mock(CompletableFuture.class);
+            when(client.getSubmodelPayload(any(), any(), any(), any())).thenReturn(future);
+            when(config.getSubmodel().getSubmodelSuffix()).thenReturn("/$value");
+            when(config.getAsyncTimeoutMillis()).thenReturn(1000L);
+
+            // Act
+            testee.getSubmodelPayload(connectorEndpoint, dataplaneUrl, ASSET_ID, "bpn");
+
+            // Assert
+            final String expectedDataplaneUrl = "https://edc.dataplane.test/public/submodel/$value?content=value&extent=withBlobValue";
+            verify(client, times(1)).getSubmodelPayload(connectorEndpoint, expectedDataplaneUrl, ASSET_ID, "bpn");
+        }
+
+        @ParameterizedTest
+        @CsvSource(
+                { "'https://edc.dataplane.test/public/submodel', '/$value', 'https://edc.dataplane.test/public/submodel/$value'",
+                  "'https://edc.dataplane.test/public/submodel', '$value', 'https://edc.dataplane.test/public/submodel/$value'",
+                  "'https://edc.dataplane.test/public/submodel/', '/$value', 'https://edc.dataplane.test/public/submodel/$value'",
+                  "'https://edc.dataplane.test/public/submodel/', '$value', 'https://edc.dataplane.test/public/submodel/$value'",
+                  "'https://edc.test/submodel?content=value&extent=withBlobValue', '/$value', 'https://edc.test/submodel/$value?content=value&extent=withBlobValue'",
+                  "'https://edc.test/submodel?content=value&extent=withBlobValue', '$value', 'https://edc.test/submodel/$value?content=value&extent=withBlobValue'",
+                  "'https://edc.test/submodel/?content=value&extent=withBlobValue', '/$value', 'https://edc.test/submodel/$value?content=value&extent=withBlobValue'",
+                  "'https://edc.test/submodel/?content=value&extent=withBlobValue', '$value', 'https://edc.test/submodel/$value?content=value&extent=withBlobValue'"
+                })
+        void shouldAppendSubmodelSuffixPathCorrectly(final String dataplaneUrlFromHref, final String submodelSuffix,
+                final String expectedDataplaneUrl) throws EdcClientException {
+            // Arrange
+            final String connectorEndpoint = "https://connector.endpoint.com";
+            final CompletableFuture<SubmodelDescriptor> future = mock(CompletableFuture.class);
+            when(client.getSubmodelPayload(any(), any(), any(), any())).thenReturn(future);
+            when(config.getSubmodel().getSubmodelSuffix()).thenReturn(submodelSuffix);
+            when(config.getAsyncTimeoutMillis()).thenReturn(1000L);
+
+            // Act
+            testee.getSubmodelPayload(connectorEndpoint, dataplaneUrlFromHref, ASSET_ID, "bpn");
+
+            // Assert
+            verify(client, times(1)).getSubmodelPayload(connectorEndpoint, expectedDataplaneUrl, ASSET_ID, "bpn");
+        }
+
+        @Test
+        void shouldThrowEdcClientExceptionForInvalidHrefUrl() {
+            // Arrange
+            final String connectorEndpoint = "https://connector.endpoint.com";
+            final String invalidDataplaneUrl = "://example.com";
+
+            // Act & Assert
+            assertThatThrownBy(() -> testee.getSubmodelPayload(connectorEndpoint, invalidDataplaneUrl, ASSET_ID,
+                    "bpn")).isInstanceOf(EdcClientException.class)
+                           .hasMessage("Invalid href URL '%s'".formatted(invalidDataplaneUrl));
+        }
     }
 
     @Nested
@@ -128,6 +191,7 @@ class EdcSubmodelFacadeTest {
             // arrange
             final CompletableFuture<EdcNotificationResponse> future = mock(CompletableFuture.class);
             final InterruptedException e = new InterruptedException();
+            when(config.getAsyncTimeoutMillis()).thenReturn(1000L);
             when(future.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS)).thenThrow(e);
             when(client.sendNotification(any(), any(), any(), any())).thenReturn(future);
 
@@ -146,7 +210,8 @@ class EdcSubmodelFacadeTest {
             when(client.sendNotification(any(), any(), any(), any())).thenReturn(future);
 
             // act
-            ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", "notify-request-asset", null, "bpn");
+            ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", "notify-request-asset", null,
+                    "bpn");
 
             // assert
             assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -159,7 +224,8 @@ class EdcSubmodelFacadeTest {
             when(client.sendNotification(any(), any(), any(), any())).thenThrow(e);
 
             // act
-            ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", "notify-request-asset", null, "bpn");
+            ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", "notify-request-asset", null,
+                    "bpn");
 
             // assert
             assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -191,7 +257,8 @@ class EdcSubmodelFacadeTest {
                     List.of(CompletableFuture.failedFuture(new EdcClientException("test"))));
 
             // act
-            final List<CompletableFuture<EndpointDataReference>> results = testee.getEndpointReferencesForRegistryAsset("", "");
+            final List<CompletableFuture<EndpointDataReference>> results = testee.getEndpointReferencesForRegistryAsset(
+                    "", "");
 
             // assert
             assertThat(results).hasSize(1);

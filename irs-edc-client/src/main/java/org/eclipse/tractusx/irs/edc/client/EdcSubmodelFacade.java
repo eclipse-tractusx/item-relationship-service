@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -37,6 +38,7 @@ import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
+import org.eclipse.tractusx.irs.edc.client.util.UriPathJoiner;
 
 /**
  * Public API Facade for submodel domain
@@ -56,7 +58,8 @@ public class EdcSubmodelFacade {
     public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId, final String bpn) throws EdcClientException {
         try {
-            final String fullSubmodelDataplaneUrl = submodelDataplaneUrl + config.getSubmodel().getSubmodelSuffix();
+            final String fullSubmodelDataplaneUrl = getFullSubmodelDataplaneUrl(submodelDataplaneUrl);
+
             log.debug("Requesting Submodel for URL: '{}'", fullSubmodelDataplaneUrl);
             return client.getSubmodelPayload(connectorEndpoint, fullSubmodelDataplaneUrl, assetId, bpn)
                          .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
@@ -73,6 +76,14 @@ public class EdcSubmodelFacade {
             throw new EdcClientException(cause);
         } catch (TimeoutException e) {
             throw new EdcClientException("Timeout while getting submodel payload", e);
+        }
+    }
+
+    private String getFullSubmodelDataplaneUrl(final String submodelDataplaneUrl) throws EdcClientException {
+        try {
+            return UriPathJoiner.appendPath(submodelDataplaneUrl, config.getSubmodel().getSubmodelSuffix());
+        } catch (URISyntaxException e) {
+            throw new EdcClientException("Invalid href URL '%s'".formatted(submodelDataplaneUrl), e);
         }
     }
 
