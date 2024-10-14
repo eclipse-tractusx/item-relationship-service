@@ -53,6 +53,7 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(MockitoExtension.class)
 class SubmodelExponentialRetryTest {
 
+    public static final String SUBMODEL_DATAPLANE_URL = "https://edc.dataplane.test/public/submodel";
     private final RetryRegistry retryRegistry = new InMemoryRetryRegistry();
     @Mock
     private RestTemplate restTemplate;
@@ -98,8 +99,7 @@ class SubmodelExponentialRetryTest {
                 new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
-        assertThatThrownBy(() -> testee.getSubmodelPayload("https://connector.endpoint.com",
-                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
+        assertThatThrownBy(() -> testee.getSubmodelPayload("https://connector.endpoint.com", SUBMODEL_DATAPLANE_URL,
                 "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(HttpServerErrorException.class);
 
         // Assert
@@ -117,8 +117,7 @@ class SubmodelExponentialRetryTest {
                 new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
-        assertThatThrownBy(() -> testee.getSubmodelPayload("https://connector.endpoint.com",
-                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
+        assertThatThrownBy(() -> testee.getSubmodelPayload("https://connector.endpoint.com", SUBMODEL_DATAPLANE_URL,
                 "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert

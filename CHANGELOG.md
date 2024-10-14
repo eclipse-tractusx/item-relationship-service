@@ -14,7 +14,12 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
 - Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists (#24)
 
+### Fixed
+
+- Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position
+
 ### Added
+
 - Added api key authentication for edc notification requests
 
 ## [5.4.1] - 2024-08-19
