@@ -8,15 +8,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-### Added
-- Added api key authentication for edc notification requests
-
 ### Changed 
 
-- Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) (#12)
-
-### Removed
-- Removed subjectId from AssetAdministrationShellDescriptor object
+- Build href URL correctly for accessing submodel assets #889
 
 ## [5.4.1] - 2024-08-19
 
