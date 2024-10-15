@@ -23,6 +23,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Added api key authentication for edc notification requests
 
+### Removed
+- Removed subjectId from AssetAdministrationShellDescriptor object
+
 ## [5.4.1] - 2024-08-19
 
 ### Fixed

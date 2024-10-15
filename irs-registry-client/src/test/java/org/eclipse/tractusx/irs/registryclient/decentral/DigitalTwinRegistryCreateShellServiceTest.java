@@ -117,14 +117,6 @@ class DigitalTwinRegistryCreateShellServiceTest {
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
                                                                                                  .name("manufacturerId")
                                                                                                  .value("BPNL00000003CNKC")
-                                                                                                 .subjectId(
-                                                                                                         Reference.builder()
-                                                                                                                  .keys(List.of(
-                                                                                                                          SemanticId.builder()
-                                                                                                                                    .type("GlobalReference")
-                                                                                                                                    .value("PUBLIC_READABLE")
-                                                                                                                                    .build()))
-                                                                                                                  .build())
                                                                                                  .build()))
                                                  .submodelDescriptors(List.of(SubmodelDescriptor.builder()
                                                                                                 .idShort(
