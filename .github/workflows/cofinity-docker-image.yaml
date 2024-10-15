@@ -2,22 +2,13 @@ name: Docker image build Cofinity-X
 
 on:
   workflow_dispatch: # Trigger manually
-  pull_request:
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-      - 'charts/**'
-      - '.config/**'
-      - 'docs/**'
-      - '!docs/src/api/**'
-      - 'local/**'
-      - 'CHANGELOG.md'
-
   push:
     branches:
       - main
     tags:
-      - '**'
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
+  pull_request:
 
 concurrency:
   # cancel older running jobs on the same branch
