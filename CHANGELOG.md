@@ -15,6 +15,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) (#12)
 
+### Removed
+- Removed subjectId from AssetAdministrationShellDescriptor object
+
 ## [5.4.1] - 2024-08-19
 
 ### Fixed
