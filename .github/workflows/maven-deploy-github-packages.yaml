@@ -1,0 +1,69 @@
+name: Upload to Github Packages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release/**
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  publish-to-github-packages:
+    name: "Publish artifacts to Github Packages"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    if: |
+      github.event_name != 'pull_request' && github.ref != 'refs/heads/releases'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Configure Maven settings
+        run: |
+          mkdir -p $HOME/.m2
+          echo "<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${{ github.actor }}</username>
+                <password>${{ secrets.GITHUB_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>" > $HOME/.m2/settings.xml
+
+      - name: Copy License information
+        run: |
+          mkdir -p irs-registry-client/src/main/resources/META-INF/
+          mkdir -p irs-edc-client/src/main/resources/META-INF/
+          mkdir -p irs-models/src/main/resources/META-INF/
+          mkdir -p irs-testing/src/main/resources/META-INF/
+          mkdir -p irs-common/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-registry-client/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-edc-client/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-models/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-testing/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-common/src/main/resources/META-INF/
+
+      # publish snapshots or releases
+      - name: Publish version
+        run: |-
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl irs-registry-client)
+          mvn clean deploy -s $HOME/.m2/settings.xml --batch-mode -Prelease-to-github-packages -pl irs-testing,irs-models,irs-edc-client,irs-registry-client,irs-common -Drevision=$VERSION
