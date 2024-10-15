@@ -14,6 +14,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) (#12)
 - secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
 - Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists (#24)
+- Release documentation for irs-registry-client (#346)
 
 ### Fixed
 
@@ -22,6 +23,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Added
 
 - Added api key authentication for edc notification requests
+- Added Github workflow for publishing build artifacts to Github Packages (#346)
+- Added Maven profile for publishing into Github Packages (#346)
 
 ### Removed
 - Removed subjectId from AssetAdministrationShellDescriptor object

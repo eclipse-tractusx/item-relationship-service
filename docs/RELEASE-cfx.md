@@ -16,8 +16,7 @@ Please find [Release Guidelines Upstream](https://github.com/Cofinity-X/item-rel
 3) Select "Run workflow" select the type of version increment major, minor or patch (Can be adjusted on generated PR branch). Check the box to remove the snapshot. Click on "Run".
 4) A pull request (name: Update irs-registry-client to "Version") will be generated in which you have to make sure the irs lib version is now correct (change it manually if necessary).
 5) Merge the generated Pull request
-### TODO currently irs cannot publish library for cofinity project
-7) The GitHub action [Upload to Central Maven Registry ](https://github.com/Cofinity-X/item-relationship-service/actions/workflows/maven-deploy.yaml) will automatically release the irs-registry-client library with the new version defined in step 4
+7) The GitHub action [Upload to Github Packages ](https://github.com/Cofinity-X/item-relationship-service/actions/workflows/cfx-maven-deploy-github-packages.yaml) will automatically release the irs-registry-client library with the new version defined in step 4
 
 ### IRS Release process
 
