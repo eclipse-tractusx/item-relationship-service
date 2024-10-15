@@ -8,6 +8,10 @@ on:
     paths:
       - 'charts/**'
 
+env:
+  # Specific CHANGELOG file which is used for releasing the product. Default <CHANGELOG.md>.
+  CHANGELOG_PATH: 'CFX-CHANGELOG.md'
+
 jobs:
   get-helm-charts-versions-irs:
     outputs:
@@ -76,7 +80,7 @@ jobs:
           currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^item-relationship-service-//" )
           echo currentVersionNumber=$currentVersionNumber
           
-          sed -n -e '/## \['"${currentVersionNumber}"'\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> CHANGELOG-temp.md
+          sed -n -e '/## \['"${currentVersionNumber}"'\]/,/## \[/ p' ${{ env.CHANGELOG_PATH }} | head -n -1 | tail -n +2 >> CHANGELOG-temp.md
           echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ needs.get-helm-charts-versions-irs.outputs.latest_version }}...${{ needs.get-helm-charts-versions-irs.outputs.current_version }} >> CHANGELOG-temp.md
           
           echo "cat CHANGELOG-temp.md"

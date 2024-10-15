@@ -12,6 +12,7 @@ on:
       - '!docs/src/api/**'
       - 'local/**'
       - 'CHANGELOG.md'
+      -  'CFX-CHANGELOG.md'
 
   push:
     branches:

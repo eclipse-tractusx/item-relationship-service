@@ -10,6 +10,9 @@ on:
       - 'docs/**'
       - 'local/**'
 
+env:
+  # Specific CHANGELOG file which is used for releasing the product. Default <CHANGELOG.md>.
+  CHANGELOG_PATH: 'CFX-CHANGELOG.md'
 jobs:
   analyze:
     runs-on: ubuntu-latest
@@ -26,7 +29,7 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           files: |
-            CHANGELOG.md
+            ${{ env.CHANGELOG_PATH }}
 
       - name: Echo result if CHANGELOG file was changed
         if: steps.changelog-changed.outputs.any_changed == 'true'
