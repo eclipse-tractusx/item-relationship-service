@@ -1,4 +1,4 @@
-name: Upload to Github Packages
+name: CFX |Upload to Github Packages|
 
 on:
   workflow_dispatch:
