@@ -112,6 +112,8 @@ jobs:
         with:
           output: swagger-ui
           spec-file: docs/src/api/irs-api.yaml
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Update documentation on GitHub Pages
         if: github.ref == 'refs/heads/main'
