@@ -40,12 +40,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.data.StringMapper;
@@ -61,6 +65,7 @@ public class WiremockSupport {
 
     public static final String SUBMODEL_SUFFIX = "/\\$value";
     public static final String CALLBACK_URL = "http://localhost/callback?id={id}&state={state}";
+    public static final String CALLBACK_BATCH_URL = "http://localhost/callback?batchId={batchId}&batchState={batchState}";
     public static final String CALLBACK_PATH = "/callback";
 
     public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
@@ -109,6 +114,32 @@ public class WiremockSupport {
                           .direction(Direction.DOWNWARD)
                           .callbackUrl(callbackUrl)
                           .build();
+    }
+
+    static RegisterBatchOrder batchOrderRequest(Set<PartChainIdentificationKey> keys, final int depth,
+            final String callbackUrl) {
+        return RegisterBatchOrder.builder()
+                                 .keys(keys)
+                                 .depth(depth)
+                                 .callbackUrl(callbackUrl)
+                                 .batchStrategy(BatchStrategy.PRESERVE_BATCH_ORDER)
+                                 .direction(Direction.DOWNWARD)
+                                 .collectAspects(true)
+                                 .batchSize(1)
+                                 .timeout(100)
+                                 .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
+                                 .build();
+    }
+
+    static RegisterBpnInvestigationBatchOrder bpnInvestigationBatchOrderRequest(Set<PartChainIdentificationKey> keys, final String callbackUrl) {
+        return RegisterBpnInvestigationBatchOrder.builder()
+                                                 .keys(keys)
+                                                 .incidentBPNSs(List.of())
+                                                 .callbackUrl(callbackUrl)
+                                                 .batchStrategy(BatchStrategy.PRESERVE_BATCH_ORDER)
+                                                 .batchSize(1)
+                                                 .timeout(100)
+                                                 .build();
     }
 
     static void successfulDiscovery() {
@@ -170,6 +201,11 @@ public class WiremockSupport {
     static void verifyCallbackCall(final String jobId, final JobState state, final int times) {
         verify(times, getRequestedFor(urlPathEqualTo(CALLBACK_PATH)).withQueryParam("id", equalTo(jobId))
                                                                     .withQueryParam("state", equalTo(state.toString())));
+    }
+
+    static void verifyBatchCallbackCall(final String jobId, final JobState state, final int times) {
+        verify(times, getRequestedFor(urlPathEqualTo(CALLBACK_PATH)).withQueryParam("batchId", equalTo(jobId))
+                                                                    .withQueryParam("batchState", equalTo(state.toString())));
     }
 
     static void successfulSemanticHubRequests() {

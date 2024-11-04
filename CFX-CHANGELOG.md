@@ -24,6 +24,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 - Added api key authentication for edc notification requests
 - Added Github workflow for publishing build artifacts to Github Packages (#346)
 - Added Maven profile for publishing into Github Packages (#346)
+- Added integration tests for /ir/sorders API (#64)
 
 ### Removed
 - Removed subjectId from AssetAdministrationShellDescriptor object
