@@ -1,6 +1,7 @@
 ---
 replicaCount: 1
 
+# Which image should be used here?
 image:
   repository: ghcr.io/catenax-ng/product-edc/edc-controlplane-postgresql-hashicorp-vault
   pullPolicy: IfNotPresent
