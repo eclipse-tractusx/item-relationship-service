@@ -100,6 +100,7 @@ dependencies:
   # IRS
   - name: item-relationship-service
     alias: irs
+    # Which GitHub-Pages link should be used here?
     repository: https://catenax-ng.github.io/tx-item-relationship-service
     version: 5.0.9
     condition: irs.enabled

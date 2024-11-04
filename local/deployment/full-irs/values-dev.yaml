@@ -641,9 +641,6 @@ irs-frontend:
       global:
         asset:
           id: urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
-    vite:
-      manual:
-        url: https://github.com/catenax-ng/product-item-relationship-service-frontend/blob/main/docs/userManual.md
     url:
       local: *config-irs-url
   keycloak:

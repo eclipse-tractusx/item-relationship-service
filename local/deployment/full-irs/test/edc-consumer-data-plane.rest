@@ -29,12 +29,6 @@ Content-Type: {{contentType}}
       "asset:prop:version": "0.6.1-SNAPSHOT"
     }
   },
-  "dataAddress": {
-    "properties": {
-      "baseUrl": "https://raw.githubusercontent.com/catenax-ng/product-knowledge/feature/KA-125-ontology-hub/ontology/cx.json",
-      "type": "HttpData"
-    }
-  }
 }
 
 ### Get Catalog
