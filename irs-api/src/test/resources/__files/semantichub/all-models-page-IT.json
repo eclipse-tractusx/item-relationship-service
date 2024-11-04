@@ -692,10 +692,24 @@
       "name": "TractionBatteryCode",
       "type": "SAMM",
       "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
+      "version": "1.0.0",
+      "name": "PartSiteInformationAsPlanned",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+      "version": "1.0.1",
+      "name": "PartAsPlanned",
+      "type": "SAMM",
+      "status": "RELEASED"
     }
   ],
-  "totalItems": 99,
+  "totalItems": 101,
   "currentPage": 0,
   "totalPages": 1,
-  "itemCount": 99
+  "itemCount": 101
 }
