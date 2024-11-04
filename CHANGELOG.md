@@ -23,7 +23,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Added
 
 - Added api key authentication for edc notification requests
-
+- Added integration tests for /irs/orders API https://github.com/eclipse-tractusx/sig-release/issues/933
+- 
 ## [5.4.1] - 2024-08-19
 
 ### Fixed
