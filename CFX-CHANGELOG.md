@@ -18,6 +18,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ### Fixed
 
 - Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position
+- #375 fixed auto dispatch workflow for auto deployment from main
 
 ### Added
 
