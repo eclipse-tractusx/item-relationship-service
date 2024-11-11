@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding JIRA issue number in each changelog entry, please.**_
 
-## [Unreleased]
+## [Unreleased - DD.MM.YYYY]
+
+## [5.4.1-cfx-3 - 06.11.2024]
 
 ### Changed
 

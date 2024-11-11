@@ -4,6 +4,8 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [5.4.1-cfx-3](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.4.1-cfx-3) - 2024-11.06
+
 | Dependency                                                                                                                               | Version                      | Helm  | Comments        |
 |------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
 | EDC                                                                                                                                      | 0.7.3                        | 0.7.3 |                 |
