@@ -29,7 +29,29 @@ from copy import copy
 
 import requests
 from requests.adapters import HTTPAdapter, Retry
+from requests.auth import HTTPBasicAuth
 
+def get_auth_token(client_id, client_secret, token_url):
+
+    payload = {
+        'grant_type': 'client_credentials'
+    }
+
+    try:
+        response = requests.post(
+            token_url,
+            data=payload,
+            auth=HTTPBasicAuth(client_id, client_secret)
+        )
+
+        response.raise_for_status()
+
+        access_token = response.json().get('access_token')
+        return access_token
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error while fetching access token: {e}")
+        return None
 
 def create_submodel_payload(json_payload):
     return json.dumps(json_payload)
@@ -447,6 +469,9 @@ if __name__ == "__main__":
     parser.add_argument("-eu", "--edcupload", type=str, nargs="*", help="EDC provider control plane upload URLs",
                         required=False)
     parser.add_argument("-k", "--apikey", type=str, help="EDC provider api key", required=True)
+    parser.add_argument("--tokenUrl", type=str, help="Auth Token Url", required=True)
+    parser.add_argument("--clientId", type=str, help="Client Id", required=True)
+    parser.add_argument("--clientSecret", type=str, help="Client Secret", required=True)
     parser.add_argument("-e", "--esr", type=str, help="ESR URL", required=False)
     parser.add_argument("--ess", help="Enable ESS data creation with invalid EDC URL", action='store_true',
                         required=False)
@@ -474,6 +499,9 @@ if __name__ == "__main__":
     edc_bpns = config.get("edcBPN")
     edc_upload_urls = config.get("edcupload")
     edc_api_key = config.get("apikey")
+    token_url = config.get("tokenUrl")
+    client_id = config.get("clientId")
+    client_secret = config.get("clientSecret")
     esr_url = config.get("esr")
     is_ess = config.get("ess")
     ess_base_url = config.get("essURL")
@@ -510,6 +538,8 @@ if __name__ == "__main__":
     check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls, dataplane_urls,
                    edc_bpns)
 
+    auth_token = get_auth_token(client_id, client_secret, token_url)
+
     edc_asset_path = "/management/v3/assets"
     edc_policy_path = "/management/v2/policydefinitions"
     edc_contract_definition_path = "/management/v2/contractdefinitions"
@@ -525,6 +555,11 @@ if __name__ == "__main__":
 
     headers_with_api_key = {
         'X-Api-Key': edc_api_key,
+        'Content-Type': 'application/json'
+    }
+
+    headers_with_authorization = {
+        'Authorization': f"Bearer {auth_token}",
         'Content-Type': 'application/json'
     }
 
@@ -590,11 +625,17 @@ if __name__ == "__main__":
             name_at_manufacturer = ""
             specific_asset_ids_temp = []
             for tmp_key in tmp_keys:
-                if "Batch" in tmp_key or "SerialPart" in tmp_key:
+                print("pooja")
+                print(tmp_key)
+                if "Batch" in tmp_key or "SerialPart" in tmp_key or "JustInSequencePart" in tmp_key:
                     specific_asset_ids_temp = copy(tmp_data[tmp_key][0]["localIdentifiers"])
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
+                    specific_asset_ids_temp.append({
+                        "key": "digitalTwinType",
+                        "value": "PartInstance"
+                    })
                 if "PartAsPlanned" in tmp_key:
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
@@ -602,6 +643,10 @@ if __name__ == "__main__":
                     specific_asset_ids_temp.append({
                         "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
                         "key": "manufacturerPartId"
+                    })
+                    specific_asset_ids_temp.append({
+                        "key": "digitalTwinType",
+                        "value": "PartType"
                     })
             print(name_at_manufacturer)
             name_at_manufacturer = name_at_manufacturer + "-" + uuid.uuid4().hex
@@ -689,8 +734,8 @@ if __name__ == "__main__":
                     if tmp_data[tmp_key] != "":
                         payload = create_submodel_payload(tmp_data[tmp_key][0])
                         response = session.request(method="POST",
-                                                   url=f"{submodel_upload_url}/{submodel_identification}",
-                                                   headers=headers, data=payload)
+                                                   url=f"{submodel_upload_url}",
+                                                   headers=headers_with_authorization, data=payload)
                         print_response(response)
 
                     asset_path = edc_upload_url + edc_asset_path
@@ -722,7 +767,7 @@ if __name__ == "__main__":
                     payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
                                                submodel_descriptors)
                 response = session.request(method="POST", url=f"{aas_upload_url}{registry_path}",
-                                           headers=headers,
+                                           headers=headers_with_authorization,
                                            data=payload)
                 print_response(response)
 

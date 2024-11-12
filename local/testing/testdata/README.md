@@ -41,6 +41,9 @@ python3 transform-and-upload.py \
 -a https://registry.server1 https://registry.server2 https://registry.server3 \
 -edc https://edc.controlplane1 https://edc.controlplane2 https://edc.controlplane3 \
 -k edc-api-key
+--tokenUrl Auth Token URL from DOS 
+--clientId Client ID from Dos to create a auth token
+--clientSecret Client Secret from Dos to create a auth token
 ```
 
 ### Policies

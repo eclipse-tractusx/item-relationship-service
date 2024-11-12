@@ -28,6 +28,8 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 - Added Github workflow for publishing build artifacts to Github Packages (#346)
 - Added Maven profile for publishing into Github Packages (#346)
 - Added integration tests for /ir/sorders API (#64)
+- Added DigitalTwinType in transform-and-upload-py script(#327)
+- Added get_auth_token function in transform-and-upload-py script for submodel and dtr creation(#327)
 
 ### Removed
 - Removed subjectId from AssetAdministrationShellDescriptor object
