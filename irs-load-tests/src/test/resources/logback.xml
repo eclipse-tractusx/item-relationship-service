@@ -1,0 +1,18 @@
+<configuration>
+
+    <!-- Define Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %-5level [%thread] %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Set TRACE level for Gatling classes -->
+    <logger name="io.gatling" level="TRACE"/>
+
+    <!-- Root logger (optional) -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

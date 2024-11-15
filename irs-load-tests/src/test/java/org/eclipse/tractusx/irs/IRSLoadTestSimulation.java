@@ -22,7 +22,6 @@ public class IRSLoadTestSimulation extends Simulation {
         final String clientId = System.getenv("OAUTH2_CLIENT_ID");
         String body = "grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret;
         final String irsUrl = System.getenv("IRS_HOST");
-        final int testCycles = Integer.parseInt(System.getenv("TEST_CYCLES"));
 
         Map<CharSequence, String> headers_0 = new HashMap<>();
         headers_0.put("Content-Type", "application/x-www-form-urlencoded");
@@ -47,7 +46,8 @@ public class IRSLoadTestSimulation extends Simulation {
                 .exec(http("Start Job")
                         .post(irsUrl+"/irs/jobs")
                         .headers(headers_1)
-                        .body(RawFileBody("org/eclipse/tractusx/irs/loadtest/IRS-start-job-body.json"))
+                        .body(RawFileBody(
+                                "org/eclipse/tractusx/irs/loadtest/IRS-start-job-body-asset-without-relation.json"))
                         .check(jsonPath("$.id")
                                 .saveAs("id")))
                 .exec(http("Get Job")
@@ -58,6 +58,6 @@ public class IRSLoadTestSimulation extends Simulation {
                                 .is("RUNNING"))
                         .headers(headers_1));
 
-        setUp(scn.injectOpen(atOnceUsers(testCycles))).protocols(httpProtocol);
+        setUp(scn.injectOpen(atOnceUsers(10))).protocols(httpProtocol);
     }
 }
