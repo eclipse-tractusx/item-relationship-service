@@ -7,3 +7,4 @@
 - xref:development-concepts.adoc[Development concepts]
 - xref:operational-concepts.adoc[Operational concepts]
 - xref:testing.adoc[Testing concepts]
+- xref:api-endpoints.adoc[Api Endpoints]

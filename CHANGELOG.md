@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 ## [Unreleased]
 
+### Added
+
+- Added new section under crosscuting/api-endpoints to arc42 documentation 
+
+
 ## [5.4.1] - 2024-08-19
 
 ### Fixed
