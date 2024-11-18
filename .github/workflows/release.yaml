@@ -122,12 +122,12 @@ jobs:
           sed -i '0,/version: ${{ env.SEMVER_PATTERN_SED }}/s//version: ${{ inputs.irs-version }}/' ${{ env.OPENAPI_SPEC_PATH }}
 
       - name: Update Chart.yaml appVersion
-        uses: mikefarah/yq@v4.44.3
+        uses: mikefarah/yq@v4.44.5
         with:
           cmd: yq -i eval '.appVersion = "${{ inputs.irs-version }}"' ${{ env.HELM_CHART_PATH }}/Chart.yaml
 
       - name: Update Chart.yaml version
-        uses: mikefarah/yq@v4.44.3
+        uses: mikefarah/yq@v4.44.5
         with:
           cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' ${{ env.HELM_CHART_PATH }}/Chart.yaml
 
