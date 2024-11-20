@@ -23,7 +23,7 @@ public class JobSimulation extends Simulation {
 
     private static final String BASE_URL = System.getenv("IRS_HOST");
     private static final Boolean ASSETS_WITH_CHILDS = Boolean.valueOf(System.getenv("ASSETS_WITH_CHILDS"));
-    private static final String X_API_KEY = System.getenv("IRS_ADMIN_API_KEY");
+    private static final String X_API_KEY = System.getenv("API_KEY");
     private static final Integer SCENARIO_DURATION = Integer.valueOf(System.getenv("SCENARIO_DURATION"));
 
     HttpProtocolBuilder httpProtocol = http.baseUrl(BASE_URL).acceptHeader("application/json").contentTypeHeader("application/json");

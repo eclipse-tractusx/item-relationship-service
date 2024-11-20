@@ -6,42 +6,42 @@ on:
       irs-host:
         type: choice
         description: IRS environment to test
-        default: 'https://item-relationship-service-a.integration.cofinity-x.com'
+        default: 'https://irs-full.dev.demo.catena-x.net'
         required: true
         options:
-          - 'https://item-relationship-service-a.integration.cofinity-x.com'
-          - 'https://item-relationship-service-b.integration.cofinity-x.com'
-      irs-admin-api-key:
-        description: IRS Admin API Key
-        required: true
-      simulation-class:
-        description: 'Select the simulation class to run'
-        required: true
-        default: 'simulation.SynchonizationSimulation'
-        options:
-          - 'org.eclipse.tractusx.irs.JobSimulation'
-          - 'org.eclipse.tractusx.irs.OrderSimulation'
-      simulation-duration:
-        description: 'The duration of the test in seconds'
-        required: true
-        type: number
-        default: 1
-      assets-with-childs:
-        description: 'Should assets with child elements be used?'
-        required: true
-        type: boolean
-        default: false
+          - 'https://irs-full.dev.demo.catena-x.net'
+          - 'https://irs.dev.demo.catena-x.net'
+          - 'https://irs.int.demo.catena-x.net'
+      test-cycles:
+        type: string
+        description: Number of Test Cycles
+        default: '20'
+        required: false
 
 jobs:
 
   check-config:
     runs-on: ubuntu-latest
     steps:
-      - name: mask token
+      - name: Check if OAUTH2_CLIENT_TOKEN_URI is defined
         run: |
-          API_KEY=$(jq -r '.inputs.irs-admin-api-key' $GITHUB_EVENT_PATH)
-          echo ::add-mask::$API_KEY
-          echo API_KEY=$API_KEY >> $GITHUB_ENV
+          if [[ -z "${{ secrets.OAUTH2_CLIENT_TOKEN_URI }}" ]]; then
+            echo "Error: Missing secret: Please configure OAUTH2_CLIENT_TOKEN_URI."
+            exit 1
+          fi
+      - name: Check if OAUTH2_CLIENT_SECRET is defined
+        run: |
+          if [[ -z "${{ secrets.OAUTH2_CLIENT_SECRET }}" ]]; then
+            echo "Error: Missing secret: Please configure OAUTH2_CLIENT_SECRET."
+            exit 1
+          fi
+      - name: Check if OAUTH2_CLIENT_ID is defined
+        run: |
+          if [[ -z "${{ secrets.OAUTH2_CLIENT_ID }}" ]]; then
+            echo "Error: Missing secret: Please configure OAUTH2_CLIENT_ID."
+            exit 1
+          fi
+        shell: bash
 
   gatling-test:
     needs: check-config
@@ -64,23 +64,16 @@ jobs:
 
       - name: Run Gatling tests
         env:
-          IRS_HOST: ${{ github.event.inputs.irs-host }}
-          SCENARIO_DURATION: ${{ github.event.inputs.simulation-duration }}
-          ASSETS_WITH_CHILDS: ${{ github.event.inputs.assets-with-childs }}
-          API_KEY: ${{ env.API_KEY }}
+          OAUTH2_HOST: ${{ secrets.OAUTH2_CLIENT_TOKEN_URI }}
+          OAUTH2_CLIENT_SECRET: ${{ secrets.OAUTH2_CLIENT_SECRET }}
+          OAUTH2_CLIENT_ID: ${{ secrets.OAUTH2_CLIENT_ID }}
+          IRS_HOST: ${{ github.event.inputs.irs-host || 'https://irs-full.dev.demo.catena-x.net' }}
+          TEST_CYCLES: ${{ github.event.inputs.test-cycles || '20' }}
         run: |
-          mvn gatling:test -pl irs-load-tests -Dgatling.simulationClass=${{ simulation-class }}
+          mvn gatling:test -pl irs-load-tests
 
       - name: Archive Report
         uses: actions/upload-artifact@v4
         with:
           name: gatling-report
           path: irs-load-tests/target/gatling/
-
-      - name: Archive job duration data
-        uses: actions/upload-artifact@v4
-        if: ${{ exists('irs-load-tests/target/job-duration.csv') }}
-        with:
-          name: job-duration-report
-          path: irs-load-tests/target/job-duration.csv
-

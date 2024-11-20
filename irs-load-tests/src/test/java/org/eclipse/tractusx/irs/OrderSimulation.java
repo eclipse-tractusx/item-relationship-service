@@ -22,7 +22,7 @@ public class OrderSimulation extends Simulation {
 
     private static final String BASE_URL = System.getenv("IRS_HOST");
     private static final Integer SCENARIO_DURATION = Integer.valueOf(System.getenv("SCENARIO_DURATION"));
-    private static final String X_API_KEY = System.getenv("IRS_ADMIN_API_KEY");
+    private static final String X_API_KEY = System.getenv("API_KEY");
 
     HttpProtocolBuilder httpProtocol = http.baseUrl(BASE_URL).acceptHeader("application/json").contentTypeHeader("application/json");
 
