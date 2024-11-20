@@ -10,6 +10,10 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ### Added
 - Added load tests for /jobs and /orders API (TRX-93)
 
+### Added
+
+- Added Github workflow for enabling Sonar scanning (#377)
+
 ## [5.4.1-cfx-3 - 06.11.2024]
 
 ### Changed
