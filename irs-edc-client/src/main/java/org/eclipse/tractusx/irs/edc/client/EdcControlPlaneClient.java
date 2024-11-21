@@ -86,6 +86,7 @@ public class EdcControlPlaneClient {
         return responseBody;
     }
 
+    @Deprecated
     /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset, final String bpn) {
         final var limit = config.getControlplane().getCatalogPageSize();
 

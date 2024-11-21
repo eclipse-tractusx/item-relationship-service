@@ -124,6 +124,8 @@ data:
         cacheTTL: {{ .Values.edc.discoveryFinderClient.cacheTTL | quote }}
       connectorEndpointService:
         cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | quote }}
+      orchestration:
+        thread-pool-size: {{ .Values.edc.orchestration.threadPoolSize | quote }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.ess.edc.host | default "") . | quote }}

@@ -12,6 +12,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Resolve Null pointer exception while registering the company #888
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) (#12)
+- Changed orchestration of EDC negotations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
 
 ### Removed
 - Removed subjectId from AssetAdministrationShellDescriptor object

@@ -19,6 +19,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.testing.wiremock;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -26,10 +27,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * WireMock configurations and requests used for testing the EDC Flow.
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods",
+                    "PMD.TooManyStaticImports"
+})
 public final class SubmodelFacadeWiremockSupport {
     public static final String PATH_CATALOG = "/catalog/request";
     public static final String PATH_NEGOTIATE = "/contractnegotiations";
@@ -63,25 +68,71 @@ public final class SubmodelFacadeWiremockSupport {
     private SubmodelFacadeWiremockSupport() {
     }
 
-    public static String prepareNegotiation() {
-        final String contractAgreementId = "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
+    public static String prepareNegotiation(final String edcAssetId) {
+        final String contractAgreementId =
+                "7681f966-36ea-4542-b5ea-0d0db81967de:" + edcAssetId + ":a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
         prepareNegotiation("1bbaec6e-c316-4e1e-8258-c07a648cc43c", "1b21e963-0bc5-422a-b30d-fd3511861d88",
-                contractAgreementId, "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7");
+                contractAgreementId, edcAssetId);
         return contractAgreementId;
     }
 
-    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
+    @SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                        "PMD.UseObjectForClearerAPI"
+    }) // used only for testing
     public static void prepareNegotiation(final String negotiationId, final String transferProcessId,
             final String contractAgreementId, final String edcAssetId) {
+        stubAssetCatalog(contractAgreementId, edcAssetId, createConstraints());
 
-        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
-                                                                            .withBody(getCatalogResponse(edcAssetId,
-                                                                                    contractAgreementId,
-                                                                                    PERMISSION_TYPE, EDC_PROVIDER_BPN,
-                                                                                    createConstraints()))));
+        stubNegotiation(negotiationId, transferProcessId, contractAgreementId, edcAssetId);
+    }
 
-        stubFor(post(urlPathEqualTo(PATH_NEGOTIATE)).willReturn(
-                WireMockConfig.responseWithStatus(STATUS_CODE_OK).withBody(startNegotiationResponse(negotiationId))));
+    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
+    public static void prepareRegistryNegotiation(final String negotiationId, final String transferProcessId,
+            final String contractAgreementId, final String edcAssetId) {
+        stubRegistryCatalog(contractAgreementId, edcAssetId, createConstraints());
+
+        stubNegotiation(negotiationId, transferProcessId, contractAgreementId, edcAssetId);
+    }
+
+    public static void prepareMissmatchPolicyCatalog(final String edcAssetId, final String contractAgreementId) {
+        stubRegistryCatalog(contractAgreementId, edcAssetId, createNotAcceptedConstraints());
+    }
+
+    private static void stubAssetCatalog(final String contractAgreementId, final String edcAssetId,
+            final String constraints) {
+        final String catalogResponse = getCatalogResponse(edcAssetId, contractAgreementId, PERMISSION_TYPE,
+                EDC_PROVIDER_BPN, constraints);
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).withRequestBody(containing(edcAssetId))
+                                                  .willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
+                                                                            .withBody(catalogResponse)));
+    }
+
+    private static void stubRegistryCatalog(final String contractAgreementId, final String edcAssetId,
+            final String constraints) {
+        final String catalogResponse = getCatalogResponse(edcAssetId, contractAgreementId, PERMISSION_TYPE,
+                EDC_PROVIDER_BPN, constraints, getDtrEdcProperties());
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).withRequestBody(
+                                                          containing("https://w3id.org/catenax/taxonomy#DigitalTwinRegistry"))
+                                                  .willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
+                                                                            .withBody(catalogResponse)));
+    }
+
+    private static @NotNull String getDtrEdcProperties() {
+        return """
+                ,
+                "dct:type": {
+                    "@id": "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry"
+                },
+                "https://w3id.org/catenax/ontology/common#version": "3.0"
+                """;
+    }
+
+    private static void stubNegotiation(final String negotiationId, final String transferProcessId,
+            final String contractAgreementId, final String edcAssetId) {
+        stubFor(post(urlPathEqualTo(PATH_NEGOTIATE)).withRequestBody(containing(edcAssetId))
+                                                    .willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
+                                                                              .withBody(startNegotiationResponse(
+                                                                                      negotiationId))));
 
         final String negotiationState = "FINALIZED";
         stubFor(get(urlPathEqualTo(PATH_NEGOTIATE + "/" + negotiationId)).willReturn(
@@ -93,11 +144,12 @@ public final class SubmodelFacadeWiremockSupport {
                 WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                               .withBody(getNegotiationStateResponse(negotiationState))));
 
-        stubFor(post(urlPathEqualTo(PATH_TRANSFER)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
+        stubFor(post(urlPathEqualTo(PATH_TRANSFER)).withRequestBody(containing(edcAssetId))
+                                                   .willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                                                                              .withBody(startTransferProcessResponse(
                                                                                      transferProcessId))
 
-        ));
+                                                   ));
         final String transferProcessState = "COMPLETED";
         stubFor(get(urlPathEqualTo(PATH_TRANSFER + "/" + transferProcessId + PATH_STATE)).willReturn(
                 WireMockConfig.responseWithStatus(STATUS_CODE_OK)
@@ -107,14 +159,6 @@ public final class SubmodelFacadeWiremockSupport {
                               .withBody(
                                       getTransferConfirmedResponse(transferProcessId, transferProcessState, edcAssetId,
                                               contractAgreementId))));
-    }
-
-    public static void prepareMissmatchPolicyCatalog(final String edcAssetId, final String contractAgreementId) {
-        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
-                                                                            .withBody(getCatalogResponse(edcAssetId,
-                                                                                    contractAgreementId,
-                                                                                    PERMISSION_TYPE, EDC_PROVIDER_BPN,
-                                                                                    createNotAcceptedConstraints()))));
     }
 
     public static void prepareFailingCatalog() {
@@ -238,6 +282,12 @@ public final class SubmodelFacadeWiremockSupport {
     @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
     public static String getCatalogResponse(final String edcAssetId, final String offerId, final String permissionType,
             final String edcProviderBpn, final String constraints) {
+        return getCatalogResponse(edcAssetId, offerId, permissionType, edcProviderBpn, constraints, "");
+    }
+
+    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
+    public static String getCatalogResponse(final String edcAssetId, final String offerId, final String permissionType,
+            final String edcProviderBpn, final String constraints, final String properties) {
         return """
                 {
                    "@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
@@ -273,6 +323,7 @@ public final class SubmodelFacadeWiremockSupport {
                      ],
                      "description": "IRS EDC Test Asset",
                      "id": "%s"
+                     %s
                    },
                    "dcat:service": {
                      "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
@@ -285,7 +336,7 @@ public final class SubmodelFacadeWiremockSupport {
                    "@context": %s
                  }
                 """.formatted(edcAssetId, offerId, permissionType, constraints, EDC_PROVIDER_DUMMY_URL, edcAssetId,
-                EDC_PROVIDER_DUMMY_URL, edcProviderBpn, edcProviderBpn, CONTEXT);
+                properties, EDC_PROVIDER_DUMMY_URL, edcProviderBpn, edcProviderBpn, CONTEXT);
     }
 
     private static String createConstraints() {
