@@ -22,6 +22,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 - secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
 - Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists (#24)
 - Release documentation for irs-registry-client (#346)
+- #351 Introduced orchestration to EDC negotiation to be able to limit parallel edc calls and reuse already ongoing negotiations.
 
 ### Fixed
 

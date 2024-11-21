@@ -72,6 +72,10 @@ public class EndpointDataReferenceStorage {
         return Optional.ofNullable(storageMap.get(storageId)).map(ExpiringContainer::getDataReference);
     }
 
+    public void clear() {
+        storageMap.clear();
+    }
+
     /**
      * Stores the data reference with its creation date.
      */

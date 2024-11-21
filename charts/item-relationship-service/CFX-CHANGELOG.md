@@ -11,3 +11,4 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ### Changed
 - Added the discovery type configurable (discovery.type) default value as bpnl. (#12).
 - Add separate changelog for cfx. (TRX-347). 
+- Added configuration for edc negotiation orchestration threadPoolSize `edc.orchestration.threadPoolSize` (TRX-351)
