@@ -42,5 +42,4 @@ public class CatalogItem {
     private String connectorId;
     private String offerId;
     private Instant validUntil;
-
 }

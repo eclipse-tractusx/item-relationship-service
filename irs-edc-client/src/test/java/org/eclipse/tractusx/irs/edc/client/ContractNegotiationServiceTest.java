@@ -97,15 +97,15 @@ class ContractNegotiationServiceTest {
         when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
                 Response.builder().responseId("transferProcessId").build());
         when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(
-                CompletableFuture.completedFuture(TransferProcessResponse.builder().build()));
+                CompletableFuture.completedFuture(TransferProcessResponse.builder().contractId("agreementId").build()));
 
         // act
-        NegotiationResponse result = testee.negotiate(CONNECTOR_URL, catalogItem,
+        TransferProcessResponse result = testee.negotiate(CONNECTOR_URL, catalogItem,
                 new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW), "bpn");
 
         // assert
         assertThat(result).isNotNull();
-        assertThat(result.getContractAgreementId()).isEqualTo("agreementId");
+        assertThat(result.getContractId()).isEqualTo("agreementId");
     }
 
     @Test

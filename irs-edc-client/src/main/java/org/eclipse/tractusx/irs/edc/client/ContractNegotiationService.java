@@ -69,7 +69,7 @@ public class ContractNegotiationService {
     private final PolicyCheckerService policyCheckerService;
     private final EdcConfiguration config;
 
-    public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
+    public TransferProcessResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
             final EndpointDataReferenceStatus endpointDataReferenceStatus, final String bpn)
             throws ContractNegotiationException, UsagePolicyPermissionException, TransferProcessException,
             UsagePolicyExpiredException {
@@ -85,7 +85,7 @@ public class ContractNegotiationService {
             resultEndpointDataReferenceStatus = endpointDataReferenceStatus;
         }
 
-        NegotiationResponse negotiationResponse = null;
+        NegotiationResponse negotiationResponse;
         String contractAgreementId;
 
         switch (resultEndpointDataReferenceStatus.tokenStatus()) {
@@ -117,7 +117,7 @@ public class ContractNegotiationService {
                 getTransferProcessResponse(transferProcessFuture));
         log.info("Transfer process completed for transferProcessId: {}", transferProcessResponse.getResponseId());
 
-        return negotiationResponse;
+        return transferProcessResponse;
     }
 
     private CompletableFuture<NegotiationResponse> startNewNegotiation(final String providerConnectorUrl,
@@ -127,14 +127,15 @@ public class ContractNegotiationService {
 
         if (!policyCheckerService.isValid(catalogItem.getPolicy(), bpn)) {
             log.warn("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyPermissionException(policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()), catalogItem.getPolicy(),
+            throw new UsagePolicyPermissionException(
+                    policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()), catalogItem.getPolicy(),
                     catalogItem.getConnectorId());
         }
 
         if (policyCheckerService.isExpired(catalogItem.getPolicy(), bpn)) {
             log.warn("Policy is expired, canceling negotiation.");
-            throw new UsagePolicyExpiredException(policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()),
-                    catalogItem.getPolicy(),
+            throw new UsagePolicyExpiredException(
+                    policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()), catalogItem.getPolicy(),
                     catalogItem.getConnectorId());
         }
 

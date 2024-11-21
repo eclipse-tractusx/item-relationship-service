@@ -1,0 +1,46 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+
+autonumber "<b>[000]"
+
+participant "EdcSubmodelClient" as ESC
+participant "NegotiationOrchestrator" as NO
+participant "EndpointDataReferenceCacheService" as EDRCache
+participant "EDCCatalogFacade" as ECF
+participant "ContractNegotiationService" as CNS
+
+ESC -> NO: get ContractOffer for assetId
+NO -> ECF: get ContractOffer for assetId
+note left
+    parallel catalog requests
+    can be limited by facilitating an
+    ExecutorService with limited threads
+end note
+NO <-- ECF: ContractOffer
+ESC <-- NO: ContractOffer
+ESC -> NO: negotiate EndpointDataReference(ContractOffer)
+
+NO -> EDRCache: get EndpointDataReference
+alt cache contains valid entry for assetId
+    NO <-- EDRCache: EndpointDataReference
+else no valid entry for assetId in cache
+    alt ongoing negotiation for asseId
+        NO -> NO: EndpointDataReference
+    else no ongoing negotiation for asseId
+        NO -> CNS: start contract negotiation
+        note left
+            parallel negotiations
+            can be limited by facilitating an
+            ExecutorService with limited threads
+        end note
+        NO <-- CNS: EndpointDataReference
+    end alt
+end alt
+
+ESC <-- NO: Future<EndpointDataReference>
+ESC -> ESC: wait for completion of Future
+
+@enduml

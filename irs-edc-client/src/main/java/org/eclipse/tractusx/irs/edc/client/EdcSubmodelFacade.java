@@ -41,7 +41,9 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
 import org.eclipse.tractusx.irs.edc.client.util.UriPathJoiner;
 
 /**
- * Public API Facade for submodel domain
+ * Facade providing public API methods for interacting with submodels via EDC (Eclipse Dataspace Connector).
+ * This class offers methods to retrieve submodel payloads, send notifications, and obtain endpoint references
+ * for registry assets.
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -51,9 +53,18 @@ import org.eclipse.tractusx.irs.edc.client.util.UriPathJoiner;
 public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
-
     private final EdcConfiguration config;
 
+    /**
+     * Retrieves the submodel payload from the specified connector endpoint.
+     *
+     * @param connectorEndpoint    The endpoint address of the EDC connector.
+     * @param submodelDataplaneUrl The data plane URL of the submodel.
+     * @param assetId              The ID of the asset to retrieve.
+     * @param bpn                  The Business Partner Number of the data provider.
+     * @return The {@link SubmodelDescriptor} containing the payload.
+     * @throws EdcClientException If an error occurs while retrieving the submodel payload.
+     */
     @SuppressWarnings("PMD.PreserveStackTrace")
     public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId, final String bpn) throws EdcClientException {
@@ -79,6 +90,13 @@ public class EdcSubmodelFacade {
         }
     }
 
+    /**
+     * Constructs the full submodel data plane URL by appending the submodel suffix from the configuration.
+     *
+     * @param submodelDataplaneUrl The base data plane URL of the submodel.
+     * @return The full submodel data plane URL.
+     * @throws EdcClientException If the URL syntax is invalid.
+     */
     private String getFullSubmodelDataplaneUrl(final String submodelDataplaneUrl) throws EdcClientException {
         try {
             return UriPathJoiner.appendPath(submodelDataplaneUrl, config.getSubmodel().getSubmodelSuffix());
@@ -87,6 +105,16 @@ public class EdcSubmodelFacade {
         }
     }
 
+    /**
+     * Sends an EDC notification to the specified submodel endpoint.
+     *
+     * @param submodelEndpointAddress The endpoint address of the submodel to send the notification to.
+     * @param assetId                 The ID of the asset related to the notification.
+     * @param notification            The notification object containing the notification content.
+     * @param bpn                     The Business Partner Number of the recipient.
+     * @return The response from the EDC after sending the notification.
+     * @throws EdcClientException If an error occurs while sending the notification.
+     */
     @SuppressWarnings("PMD.PreserveStackTrace")
     public EdcNotificationResponse sendNotification(final String submodelEndpointAddress, final String assetId,
             final EdcNotification<NotificationContent> notification, final String bpn) throws EdcClientException {
@@ -108,6 +136,15 @@ public class EdcSubmodelFacade {
         }
     }
 
+    /**
+     * Retrieves endpoint data references for a registry asset.
+     * This method is used by the {@code DecentralDigitalTwinRegistryClient} to get the EDR for registry assets.
+     *
+     * @param endpointAddress The endpoint address of the EDC connector.
+     * @param bpn             The Business Partner Number of the data provider.
+     * @return A list of {@link CompletableFuture} objects representing the endpoint data references.
+     * @throws EdcClientException If an error occurs while retrieving the endpoint references.
+     */
     public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(
             final String endpointAddress, final String bpn) throws EdcClientException {
         return client.getEndpointReferencesForRegistryAsset(endpointAddress, bpn);
