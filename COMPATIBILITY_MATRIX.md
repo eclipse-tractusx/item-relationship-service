@@ -8,7 +8,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 
 | Dependency                                                                                                                               | Version                      | Helm  | Comments        |
 |------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
-| EDC                                                                                                                                      | 0.7.3                        | 0.7.3 |                 |
+| EDC                                                                                                                                      | 0.7.5                        | 0.7.5 |                 |
 | Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                                                                                                                                      | 0.5.0                        | 0.5.3 | REST connection |
 | Discovery Finder                                                                                                                         | 0.2.5                        | -     | REST connection |
