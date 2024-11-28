@@ -9,10 +9,10 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ## [Unreleased - DD.MM.YYYY]
 ### Added
 - Added load tests for /jobs and /orders API (TRX-93)
-
-### Added
-
 - Added Github workflow for enabling Sonar scanning (#377)
+
+### Changed
+- Cccept dates without time and time zone according to standard (TRX-511)
 
 ## [5.4.1-cfx-3 - 06.11.2024]
 
