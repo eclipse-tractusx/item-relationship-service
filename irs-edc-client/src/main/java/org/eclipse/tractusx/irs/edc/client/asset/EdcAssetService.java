@@ -24,7 +24,6 @@ import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfigurat
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 
 import java.util.Map;
-import java.util.UUID;
 
 import jakarta.json.JsonObject;
 import lombok.RequiredArgsConstructor;
@@ -147,7 +146,6 @@ public class EdcAssetService {
 
     private Asset createNotificationAssetRequest(final String assetName, final String baseUrl,
             final Notification notification, final EdcTechnicalServiceAuthentication edcTechnicalServiceAuthentication) {
-        final String assetId = UUID.randomUUID().toString();
         final Map<String, Object> properties = Map.of(ASSET_PROPERTY_DESCRIPTION, assetName,
                 ASSET_PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE, ASSET_PROPERTY_POLICY_ID, DEFAULT_POLICY_ID,
                 ASSET_PROPERTY_COMMON_VERSION_KEY, ASSET_PROPERTY_NOTIFICATION_VERSION, ASSET_PROPERTY_DCAT_TYPE,
@@ -171,7 +169,7 @@ public class EdcAssetService {
         final DataAddress dataAddress = dataAddressBuilder.build();
 
         return Asset.Builder.newInstance()
-                            .id(assetId)
+                            .id(notification.getAssetId())
                             .contentType("Asset")
                             .properties(properties)
                             .dataAddress(dataAddress)

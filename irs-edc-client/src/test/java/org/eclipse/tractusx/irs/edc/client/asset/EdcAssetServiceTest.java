@@ -233,10 +233,10 @@ class EdcAssetServiceTest {
         final String assetId = service.createNotificationAsset(baseUrl, assetName, notificationMethod, notificationType, null);
 
         // then
-        assertThat(assetId).isNotBlank();
+        assertThat(assetId).isEqualTo(Notification.RECEIVE_QUALITY_ALERT_NOTIFICATION.getAssetId());
         final String expectedRequestPayload = expectedCreateNotificationAssetPayload(assetId,
                 Notification.RECEIVE_QUALITY_ALERT_NOTIFICATION);
-        verify(restTemplate, times(1)).postForEntity(MANAGEMENT_ASSETS_PATH, expectedRequestPayload, String.class);
+        verify(restTemplate).postForEntity(MANAGEMENT_ASSETS_PATH, expectedRequestPayload, String.class);
     }
 
     @Test
@@ -255,10 +255,10 @@ class EdcAssetServiceTest {
         final String assetId = service.createNotificationAsset(baseUrl, assetName, updateQualityAlertNotification);
 
         // then
-        assertThat(assetId).isNotBlank();
+        assertThat(assetId).isEqualTo(Notification.UPDATE_QUALITY_ALERT_NOTIFICATION.getAssetId());
         final String expectedRequestPayload = expectedCreateNotificationAssetPayload(assetId,
                 Notification.UPDATE_QUALITY_ALERT_NOTIFICATION);
-        verify(restTemplate, times(1)).postForEntity(MANAGEMENT_ASSETS_PATH, expectedRequestPayload, String.class);
+        verify(restTemplate).postForEntity(MANAGEMENT_ASSETS_PATH, expectedRequestPayload, String.class);
     }
 
     private static String expectedCreateNotificationAssetPayload(final String assetId,
