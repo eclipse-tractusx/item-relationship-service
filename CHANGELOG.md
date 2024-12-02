@@ -10,9 +10,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 
-- Resolve Null pointer exception while registering the company #888
-- Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) (#12)
-- Changed orchestration of EDC negotations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
+- Resolve Null pointer exception while registering the company https://github.com/eclipse-tractusx/item-relationship-service/issues/888
+- Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) https://github.com/eclipse-tractusx/sig-release/issues/939
+- Changed orchestration of EDC negotiations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
 
 ### Removed
 - Removed subjectId from AssetAdministrationShellDescriptor object
@@ -25,7 +25,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Added api key authentication for edc notification requests
 - Added integration tests for /irs/orders API https://github.com/eclipse-tractusx/sig-release/issues/933
-- 
+- Configurable number of threads for parallel processing of batch order jobs https://github.com/eclipse-tractusx/item-relationship-service/issues/892
+
 ## [5.4.1] - 2024-08-19
 
 ### Fixed

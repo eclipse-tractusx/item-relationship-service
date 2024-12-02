@@ -65,6 +65,12 @@ springdoc: # API docs configuration
 irs: # Application config
   apiUrl: "${IRS_API_URL:http://localhost:8080}" # Public URL of the application, used in Swagger UI
   job:
+    batch:
+      threadCount: 5
+    scheduled:
+      threadCount: 5
+    cached:
+      threadCount: 0
     callback:
       timeout:
         read: PT90S # HTTP read timeout for the Job API callback

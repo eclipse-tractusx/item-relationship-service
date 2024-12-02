@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,9 +31,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -51,8 +56,10 @@ import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEven
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 
 class BatchOrderEventListenerTest {
@@ -67,6 +74,7 @@ class BatchOrderEventListenerTest {
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
     private final TimeoutSchedulerBatchProcessingService timeoutScheduler = mock(
             TimeoutSchedulerBatchProcessingService.class);
+    private final ExecutorCompletionServiceFactory executorCompletionServiceFactory = mock(ExecutorCompletionServiceFactory.class);
 
     private BatchOrderEventListener eventListener;
 
@@ -75,14 +83,15 @@ class BatchOrderEventListenerTest {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
         eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService,
-                essService, applicationEventPublisher, timeoutScheduler);
+                essService, applicationEventPublisher, timeoutScheduler, executorCompletionServiceFactory);
     }
 
     @Test
-    void shouldStartFirstBatch() {
+    void shouldStartFirstBatch_regularJob() throws InterruptedException {
         // given
         final int numberOfJobs = 10;
         final int timeout = 60;
+
         final BatchOrder batchOrder = BatchOrder.builder()
                                                 .batchOrderId(BATCH_ORDER_ID)
                                                 .batchOrderState(ProcessingState.INITIALIZED)
@@ -109,19 +118,93 @@ class BatchOrderEventListenerTest {
         given(irsItemGraphQueryService.registerItemJob(any(), any())).willReturn(
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
+        ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
+        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+
+        when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
+
         batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
         batchStore.save(FIRST_BATCH_ID, firstBatch);
         batchStore.save(SECOND_BATCH_ID, secondBatch);
         // when
         eventListener.handleBatchOrderRegisteredEvent(new BatchOrderRegisteredEvent(BATCH_ORDER_ID));
         // then
+        ArgumentCaptor<Callable<JobProgress>> callableCaptor = ArgumentCaptor.forClass(Callable.class);
+        verify(executorCompletionService, times(numberOfJobs)).submit(callableCaptor.capture());
+
+        callableCaptor.getAllValues().forEach(callable -> {
+            try {
+                callable.call();
+            } catch (Exception e) {
+                Assertions.fail("Callable execution failed: " + e.getMessage());
+            }
+        });
+
         verify(irsItemGraphQueryService, times(numberOfJobs)).registerItemJob(any(), eq(FIRST_BATCH_ID));
-        verify(timeoutScheduler, times(1)).registerBatchTimeout(FIRST_BATCH_ID, timeout);
-        verify(timeoutScheduler, times(1)).registerJobsTimeout(anyList(), eq(timeout));
+        verify(timeoutScheduler).registerBatchTimeout(FIRST_BATCH_ID, timeout);
+        verify(timeoutScheduler).registerJobsTimeout(anyList(), eq(timeout));
     }
 
     @Test
-    void shouldStartNextBatchWhenPreviousFinished() {
+    void shouldStartFirstBatch_essJob() throws InterruptedException {
+        // given
+        final int numberOfJobs = 10;
+        final int timeout = 60;
+
+        final BatchOrder batchOrder = BatchOrder.builder()
+                                                .batchOrderId(BATCH_ORDER_ID)
+                                                .batchOrderState(ProcessingState.INITIALIZED)
+                                                .collectAspects(Boolean.TRUE)
+                                                .timeout(timeout)
+                                                .jobTimeout(timeout)
+                                                .lookupBPNs(Boolean.TRUE)
+                                                .jobType(BatchOrder.JobType.ESS)
+                                                .build();
+        final Batch firstBatch = Batch.builder()
+                                      .batchId(FIRST_BATCH_ID)
+                                      .batchState(ProcessingState.PARTIAL)
+                                      .batchNumber(1)
+                                      .batchOrderId(BATCH_ORDER_ID)
+                                      .jobProgressList(createJobProgressList())
+                                      .build();
+        final Batch secondBatch = Batch.builder()
+                                       .batchId(SECOND_BATCH_ID)
+                                       .batchState(ProcessingState.PARTIAL)
+                                       .batchNumber(2)
+                                       .batchOrderId(BATCH_ORDER_ID)
+                                       .build();
+
+        given(essService.startIrsJob(any(), any())).willReturn(JobHandle.builder().id(UUID.randomUUID()).build());
+
+        ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
+        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+
+        when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
+
+        batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
+        batchStore.save(FIRST_BATCH_ID, firstBatch);
+        batchStore.save(SECOND_BATCH_ID, secondBatch);
+        // when
+        eventListener.handleBatchOrderRegisteredEvent(new BatchOrderRegisteredEvent(BATCH_ORDER_ID));
+        // then
+        ArgumentCaptor<Callable<JobProgress>> callableCaptor = ArgumentCaptor.forClass(Callable.class);
+        verify(executorCompletionService, times(numberOfJobs)).submit(callableCaptor.capture());
+
+        callableCaptor.getAllValues().forEach(callable -> {
+            try {
+                callable.call();
+            } catch (Exception e) {
+                Assertions.fail("Callable execution failed: " + e.getMessage());
+            }
+        });
+
+        verify(essService, times(numberOfJobs)).startIrsJob(any(), eq(FIRST_BATCH_ID));
+        verify(timeoutScheduler).registerBatchTimeout(FIRST_BATCH_ID, timeout);
+        verify(timeoutScheduler).registerJobsTimeout(anyList(), eq(timeout));
+    }
+
+    @Test
+    void shouldStartNextBatchWhenPreviousFinished() throws InterruptedException {
         // given
         final int numberOfJobs = 10;
         final int timeout = 60;
@@ -151,15 +234,31 @@ class BatchOrderEventListenerTest {
         given(essService.startIrsJob(any(), any())).willReturn(
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
+        ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
+        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+
+        when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
+
         batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
         batchStore.save(FIRST_BATCH_ID, firstBatch);
         batchStore.save(SECOND_BATCH_ID, secondBatch);
         // when
         eventListener.handleBatchProcessingFinishedEvent(new BatchProcessingFinishedEvent(BATCH_ORDER_ID, FIRST_BATCH_ID, ProcessingState.PARTIAL, ProcessingState.COMPLETED, 1, ""));
         // then
+        ArgumentCaptor<Callable<JobProgress>> callableCaptor = ArgumentCaptor.forClass(Callable.class);
+        verify(executorCompletionService, times(numberOfJobs)).submit(callableCaptor.capture());
+
+        callableCaptor.getAllValues().forEach(callable -> {
+            try {
+                callable.call();
+            } catch (Exception e) {
+                Assertions.fail("Callable execution failed: " + e.getMessage());
+            }
+        });
+
         verify(essService, times(numberOfJobs)).startIrsJob(any(), eq(SECOND_BATCH_ID));
-        verify(timeoutScheduler, times(1)).registerBatchTimeout(SECOND_BATCH_ID, timeout);
-        verify(timeoutScheduler, times(1)).registerJobsTimeout(anyList(), eq(timeout));
+        verify(timeoutScheduler).registerBatchTimeout(SECOND_BATCH_ID, timeout);
+        verify(timeoutScheduler).registerJobsTimeout(anyList(), eq(timeout));
     }
 
     @Test
@@ -197,7 +296,53 @@ class BatchOrderEventListenerTest {
         // when
         eventListener.handleBatchProcessingFinishedEvent(new BatchProcessingFinishedEvent(BATCH_ORDER_ID, SECOND_BATCH_ID, ProcessingState.PARTIAL, ProcessingState.COMPLETED, 2, ""));
         // then
-        verify(applicationEventPublisher, times(1)).publishEvent(any(BatchOrderProcessingFinishedEvent.class));
+        verify(applicationEventPublisher).publishEvent(any(BatchOrderProcessingFinishedEvent.class));
+    }
+
+    @Test
+    void shouldNotStartBatchWhenJobTypeIsUnknown() throws InterruptedException {
+        // given
+        final int numberOfJobs = 10;
+        final int timeout = 60;
+
+        final BatchOrder batchOrder = BatchOrder.builder()
+                                                .batchOrderId(BATCH_ORDER_ID)
+                                                .batchOrderState(ProcessingState.INITIALIZED)
+                                                .collectAspects(Boolean.TRUE)
+                                                .timeout(timeout)
+                                                .jobTimeout(timeout)
+                                                .lookupBPNs(Boolean.TRUE)
+                                                .jobType(null)
+                                                .build();
+        final Batch firstBatch = Batch.builder()
+                                      .batchId(FIRST_BATCH_ID)
+                                      .batchState(ProcessingState.PARTIAL)
+                                      .batchNumber(1)
+                                      .batchOrderId(BATCH_ORDER_ID)
+                                      .jobProgressList(createJobProgressList())
+                                      .build();
+
+        given(irsItemGraphQueryService.registerItemJob(any(), any())).willReturn(
+                JobHandle.builder().id(UUID.randomUUID()).build());
+
+        ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
+        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+
+        when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
+
+        batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
+        batchStore.save(FIRST_BATCH_ID, firstBatch);
+        // when
+        eventListener.handleBatchOrderRegisteredEvent(new BatchOrderRegisteredEvent(BATCH_ORDER_ID));
+        // then
+        ArgumentCaptor<Callable<JobProgress>> callableCaptor = ArgumentCaptor.forClass(Callable.class);
+        verify(executorCompletionService, times(numberOfJobs)).submit(callableCaptor.capture());
+
+        callableCaptor.getAllValues().forEach(callable -> {
+            IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
+                    callable::call);
+            Assertions.assertEquals(illegalArgumentException.getMessage(), "Unsupported job type: null");
+        });
     }
 
     private List<JobProgress> createJobProgressList() {

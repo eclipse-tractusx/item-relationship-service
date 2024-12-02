@@ -23,6 +23,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.moreThanOrExactly;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -125,7 +126,7 @@ public class WiremockSupport {
                                  .batchStrategy(BatchStrategy.PRESERVE_BATCH_ORDER)
                                  .direction(Direction.DOWNWARD)
                                  .collectAspects(true)
-                                 .batchSize(1)
+                                 .batchSize(5)
                                  .timeout(100)
                                  .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                                  .build();
@@ -171,9 +172,10 @@ public class WiremockSupport {
         return Base64.getEncoder().encodeToString(new SerializationHelper().serialize(globalAssetId));
     }
 
+    // can't verify exact number of call, since parallel computing often causes cache miss for first couple of threads
     static void verifyDiscoveryCalls(final int times) {
-        verify(times, postRequestedFor(urlPathEqualTo(DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH)));
-        verify(times, postRequestedFor(urlPathEqualTo(DiscoveryServiceWiremockSupport.EDC_DISCOVERY_PATH)));
+        verify(moreThanOrExactly(times), postRequestedFor(urlPathEqualTo(DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH)));
+        verify(moreThanOrExactly(times), postRequestedFor(urlPathEqualTo(DiscoveryServiceWiremockSupport.EDC_DISCOVERY_PATH)));
     }
 
     static void verifyNegotiationCalls(final int times) {

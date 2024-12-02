@@ -33,6 +33,13 @@ data:
       trustedPort: {{ .Values.service.trustedPort }}
 
     irs:
+      job:
+        batch:
+          threadCount: {{ .Values.job.batch.threadCount }}
+        scheduled:
+          threadCount: {{ .Values.job.scheduled.threadCount }}
+        cached:
+          threadCount: {{ .Values.job.cached.threadCount }}
       apiUrl: {{ tpl (.Values.irsUrl | default "http://localhost") . | quote }}
       security:
         api:
