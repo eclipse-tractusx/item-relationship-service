@@ -64,7 +64,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>2.1.17</irs-registry-client.version>
+        <irs-registry-client.version>2.1.18</irs-registry-client.version>
 
         <!-- Dependencies -->
         <springboot.version>3.1.12</springboot.version>
