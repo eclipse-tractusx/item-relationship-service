@@ -9,6 +9,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ## [Unreleased - DD.MM.YYYY]
 ### Added
 - Added load tests for /jobs and /orders API (TRX-93)
+- Added load test data generation via JUnit tests (TRX-444)
 - Configurable number of threads for parallel processing of batch order jobs (#70)
 - Added Github workflow for enabling Sonar scanning (#377)
 
