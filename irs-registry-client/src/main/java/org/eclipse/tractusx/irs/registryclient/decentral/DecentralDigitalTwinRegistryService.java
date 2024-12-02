@@ -160,7 +160,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         log.info(msg);
 
         try {
-
             final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
             if (edcUrls.isEmpty()) {
                 throw new RegistryServiceException("No EDC Endpoints could be discovered for BPN '%s'".formatted(bpn));
@@ -180,12 +179,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private CompletableFuture<List<Either<Exception, Shell>>> fetchShellDescriptorsForConnectorEndpoints(
             final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls, final String bpn) {
 
-        final var service = endpointDataForConnectorsService;
-        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(edcUrls, bpn)
-                                        .stream()
-                                        .map(edrFuture -> edrFuture.thenCompose(edr -> CompletableFuture.supplyAsync(
-                                                () -> fetchShellDescriptorsForKey(keys, edr))))
-                                        .toList();
+        final var shellsFuture = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(edcUrls,
+                                                                         bpn)
+                                                                 .stream()
+                                                                 .map(edrFuture -> edrFuture.thenCompose(
+                                                                         edr -> CompletableFuture.supplyAsync(
+                                                                                 () -> fetchShellDescriptorsForKey(keys,
+                                                                                         edr))))
+                                                                 .toList();
 
         log.debug("Created {} futures", shellsFuture.size());
 

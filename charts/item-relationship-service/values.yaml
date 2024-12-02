@@ -105,6 +105,13 @@ readinessProbe:
 # IRS Configuration #
 #####################
 irsUrl:  # "https://<irs-url>"
+job:
+  batch:
+    threadCount: 5
+  scheduled:
+    threadCount: 5
+  cached:
+    threadCount: 0
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
