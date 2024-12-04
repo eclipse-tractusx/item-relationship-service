@@ -22,7 +22,7 @@ name: Tavern IRS API Umbrella test
 on:
   workflow_dispatch: # Trigger manually
   schedule:
-    - cron: '0 1 * * 1-5' # At 01:00 on every day-of-week from Monday through Friday.
+    - cron: '0 1 * * 1' # At 01:00 on every Monday.
 
 # Cancel previous Test executions if a new one is triggered.
 concurrency:
