@@ -44,6 +44,7 @@ concurrency:
 
 jobs:
   execute-e2e-tests:
+    permissions: write-all
     runs-on: "${{ github.repository == 'eclipse-tractusx/item-relationship-service' && 'tractusx-runner' || 'ubuntu-latest' }}"
     steps:
       - uses: actions/checkout@v4

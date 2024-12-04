@@ -12,9 +12,14 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 - Added load test data generation via JUnit tests (TRX-444)
 - Configurable number of threads for parallel processing of batch order jobs (#70)
 - Added Github workflow for enabling Sonar scanning (#377)
+- Added flag `--dos` to transform-and-upload-py script to allow to switch between DOS and umbrella upload (TRX-13)
 
 ### Changed
 - Cccept dates without time and time zone according to standard (TRX-511)
+
+### Fixed
+
+- Fixed GH runner based test execution (TRX-13)
 
 ## [5.4.1-cfx-3 - 06.11.2024]
 

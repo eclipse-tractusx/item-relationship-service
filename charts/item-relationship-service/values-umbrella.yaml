@@ -119,7 +119,7 @@ edc:
 minio:
   resources:
     requests:
-      cpu: 0.25
+      cpu: 150m
       memory: 1Gi
   rootUser: "minio"  # <minio-username>
   rootPassword: "minioPass"  # <minio-password>

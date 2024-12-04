@@ -63,7 +63,7 @@ runs:
       run: |
         helm dependency update charts/tx-data-provider
         helm dependency update charts/umbrella
-        helm install umbrella charts/umbrella -f charts/umbrella/values-adopter-irs.yaml --timeout 5m \
+        helm install umbrella charts/umbrella -f charts/umbrella/values-adopter-irs.yaml --timeout 10m \
         --namespace e2e-testing --create-namespace --debug \
         --set iatpmock.image.repository=kind-registry:5000/iatp-mock --set iatpmock.image.tag=testing
 
@@ -112,10 +112,10 @@ runs:
     - uses: azure/setup-kubectl@v3
 
     - run: |
-        kubectl wait --for=condition=available deployment/umbrella-dataprovider-dtr --timeout=60s --namespace e2e-testing
-        kubectl wait --for=condition=available deployment/umbrella-dataprovider-edc-controlplane --timeout=60s --namespace e2e-testing
-        kubectl wait --for=condition=available deployment/umbrella-dataprovider-edc-dataplane --timeout=60s --namespace e2e-testing
-        kubectl wait --for=condition=available deployment/umbrella-dataprovider-submodelserver --timeout=60s --namespace e2e-testing
+        kubectl wait --for=condition=available deployment/umbrella-dataprovider-dtr --timeout=90s --namespace e2e-testing
+        kubectl wait --for=condition=available deployment/umbrella-dataprovider-edc-controlplane --timeout=90s --namespace e2e-testing
+        kubectl wait --for=condition=available deployment/umbrella-dataprovider-edc-dataplane --timeout=90s --namespace e2e-testing
+        kubectl wait --for=condition=available deployment/umbrella-dataprovider-submodelserver --timeout=90s --namespace e2e-testing
         
         kubectl port-forward svc/umbrella-dataprovider-dtr 4444:8080 --namespace e2e-testing &
         kubectl port-forward svc/umbrella-dataprovider-edc-controlplane 8888:8081 --namespace e2e-testing &
@@ -136,7 +136,7 @@ runs:
       id: deployment-ready
       shell: bash
       run: |
-        kubectl wait --for=condition=available deployment/irs-item-relationship-service --timeout=60s --namespace e2e-testing
+        kubectl wait --for=condition=available deployment/irs-item-relationship-service --timeout=90s --namespace e2e-testing
         kubectl port-forward svc/irs-item-relationship-service 8080:8080 --namespace e2e-testing &
 
     - name: Get Pods
