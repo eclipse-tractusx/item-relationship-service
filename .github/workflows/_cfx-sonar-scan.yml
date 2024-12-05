@@ -42,6 +42,9 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Verify Sonar Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn --batch-mode --update-snapshots verify \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \

@@ -29,13 +29,18 @@ on:
   push:
     branches:
       - 'main'
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-      - '.config/**'
-      - 'docs/**'
-      - 'local/**'
-      - 'irs-load-tests/**'
+    paths:
+      - '**' # Include all changes
+      # Exclude unrelated paths
+      - '!**/*.md'
+      - '!**/*.txt'
+      - '!.config/**'
+      - '!docs/**'
+      - '!local/**'
+      - '!irs-load-tests/**'
+      - '!.github/workflows/**'
+      # Explicitly include workflow
+      - '.github/cucumber-integration-test-UMBRELLA.yaml'
 
 # Cancel previous Test executions if a new one is triggered.
 concurrency:
