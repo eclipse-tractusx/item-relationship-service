@@ -1,0 +1,23 @@
+name: CXF | Trivy Image Scan
+
+on:
+  workflow_dispatch: # Trigger manually
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight
+
+jobs:
+  trivy-latest-image-scan:
+    permissions:
+      actions: read
+      security-events: write
+      id-token: write
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    name: Scan latest image
+    uses: Cofinity-X/central-pipelines/.github/workflows/reusable-trivy-acr-latest-image-scan.yaml@main
+    with:
+      environment: "lower-env-acr"
+      image-namespace: "trace-x/item-relationship-service/images"
+      image-name: "irs-api"

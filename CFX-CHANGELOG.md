@@ -13,6 +13,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 - Configurable number of threads for parallel processing of batch order jobs (#70)
 - Added Github workflow for enabling Sonar scanning (#377)
 - Added flag `--dos` to transform-and-upload-py script to allow to switch between DOS and umbrella upload (TRX-13)
+- Added dedicated cofinity trivy workflow (TRX-441)
 
 ### Changed
 - Cccept dates without time and time zone according to standard (TRX-511)
