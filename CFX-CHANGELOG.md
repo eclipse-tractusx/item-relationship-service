@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding JIRA issue number in each changelog entry, please.**_
 
+## [Unreleased - DD.MM.YYYY]
+
 ## [Unreleased]
 
 ### Added
@@ -29,6 +31,12 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ### Fixed
 
 - Fixed GH runner based test execution (TRX-13)
+
+## [5.4.1-cfx-4 - 22.11.2024]
+
+### Added
+- Added load tests for /jobs and /orders API (TRX-93)
+
 
 ## [5.4.1-cfx-3 - 06.11.2024]
 
