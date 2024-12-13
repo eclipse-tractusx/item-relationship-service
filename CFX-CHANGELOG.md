@@ -28,6 +28,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 
 ### Changed
 - Cccept dates without time and time zone according to standard (TRX-511)
+- Update Spring-Boot version to 3.2.8 to mitigate CVE-2024-38821 (TRX-433)
 
 ### Fixed
 

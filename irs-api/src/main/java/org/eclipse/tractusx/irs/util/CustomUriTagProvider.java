@@ -23,14 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
-import io.micrometer.core.instrument.Tag;
-import org.springframework.boot.actuate.metrics.web.client.RestTemplateExchangeTags;
-import org.springframework.boot.actuate.metrics.web.client.RestTemplateExchangeTagsProvider;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpResponse;
+import io.micrometer.common.KeyValue;
+import io.micrometer.common.KeyValues;
+import io.micrometer.observation.Observation;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.http.client.observation.ClientRequestObservationContext;
+import org.springframework.http.client.observation.ClientRequestObservationConvention;
+import org.springframework.http.client.observation.DefaultClientRequestObservationConvention;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,26 +41,33 @@ import org.springframework.stereotype.Service;
  * to lots of metric entries for each different call.
  */
 @Service
-public class CustomUriTagProvider implements RestTemplateExchangeTagsProvider {
+public class CustomUriTagProvider implements ClientRequestObservationConvention {
     private static final String GLOBAL_ASSET_ID_REGEX = "urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+    private static final Pattern UUID_PATTERN = Pattern.compile(GLOBAL_ASSET_ID_REGEX);
+
+    private final ClientRequestObservationConvention delegate = new DefaultClientRequestObservationConvention();
 
     @Override
-    public Iterable<Tag> getTags(final String urlTemplate, final HttpRequest request,
-            final ClientHttpResponse response) {
-        final List<Tag> tags = new ArrayList<>();
-        // build default tags
-        tags.add(RestTemplateExchangeTags.clientName(request));
-        tags.add(RestTemplateExchangeTags.outcome(response));
-        tags.add(RestTemplateExchangeTags.method(request));
-        tags.add(RestTemplateExchangeTags.status(response));
+    public String getName() {
+        return "custom-uri-tag-provider";
+    }
 
-        // only include path in the URI tag, not the query string
-        final String path = request.getURI()
-                             .getPath()
-                             .replaceAll(GLOBAL_ASSET_ID_REGEX,
-                                     "{uuid}");
-        tags.add(RestTemplateExchangeTags.uri(path));
+    @Override
+    public @NotNull KeyValues getLowCardinalityKeyValues(final ClientRequestObservationContext context) {
+        KeyValues keyValues = delegate.getLowCardinalityKeyValues(context);
 
-        return tags;
+        // Replace the URI key-value with a customized one
+        final String path = UUID_PATTERN.matcher(Objects.requireNonNull(context.getCarrier()).getURI().getPath())
+                                  .replaceAll("{uuid}");
+
+        keyValues = keyValues.and(KeyValue.of("uri", path));
+
+        return keyValues;
+    }
+
+    @Override
+    public boolean supportsContext(final Observation.Context context) {
+        return delegate.supportsContext(context);
     }
 }
+
