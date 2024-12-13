@@ -22,6 +22,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 - Configurable number of threads for parallel processing of batch order jobs (#70)
 - Added Github workflow for enabling Sonar scanning (#377)
 - Added flag `--dos` to transform-and-upload-py script to allow to switch between DOS and umbrella upload (TRX-13)
+- Added asset get and update API endpoint (TRX-462)
 - add missing permissions to workflows
 - Added dedicated cofinity trivy workflow (TRX-441)
 

@@ -21,8 +21,11 @@ package org.eclipse.tractusx.irs.edc.client.asset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.edc.client.asset.EdcAssetService.DATA_ADDRESS_TYPE_HTTP_DATA;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -51,6 +54,8 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.EdcAssetAlreadyExistsException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.GetEdcAssetException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.UpdateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.model.EdcTechnicalServiceAuthentication;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.json.JSONException;
@@ -393,6 +398,79 @@ class EdcAssetServiceTest {
         return """
                 {"@id":"%s","@type":"edc:Asset","edc:properties":{"edc:policy-id":"use-eu","dct:type":{"@id":"https://w3id.org/catenax/taxonomy#%s"},"edc:description":"asset1","https://w3id.org/catenax/ontology/common#version":"1.2","edc:id":"%s","edc:contenttype":"application/json"},"edc:dataAddress":{"@type":"edc:DataAddress","edc:method":"POST","edc:type":"HttpData","edc:proxyMethod":"true","edc:proxyBody":"true","header:x-technical-service-key":"apiKeyValue","edc:baseUrl":"http://test.test"},"@context":{"odrl":"http://www.w3.org/ns/odrl/2/","dct":"http://purl.org/dc/terms/","tx":"https://w3id.org/tractusx/v0.0.1/ns/","edc":"https://w3id.org/edc/v0.0.1/ns/","dcat":"https://www.w3.org/ns/dcat/","dspace":"https://w3id.org/dspace/v0.8/","cx-policy":"https://w3id.org/catenax/policy/"}}""".formatted(
                 assetId, notification.getValue(), assetId);
+    }
+
+    @Test
+    void shouldUpdateAsset() throws UpdateEdcAssetException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
+        final String assetId = "id";
+        org.eclipse.tractusx.irs.edc.client.asset.model.Asset request = org.eclipse.tractusx.irs.edc.client.asset.model.Asset.builder()
+                                                       .dataAddress(Map.of("baseUrl", "https://google.com"))
+                                                       .type("HttpData")
+                                                       .assetId(assetId)
+                                                       .build();
+
+        // when
+        service.updateAsset(request);
+
+        // then
+        verify(restTemplate).put(eq("/management/v2/assets"), eq(request));
+    }
+
+    @Test
+    void shouldNotUpdateAsset_restException() {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
+        final String assetId = "id";
+        org.eclipse.tractusx.irs.edc.client.asset.model.Asset request = org.eclipse.tractusx.irs.edc.client.asset.model.Asset.builder()
+                                                                                                                             .dataAddress(Map.of("baseUrl", "https://google.com"))
+                                                                                                                             .type("HttpData")
+                                                                                                                             .assetId(assetId)
+                                                                                                                             .build();
+        doThrow(new RestClientException("error")).when(restTemplate).put(anyString(), any(org.eclipse.tractusx.irs.edc.client.asset.model.Asset.class));
+
+        // then
+        assertThrows(UpdateEdcAssetException.class, () -> service.updateAsset(request));
+    }
+
+    @Test
+    void shouldGetAsset() throws GetEdcAssetException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
+        final String assetId = "id";
+        org.eclipse.tractusx.irs.edc.client.asset.model.Asset response = org.eclipse.tractusx.irs.edc.client.asset.model.Asset.builder()
+                                                                                                                             .dataAddress(Map.of("baseUrl", "https://google.com"))
+                                                                                                                             .type("HttpData")
+                                                                                                                             .assetId(assetId)
+                                                                                                                             .build();
+        when(restTemplate.getForEntity(anyString(), any())).thenReturn(ResponseEntity.ok(response));
+
+        // when
+        ResponseEntity<org.eclipse.tractusx.irs.edc.client.asset.model.Asset> asset = service.getAsset(assetId);
+
+        // then
+        assertEquals(response, asset.getBody());
+    }
+
+    @Test
+    void shouldNotGetAsset_restException() {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
+        final String assetId = "id";
+
+        when(restTemplate.getForEntity(anyString(), any())).thenThrow(new RestClientException("error"));
+
+        // then
+        assertThrows(GetEdcAssetException.class, () -> service.getAsset(assetId));
     }
 
     ObjectMapper objectMapper() {

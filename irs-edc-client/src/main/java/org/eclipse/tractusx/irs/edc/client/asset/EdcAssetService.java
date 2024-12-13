@@ -37,6 +37,8 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.EdcAssetAlreadyExistsException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.GetEdcAssetException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.UpdateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.EdcTechnicalServiceAuthentication;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
@@ -54,6 +56,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.TooManyMethods")
 public class EdcAssetService {
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
     private static final String DEFAULT_POLICY_ID = "use-eu";
@@ -141,6 +144,32 @@ public class EdcAssetService {
         } catch (RestClientException e) {
             log.error("Failed to delete EDC notification asset {}. Reason: ", assetId, e);
             throw new DeleteEdcAssetException(e);
+        }
+    }
+
+    public ResponseEntity<org.eclipse.tractusx.irs.edc.client.asset.model.Asset> getAsset(final String assetId)
+            throws GetEdcAssetException {
+        final String updateUri = UriComponentsBuilder.fromPath(config.getControlplane().getEndpoint().getAsset())
+                                                     .pathSegment("{assetId}")
+                                                     .buildAndExpand(assetId)
+                                                     .toUriString();
+        try {
+            return restTemplate.getForEntity(updateUri, org.eclipse.tractusx.irs.edc.client.asset.model.Asset.class);
+        } catch (RestClientException e) {
+            log.error("Failed to get EDC asset {}. Reason: ", assetId, e);
+            throw new GetEdcAssetException(e);
+        }
+    }
+
+    public void updateAsset(final org.eclipse.tractusx.irs.edc.client.asset.model.Asset assetUpdateRequest) throws UpdateEdcAssetException {
+        final String updateUri = UriComponentsBuilder.fromPath(config.getControlplane().getEndpoint().getAsset())
+                                                     .toUriString();
+
+        try {
+            restTemplate.put(updateUri, assetUpdateRequest);
+        } catch (RestClientException e) {
+            log.error("Failed to update EDC notification asset's data address {}. Reason: ", assetUpdateRequest.getAssetId(), e);
+            throw new UpdateEdcAssetException(e);
         }
     }
 
