@@ -66,6 +66,7 @@
         <!-- IRS Registry Client Library -->
         <irs-registry-client.version>2.1.22</irs-registry-client.version>
 
+
         <!-- Dependencies -->
         <springboot.version>3.2.8</springboot.version>
         <springdoc.version>2.2.0</springdoc.version>

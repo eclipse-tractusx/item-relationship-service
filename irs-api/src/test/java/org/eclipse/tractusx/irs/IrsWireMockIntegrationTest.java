@@ -114,7 +114,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class IrsWireMockIntegrationTest {
 
     private static final String BATCH_PREFIX = "batch:";
-
+    private static final String DSP_PATH = "/api/v1/dsp";
     public static final String SEMANTIC_HUB_URL = "http://semantic.hub/models";
     public static final String EDC_URL = "http://edc.test";
 
@@ -461,7 +461,7 @@ class IrsWireMockIntegrationTest {
 
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
-        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL);
+        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL + DSP_PATH);
 
         final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
         assertThat(rootCauses).hasSize(1);
@@ -502,7 +502,7 @@ class IrsWireMockIntegrationTest {
 
         final Tombstone actualTombstone = tombstones.get(0);
         assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
-        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL);
+        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL + DSP_PATH);
 
         final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
         assertThat(rootCauses).hasSize(1);
@@ -514,7 +514,8 @@ class IrsWireMockIntegrationTest {
         // Arrange
         final String globalAssetId = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
         final List<String> edcUrls = List.of("https://test.edc1.io", "https://test.edc2.io");
-
+        final List<String> expectedEdcUrls = List.of("https://test.edc1.io" + DSP_PATH,
+                "https://test.edc2.io" + DSP_PATH);
         WiremockSupport.successfulSemanticModelRequest();
         WiremockSupport.successfulSemanticHubRequests();
         WiremockSupport.successfulDiscovery(edcUrls);
@@ -541,9 +542,9 @@ class IrsWireMockIntegrationTest {
 
         final Tombstone actualTombstone = tombstones.get(0);
         assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
-        assertThat(actualTombstone.getEndpointURL()).describedAs("Tombstone should contain all EDC URLs")
-                                                    .isEqualTo(String.join("; ", edcUrls));
-
+        final List<String> actualEndpointUrlsInTombstone = List.of(
+                actualTombstone.getEndpointURL().replace(" ", "").split(";"));
+        actualEndpointUrlsInTombstone.forEach(s -> assertThat(expectedEdcUrls.contains(s)).describedAs("Tombstone should contain all EDC URLs").isTrue());
     }
 
     @Test

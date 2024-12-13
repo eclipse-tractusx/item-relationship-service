@@ -259,8 +259,9 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
                 throws RegistryServiceException, EdcRetrieverException {
             // Arrange
             givenThat(postDiscoveryFinder200());
-            final String edc1Url = "https://test.edc1.io";
-            final String edc2Url = "https://test.edc2.io";
+            final String dspPath = "/api/v1/dsp";
+            final String edc1Url = "https://test.edc1.io" + dspPath;
+            final String edc2Url = "https://test.edc2.io" + dspPath;
             final List<String> edcUrls = List.of(edc1Url, edc2Url);
             givenThat(postEdcDiscovery200(TEST_BPN, edcUrls));
             givenThat(getLookupShells200());

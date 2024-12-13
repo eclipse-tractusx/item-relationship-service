@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class ConnectorEndpointsServiceTest {
-
+    private static final String DSP_PATH = "/api/v1/dsp";
     private final DiscoveryFinderClient essDiscoveryFinderClient = Mockito.mock(DiscoveryFinderClient.class);
     private final ConnectorEndpointsService service = new ConnectorEndpointsService(essDiscoveryFinderClient, "bpnl" );
 
@@ -43,17 +43,38 @@ class ConnectorEndpointsServiceTest {
         // given
         final String bpn = "BPN123";
         given(essDiscoveryFinderClient.findDiscoveryEndpoints(any())).willReturn(
-                new DiscoveryResponse(List.of(createEndpoint("address1"), createEndpoint("address2"))));
-        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("address1"), any())).willReturn(
-                List.of(createResult(List.of("connector1", "connector2"))));
-        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("address2"), any())).willReturn(
-                List.of(createResult(List.of("connector3", "connector4"))));
+                new DiscoveryResponse(List.of(createEndpoint("https://address1"), createEndpoint("https://address2"))));
+        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("https://address1"), any())).willReturn(
+                List.of(createResult(List.of("https://connector1", "https://connector2"))));
+        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("https://address2"), any())).willReturn(
+                List.of(createResult(List.of("https://connector3", "https://connector4"))));
 
         // when
         final List<String> actualConnectors = service.fetchConnectorEndpoints(bpn);
 
         // then
-        assertThat(actualConnectors).containsExactly("connector1", "connector2", "connector3", "connector4");
+        assertThat(actualConnectors).containsExactly("https://connector1" + DSP_PATH, "https://connector2" + DSP_PATH, "https://connector3" + DSP_PATH, "https://connector4" + DSP_PATH);
+    }
+
+    @Test
+    void shouldFindConnectorEndpointsFilterDuplicates() {
+        // given
+        final String bpn = "BPN123";
+        given(essDiscoveryFinderClient.findDiscoveryEndpoints(any())).willReturn(
+                new DiscoveryResponse(List.of(createEndpoint("https://address1"), createEndpoint("https://address2"))));
+        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("https://address1"), any())).willReturn(
+                List.of(createResult(List.of("https://connector1", "https://connector2"))));
+        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("https://address1"), any())).willReturn(
+                List.of(createResult(List.of("https://connector1", "https://connector2"))));
+        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("https://address1"), any())).willReturn(
+                List.of(createResult(List.of("https://connector1", "https://connector2"))));
+
+        // when
+        final List<String> actualConnectors = service.fetchConnectorEndpoints(bpn);
+
+        // then
+        assertThat(actualConnectors).containsExactly("https://connector1" + DSP_PATH, "https://connector2" + DSP_PATH);
+        assertThat(actualConnectors).size().isEqualTo(2);
     }
 
     @Test

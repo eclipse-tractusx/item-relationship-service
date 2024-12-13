@@ -11,6 +11,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ## [Unreleased]
 
 ### Added
+- TRX-543 Filtering for duplicated connector endpoint addresses for same bpn. 
 
 ### Changed
 

@@ -23,7 +23,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.discovery;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +43,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @RequiredArgsConstructor
 @Slf4j
 public class ConnectorEndpointsService {
-
+    private static final String DSP_PATH = "/api/v1/dsp";
     private final DiscoveryFinderClient discoveryFinderClient;
     private static final String CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME = "connector_endpoint_service_cache";
     private final String discoveryType;
@@ -60,7 +63,6 @@ public class ConnectorEndpointsService {
         }
 
         log.info("Requesting connector endpoints for BPN {}", bpn);
-
         final var onlyBpn = new DiscoveryFinderRequest(List.of(discoveryType));
         final var discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn).endpoints();
         final var endpoints = discoveryEndpoints.stream()
@@ -72,10 +74,29 @@ public class ConnectorEndpointsService {
                                                                                                                                                   .equals(bpn))
                                                                                                   .map(EdcDiscoveryResult::connectorEndpoint))
                                                 .flatMap(List::stream)
+                                                .map(ConnectorEndpointsService::ensureStandardDspEndpoint)
                                                 .toList();
+        final var endPointsWithoutDuplicates = removeDuplicates(endpoints);
 
-        log.info("Discovered the following endpoints for BPN '{}': '{}'", bpn, String.join(", ", endpoints));
-        return endpoints;
+        log.info("Discovered the following endpoints for BPN '{}': '{}'", bpn,
+                String.join(", ", endPointsWithoutDuplicates));
+        return endPointsWithoutDuplicates;
+    }
+
+    private static List<String> removeDuplicates(final List<String> urls) {
+        final Set<String> uniqueUrls = new LinkedHashSet<>(urls);
+        return new ArrayList<>(uniqueUrls);
+    }
+
+    private static String ensureStandardDspEndpoint(final String url) {
+        String processedUrl = url;
+        if (!processedUrl.endsWith(DSP_PATH)) {
+            if (processedUrl.endsWith("/")) {
+                processedUrl = processedUrl.substring(0, processedUrl.length() - 1);
+            }
+            processedUrl += DSP_PATH;
+        }
+        return processedUrl;
     }
 
     @CacheEvict(value = CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME, allEntries = true)
