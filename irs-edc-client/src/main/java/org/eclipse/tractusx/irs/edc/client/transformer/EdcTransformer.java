@@ -63,6 +63,7 @@ import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToPolicyTran
 import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToProhibitionTransformer;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.protocol.dsp.negotiation.transform.from.JsonObjectFromContractNegotiationTransformer;
+import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.edc.transform.spi.TransformerContext;
@@ -70,6 +71,7 @@ import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
+import org.eclipse.tractusx.irs.edc.client.model.edr.DataAddress;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -81,10 +83,12 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class EdcTransformer {
     private final JsonObjectToCatalogTransformer jsonObjectToCatalogTransformer;
+    private final JsonObjectToDataAddressTransformer jsonObjectToDataAddressTransformer;
     private final JsonObjectFromNegotiationInitiateDtoTransformer jsonObjectFromNegotiationInitiateDtoTransformer;
     private final JsonObjectFromTransferProcessRequestTransformer jsonObjectFromTransferProcessRequestTransformer;
     private final JsonObjectFromContractOfferDescriptionTransformer jsonObjectFromContractOfferDescriptionTransformer;
     private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
+    private final JsonObjectFromQuerySpecTransformer jsonObjectFromQuerySpecTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContext transformerContext;
     private final JsonObjectFromAssetTransformer jsonObjectFromAssetTransformer;
@@ -99,6 +103,7 @@ public class EdcTransformer {
 
         jsonObjectToCatalogTransformer = new JsonObjectToCatalogTransformer();
         jsonObjectToIrsPolicyTransformer = new JsonObjectToIrsPolicyTransformer(objectMapper);
+        jsonObjectToDataAddressTransformer = new JsonObjectToDataAddressTransformer();
 
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(
                 jsonBuilderFactory);
@@ -106,12 +111,14 @@ public class EdcTransformer {
                 jsonBuilderFactory);
         jsonObjectFromContractOfferDescriptionTransformer = new JsonObjectFromContractOfferDescriptionTransformer(
                 jsonBuilderFactory);
+        jsonObjectFromQuerySpecTransformer = new JsonObjectFromQuerySpecTransformer(jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
         jsonObjectFromAssetTransformer = new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper);
 
         // JSON to Object
         typeTransformerRegistry.register(jsonObjectToCatalogTransformer);
         typeTransformerRegistry.register(jsonObjectToIrsPolicyTransformer);
+        typeTransformerRegistry.register(jsonObjectToDataAddressTransformer);
         typeTransformerRegistry.register(new JsonObjectToPolicyTransformer(participantIdMapper));
         typeTransformerRegistry.register(new JsonObjectFromContractOfferTransformer(participantIdMapper, jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonValueToGenericTypeTransformer(objectMapper));
@@ -197,5 +204,16 @@ public class EdcTransformer {
 
     public org.eclipse.tractusx.irs.edc.client.policy.@Nullable Policy transformToIrsPolicy(final JsonObject body) {
         return jsonObjectToIrsPolicyTransformer.transform(body, transformerContext);
+    }
+
+    public JsonObject transformQuerySpecToJson(final QuerySpec querySpec) {
+        final JsonObject transform = jsonObjectFromQuerySpecTransformer.transform(querySpec, transformerContext);
+        return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
+    }
+
+    public DataAddress transformDataAddress(final String jsonString, final Charset charset) {
+        final Result<JsonObject> expand;
+        expand = expandJsonLd(jsonString, charset);
+        return jsonObjectToDataAddressTransformer.transform(expand.getContent(), transformerContext);
     }
 }

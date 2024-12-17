@@ -48,6 +48,7 @@ import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.SHELL
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.getLookupShells200;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.getShellDescriptor200;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_CATALOG;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_EDR_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_STATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_TRANSFER;
@@ -76,7 +77,9 @@ import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.connector.batch.PersistentBatchStore;
 import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
-import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.EdcCallbackController;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.edc.client.OngoingNegotiationStorage;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
@@ -90,6 +93,7 @@ import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,6 +155,12 @@ class IrsWireMockIntegrationTest {
     @SpyBean
     private ContractNegotiationService contractNegotiationService;
 
+    @Autowired
+    private EdcCallbackController edcCallbackController;
+
+    @Autowired
+    private EdcConfiguration edcConfiguration;
+
     @BeforeAll
     static void startContainer() {
         minioContainer.start();
@@ -175,12 +185,19 @@ class IrsWireMockIntegrationTest {
         registry.add("irs-edc-client.controlplane.endpoint.data", () -> EDC_URL);
         registry.add("irs-edc-client.controlplane.endpoint.catalog", () -> PATH_CATALOG);
         registry.add("irs-edc-client.controlplane.endpoint.contract-negotiation", () -> PATH_NEGOTIATE);
+        registry.add("irs-edc-client.controlplane.edr-management-enabled", () -> false);
+        registry.add("irs-edc-client.controlplane.endpoint.edr-management", () -> PATH_EDR_NEGOTIATE);
         registry.add("irs-edc-client.controlplane.endpoint.transfer-process", () -> PATH_TRANSFER);
         registry.add("irs-edc-client.controlplane.endpoint.state-suffix", () -> PATH_STATE);
         registry.add("irs-edc-client.controlplane.api-key.header", () -> "X-Api-Key");
         registry.add("irs-edc-client.controlplane.api-key.secret", () -> "test");
         registry.add("irs-edc-client.controlplane.orchestration.thread-pool-size", () -> "2");
         registry.add("resilience4j.retry.configs.default.waitDuration", () -> "1s");
+    }
+
+    @BeforeEach
+    void setUp() {
+        edcConfiguration.getControlplane().setEdrManagementEnabled(false);
     }
 
     @AfterEach
@@ -230,6 +247,42 @@ class IrsWireMockIntegrationTest {
         // Assert
         WiremockSupport.verifyDiscoveryCalls(1);
         WiremockSupport.verifyNegotiationCalls(2);
+        WiremockSupport.verifyCatalogCalls(3);
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobForJobId.getShells()).hasSize(2);
+        assertThat(jobForJobId.getRelationships()).hasSize(1);
+        assertThat(jobForJobId.getTombstones()).isEmpty();
+    }
+
+    @Test
+    void shouldStopJobAfterDepthIsReachedWithEdr() {
+        // Arrange
+        final String globalAssetIdLevel1 = "globalAssetId";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+        edcConfiguration.getControlplane().setEdrManagementEnabled(true);
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+
+        successfulEdrRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulEdrRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN,
+                "integrationtesting/batch-2.json", "integrationtesting/singleLevelBomAsBuilt-2.json");
+
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1);
+
+        // Act
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle.getId());
+
+        Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
+
+        // Assert
+        WiremockSupport.verifyDiscoveryCalls(1);
+        WiremockSupport.verifyEdrNegotiationCalls(2);
         WiremockSupport.verifyCatalogCalls(3);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
@@ -804,6 +857,47 @@ class IrsWireMockIntegrationTest {
         endpointDataReferenceStorage.put(contractAgreementId, createEndpointDataReference(contractAgreementId));
     }
 
+    private void successfulEdrRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
+            final String batchFileName, final String sbomFileName) {
+
+        final String edcAssetId = WiremockSupport.randomUUIDwithPrefix();
+        final String batch = WiremockSupport.submodelRequest(edcAssetId, BATCH, BATCH_3_0_0, batchFileName);
+
+        final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, SINGLE_LEVEL_BOM_AS_BUILT,
+                SINGLE_LEVEL_BOM_AS_BUILT_3_0_0, sbomFileName);
+
+        final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);
+
+        final String shellId = WiremockSupport.randomUUIDwithPrefix();
+        final String registryEdcAssetId = "registry-asset";
+        successfulEdrRegistryNegotiation(registryEdcAssetId);
+        stubFor(getLookupShells200(PUBLIC_LOOKUP_SHELLS_PATH, List.of(shellId)).withQueryParam("assetIds",
+                equalTo(encodedAssetIds(globalAssetId))));
+        stubFor(getShellDescriptor200(PUBLIC_SHELL_DESCRIPTORS_PATH + WiremockSupport.encodedId(shellId), bpn,
+                submodelDescriptors, globalAssetId, shellId, idShort));
+        successfulEdrNegotiation(edcAssetId);
+    }
+
+    private void successfulEdrNegotiation(final String edcAssetId) {
+        final String negotiationId = randomUUID();
+        final String contractAgreementId = "%s:%s:%s".formatted(randomUUID(), edcAssetId, randomUUID());
+        SubmodelFacadeWiremockSupport.prepareEdrNegotiation(negotiationId, contractAgreementId, edcAssetId);
+
+        edcCallbackController.receiveNegotiationsCallback(mockNegotiationCallback(negotiationId, contractAgreementId));
+        edcCallbackController.receiveEdcCallback(mockCallback(contractAgreementId, edcAssetId,
+                createEndpointDataReference(contractAgreementId).getAuthCode()));
+    }
+
+    private void successfulEdrRegistryNegotiation(final String edcAssetId) {
+        final String negotiationId = randomUUID();
+        final String contractAgreementId = "%s:%s:%s".formatted(randomUUID(), edcAssetId, randomUUID());
+        SubmodelFacadeWiremockSupport.prepareEdrRegistryNegotiation(negotiationId, contractAgreementId, edcAssetId);
+
+        edcCallbackController.receiveNegotiationsCallback(mockNegotiationCallback(negotiationId, contractAgreementId));
+        edcCallbackController.receiveEdcCallback(mockCallback(contractAgreementId, edcAssetId,
+                createEndpointDataReference(contractAgreementId).getAuthCode()));
+    }
+
     private void failedRegistryRequestMismatchPolicy() {
         final String registryEdcAssetId = "registry-asset-policy-missmatch";
         failedPolicyMismatchNegotiation(registryEdcAssetId);
@@ -830,7 +924,7 @@ class IrsWireMockIntegrationTest {
         Awaitility.await()
                   .pollDelay(Duration.ZERO)
                   .timeout(Duration.ofSeconds(35))
-                  .pollInterval(Duration.ofMillis(100))
+                  .pollInterval(Duration.ofMillis(1000))
                   .until(() -> irsService.getJobForJobId(jobHandleId, false)
                                          .getJob()
                                          .getState()
@@ -850,6 +944,257 @@ class IrsWireMockIntegrationTest {
                     "policystore.persistence.secretKey=" + SECRET_KEY,
                     "policystore.persistence.bucketName=policy-test");
         }
+    }
+
+    private String mockCallback(final String contractAgreementId, final String edcAssetId, final String authCode) {
+        final String dataplaneEndpoint =
+                SubmodelFacadeWiremockSupport.DATAPLANE_HOST + SubmodelFacadeWiremockSupport.PATH_DATAPLANE_PUBLIC;
+        return """
+                {
+                  "id": "bc916834-61b8-4754-b3e2-1eb041d253c2",
+                  "at": 1714645750814,
+                  "payload": {
+                    "assetId": "%s",
+                    "contractId": "%s",
+                    "dataAddress": {
+                      "properties": {
+                        "process_id": "%s",
+                        "https://w3id.org/edc/v0.0.1/ns/endpoint": "%s",
+                        "asset_id": "%s",
+                        "agreement_id": "%s",
+                        "https://w3id.org/edc/v0.0.1/ns/authorization": "%s"
+                      }
+                    }
+                  }
+                }
+                """.formatted(edcAssetId, contractAgreementId, UUID.randomUUID().toString(), dataplaneEndpoint,
+                edcAssetId, contractAgreementId, authCode);
+
+    }
+
+    private String mockNegotiationCallback(String contractNegotiationId, String contractAgreementId) {
+        return """
+                {
+                  "id": "c87cbd8a-363a-41eb-a9f5-214da3a08bdc",
+                  "at": 1732284831946,
+                  "payload": {
+                    "contractNegotiationId": "%s",
+                    "counterPartyAddress": "https://tracexb-provider-edc-edc.enablement.integration.cofinity-x.com/api/v1/dsp",
+                    "counterPartyId": "BPNL000000002CS4",
+                    "callbackAddresses": [
+                      {
+                        "uri": "https://irs.callback/edr",
+                        "events": [
+                          "transfer.process.started"
+                        ],
+                        "transactional": false,
+                        "authKey": null,
+                        "authCodeId": null
+                      },
+                      {
+                        "uri": "https://irs.callback/negotiation",
+                        "events": [
+                          "contract.negotiation.finalized"
+                        ],
+                        "transactional": false,
+                        "authKey": null,
+                        "authCodeId": null
+                      },
+                      {
+                        "uri": "local://adapter",
+                        "events": [
+                          "contract.negotiation",
+                          "transfer.process"
+                        ],
+                        "transactional": true,
+                        "authKey": null,
+                        "authCodeId": null
+                      }
+                    ],
+                    "contractOffers": [
+                      {
+                        "id": "ZmNiZTVmMDgtOTUzNi00OWM2LTgyYzMtODYwYzcxNGE0M2Ex:dXJuOnV1aWQ6YjA4ZjU0ZTAtOTJjYS00Y2E1LTkxMTUtNzUzMWMzYTQ3YmJj:OTcxNmVkYmQtZDc2OS00Nzc5LTgwZGItMTFkODRlNmEzYTJh",
+                        "policy": {
+                          "permissions": [
+                            {
+                              "edctype": "dataspaceconnector:permission",
+                              "action": {
+                                "type": "use",
+                                "includedIn": null,
+                                "constraint": null
+                              },
+                              "constraints": [
+                                {
+                                  "edctype": "AndConstraint",
+                                  "constraints": [
+                                    {
+                                      "edctype": "AtomicConstraint",
+                                      "leftExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                      },
+                                      "rightExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "traceability:1.0"
+                                      },
+                                      "operator": "EQ"
+                                    },
+                                    {
+                                      "edctype": "AtomicConstraint",
+                                      "leftExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                      },
+                                      "rightExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "cx.core.industrycore:1"
+                                      },
+                                      "operator": "EQ"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "duties": []
+                            }
+                          ],
+                          "prohibitions": [],
+                          "obligations": [],
+                          "extensibleProperties": {},
+                          "inheritsFrom": null,
+                          "assigner": "BPNL000000002CS4",
+                          "assignee": null,
+                          "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                          "@type": {
+                            "@policytype": "offer"
+                          }
+                        },
+                        "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc"
+                      }
+                    ],
+                    "protocol": "dataspace-protocol-http",
+                    "contractAgreement": {
+                      "id": "%s",
+                      "providerId": "BPNL000000002CS4",
+                      "consumerId": "BPNL000000002BR4",
+                      "contractSigningDate": 1732284827,
+                      "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                      "policy": {
+                        "permissions": [
+                          {
+                            "edctype": "dataspaceconnector:permission",
+                            "action": {
+                              "type": "use",
+                              "includedIn": null,
+                              "constraint": null
+                            },
+                            "constraints": [
+                              {
+                                "edctype": "AndConstraint",
+                                "constraints": [
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "traceability:1.0"
+                                    },
+                                    "operator": "EQ"
+                                  },
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "cx.core.industrycore:1"
+                                    },
+                                    "operator": "EQ"
+                                  }
+                                ]
+                              }
+                            ],
+                            "duties": []
+                          }
+                        ],
+                        "prohibitions": [],
+                        "obligations": [],
+                        "extensibleProperties": {},
+                        "inheritsFrom": null,
+                        "assigner": "BPNL000000002CS4",
+                        "assignee": "BPNL000000002BR4",
+                        "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                        "@type": {
+                          "@policytype": "contract"
+                        }
+                      }
+                    },
+                    "lastContractOffer": {
+                      "id": "ZmNiZTVmMDgtOTUzNi00OWM2LTgyYzMtODYwYzcxNGE0M2Ex:dXJuOnV1aWQ6YjA4ZjU0ZTAtOTJjYS00Y2E1LTkxMTUtNzUzMWMzYTQ3YmJj:OTcxNmVkYmQtZDc2OS00Nzc5LTgwZGItMTFkODRlNmEzYTJh",
+                      "policy": {
+                        "permissions": [
+                          {
+                            "edctype": "dataspaceconnector:permission",
+                            "action": {
+                              "type": "use",
+                              "includedIn": null,
+                              "constraint": null
+                            },
+                            "constraints": [
+                              {
+                                "edctype": "AndConstraint",
+                                "constraints": [
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "traceability:1.0"
+                                    },
+                                    "operator": "EQ"
+                                  },
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "cx.core.industrycore:1"
+                                    },
+                                    "operator": "EQ"
+                                  }
+                                ]
+                              }
+                            ],
+                            "duties": []
+                          }
+                        ],
+                        "prohibitions": [],
+                        "obligations": [],
+                        "extensibleProperties": {},
+                        "inheritsFrom": null,
+                        "assigner": "BPNL000000002CS4",
+                        "assignee": null,
+                        "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                        "@type": {
+                          "@policytype": "offer"
+                        }
+                      },
+                      "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc"
+                    }
+                  },
+                  "type": "ContractNegotiationFinalized"
+                }
+                """.formatted(contractNegotiationId, contractAgreementId);
     }
 
 }

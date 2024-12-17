@@ -59,6 +59,8 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionExcep
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
+import org.eclipse.tractusx.irs.edc.client.storage.ContractNegotiationIdStorage;
+import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -87,6 +89,7 @@ class EdcOrchestratorTest {
 
     private OngoingNegotiationStorage ongoingNegotiationStorage;
     private EndpointDataReferenceCacheService endpointDataReferenceStorage;
+    private ContractNegotiationIdStorage contractNegotiationIdStorage;
     private AsyncPollingService pollingService;
 
     private final int threadPoolThreads = 1;
@@ -98,10 +101,11 @@ class EdcOrchestratorTest {
         final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(threadPoolThreads);
         endpointDataReferenceStorage = spy(
                 new EndpointDataReferenceCacheService(new EndpointDataReferenceStorage(Duration.ofMinutes(5))));
+        contractNegotiationIdStorage = spy(new ContractNegotiationIdStorage(Duration.ofMinutes(5)));
         ongoingNegotiationStorage = spy(new OngoingNegotiationStorage());
 
         orchestrator = new EdcOrchestrator(config, contractNegotiationService, pollingService, catalogFacade,
-                endpointDataReferenceStorage, fixedThreadPoolExecutorService, ongoingNegotiationStorage);
+                endpointDataReferenceStorage, contractNegotiationIdStorage, fixedThreadPoolExecutorService, ongoingNegotiationStorage);
         when(config.getSubmodel().getRequestTtl()).thenReturn(Duration.ofSeconds(5));
         ongoingNegotiationStorage.getOngoingNegotiations()
                                  .forEach(ongoingNegotiationStorage::removeFromOngoingNegotiations);
@@ -397,7 +401,7 @@ class EdcOrchestratorTest {
         final int increasedThreadPoolThreads = 10;
         final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(increasedThreadPoolThreads);
         final EdcOrchestrator orchestrator = new EdcOrchestrator(config, contractNegotiationService, pollingService,
-                catalogFacade, endpointDataReferenceStorage, fixedThreadPoolExecutorService, ongoingNegotiationStorage);
+                catalogFacade, endpointDataReferenceStorage, contractNegotiationIdStorage, fixedThreadPoolExecutorService, ongoingNegotiationStorage);
 
         final String assetId = "test1";
         final String contractAgreementId = "contractAgreementId";

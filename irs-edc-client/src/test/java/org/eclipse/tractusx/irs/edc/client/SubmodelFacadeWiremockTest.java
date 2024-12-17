@@ -78,6 +78,8 @@ import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.edc.client.storage.ContractNegotiationIdStorage;
+import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,6 +104,8 @@ class SubmodelFacadeWiremockTest {
 
     private EndpointDataReferenceStorage storage;
 
+    private ContractNegotiationIdStorage contractNegotiationIdStorage;
+
     private AcceptedPoliciesProvider acceptedPoliciesProvider;
     private EdcSubmodelFacade edcSubmodelFacade;
 
@@ -116,6 +120,7 @@ class SubmodelFacadeWiremockTest {
         config.getControlplane().getEndpoint().setContractNegotiation("/contractnegotiations");
         config.getControlplane().getEndpoint().setTransferProcess("/transferprocesses");
         config.getControlplane().getEndpoint().setStateSuffix("/state");
+        config.getControlplane().getEndpoint().setEdrManagement("/edrs");
         config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
         config.getControlplane().setProviderSuffix("/api/v1/dsp");
         config.getSubmodel().setUrnPrefix("/urn");
@@ -157,7 +162,7 @@ class SubmodelFacadeWiremockTest {
         final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(2);
         final OngoingNegotiationStorage ongoingNegotiationStorage = new OngoingNegotiationStorage();
         final EdcOrchestrator edcOrchestrator = new EdcOrchestrator(config, contractNegotiationService, pollingService,
-                catalogFacade, endpointDataReferenceCacheService, fixedThreadPoolExecutorService,
+                catalogFacade, endpointDataReferenceCacheService, contractNegotiationIdStorage, fixedThreadPoolExecutorService,
                 ongoingNegotiationStorage);
         final EdcSubmodelClient edcSubmodelClient = new EdcSubmodelClientImpl(config, dataPlaneClient, edcOrchestrator, retryRegistry);
         edcSubmodelFacade = new EdcSubmodelFacade(edcSubmodelClient, config);

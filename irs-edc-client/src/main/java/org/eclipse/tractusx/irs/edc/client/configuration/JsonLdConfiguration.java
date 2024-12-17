@@ -52,6 +52,7 @@ public class JsonLdConfiguration {
     public static final String NAMESPACE_EDC_ID = NAMESPACE_EDC + "id";
     public static final String NAMESPACE_TRACTUSX = "https://w3id.org/tractusx/v0.0.1/ns/";
     public static final String NAMESPACE_DCT = "http://purl.org/dc/terms/";
+    public static final String NAMESPACE_AUTH = "https://w3id.org/tractusx/auth/";
     public static final String JSON_LD_OBJECT_MAPPER = "jsonLdObjectMapper";
     public static final String NAMESPACE_CATENAX_POLICY = "https://w3id.org/catenax/policy/";
     public static final String NAMESPACE_CX_TAXONOMY = "https://w3id.org/catenax/taxonomy#";
@@ -62,6 +63,7 @@ public class JsonLdConfiguration {
         titaniumJsonLd.registerNamespace("odrl", NAMESPACE_ODRL);
         titaniumJsonLd.registerNamespace("dct", NAMESPACE_DCT);
         titaniumJsonLd.registerNamespace("tx", NAMESPACE_TRACTUSX);
+        titaniumJsonLd.registerNamespace("tx-auth", NAMESPACE_AUTH);
         titaniumJsonLd.registerNamespace("edc", NAMESPACE_EDC);
         titaniumJsonLd.registerNamespace("dcat", NAMESPACE_DCAT);
         titaniumJsonLd.registerNamespace("dspace", NAMESPACE_DSPACE);

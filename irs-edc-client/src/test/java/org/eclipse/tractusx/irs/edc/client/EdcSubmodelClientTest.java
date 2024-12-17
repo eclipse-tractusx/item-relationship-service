@@ -83,6 +83,7 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationRes
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.relationships.RelationshipAspect;
 import org.eclipse.tractusx.irs.edc.client.relationships.SubmodelTestdataCreator;
+import org.eclipse.tractusx.irs.edc.client.storage.ContractNegotiationIdStorage;
 import org.eclipse.tractusx.irs.edc.client.testutil.TestMother;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
@@ -130,6 +131,9 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private EndpointDataReferenceCacheService endpointDataReferenceCacheService;
 
     @Mock
+    private ContractNegotiationIdStorage contractNegotiationIdStorage;
+
+    @Mock
     private OngoingNegotiationStorage ongoingNegotiationStorage;
 
     private EdcSubmodelClient testee;
@@ -144,7 +148,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(config.getSubmodel().getRequestTtl()).thenReturn(Duration.ofMinutes(10));
         final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(2);
         final EdcOrchestrator edcOrchestrator = new EdcOrchestrator(config, contractNegotiationService, pollingService,
-                catalogFacade, endpointDataReferenceCacheService, fixedThreadPoolExecutorService,
+                catalogFacade, endpointDataReferenceCacheService, contractNegotiationIdStorage, fixedThreadPoolExecutorService,
                 ongoingNegotiationStorage);
         testee = new EdcSubmodelClientImpl(config, edcDataPlaneClient, edcOrchestrator, retryRegistry);
     }

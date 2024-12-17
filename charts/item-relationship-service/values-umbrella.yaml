@@ -115,6 +115,11 @@ edc:
       data: http://umbrella-dataconsumer-1-edc-controlplane:8081/management
     apikey:
       secret: "TEST1"
+    edrManagementEnabled: true
+  asyncTimeout: PT30S
+  submodel:
+    request:
+      ttl: PT30S
 
 minio:
   resources:

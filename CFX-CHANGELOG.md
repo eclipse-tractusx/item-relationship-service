@@ -13,6 +13,9 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ### Added
 - TRX-543 Filtering for duplicated connector endpoint addresses for same bpn. 
 
+- Added support for EDC EDR management API. This can be enabled using the config entry
+  `irs-edc-client.controlplane.edr-management-enabled`.
+
 ### Changed
 
 ## [5.4.1-cfx-5 - 05.12.2024]

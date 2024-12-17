@@ -189,6 +189,10 @@ public class WiremockSupport {
                 SubmodelFacadeWiremockSupport.PATH_TRANSFER + "/.*" + SubmodelFacadeWiremockSupport.PATH_STATE)));
     }
 
+    static void verifyEdrNegotiationCalls(final int times) {
+        verify(times, postRequestedFor(urlPathEqualTo(SubmodelFacadeWiremockSupport.PATH_EDR_NEGOTIATE)));
+    }
+
     static void verifyCatalogCalls(final int times) {
         verify(times, postRequestedFor(urlPathEqualTo(SubmodelFacadeWiremockSupport.PATH_CATALOG)));
     }

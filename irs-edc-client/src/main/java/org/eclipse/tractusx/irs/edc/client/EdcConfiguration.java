@@ -43,11 +43,21 @@ public class EdcConfiguration {
     private ControlplaneConfig controlplane = new ControlplaneConfig();
     private SubmodelConfig submodel = new SubmodelConfig();
     private String callbackUrl;
-
+    private String negotiationCallbackUrl;
+    private CallbackConfig callback = new CallbackConfig();
     private Duration asyncTimeout = Duration.ofMinutes(ASYNC_TIMEOUT_MINUTES_DEFAULT);
 
     public Long getAsyncTimeoutMillis() {
         return asyncTimeout.toMillis();
+    }
+
+    /**
+     * Container for Callback config
+     */
+    @Data
+    public static class CallbackConfig {
+        private String mapping;
+        private String negotiationMapping;
     }
 
     /**
@@ -66,6 +76,8 @@ public class EdcConfiguration {
 
         private Duration requestTtl;
 
+        private boolean edrManagementEnabled;
+
         private ApiKeyConfig apiKey = new ApiKeyConfig();
 
         /**
@@ -76,6 +88,8 @@ public class EdcConfiguration {
             private String data;
             private String catalog;
             private String contractNegotiation;
+            private String edrManagement;
+            private String edrRequestManagement;
             private String asset;
             private String contractDefinition;
             private String policyDefinition;

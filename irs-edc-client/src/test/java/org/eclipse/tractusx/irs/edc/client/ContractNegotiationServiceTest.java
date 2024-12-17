@@ -58,7 +58,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ContractNegotiationServiceTest {
 
     private static final String CONNECTOR_URL = "dummyConnectorUrl";
-
     @InjectMocks
     private ContractNegotiationService testee;
     @Mock
@@ -277,4 +276,24 @@ class ContractNegotiationServiceTest {
                 "bpn")).isInstanceOf(IllegalStateException.class);
     }
 
+    @Test
+    void shouldNegotiateSuccessfullyWithEdrManagement()
+            throws ContractNegotiationException, UsagePolicyPermissionException, UsagePolicyExpiredException {
+        // arrange
+        final var assetId = "testTarget";
+        final String offerId = "offerId";
+        final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
+        when(config.getCallbackUrl()).thenReturn("http://irs-callback-url/test/ede");
+        when(config.getNegotiationCallbackUrl()).thenReturn("http://irs-callback-url/test/negotiation");
+        when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isExpired(any(), any())).thenReturn(Boolean.FALSE);
+        when(edcControlPlaneClient.startEdrNegotiations(any())).thenReturn(
+                Response.builder().responseId("negotiationId").build());
+        // act
+        String result = testee.negotiateWithEdrManagement(CONNECTOR_URL, catalogItem, "bpn");
+
+        // assert
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo("negotiationId");
+    }
 }

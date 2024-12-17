@@ -35,13 +35,16 @@ import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.edr.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.edr.EndpointDataReferenceCallback;
+import org.eclipse.tractusx.irs.edc.client.model.edr.NegotiationCallbackPayload;
+import org.eclipse.tractusx.irs.edc.client.model.edr.NegotiationEndpointCallback;
 import org.eclipse.tractusx.irs.edc.client.model.edr.Properties;
 import org.eclipse.tractusx.irs.edc.client.model.edr.TransferProcessCallbackPayload;
+import org.eclipse.tractusx.irs.edc.client.storage.ContractNegotiationIdStorage;
+import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -49,30 +52,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController("irsEdcClientEdcCallbackController")
-@RequestMapping("${irs-edc-client.callback.mapping}")
 @Hidden
 @RequiredArgsConstructor
 public class EdcCallbackController {
 
     private final EndpointDataReferenceStorage storage;
-
-    @PostMapping
-    public void receiveEdcCallback(final @RequestBody String endpointDataReferenceCallback) {
-        final EndpointDataReference endpointDataReference;
-
-        try {
-            endpointDataReference = mapToEndpointDataReference(endpointDataReferenceCallback);
-
-            log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(endpointDataReference));
-            log.debug("Received EndpointDataReference with ID {} and endpoint {}", endpointDataReference.getId(),
-                    endpointDataReference.getEndpoint());
-
-            final String contractId = endpointDataReference.getContractId();
-            storeEdr(contractId, endpointDataReference);
-        } catch (EdcClientException e) {
-            log.error("Could not deserialize Endpoint Data Reference {}", endpointDataReferenceCallback);
-        }
-    }
+    private final ContractNegotiationIdStorage storageNegotiationId;
 
     private static EndpointDataReference mapToEndpointDataReference(final String endpointDataReference)
             throws EdcClientException {
@@ -99,8 +84,60 @@ public class EdcCallbackController {
         }
     }
 
+    private static NegotiationCallbackPayload mapToContractAgreementId(final String endpointNegotiationMapping)
+            throws EdcClientException {
+        try {
+            final NegotiationEndpointCallback negotiationEndpointCallback = StringMapper.mapFromString(
+                    endpointNegotiationMapping, NegotiationEndpointCallback.class);
+
+            return Optional.ofNullable(negotiationEndpointCallback.getPayload()).orElseThrow();
+
+        } catch (JsonParseException | NoSuchElementException e) {
+            throw new EdcClientException(e);
+        }
+    }
+
+    @PostMapping("${irs-edc-client.callback.mapping}")
+    public void receiveEdcCallback(final @RequestBody String endpointDataReferenceCallback) {
+        final EndpointDataReference endpointDataReference;
+
+        try {
+            endpointDataReference = mapToEndpointDataReference(endpointDataReferenceCallback);
+
+            log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(endpointDataReference));
+            log.debug("Received EndpointDataReference with ID {} and endpoint {}", endpointDataReference.getId(),
+                    endpointDataReference.getEndpoint());
+
+            final String contractAgreementId = endpointDataReference.getContractId();
+            storeEdr(contractAgreementId, endpointDataReference);
+        } catch (EdcClientException e) {
+            log.error("Could not deserialize Endpoint Data Reference {}", endpointDataReferenceCallback);
+        }
+    }
+
+    @PostMapping("${irs-edc-client.callback.negotiation-mapping}")
+    public void receiveNegotiationsCallback(final @RequestBody String endpointNegotiationCallback) {
+        try {
+            final NegotiationCallbackPayload payload = mapToContractAgreementId(endpointNegotiationCallback);
+            log.debug("Received Negotiation Callback: {}", StringMapper.mapToString(payload));
+            log.debug("Received Negotiation Callback for negotiationId: '{}' and contractAgreementId: '{}'",
+                    payload.getContractNegotiationId(), payload.getContractAgreement().getContractAgreementId());
+            storeNegotiationId(payload.getContractNegotiationId(),
+                    payload.getContractAgreement().getContractAgreementId());
+        } catch (EdcClientException e) {
+            log.error("Could not deserialize NegotiationEndpointCallback {}", endpointNegotiationCallback);
+        }
+
+    }
+
     private void storeEdr(final String contractId, final EndpointDataReference dataReference) {
         storage.put(contractId, dataReference);
         log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractId));
+    }
+
+    private void storeNegotiationId(final String contractNegotiationId, final String contractAgreementId) {
+        storageNegotiationId.put(contractNegotiationId, contractAgreementId);
+        log.info("Mapped Contract NegotiationId {} to Contract AgreementId and cached for agreement: {}",
+                contractNegotiationId, Masker.mask(contractAgreementId));
     }
 }

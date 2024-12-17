@@ -39,6 +39,7 @@ import io.github.resilience4j.retry.internal.InMemoryRetryRegistry;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
+import org.eclipse.tractusx.irs.edc.client.storage.ContractNegotiationIdStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,6 +63,8 @@ class SubmodelExponentialRetryTest {
     private PolicyCheckerService policyCheckerService;
     @Mock
     private EndpointDataReferenceCacheService endpointDataReferenceCacheService;
+    @Mock
+    private ContractNegotiationIdStorage contractNegotiationIdStorage;
     private EdcSubmodelFacade testee;
 
     @BeforeEach
@@ -83,7 +86,7 @@ class SubmodelExponentialRetryTest {
         final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(2);
         final OngoingNegotiationStorage ongoingNegotiationStorage = new OngoingNegotiationStorage();
         final EdcOrchestrator edcOrchestrator = new EdcOrchestrator(config, negotiationService, pollingService,
-                catalogFacade, endpointDataReferenceCacheService, fixedThreadPoolExecutorService,
+                catalogFacade, endpointDataReferenceCacheService, contractNegotiationIdStorage, fixedThreadPoolExecutorService,
                 ongoingNegotiationStorage);
         final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, dataPlaneClient, edcOrchestrator,
                 retryRegistry);
