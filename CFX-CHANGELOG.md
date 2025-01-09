@@ -8,11 +8,11 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 
 ## [Unreleased - DD.MM.YYYY]
 
-## [Unreleased]
+## [5.4.1-cfx-6 - 09.01.2025]
 
 ### Added
 - TRX-543 Filtering for duplicated connector endpoint addresses for same bpn. 
-
+- Added new section under crosscuting/api-endpoints to arc42 documentation
 - Added support for EDC EDR management API. This can be enabled using the config entry
   `irs-edc-client.controlplane.edr-management-enabled`.
 

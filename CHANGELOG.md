@@ -9,9 +9,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Added
 
-- Added new section under crosscuting/api-endpoints to arc42 documentation 
-
-
 ## [5.4.1] - 2024-08-19
 
 ### Fixed

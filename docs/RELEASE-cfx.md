@@ -20,7 +20,7 @@ Please find [Release Guidelines Upstream](https://github.com/Cofinity-X/item-rel
 
 ### IRS Release process
 
-1) Decide which to which version the release trace-x will be incremented. Following shows example for releasing a version 1.0.0-cfx-1
+1) Decide which to which version the release irs will be incremented. Following shows example for releasing a version 1.0.0-cfx-1
 2) Create and checkout release branch /release/1.0.0-cfx-1. The name must always be exactly `/release/<releaseVersion>-cfx-<version>`.
 3) Only on changes: [EDC Client Library Release](#edc-client-library-release)
 4) Edit changelog: Align the new version (1.0.0-cfx-1) with the changes and add a new UNRELEASED section
