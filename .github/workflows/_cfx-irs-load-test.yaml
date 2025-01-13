@@ -15,6 +15,7 @@ on:
           - 'https://item-relationship-service-a.integration.cofinity-x.com'
           - 'https://item-relationship-service-b.integration.cofinity-x.com'
       simulation-class:
+        type: choice
         description: 'Select the simulation class to run'
         required: true
         default: 'org.eclipse.tractusx.irs.JobSimulation'
@@ -33,19 +34,22 @@ on:
         default: false
 
 jobs:
-
-  check-config:
-    runs-on: [ self-hosted, linux ]
-    steps:
-      - name: mask token
-        run: |
-          IRS_ADMIN_API_KEY=$(jq -r '.inputs.irs_admin_api_key' $GITHUB_EVENT_PATH)
-          echo ::add-mask::$API_KEY
-          echo IRS_ADMIN_API_KEY=IRS_ADMIN_API_KEY >> $GITHUB_ENV
-
   gatling-test:
     runs-on: [ self-hosted, linux ]
+    container:
+      image: maven:3-eclipse-temurin-21
     steps:
+      - name: Install jq
+        run: |
+          apt update
+          apt install jq -y
+
+      - name: Mask token
+        run: |
+          IRS_ADMIN_API_KEY=$(jq -r '.inputs.irs_admin_api_key' $GITHUB_EVENT_PATH)
+          echo ::add-mask::$IRS_ADMIN_API_KEY
+          echo IRS_ADMIN_API_KEY=$IRS_ADMIN_API_KEY >> $GITHUB_ENV
+
       - uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -68,7 +72,7 @@ jobs:
           ASSETS_WITH_CHILDS: ${{ github.event.inputs.assets-with-childs }}
           API_KEY: ${{ env.IRS_ADMIN_API_KEY }}
         run: |
-          mvn gatling:test -pl irs-load-tests -Dgatling.simulationClass=${{ github.event.inputs.simulation-class }}
+          mvn gatling:test -pl irs-load-tests -Dgatling.simulationClass=${{ github.event.inputs.simulation-class }} --no-transfer-progress -Dcheckstyle.skip
 
       - name: Archive Report
         uses: actions/upload-artifact@v4
@@ -81,4 +85,3 @@ jobs:
         with:
           name: job-duration-report
           path: irs-load-tests/target/job-duration.csv
-

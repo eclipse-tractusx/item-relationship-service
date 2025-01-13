@@ -8,6 +8,10 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 
 ## [Unreleased - DD.MM.YYYY]
 
+### Changed
+
+- TRACEX-224 Setup IRS gatling test workflow using containers
+
 ## [5.4.1-cfx-6 - 09.01.2025]
 
 ### Added
