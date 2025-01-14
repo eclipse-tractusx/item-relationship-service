@@ -210,6 +210,8 @@ irs-edc-client:
     datareference:
       storage:
         duration: PT1H # Time after which stored data references will be cleaned up, ISO 8601 Duration
+    orchestration:
+      thread-pool-size: 5 # Thread pool size for maximum parallel negotiations
 
   submodel:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M} # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
@@ -321,6 +323,7 @@ digitalTwinRegistry:
 discovery:
   oAuthClientId: discovery  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   discoveryFinderUrl:  # "https://<discovery-finder-url>
+  type: "bpnl"  # discovery type to find bpnl type in EDC discovery
 
 semanticshub:
   url:  # https://<semantics-hub-url>
@@ -414,6 +417,8 @@ edc:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
     cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
+  orchestration:
+    threadPoolSize: 5  # Thread pool size for maximum parallel negotiations
 
 ess:
   edc:
@@ -522,9 +527,6 @@ grafana:
       datasources:
         - name: Prometheus
           type: prometheus
-          url: "http://{{ .Release.Name }}-prometheus-server"
-          isDefault: true
-
 ```
 
 1. Use this to enable or disable the monitoring components
