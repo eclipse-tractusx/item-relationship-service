@@ -51,6 +51,8 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_STATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_TRANSFER;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -59,6 +61,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.awaitility.Awaitility;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
@@ -72,7 +75,10 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.connector.batch.PersistentBatchStore;
+import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
 import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.OngoingNegotiationStorage;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
@@ -85,9 +91,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -137,6 +145,12 @@ class IrsWireMockIntegrationTest {
     @Qualifier(JOB_BLOB_PERSISTENCE)
     private BlobPersistence blobStore;
 
+    @SpyBean
+    private OngoingNegotiationStorage ongoingNegotiationStorage;
+
+    @SpyBean
+    private ContractNegotiationService contractNegotiationService;
+
     @BeforeAll
     static void startContainer() {
         minioContainer.start();
@@ -165,13 +179,16 @@ class IrsWireMockIntegrationTest {
         registry.add("irs-edc-client.controlplane.endpoint.state-suffix", () -> PATH_STATE);
         registry.add("irs-edc-client.controlplane.api-key.header", () -> "X-Api-Key");
         registry.add("irs-edc-client.controlplane.api-key.secret", () -> "test");
+        registry.add("irs-edc-client.controlplane.orchestration.thread-pool-size", () -> "2");
         registry.add("resilience4j.retry.configs.default.waitDuration", () -> "1s");
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown(WireMockRuntimeInfo wmRuntimeInfo) {
         cacheManager.getCacheNames()
                     .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
+        wmRuntimeInfo.getWireMock().resetMappings();
+        endpointDataReferenceStorage.clear();
     }
 
     @Test
@@ -212,7 +229,8 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(3);
+        WiremockSupport.verifyNegotiationCalls(2);
+        WiremockSupport.verifyCatalogCalls(3);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(jobForJobId.getShells()).hasSize(2);
@@ -236,7 +254,8 @@ class IrsWireMockIntegrationTest {
         successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
                 "integrationtesting/singleLevelBomAsBuilt-2.json");
 
-        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1, WiremockSupport.CALLBACK_URL);
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1,
+                WiremockSupport.CALLBACK_URL);
 
         // Act
         final List<JobHandle> startedJobs = new ArrayList<>();
@@ -356,7 +375,59 @@ class IrsWireMockIntegrationTest {
         assertThat(jobForJobId.getSubmodels()).hasSize(6);
 
         WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(6);
+        // expected 4 negotiations. 3 different submodel assets, 1 dtr
+        WiremockSupport.verifyNegotiationCalls(4);
+        // expected 6 catalog requests. 3 different submodel assets, 3 times dtr
+        WiremockSupport.verifyCatalogCalls(6);
+    }
+
+    @Test
+    void shouldLimitParallelEdcNegotiationsForMultipleJobs() throws EdcClientException {
+        // Arrange
+        final String globalAssetIdLevel1 = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+        final String globalAssetIdLevel3 = "urn:uuid:a314ad6b-77ea-417e-ae2d-193b3e249e99";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+
+        successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel3, "GenericChemical", TEST_BPN,
+                "integrationtesting/batch-3.json", "integrationtesting/singleLevelBomAsBuilt-3.json");
+
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 4);
+
+        // Act
+        final ArrayList<JobHandle> jobHandles = new ArrayList<>();
+        jobHandles.add(irsService.registerItemJob(request));
+        jobHandles.add(irsService.registerItemJob(request));
+        jobHandles.add(irsService.registerItemJob(request));
+        jobHandles.add(irsService.registerItemJob(request));
+
+        // Assert
+        for (JobHandle jobHandle : jobHandles) {
+
+            assertThat(jobHandle.getId()).isNotNull();
+            waitForCompletion(jobHandle.getId());
+            final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
+
+            assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+            assertThat(jobForJobId.getShells()).hasSize(3);
+            assertThat(jobForJobId.getRelationships()).hasSize(2);
+            assertThat(jobForJobId.getTombstones()).isEmpty();
+            assertThat(jobForJobId.getSubmodels()).hasSize(6);
+        }
+
+        // expected 4 negotiations. 3 different submodel assets, 1 dtr
+        Mockito.verify(contractNegotiationService, times(4)).negotiate(any(), any(), any(), any());
+        assertThat(ongoingNegotiationStorage.getOngoingNegotiations()).isEmpty();
+        WiremockSupport.verifyNegotiationCalls(4);
+        // 3 requests for the submodel assets, 12 for registry assets
+        WiremockSupport.verifyCatalogCalls(15);
     }
 
     @Test
@@ -534,8 +605,8 @@ class IrsWireMockIntegrationTest {
                 PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel2).build());
 
         // Act
-        final UUID batchOrderId = batchService
-                .create(WiremockSupport.batchOrderRequest(keys,1, WiremockSupport.CALLBACK_URL));
+        final UUID batchOrderId = batchService.create(
+                WiremockSupport.batchOrderRequest(keys, 1, WiremockSupport.CALLBACK_URL));
 
         assertThat(batchOrderId).isNotNull();
 
@@ -543,13 +614,14 @@ class IrsWireMockIntegrationTest {
 
         List<Batch> allBatches = persistentBatchStore.findAll();
 
-        allBatches.stream().map(Batch::getJobProgressList)
-           .flatMap(List::stream)
-           .forEach(jobProgress -> waitForCompletion(jobProgress.getJobId()));
+        allBatches.stream()
+                  .map(Batch::getJobProgressList)
+                  .flatMap(List::stream)
+                  .forEach(jobProgress -> waitForCompletion(jobProgress.getJobId()));
 
         // Assert
         WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(6);
+        WiremockSupport.verifyNegotiationCalls(3);
 
         List<UUID> jobIds = allBatches.stream()
                                       .flatMap(batch -> batch.getJobProgressList().stream())
@@ -560,7 +632,10 @@ class IrsWireMockIntegrationTest {
 
         List<Jobs> jobs = jobIds.stream().map(jobId -> irsService.getJobForJobId(jobId, true)).toList();
 
-        Jobs job1 = jobs.stream().filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel1)).findFirst().get();
+        Jobs job1 = jobs.stream()
+                        .filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel1))
+                        .findFirst()
+                        .get();
 
         assertThat(job1.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(job1.getShells()).hasSize(2);
@@ -570,7 +645,10 @@ class IrsWireMockIntegrationTest {
 
         WiremockSupport.verifyCallbackCall(job1.getJob().getId().toString(), JobState.COMPLETED, 1);
 
-        Jobs job2 = jobs.stream().filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel2)).findFirst().get();
+        Jobs job2 = jobs.stream()
+                        .filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel2))
+                        .findFirst()
+                        .get();
 
         assertThat(job2.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(job2.getShells()).hasSize(1);
@@ -599,6 +677,7 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.successfulSemanticModelRequest();
         WiremockSupport.successfulSemanticHubRequests();
         WiremockSupport.successfulDiscovery();
+        WiremockSupport.successfulBatchCallbackRequest();
 
         successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
                 "integrationtesting/singleLevelBomAsBuilt-1.json");
@@ -610,8 +689,8 @@ class IrsWireMockIntegrationTest {
                 PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel2).build());
 
         // Act
-        final UUID batchOrderId = batchService
-                .create(WiremockSupport.bpnInvestigationBatchOrderRequest(keys, WiremockSupport.CALLBACK_BATCH_URL));
+        final UUID batchOrderId = batchService.create(
+                WiremockSupport.bpnInvestigationBatchOrderRequest(keys, WiremockSupport.CALLBACK_BATCH_URL));
 
         assertThat(batchOrderId).isNotNull();
 
@@ -619,13 +698,15 @@ class IrsWireMockIntegrationTest {
 
         List<Batch> allBatches = persistentBatchStore.findAll();
 
-        allBatches.stream().map(Batch::getJobProgressList)
+        allBatches.stream()
+                  .map(Batch::getJobProgressList)
                   .flatMap(List::stream)
                   .forEach(jobProgress -> waitForCompletion(jobProgress.getJobId()));
 
         // Assert
         WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(2);
+        // since there are no submodels related to asPlanned lifecycle, only the registry asset is negotiated
+        WiremockSupport.verifyNegotiationCalls(1);
 
         List<UUID> jobIds = allBatches.stream()
                                       .flatMap(batch -> batch.getJobProgressList().stream())
@@ -636,7 +717,10 @@ class IrsWireMockIntegrationTest {
 
         List<Jobs> jobs = jobIds.stream().map(jobId -> irsService.getJobForJobId(jobId, true)).toList();
 
-        Jobs job1 = jobs.stream().filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel1)).findFirst().get();
+        Jobs job1 = jobs.stream()
+                        .filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel1))
+                        .findFirst()
+                        .get();
 
         assertThat(job1.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(job1.getShells()).hasSize(1);
@@ -644,7 +728,10 @@ class IrsWireMockIntegrationTest {
         assertThat(job1.getTombstones()).isEmpty();
         assertThat(job1.getSubmodels()).hasSize(0);
 
-        Jobs job2 = jobs.stream().filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel2)).findFirst().get();
+        Jobs job2 = jobs.stream()
+                        .filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel2))
+                        .findFirst()
+                        .get();
 
         assertThat(job2.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(job2.getShells()).hasSize(1);
@@ -660,10 +747,11 @@ class IrsWireMockIntegrationTest {
         Awaitility.await()
                   .timeout(Duration.ofSeconds(30))
                   .pollInterval(Duration.ofMillis(500))
-                  .until(() -> persistentBatchStore.findAll().stream()
+                  .until(() -> persistentBatchStore.findAll()
+                                                   .stream()
                                                    .map(Batch::getJobProgressList)
                                                    .flatMap(List::stream)
-                          .allMatch(jobProgress -> jobProgress.getJobId() != null));
+                                                   .allMatch(jobProgress -> jobProgress.getJobId() != null));
     }
 
     protected String toBlobId(final String batchId) {
@@ -683,7 +771,7 @@ class IrsWireMockIntegrationTest {
 
         final String shellId = WiremockSupport.randomUUIDwithPrefix();
         final String registryEdcAssetId = "registry-asset";
-        successfulNegotiation(registryEdcAssetId);
+        successfulRegistryNegotiation(registryEdcAssetId);
         stubFor(getLookupShells200(PUBLIC_LOOKUP_SHELLS_PATH, List.of(shellId)).withQueryParam("assetIds",
                 equalTo(encodedAssetIds(globalAssetId))));
         stubFor(getShellDescriptor200(PUBLIC_SHELL_DESCRIPTORS_PATH + WiremockSupport.encodedId(shellId), bpn,
@@ -700,8 +788,17 @@ class IrsWireMockIntegrationTest {
         endpointDataReferenceStorage.put(contractAgreementId, createEndpointDataReference(contractAgreementId));
     }
 
+    private void successfulRegistryNegotiation(final String edcAssetId) {
+        final String negotiationId = randomUUID();
+        final String transferProcessId = randomUUID();
+        final String contractAgreementId = "%s:%s:%s".formatted(randomUUID(), edcAssetId, randomUUID());
+        SubmodelFacadeWiremockSupport.prepareRegistryNegotiation(negotiationId, transferProcessId, contractAgreementId,
+                edcAssetId);
+        endpointDataReferenceStorage.put(contractAgreementId, createEndpointDataReference(contractAgreementId));
+    }
+
     private void failedRegistryRequestMismatchPolicy() {
-        final String registryEdcAssetId = "registry-asset";
+        final String registryEdcAssetId = "registry-asset-policy-missmatch";
         failedPolicyMismatchNegotiation(registryEdcAssetId);
     }
 
@@ -724,8 +821,9 @@ class IrsWireMockIntegrationTest {
 
     private void waitForCompletion(final UUID jobHandleId) {
         Awaitility.await()
+                  .pollDelay(Duration.ZERO)
                   .timeout(Duration.ofSeconds(35))
-                  .pollInterval(Duration.ofMillis(500))
+                  .pollInterval(Duration.ofMillis(100))
                   .until(() -> irsService.getJobForJobId(jobHandleId, false)
                                          .getJob()
                                          .getState()

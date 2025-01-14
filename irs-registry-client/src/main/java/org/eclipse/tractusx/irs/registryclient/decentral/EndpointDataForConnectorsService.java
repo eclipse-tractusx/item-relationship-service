@@ -54,7 +54,6 @@ public class EndpointDataForConnectorsService {
 
         List<CompletableFuture<EndpointDataReference>> futures = Collections.emptyList();
         try {
-            log.info("Creating futures to get EndpointDataReferences for endpoints: {}", edcUrls);
             futures = edcUrls.stream()
                              .flatMap(edcUrl -> createGetEndpointReferencesForAssetFutures(edcUrl, bpn).stream())
                              .toList();

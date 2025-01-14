@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.configuration;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -48,16 +49,13 @@ import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
 import org.eclipse.tractusx.irs.data.CxTestDataContainer;
-import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
-import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
-import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
+import org.eclipse.tractusx.irs.edc.client.EdcOrchestrator;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientLocalStub;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientLocalStub;
@@ -111,6 +109,11 @@ public class JobConfiguration {
     @Bean
     public ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(EXECUTOR_CORE_POOL_SIZE);
+    }
+
+    @Bean
+    public ExecutorService fixedThreadPoolExecutorService(@Value("${irs-edc-client.controlplane.orchestration.thread-pool-size:}")  final int threadPoolSize) {
+        return Executors.newFixedThreadPool(threadPoolSize);
     }
 
     @Bean
@@ -174,12 +177,8 @@ public class JobConfiguration {
 
     @Profile({ "!local && !stubtest" })
     @Bean
-    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
-            final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
-            final AsyncPollingService pollingService, final RetryRegistry retryRegistry,
-            final EDCCatalogFacade catalogFacade,
-            final EndpointDataReferenceCacheService endpointDataReferenceCacheService) {
-        return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
-                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
+    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration, final EdcDataPlaneClient edcDataPlaneClient,
+            final EdcOrchestrator edcOrchestrator, final RetryRegistry retryRegistry) {
+        return new EdcSubmodelClientImpl(edcConfiguration, edcDataPlaneClient, edcOrchestrator, retryRegistry);
     }
 }

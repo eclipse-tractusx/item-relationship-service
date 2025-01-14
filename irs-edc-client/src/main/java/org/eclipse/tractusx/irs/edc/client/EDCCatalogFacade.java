@@ -126,7 +126,9 @@ public class EDCCatalogFacade {
      * @param target       The target assetID which will be searched for
      * @param bpn          The BPN of the company to which the EDC Connector belongs
      * @return The list of catalog Items up to the point where the target CatalogItem is included.
+     * @deprecated
      */
+    @Deprecated(since = "5.4.1")
     public List<CatalogItem> fetchCatalogItemsUntilMatch(final String connectorUrl, final String target,
             final String bpn) {
         int offset = 0;

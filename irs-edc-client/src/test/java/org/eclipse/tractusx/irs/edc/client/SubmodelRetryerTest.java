@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
-import java.time.Duration;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.github.resilience4j.retry.RetryRegistry;
@@ -54,6 +54,7 @@ import org.springframework.web.client.RestTemplate;
 class SubmodelExponentialRetryTest {
 
     public static final String SUBMODEL_DATAPLANE_URL = "https://edc.dataplane.test/public/submodel";
+    public static final String PROVIDER_SUFFIX = "/ids";
     private final RetryRegistry retryRegistry = new InMemoryRetryRegistry();
     @Mock
     private RestTemplate restTemplate;
@@ -69,7 +70,7 @@ class SubmodelExponentialRetryTest {
                 Executors.newSingleThreadScheduledExecutor());
         final EdcConfiguration config = new EdcConfiguration();
         config.getSubmodel().setUrnPrefix("/urn");
-        config.getControlplane().setProviderSuffix("/ids");
+        config.getControlplane().setProviderSuffix(PROVIDER_SUFFIX);
 
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService, config,
                 createEdcTransformer());
@@ -79,11 +80,13 @@ class SubmodelExponentialRetryTest {
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
-        final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
-                Duration.ofMinutes(1));
-
-        final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient,
-                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
+        final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(2);
+        final OngoingNegotiationStorage ongoingNegotiationStorage = new OngoingNegotiationStorage();
+        final EdcOrchestrator edcOrchestrator = new EdcOrchestrator(config, negotiationService, pollingService,
+                catalogFacade, endpointDataReferenceCacheService, fixedThreadPoolExecutorService,
+                ongoingNegotiationStorage);
+        final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, dataPlaneClient, edcOrchestrator,
+                retryRegistry);
         testee = new EdcSubmodelFacade(client, config);
     }
 
@@ -94,13 +97,16 @@ class SubmodelExponentialRetryTest {
                 eq(String.class))).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "EDC remote exception"));
 
-        when(endpointDataReferenceCacheService.getEndpointDataReference(
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(
+        final String endpoint = "https://connector.endpoint.com";
+        final String assetId = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
+        final String storageId = assetId + endpoint + PROVIDER_SUFFIX;
+        when(endpointDataReferenceCacheService.getEndpointDataReference(storageId)).thenReturn(
                 new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
-        assertThatThrownBy(() -> testee.getSubmodelPayload("https://connector.endpoint.com", SUBMODEL_DATAPLANE_URL,
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(HttpServerErrorException.class);
+        assertThatThrownBy(() -> testee.getSubmodelPayload(endpoint, SUBMODEL_DATAPLANE_URL, assetId, "bpn")).cause()
+                                                                                                             .hasCauseInstanceOf(
+                                                                                                                     HttpServerErrorException.class);
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),
@@ -112,13 +118,17 @@ class SubmodelExponentialRetryTest {
         // Arrange
         given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
                 eq(String.class))).willThrow(new RuntimeException("EDC remote exception"));
-        when(endpointDataReferenceCacheService.getEndpointDataReference(
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(
+
+        final String endpoint = "https://connector.endpoint.com";
+        final String assetId = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
+        final String storageId = assetId + endpoint + PROVIDER_SUFFIX;
+        when(endpointDataReferenceCacheService.getEndpointDataReference(storageId)).thenReturn(
                 new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
-        assertThatThrownBy(() -> testee.getSubmodelPayload("https://connector.endpoint.com", SUBMODEL_DATAPLANE_URL,
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> testee.getSubmodelPayload(endpoint, SUBMODEL_DATAPLANE_URL, assetId, "bpn")).cause()
+                                                                                                             .hasCauseInstanceOf(
+                                                                                                                     RuntimeException.class);
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),
