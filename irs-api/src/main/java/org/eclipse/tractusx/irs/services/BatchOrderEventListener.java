@@ -174,15 +174,17 @@ public class BatchOrderEventListener {
     private ProcessingState calculateBatchOrderState(final List<ProcessingState> stateList) {
         if (stateList.stream().anyMatch(ProcessingState.PROCESSING::equals)) {
             return ProcessingState.PROCESSING;
-        } else if (stateList.stream().anyMatch(ProcessingState.ERROR::equals)) {
+        }
+        if (stateList.stream().anyMatch(ProcessingState.ERROR::equals)) {
             return ProcessingState.ERROR;
-        } else if (stateList.stream().anyMatch(ProcessingState.PARTIAL::equals)) {
-            return ProcessingState.PARTIAL;
-        } else if (stateList.stream().allMatch(ProcessingState.COMPLETED::equals)) {
-            return ProcessingState.COMPLETED;
-        } else {
+        }
+        if (stateList.stream().anyMatch(ProcessingState.PARTIAL::equals)) {
             return ProcessingState.PARTIAL;
         }
+        if (stateList.stream().allMatch(ProcessingState.COMPLETED::equals)) {
+            return ProcessingState.COMPLETED;
+        }
+        return ProcessingState.PARTIAL;
     }
 
 }

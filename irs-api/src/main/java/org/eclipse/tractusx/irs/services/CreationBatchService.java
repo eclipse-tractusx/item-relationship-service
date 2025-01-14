@@ -32,7 +32,6 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
-import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
@@ -60,7 +59,6 @@ public class CreationBatchService {
     private final BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener;
-    private final SecurityHelperService securityHelperService;
     private final IrsConfiguration irsConfiguration;
 
     public UUID create(final RegisterBatchOrder request) {
