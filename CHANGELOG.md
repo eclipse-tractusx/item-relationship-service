@@ -8,15 +8,16 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-### Added
-- Added api key authentication for edc notification requests
+### Changed
 
-### Changed 
-
+- Resolve Null pointer exception while registering the company #888
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) (#12)
 
 ### Removed
 - Removed subjectId from AssetAdministrationShellDescriptor object
+
+### Added
+- Added api key authentication for edc notification requests
 
 ## [5.4.1] - 2024-08-19
 
