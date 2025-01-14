@@ -16,7 +16,12 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Removed
 - Removed subjectId from AssetAdministrationShellDescriptor object
 
+### Fixed
+
+- Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position #889
+
 ### Added
+
 - Added api key authentication for edc notification requests
 
 ## [5.4.1] - 2024-08-19
