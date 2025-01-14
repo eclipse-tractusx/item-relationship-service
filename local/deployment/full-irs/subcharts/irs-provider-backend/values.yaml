@@ -1,6 +1,7 @@
 ---
 replicaCount: 1
 
+# Which image should be used here?
 image:
   repository: ghcr.io/catenax-ng/catenax-at-home/provider-backend-service
   pullPolicy: IfNotPresent
