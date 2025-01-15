@@ -588,8 +588,11 @@ class IrsWireMockIntegrationTest {
     @Test
     void shouldDoABatchRequestAndFinishAllJobs_regularJob() {
         // Arrange
-        final String globalAssetIdLevel1 = "globalAssetId";
+        final String globalAssetIdLevel1 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf4";
         final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+        final String globalAssetIdLevel3 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf6";
+        final String globalAssetIdLevel4 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf7";
+        final String globalAssetIdLevel5 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf8";
 
         WiremockSupport.successfulSemanticModelRequest();
         WiremockSupport.successfulSemanticHubRequests();
@@ -602,7 +605,10 @@ class IrsWireMockIntegrationTest {
 
         Set<PartChainIdentificationKey> keys = Set.of(
                 PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel1).build(),
-                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel2).build());
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel2).build(),
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel3).build(),
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel4).build(),
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel5).build());
 
         // Act
         final UUID batchOrderId = batchService.create(
@@ -628,7 +634,7 @@ class IrsWireMockIntegrationTest {
                                       .map(JobProgress::getJobId)
                                       .toList();
 
-        assertThat(jobIds).hasSize(2);
+        assertThat(jobIds).hasSize(5);
 
         List<Jobs> jobs = jobIds.stream().map(jobId -> irsService.getJobForJobId(jobId, true)).toList();
 

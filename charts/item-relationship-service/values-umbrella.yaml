@@ -28,6 +28,13 @@ resources:
 # IRS Configuration #
 #####################
 irsUrl: http://irs-item-relationship-service:8080
+job:
+  batch:
+    threadCount: 5
+  scheduled:
+    threadCount: 5
+  cached:
+    threadCount: 0
 bpn: BPNL00000003AZQP
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!

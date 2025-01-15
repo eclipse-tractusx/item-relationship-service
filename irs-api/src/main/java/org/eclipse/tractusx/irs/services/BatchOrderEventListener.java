@@ -25,7 +25,10 @@ package org.eclipse.tractusx.irs.services;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +67,7 @@ public class BatchOrderEventListener {
     private final EssService essService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final TimeoutSchedulerBatchProcessingService timeoutScheduler;
+    private final ExecutorCompletionServiceFactory executorCompletionServiceFactory;
 
     @Async
     @EventListener
@@ -112,33 +116,47 @@ public class BatchOrderEventListener {
     }
 
     private void startBatch(final BatchOrder batchOrder, final Batch batch) {
-        final List<PartChainIdentificationKey> keyStream = batch.getJobProgressList()
-                                                                                         .stream()
-                                                                                         .map(JobProgress::getIdentificationKey)
-                                                                  .toList();
-        if (batchOrder.getJobType().equals(BatchOrder.JobType.REGULAR)) {
-            batch.setJobProgressList(keyStream.stream()
-                    .map(identificationKey -> createRegisterJob(batchOrder, identificationKey))
-                    .map(registerJob -> createJobProgress(
-                            irsItemGraphQueryService.registerItemJob(registerJob,
-                                    batch.getBatchId()),
-                            registerJob.getKey()))
-                    .toList());
-        } else if (batchOrder.getJobType().equals(BatchOrder.JobType.ESS)) {
-            batch.setJobProgressList(keyStream.stream()
-                    .map(identificationKey -> createRegisterBpnInvestigationBatchOrder(
-                            batchOrder, identificationKey))
-                    .map(registerJob -> createJobProgress(
-                            essService.startIrsJob(registerJob, batch.getBatchId()),
-                            registerJob.getKey()))
-                    .toList());
-        }
+        final ExecutorCompletionService<JobProgress> executorCompletionService = executorCompletionServiceFactory.create();
 
+        final List<PartChainIdentificationKey> keyStream = batch.getJobProgressList()
+                                                                .stream()
+                                                                .map(JobProgress::getIdentificationKey)
+                                                                .toList();
+
+        keyStream.forEach(identificationKey -> executorCompletionService
+                .submit(() -> getJobProgress(batchOrder, batch, identificationKey)));
+
+        final List<JobProgress> jobProgressList = new ArrayList<>();
+
+        keyStream.forEach(key -> {
+            try {
+                jobProgressList.add(executorCompletionService.take().get());
+            } catch (ExecutionException e) {
+                log.error("Job execution for global asset id: {} failed: {}", key.getGlobalAssetId(), e.getCause().getMessage());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+
+        batch.setJobProgressList(jobProgressList);
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
         batchStore.save(batch.getBatchId(), batch);
         timeoutScheduler.registerBatchTimeout(batch.getBatchId(), batchOrder.getTimeout());
         timeoutScheduler.registerJobsTimeout(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList(),
                 batchOrder.getJobTimeout());
+    }
+
+    private JobProgress getJobProgress(final BatchOrder batchOrder, final Batch batch,
+            final PartChainIdentificationKey identificationKey) {
+        if (BatchOrder.JobType.REGULAR.equals(batchOrder.getJobType())) {
+            final var registerJob = createRegisterJob(batchOrder, identificationKey);
+            return createJobProgress(irsItemGraphQueryService.registerItemJob(registerJob, batch.getBatchId()),
+                    registerJob.getKey());
+        } else if (BatchOrder.JobType.ESS.equals(batchOrder.getJobType())) {
+            final var registerJob = createRegisterBpnInvestigationBatchOrder(batchOrder, identificationKey);
+            return createJobProgress(essService.startIrsJob(registerJob, batch.getBatchId()), registerJob.getKey());
+        }
+        throw new IllegalArgumentException("Unsupported job type: " + batchOrder.getJobType());
     }
 
     private JobProgress createJobProgress(final JobHandle jobHandle, final PartChainIdentificationKey identificationKey) {

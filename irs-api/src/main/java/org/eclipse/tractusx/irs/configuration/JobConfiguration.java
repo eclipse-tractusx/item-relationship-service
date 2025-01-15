@@ -28,6 +28,9 @@ import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
@@ -80,7 +83,6 @@ import org.springframework.context.annotation.Profile;
 })
 public class JobConfiguration {
     public static final String JOB_BLOB_PERSISTENCE = "JobPersistence";
-    public static final int EXECUTOR_CORE_POOL_SIZE = 5;
     private static final Integer EXPIRE_AFTER_DAYS = 7;
 
     @Bean
@@ -92,12 +94,16 @@ public class JobConfiguration {
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinDelegate digitalTwinDelegate,
-            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JobStore jobStore,
-            final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
+            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
+            final JobStore jobStore,
+            final MeterRegistryService meterService,
+            final ApplicationEventPublisher applicationEventPublisher,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
-            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs, final JsonUtil jsonUtil) {
+            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs,
+            final JsonUtil jsonUtil,
+            @Value("${irs.job.cached.threadCount}") final int threadCount) {
 
-        final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(),
+        final var manager = new AASTransferProcessManager(digitalTwinDelegate, cachedExecutorService(threadCount),
                 blobStore, jsonUtil);
         final var logic = new TreeRecursiveLogic(blobStore, jsonUtil, new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
@@ -107,8 +113,19 @@ public class JobConfiguration {
     }
 
     @Bean
-    public ScheduledExecutorService scheduledExecutorService() {
-        return Executors.newScheduledThreadPool(EXECUTOR_CORE_POOL_SIZE);
+    public ExecutorService cachedExecutorService(@Value("${irs.job.cached.threadCount}") final int threadCount) {
+        final long keepAliveTime = 60L;
+
+        return new ThreadPoolExecutor(
+                threadCount,
+                Integer.MAX_VALUE,
+                keepAliveTime, TimeUnit.SECONDS,
+                new SynchronousQueue<>());
+    }
+
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService(@Value("${irs.job.scheduled.threadCount}") final int threadCount) {
+        return Executors.newScheduledThreadPool(threadCount);
     }
 
     @Bean
