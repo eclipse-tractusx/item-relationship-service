@@ -11,6 +11,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ### Changed
 
 - TRACEX-224 Setup IRS gatling test workflow using containers
+- TRX-226 Enabled highcharts in load tests. Updated order test
 
 ## [5.4.1-cfx-6 - 09.01.2025]
 
