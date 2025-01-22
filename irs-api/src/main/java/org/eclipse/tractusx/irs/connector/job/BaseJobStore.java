@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -58,6 +58,8 @@ public abstract class BaseJobStore implements JobStore {
 
     protected abstract Optional<MultiTransferJob> get(String jobId);
 
+    protected abstract Optional<MultiTransferJob> getByProcessId(String processId);
+
     protected abstract Collection<MultiTransferJob> getAll();
 
     protected abstract void put(String jobId, MultiTransferJob job);
@@ -72,10 +74,8 @@ public abstract class BaseJobStore implements JobStore {
     @Override
     public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
             final ZonedDateTime dateTime) {
-        return readLock(() -> getAll().stream()
-                                      .filter(hasState(jobState))
-                                      .filter(isCompletionDateBefore(dateTime))
-                                      .toList());
+        return readLock(
+                () -> getAll().stream().filter(hasState(jobState)).filter(isCompletionDateBefore(dateTime)).toList());
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
@@ -91,17 +91,14 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public Optional<MultiTransferJob> findByProcessId(final String processId) {
-        return getAll().stream().filter(j -> j.getTransferProcessIds().contains(processId)).findFirst();
+        return readLock(() -> getByProcessId(processId));
     }
 
     @Override
     public void create(final MultiTransferJob job) {
-        writeLock(() -> {
-            final var newJob = job.toBuilder().transitionInitial().build();
-            log.info("Adding new job into jobstore: {}", newJob);
-            put(job.getJobIdString(), newJob);
-            return null;
-        });
+        final var newJob = job.toBuilder().transitionInitial().build();
+        log.info("Adding new job into jobstore: {}", newJob);
+        put(job.getJobIdString(), newJob);
     }
 
     @Override

@@ -13,6 +13,14 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 - TRACEX-224 Setup IRS gatling test workflow using containers
 - TRX-226 Enabled highcharts in load tests. Updated order test
 
+### Added
+
+- TRACEX-417 added jobId to transferProcess to allow quick query in database
+
+### Removed
+
+- TRACEX-417 removed write lock when creating jobs
+
 ## [5.4.1-cfx-6 - 09.01.2025]
 
 ### Added
