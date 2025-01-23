@@ -82,6 +82,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      */
     private final JobTTL jobTTL;
 
+    private final Object jobCompletionSyncObject = new Object();
+
     /**
      * Create a new instance of {@link JobOrchestrator}.
      *
@@ -229,8 +231,10 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {
-        jobStore.completeJob(jobId, this::completeJob);
-        publishJobProcessingFinishedEventIfFinished(jobId);
+        synchronized (jobCompletionSyncObject) {
+            jobStore.completeJob(jobId, this::completeJob);
+            publishJobProcessingFinishedEventIfFinished(jobId);
+        }
     }
 
     private void completeJob(final MultiTransferJob job) {

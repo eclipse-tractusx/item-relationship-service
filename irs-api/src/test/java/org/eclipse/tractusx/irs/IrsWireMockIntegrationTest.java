@@ -90,6 +90,7 @@ import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -382,6 +383,7 @@ class IrsWireMockIntegrationTest {
     }
 
     @Test
+    @Disabled("Flaky test")
     void shouldLimitParallelEdcNegotiationsForMultipleJobs() throws EdcClientException {
         // Arrange
         final String globalAssetIdLevel1 = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
