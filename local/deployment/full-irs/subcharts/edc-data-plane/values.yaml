@@ -1,9 +1,8 @@
 ---
 replicaCount: 1
 
-# Which image should be used here?
 image:
-  repository: ghcr.io/catenax-ng/product-edc/edc-dataplane-hashicorp-vault
+  repository: tractusx/edc-dataplane-hashicorp-vault
   pullPolicy: IfNotPresent
   tag: "0.3.0"
 

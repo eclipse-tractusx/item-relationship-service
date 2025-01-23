@@ -1,7 +1,6 @@
 ---
 replicaCount: 1
 
-# Which image should be used here?
 image:
   repository: ghcr.io/catenax-ng/product-item-relationship-service-frontend
   pullPolicy: Always
