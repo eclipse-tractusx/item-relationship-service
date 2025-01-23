@@ -30,12 +30,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <!-- override 10.1.20 due to trivy HIGH -->
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>10.1.25</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

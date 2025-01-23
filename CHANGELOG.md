@@ -30,6 +30,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Fixed
 - Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position (#915)
 - fixed auto dispatch workflow for auto deployment from main (#915)
+- Lift to newest Spring Boot version to fix vulnerability CVE-2024-50379. Fix and disable some tests
+- Remove version lock on tomcat-embed-core to fix vulnerability CVE-2024-50379
 
 ### Added
 - Added api key authentication for edc notification requests (#915)
