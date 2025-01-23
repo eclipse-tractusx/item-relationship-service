@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -45,6 +46,7 @@ import org.springframework.web.server.ResponseStatusException;
  * API Exception Handler.
  */
 @Slf4j
+@Hidden
 @ControllerAdvice
 public class IrsExceptionHandler {
 

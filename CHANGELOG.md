@@ -9,6 +9,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Added
 
+### Fixed
+ - Lift to newest Spring Boot version to fix vulnerability CVE-2024-50379. Fix and disable some tests
+
 ## [5.4.1] - 2024-08-19
 
 ### Fixed
