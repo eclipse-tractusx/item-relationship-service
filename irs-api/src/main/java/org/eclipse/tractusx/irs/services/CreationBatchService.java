@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
@@ -42,7 +43,6 @@ import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
-import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -128,9 +128,9 @@ public class CreationBatchService {
                         .batchState(ProcessingState.INITIALIZED)
                         .jobProgressList(batch.stream()
                                               .map(identificationKey -> JobProgress.builder()
-                                                                               .identificationKey(identificationKey)
-                                                                               .jobState(JobState.UNSAVED)
-                                                                               .build())
+                                                                                   .identificationKey(identificationKey)
+                                                                                   .jobState(JobState.UNSAVED)
+                                                                                   .build())
                                               .toList())
                         .build();
         }).toList();

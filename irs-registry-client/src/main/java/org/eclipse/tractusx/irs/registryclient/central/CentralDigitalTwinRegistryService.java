@@ -26,10 +26,14 @@ package org.eclipse.tractusx.irs.registryclient.central;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import io.github.resilience4j.core.functions.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
@@ -50,9 +54,25 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
             final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.shellId());
             log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.shellId());
 
-            return Either.<Exception, Shell>right(new Shell("",
-                    digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification)));
+            return Either.<Exception, Shell>right(fetchShell(aaShellIdentification));
         }).toList();
+    }
+
+    @Override
+    public Optional<Shell> fetchShell(final PartChainIdentificationKey key) {
+        if (!StringUtils.isBlank(key.getIdentifier())) {
+            return Optional.of(fetchShell(key.getIdentifier()));
+        }
+
+        return fetchShells(List.of(new DigitalTwinRegistryKey(key.getGlobalAssetId(), key.getBpn()))).stream()
+                                                                                                     .map(Either::getOrNull)
+                                                                                                     .filter(Objects::nonNull)
+                                                                                                     .findFirst();
+    }
+
+    private Shell fetchShell(final String aaShellIdentification) {
+        return new Shell("",
+                digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification));
     }
 
     @Override

@@ -30,7 +30,6 @@ import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
@@ -56,7 +55,6 @@ public class QueryBatchService {
     private final BatchStore batchStore;
 
     private final JobStore jobStore;
-    private final SecurityHelperService securityHelperService;
 
     public BatchOrderResponse findOrderById(final UUID batchOrderId) {
         final BatchOrder batchOrder = batchOrderStore.find(batchOrderId)
@@ -101,6 +99,7 @@ public class QueryBatchService {
                                                .batchProcessingState(batch.getBatchState())
                                                .batchUrl(batch.getBatchUrl())
                                                .jobsInBatchChecksum(batch.getJobProgressList().size())
+                                               .jobProgressList(batch.getJobProgressList())
                                                .build();
     }
 

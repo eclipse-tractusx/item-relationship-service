@@ -97,6 +97,14 @@ jobs:
           node fix_https_links.js
           node fix_relative_links.js https://$GITHUB_REPOSITORY_OWNER.github.io/$REPO/docs
 
+      - name: Upload generated Markdown
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          path: | 
+            docs/target/generated-docs/arc42.md
+            docs/target/generated-docs/adminguide.md
+
       - name: MD linting
         run: |
           npm install markdownlint-cli2

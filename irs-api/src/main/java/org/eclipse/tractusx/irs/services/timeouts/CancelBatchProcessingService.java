@@ -29,11 +29,11 @@ import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
-import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.springframework.stereotype.Service;
 
@@ -82,10 +82,10 @@ public class CancelBatchProcessingService {
         batches.forEach(batch -> {
             if (isBatchNotCompleted(batch.getBatchState())) {
                 final List<UUID> jobIds = batch.getJobProgressList()
-                                             .stream()
-                                             .map(JobProgress::getJobId)
-                                             .filter(Objects::nonNull)
-                                             .toList();
+                                               .stream()
+                                               .map(JobProgress::getJobId)
+                                               .filter(Objects::nonNull)
+                                               .toList();
                 cancelNotFinishedJobs(jobIds);
             }
         });

@@ -33,15 +33,14 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
-import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.connector.job.InMemoryJobStore;
-import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +48,6 @@ class QueryBatchServiceTest {
 
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
-    private JobStore jobStore;
 
     private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
     private QueryBatchService service;
@@ -60,9 +58,8 @@ class QueryBatchServiceTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        jobStore = new InMemoryJobStore();
 
-        service = new QueryBatchService(batchOrderStore, batchStore, jobStore, securityHelperService);
+        service = new QueryBatchService(batchOrderStore, batchStore, new InMemoryJobStore());
     }
 
     @Test

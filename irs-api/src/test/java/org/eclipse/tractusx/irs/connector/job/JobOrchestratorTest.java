@@ -146,7 +146,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJob().getParameter(), null);
         var newJob = getStartedJob();
 
         // Assert
@@ -167,7 +167,7 @@ class JobOrchestratorTest {
                 okResponse);
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJob().getParameter(), null);
 
         // Assert
         var newJob = getStartedJob();
@@ -184,7 +184,7 @@ class JobOrchestratorTest {
                 generate.response(status));
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(), null);
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString());
@@ -205,7 +205,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new RuntimeException());
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(), null);
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -227,7 +227,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new JobException("Cannot process the request"));
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(), null);
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -397,7 +397,7 @@ class JobOrchestratorTest {
     }
 
     private MultiTransferJob startJob() {
-        sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
+        sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(), null);
         return getStartedJob();
     }
 
