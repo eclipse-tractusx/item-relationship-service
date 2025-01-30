@@ -84,6 +84,7 @@ public class RegisterJob {
     @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.", deprecated = true)
     private boolean lookupBPNs;
 
+    @Builder.Default
     @Schema(description = "Flag enables and disables auditing, including provisioning of ContractAgreementId inside submodels and shells objects. Default is true.")
     private boolean auditContractNegotiation = true;
 

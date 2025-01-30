@@ -103,7 +103,7 @@ public class MultiTransferJob {
 
     @JsonIgnore
     public String getAasId() {
-        return getJob().getAasIndetifier();
+        return getJob().getAasIdentifier();
     }
 
     @JsonIgnore

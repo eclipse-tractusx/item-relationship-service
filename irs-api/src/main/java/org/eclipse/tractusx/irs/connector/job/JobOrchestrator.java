@@ -296,7 +296,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                                        .parameter(jobData);
 
         if (StringUtils.isEmpty(identificationKey.getGlobalAssetId())) {
-            jobBuilder.aasIndetifier(identificationKey.getIdentifier());
+            jobBuilder.aasIdentifier(identificationKey.getIdentifier());
         } else {
             jobBuilder.globalAssetId(GlobalAssetIdentification.of(identificationKey.getGlobalAssetId()));
         }

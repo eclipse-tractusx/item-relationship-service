@@ -2228,7 +2228,7 @@ components:
       additionalProperties: false
       description: Executable unit with meta information and item graph result.
       properties:
-        aasIndetifier:
+        aasIdentifier:
           type: string
           description: Asset Administration Shell Id
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0

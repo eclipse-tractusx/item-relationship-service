@@ -13,6 +13,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 - TRACEX-224 Setup IRS gatling test workflow using containers
 - TRX-226 Enabled highcharts in load tests. Updated order test
 - TRX-143 API Change POST /irs/order providing aas identifier as key
+- TRX-154 API Change POST /irs/jobs providing aas identifier as key
 
 ### Added
 
