@@ -13,7 +13,6 @@ on:
       - 'docs/**'
       - 'local/**'
       - 'CHANGELOG.md'
-      - 'CFX-CHANGELOG.md'
   push:
     branches:
       - main

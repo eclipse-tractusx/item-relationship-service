@@ -22,7 +22,7 @@ on:
 env:
   IRS_APPLICATION_PATH: 'irs-api/src/main/java/org/eclipse/tractusx/irs/IrsApplication.java'
   # Specific CHANGELOG file which is used for releasing the product. Default <CHANGELOG.md>.
-  CHANGELOG_PATH: 'CFX-CHANGELOG.md'
+  CHANGELOG_PATH: 'CHANGELOG.md'
   OPENAPI_SPEC_PATH: 'docs/src/api/irs-api.yaml'
   HELM_CHART_PATH: 'charts/item-relationship-service'
   SEMVER_PATTERN: '[0-9]+\.[0-9]+\.[0-9]+'

@@ -10,7 +10,7 @@ on:
 
 env:
   # Specific CHANGELOG file which is used for releasing the product. Default <CHANGELOG.md>.
-  CHANGELOG_PATH: 'CFX-CHANGELOG.md'
+  CHANGELOG_PATH: 'CHANGELOG.md'
 
 jobs:
   get-helm-charts-versions-irs:
