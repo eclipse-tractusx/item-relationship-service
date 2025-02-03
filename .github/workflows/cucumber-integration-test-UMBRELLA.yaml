@@ -29,18 +29,13 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - '**' # Include all changes
-      # Exclude unrelated paths
-      - '!**/*.md'
-      - '!**/*.txt'
-      - '!.config/**'
-      - '!docs/**'
-      - '!local/**'
-      - '!irs-load-tests/**'
-      - '!.github/workflows/**'
-      # Explicitly include workflow
-      - '.github/cucumber-integration-test-UMBRELLA.yaml'
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - '.config/**'
+      - 'docs/**'
+      - 'local/**'
+      - 'irs-load-tests/**'
 
 # Cancel previous Test executions if a new one is triggered.
 concurrency:
@@ -49,7 +44,6 @@ concurrency:
 
 jobs:
   execute-e2e-tests:
-    permissions: write-all
     runs-on: "${{ github.repository == 'eclipse-tractusx/item-relationship-service' && 'tractusx-runner' || 'ubuntu-latest' }}"
     steps:
       - uses: actions/checkout@v4

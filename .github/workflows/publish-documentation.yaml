@@ -114,7 +114,6 @@ jobs:
           spec-file: docs/src/api/irs-api.yaml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-
       - name: Update documentation on GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4

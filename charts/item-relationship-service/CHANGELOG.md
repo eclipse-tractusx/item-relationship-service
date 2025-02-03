@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Changed
+
+- Added the discovery type configurable (discovery.type) default value as bpnl. (#12). 
+
 ## [7.4.1] - 2024-08-19
 
 ### Changed
