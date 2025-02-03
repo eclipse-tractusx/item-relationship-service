@@ -2,7 +2,6 @@
 apiVersion: v2
 name: edc-control-plane
 description: EDC Control-Plane
-home: https://github.com/catenax-ng/product-edc/deployment/helm/edc-control-plane
 type: application
 appVersion: "1.0.0"
 version: 0.0.1

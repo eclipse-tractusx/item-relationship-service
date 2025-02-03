@@ -2,7 +2,6 @@
 apiVersion: v2
 name: edc-data-plane
 description: EDC Data-Plane
-home: https://github.com/catenax-ng/product-edc/deployment/helm/edc-dataplane
 type: application
 appVersion: "1.0.0"
 version: 0.0.1

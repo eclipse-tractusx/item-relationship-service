@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/catenax-ng/product-edc/edc-controlplane-postgresql-hashicorp-vault
+  repository: tractusx/edc-controlplane-postgresql-hashicorp-vault
   pullPolicy: IfNotPresent
   tag: "0.3.0"
 

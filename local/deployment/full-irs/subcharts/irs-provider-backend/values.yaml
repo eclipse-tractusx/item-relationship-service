@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/catenax-ng/catenax-at-home/provider-backend-service
+  repository: tractusx/simple-data-backend
   pullPolicy: IfNotPresent
   tag: "0.0.1"
 
