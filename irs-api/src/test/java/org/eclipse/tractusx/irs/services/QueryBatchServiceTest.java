@@ -66,9 +66,9 @@ class QueryBatchServiceTest {
     void shouldFindBatchOrder() {
         // given
         final UUID batchOrderId = UUID.randomUUID();
-        batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId));
-
         final UUID batchId = UUID.randomUUID();
+
+        batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId, List.of(batchId)));
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
 
         // when
@@ -83,10 +83,10 @@ class QueryBatchServiceTest {
     void shouldFindBatchOrderWithAdminRole() {
         // given
         final UUID batchOrderId = UUID.randomUUID();
-        batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId));
-        when(securityHelperService.isAdmin()).thenReturn(true);
-
         final UUID batchId = UUID.randomUUID();
+
+        batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId, List.of(batchId)));
+        when(securityHelperService.isAdmin()).thenReturn(true);
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
 
         // when
@@ -104,6 +104,7 @@ class QueryBatchServiceTest {
 
         final UUID batchId = UUID.randomUUID();
         final UUID secondBatchId = UUID.randomUUID();
+        batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId, List.of(batchId, secondBatchId)));
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
         batchStore.save(secondBatchId, createBatch(secondBatchId, batchOrderId));
 
@@ -122,6 +123,7 @@ class QueryBatchServiceTest {
         // given
         final UUID batchOrderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
+        batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId, List.of(batchId)));
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
 
         when(securityHelperService.isAdmin()).thenReturn(true);
@@ -134,17 +136,18 @@ class QueryBatchServiceTest {
         assertThat(response.getBatchId()).isEqualTo(batchId);
     }
 
-    private BatchOrder createBatchOrder(final UUID batchOrderId) {
-        return BatchOrder.builder().batchOrderId(batchOrderId).build();
+    private BatchOrder createBatchOrder(final UUID batchOrderId, final List<UUID> batchIds) {
+        return BatchOrder.builder().batchOrderId(batchOrderId).batchIds(batchIds).build();
     }
 
     private Batch createBatch(final UUID batchId, final UUID batchOrderId) {
-        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId)
-                    .jobProgressList(List.of(
+        return Batch.builder()
+                    .batchId(batchId)
+                    .batchOrderId(batchOrderId)
+                    .jobProgressList(List.of(JobProgress.builder().jobId(UUID.randomUUID()).build(),
                             JobProgress.builder().jobId(UUID.randomUUID()).build(),
-                            JobProgress.builder().jobId(UUID.randomUUID()).build(),
-                            JobProgress.builder().jobId(UUID.randomUUID()).build()
-                    )).build();
+                            JobProgress.builder().jobId(UUID.randomUUID()).build()))
+                    .build();
     }
 
 }

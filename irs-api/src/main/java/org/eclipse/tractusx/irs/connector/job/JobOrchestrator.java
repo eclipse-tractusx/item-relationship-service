@@ -143,7 +143,17 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
         // If no transfers are requested, job is already complete
         if (transferCount == 0) {
-            callCompleteHandlerIfFinished(multiJob.getJobIdString());
+            try {
+                callCompleteHandlerIfFinished(multiJob.getJobIdString());
+            } catch (JobException e) {
+                markJobInError(multiJob, e, "Error while completing Job.");
+                meterService.incrementJobFailed();
+                return JobInitiateResponse.builder()
+                                          .jobId(multiJob.getJobIdString())
+                                          .status(ResponseStatus.FATAL_ERROR)
+                                          .error(e.getMessage())
+                                          .build();
+            }
         }
 
         return JobInitiateResponse.builder().jobId(multiJob.getJobIdString()).status(ResponseStatus.OK).build();

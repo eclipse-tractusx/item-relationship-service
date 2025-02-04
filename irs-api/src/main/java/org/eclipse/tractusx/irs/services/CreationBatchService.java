@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -100,14 +100,15 @@ public class CreationBatchService {
     }
 
     private UUID createAndStore(final Set<PartChainIdentificationKey> keys, final int batchSize, final BatchOrder batchOrder) {
-        batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
-
         final List<Batch> batches = createBatches(List.copyOf(keys),
                 batchSize, batchOrder.getBatchOrderId());
         batches.forEach(batch -> {
             batchStore.save(batch.getBatchId(), batch);
             jobEventLinkedQueueListener.addQueueForBatch(batch.getBatchId(), batch.getJobProgressList().size());
         });
+        final List<UUID> batchIds = batches.stream().map(Batch::getBatchId).toList();
+        batchOrder.setBatchIds(batchIds);
+        batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
 
         applicationEventPublisher.publishEvent(new BatchOrderRegisteredEvent(batchOrder.getBatchOrderId()));
 

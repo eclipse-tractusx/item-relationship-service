@@ -23,6 +23,12 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ### Removed
 
 - TRACEX-417 removed write lock when creating jobs
+- TRACEX-417 removed read lock since s3 already works on atomic level
+
+### Fixed
+
+- TRACEX-417 fixed inefficient blob retrieval for irs orders and batches 
+- TRACEX-417 fixed ExecutorCompletionServiceFactory to actually limit threads of batches
 
 ## [5.4.1-cfx-6 - 09.01.2025]
 

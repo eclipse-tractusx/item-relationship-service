@@ -74,7 +74,8 @@ class BatchOrderEventListenerTest {
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
     private final TimeoutSchedulerBatchProcessingService timeoutScheduler = mock(
             TimeoutSchedulerBatchProcessingService.class);
-    private final ExecutorCompletionServiceFactory executorCompletionServiceFactory = mock(ExecutorCompletionServiceFactory.class);
+    private final ExecutorCompletionServiceFactory executorCompletionServiceFactory = mock(
+            ExecutorCompletionServiceFactory.class);
 
     private BatchOrderEventListener eventListener;
 
@@ -82,8 +83,8 @@ class BatchOrderEventListenerTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService,
-                essService, applicationEventPublisher, timeoutScheduler, executorCompletionServiceFactory);
+        eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService, essService,
+                applicationEventPublisher, timeoutScheduler, executorCompletionServiceFactory);
     }
 
     @Test
@@ -101,6 +102,7 @@ class BatchOrderEventListenerTest {
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .auditContractNegotiation(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.REGULAR)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -120,7 +122,8 @@ class BatchOrderEventListenerTest {
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
         ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
-        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+        given(executorCompletionService.submit(any())).willReturn(
+                CompletableFuture.completedFuture(JobProgress.builder().build()));
 
         when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
 
@@ -160,6 +163,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.ESS)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -178,7 +182,8 @@ class BatchOrderEventListenerTest {
         given(essService.startIrsJob(any(), any())).willReturn(JobHandle.builder().id(UUID.randomUUID()).build());
 
         ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
-        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+        given(executorCompletionService.submit(any())).willReturn(
+                CompletableFuture.completedFuture(JobProgress.builder().build()));
 
         when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
 
@@ -217,6 +222,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.ESS)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -232,11 +238,11 @@ class BatchOrderEventListenerTest {
                                        .jobProgressList(createJobProgressList())
                                        .build();
 
-        given(essService.startIrsJob(any(), any())).willReturn(
-                JobHandle.builder().id(UUID.randomUUID()).build());
+        given(essService.startIrsJob(any(), any())).willReturn(JobHandle.builder().id(UUID.randomUUID()).build());
 
         ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
-        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+        given(executorCompletionService.submit(any())).willReturn(
+                CompletableFuture.completedFuture(JobProgress.builder().build()));
 
         when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
 
@@ -244,7 +250,9 @@ class BatchOrderEventListenerTest {
         batchStore.save(FIRST_BATCH_ID, firstBatch);
         batchStore.save(SECOND_BATCH_ID, secondBatch);
         // when
-        eventListener.handleBatchProcessingFinishedEvent(new BatchProcessingFinishedEvent(BATCH_ORDER_ID, FIRST_BATCH_ID, ProcessingState.PARTIAL, ProcessingState.COMPLETED, 1, ""));
+        eventListener.handleBatchProcessingFinishedEvent(
+                new BatchProcessingFinishedEvent(BATCH_ORDER_ID, FIRST_BATCH_ID, ProcessingState.PARTIAL,
+                        ProcessingState.COMPLETED, 1, ""));
         // then
         ArgumentCaptor<Callable<JobProgress>> callableCaptor = ArgumentCaptor.forClass(Callable.class);
         verify(executorCompletionService, times(numberOfJobs)).submit(callableCaptor.capture());
@@ -274,6 +282,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.REGULAR)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -295,7 +304,9 @@ class BatchOrderEventListenerTest {
         batchStore.save(FIRST_BATCH_ID, firstBatch);
         batchStore.save(SECOND_BATCH_ID, secondBatch);
         // when
-        eventListener.handleBatchProcessingFinishedEvent(new BatchProcessingFinishedEvent(BATCH_ORDER_ID, SECOND_BATCH_ID, ProcessingState.PARTIAL, ProcessingState.COMPLETED, 2, ""));
+        eventListener.handleBatchProcessingFinishedEvent(
+                new BatchProcessingFinishedEvent(BATCH_ORDER_ID, SECOND_BATCH_ID, ProcessingState.PARTIAL,
+                        ProcessingState.COMPLETED, 2, ""));
         // then
         verify(applicationEventPublisher).publishEvent(any(BatchOrderProcessingFinishedEvent.class));
     }
@@ -314,6 +325,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .jobType(null)
+                                                .batchIds(List.of(FIRST_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -327,7 +339,7 @@ class BatchOrderEventListenerTest {
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
         ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
-        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+        given(executorCompletionService.submit(any())).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
 
         when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
 

@@ -68,14 +68,13 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public Optional<MultiTransferJob> find(final String jobId) {
-        return readLock(() -> get(jobId));
+        return get(jobId);
     }
 
     @Override
     public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
             final ZonedDateTime dateTime) {
-        return readLock(
-                () -> getAll().stream().filter(hasState(jobState)).filter(isCompletionDateBefore(dateTime)).toList());
+        return getAll().stream().filter(hasState(jobState)).filter(isCompletionDateBefore(dateTime)).toList();
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
@@ -91,7 +90,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public Optional<MultiTransferJob> findByProcessId(final String processId) {
-        return readLock(() -> getByProcessId(processId));
+        return getByProcessId(processId);
     }
 
     @Override
@@ -109,7 +108,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findAll() {
-        return readLock(() -> new ArrayList<>(getAll()));
+        return new ArrayList<>(getAll());
     }
 
     @Override
@@ -157,7 +156,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findByStates(final List<JobState> jobStates) {
-        return readLock(() -> getAll().stream().filter(hasState(jobStates)).toList());
+        return getAll().stream().filter(hasState(jobStates)).toList();
     }
 
     private Predicate<MultiTransferJob> hasState(final List<JobState> jobStates) {
@@ -187,22 +186,6 @@ public abstract class BaseJobStore implements JobStore {
             }
             return null;
         });
-    }
-
-    private <T> T readLock(final Supplier<T> work) {
-        try {
-            if (!lock.readLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
-                throw new JobException("Timeout acquiring read lock");
-            }
-            try {
-                return work.get();
-            } finally {
-                lock.readLock().unlock();
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new JobException("Job Interrupted", e);
-        }
     }
 
     private <T> T writeLock(final Supplier<T> work) {

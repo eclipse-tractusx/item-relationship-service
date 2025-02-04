@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,7 @@ import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -63,10 +65,7 @@ public class QueryBatchService {
                                                                      "Cannot find Batch Order with id: "
                                                                              + batchOrderId));
 
-        final List<Batch> batches = batchStore.findAll()
-                                              .stream()
-                                              .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
-                                              .toList();
+        final List<Batch> batches = getBatchesByOrder(batchOrder).toList();
 
         return BatchOrderResponse.builder()
                                  .orderId(batchOrderId)
@@ -76,18 +75,24 @@ public class QueryBatchService {
                                  .build();
     }
 
+    private @NotNull Stream<Batch> getBatchesByOrder(final BatchOrder batchOrder) {
+        return batchOrder.getBatchIds().stream().map(batchStore::find).map(Optional::orElseThrow);
+    }
+
     public BatchResponse findBatchById(final UUID batchOrderId, final UUID batchId) {
         final Batch batchResponse = batchStore.find(batchId)
                                               .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
                                               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                                      "Cannot find Batch with orderId: " + batchOrderId
-                                                                              + " and id: " + batchId));
+                                                      "Cannot find Batch with orderId: " + batchOrderId + " and id: "
+                                                              + batchId));
+        final BatchOrder batchOrder = batchOrderStore.find(batchOrderId)
+                                                     .orElseThrow(
+                                                             () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                     "Cannot find Batch Order with id: "
+                                                                             + batchOrderId));
 
-        final Integer totalJobs = batchStore.findAll()
-                                            .stream()
-                                            .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
-                                            .map(batch -> batch.getJobProgressList().size())
-                                            .reduce(0, Integer::sum);
+        final Integer totalJobs = getBatchesByOrder(batchOrder).map(batch -> batch.getJobProgressList().size())
+                                                               .reduce(0, Integer::sum);
 
         return toBatchResponse(batchResponse, totalJobs);
     }

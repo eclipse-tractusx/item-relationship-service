@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,8 +27,13 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Future;
+import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +53,7 @@ import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEven
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -58,6 +64,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@SuppressWarnings("PMD.ExcessiveImports")
 @RequiredArgsConstructor
 public class BatchOrderEventListener {
 
@@ -75,13 +82,11 @@ public class BatchOrderEventListener {
         log.info("Listener received BatchOrderRegisteredEvent with BatchOrderId: {}.",
                 batchOrderRegisteredEvent.batchOrderId());
         batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId())
-                       .ifPresent(batchOrder -> batchStore.findAll()
-                                                          .stream()
-                                                          .filter(batch -> batch.getBatchOrderId()
-                                                                                .equals(batchOrder.getBatchOrderId()))
-                                                          .filter(batch -> batch.getBatchNumber().equals(1))
-                                                          .findFirst()
-                                                          .ifPresent(batch -> startBatch(batchOrder, batch)));
+                       .ifPresent(batchOrder -> getBatchesForOrder(batchOrder).filter(
+                                                                                      batch -> batch.getBatchNumber().equals(1))
+                                                                              .findFirst()
+                                                                              .ifPresent(batch -> startBatch(batchOrder,
+                                                                                      batch)));
     }
 
     @Async
@@ -90,29 +95,28 @@ public class BatchOrderEventListener {
         log.info(
                 "Listener received BatchProcessingFinishedEvent with BatchId: {}, BatchOrderId: {} and BatchNumber: {}",
                 batchEvent.batchId(), batchEvent.batchOrderId(), batchEvent.batchNumber());
-        batchOrderStore.find(batchEvent.batchOrderId()).ifPresent(batchOrder -> {
-            final List<ProcessingState> batchStates = batchStore.findAll()
-                                                                .stream()
-                                                                .filter(batch -> batch.getBatchOrderId()
-                                                                                      .equals(batchOrder.getBatchOrderId()))
-                                                                .map(Batch::getBatchState)
-                                                                .toList();
+        batchOrderStore.find(batchEvent.batchOrderId()).ifPresentOrElse(batchOrder -> {
+            final List<Batch> batchesForOrder = getBatchesForOrder(batchOrder).toList();
+            final List<ProcessingState> batchStates = batchesForOrder.stream().map(Batch::getBatchState).toList();
             final ProcessingState batchOrderState = calculateBatchOrderState(batchStates);
             batchOrder.setBatchOrderState(batchOrderState);
+
             batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
             if (ProcessingState.COMPLETED.equals(batchOrderState) || ProcessingState.ERROR.equals(batchOrderState)) {
                 applicationEventPublisher.publishEvent(
                         new BatchOrderProcessingFinishedEvent(batchOrder.getBatchOrderId(),
                                 batchOrder.getBatchOrderState(), batchOrder.getCallbackUrl()));
             } else {
-                batchStore.findAll()
-                          .stream()
-                          .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
-                          .filter(batch -> batch.getBatchNumber().equals(batchEvent.batchNumber() + 1))
-                          .findFirst()
-                          .ifPresent(batch -> startBatch(batchOrder, batch));
+                batchesForOrder.stream()
+                               .filter(batch -> batch.getBatchNumber().equals(batchEvent.batchNumber() + 1))
+                               .findFirst()
+                               .ifPresent(batch -> startBatch(batchOrder, batch));
             }
-        });
+        }, () -> log.error("No BatchOrder found for BatchId: {}.", batchEvent.batchId()));
+    }
+
+    private @NotNull Stream<Batch> getBatchesForOrder(final BatchOrder batchOrder) {
+        return batchOrder.getBatchIds().stream().map(batchStore::find).map(Optional::orElseThrow);
     }
 
     private void startBatch(final BatchOrder batchOrder, final Batch batch) {
@@ -123,14 +127,16 @@ public class BatchOrderEventListener {
                                                                 .map(JobProgress::getIdentificationKey)
                                                                 .toList();
 
-        keyStream.forEach(identificationKey -> executorCompletionService
-                .submit(() -> getJobProgress(batchOrder, batch, identificationKey)));
+        final Map<PartChainIdentificationKey, Future<JobProgress>> keyFutureHashMap = new ConcurrentHashMap<>();
+
+        keyStream.forEach(identificationKey -> keyFutureHashMap.put(identificationKey,
+                executorCompletionService.submit(() -> getJobProgress(batchOrder, batch, identificationKey))));
 
         final List<JobProgress> jobProgressList = new ArrayList<>();
 
-        keyStream.forEach(key -> {
+        keyFutureHashMap.forEach((key, future) -> {
             try {
-                jobProgressList.add(executorCompletionService.take().get());
+                jobProgressList.add(future.get());
             } catch (ExecutionException e) {
                 log.error("Job execution for global asset id: {} failed: {}", key.getGlobalAssetId(), e.getCause().getMessage());
             } catch (InterruptedException e) {
@@ -183,11 +189,11 @@ public class BatchOrderEventListener {
 
     private RegisterBpnInvestigationJob createRegisterBpnInvestigationBatchOrder(final BatchOrder batchOrder, final PartChainIdentificationKey identificationKey) {
         return RegisterBpnInvestigationJob.builder()
-                          .key(identificationKey)
-                          .bomLifecycle(batchOrder.getBomLifecycle())
-                          .callbackUrl(batchOrder.getCallbackUrl())
-                          .incidentBPNSs(batchOrder.getIncidentBPNSs())
-                          .build();
+                                          .key(identificationKey)
+                                          .bomLifecycle(batchOrder.getBomLifecycle())
+                                          .callbackUrl(batchOrder.getCallbackUrl())
+                                          .incidentBPNSs(batchOrder.getIncidentBPNSs())
+                                          .build();
     }
 
     private ProcessingState calculateBatchOrderState(final List<ProcessingState> stateList) {

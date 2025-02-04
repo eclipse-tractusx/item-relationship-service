@@ -111,7 +111,7 @@ job:
   scheduled:
     threadCount: 5
   cached:
-    threadCount: 0
+    threadCount: 5
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!

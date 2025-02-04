@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -45,6 +46,7 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.util.TestMother;
@@ -238,6 +240,31 @@ class JobOrchestratorTest {
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
                                                           .jobId(jobCaptor.getValue().getJobIdString())
                                                           .status(ResponseStatus.FATAL_ERROR)
+                                                          .build());
+    }
+
+    @Test
+    void startJob_todo_StopJob() {
+        // Arrange
+        when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.of());
+        when(jobStore.find(any())).thenReturn(Optional.of(generate.job(JobState.ERROR)));
+        doThrow(new JobException("Timeout acquiring WriteLock")).when(jobStore).completeJob(any(), any(Consumer.class));
+
+        // Act
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(),
+                null);
+
+        // Assert
+        verify(jobStore).create(jobCaptor.capture());
+        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), "Error while completing Job.",
+                "org.eclipse.tractusx.irs.connector.job.JobException");
+        verify(jobStore).find(jobCaptor.getValue().getJobIdString());
+        verifyNoMoreInteractions(jobStore);
+        verify(applicationEventPublisher).publishEvent(any(JobProcessingFinishedEvent.class));
+        assertThat(response).isEqualTo(JobInitiateResponse.builder()
+                                                          .jobId(jobCaptor.getValue().getJobIdString())
+                                                          .status(ResponseStatus.FATAL_ERROR)
+                                                          .error("Timeout acquiring WriteLock")
                                                           .build());
     }
 

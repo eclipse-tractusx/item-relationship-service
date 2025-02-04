@@ -70,7 +70,7 @@ irs: # Application config
     scheduled:
       threadCount: 5
     cached:
-      threadCount: 0
+      threadCount: 5
     callback:
       timeout:
         read: PT90S # HTTP read timeout for the Job API callback
@@ -92,7 +92,7 @@ irs: # Application config
         failed: P7D # ISO 8601 Duration
         completed: P7D # ISO 8601 Duration
       cron:
-        expression: "*/10 * * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
+        expression: "0 */5 * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
   security:
     api:
       keys:

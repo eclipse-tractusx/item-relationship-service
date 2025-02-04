@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.services.timeouts;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
+import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
+import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,7 @@ public class CancelBatchProcessingService {
 
     private final IrsItemGraphQueryService irsItemGraphQueryService;
     private final BatchStore batchStore;
+    private final BatchOrderStore batchOrderStore;
 
     public void cancelNotFinishedJobs(final List<UUID> jobIds) {
         log.info("Start scheduled timeout process for jobIds: {}", jobIds.toString());
@@ -69,15 +73,21 @@ public class CancelBatchProcessingService {
                                                .filter(Objects::nonNull)
                                                .toList();
                 cancelNotFinishedJobs(jobIds);
+            } else {
+                log.info("Batch already completed. No need to cancel.");
             }
         });
     }
 
     public void cancelNotFinishedJobsInBatchOrder(final UUID batchOrderId) {
         log.info("Canceling processing of jobs in order with id: {}", batchOrderId.toString());
-        final List<Batch> batches = batchStore.findAll()
+        final BatchOrder batchOrder = batchOrderStore.find(batchOrderId)
+                                                     .orElseThrow();
+
+        final List<Batch> batches = batchOrder.getBatchIds()
                                               .stream()
-                                              .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
+                                              .map(batchStore::find)
+                                              .map(Optional::orElseThrow)
                                               .toList();
         batches.forEach(batch -> {
             if (isBatchNotCompleted(batch.getBatchState())) {
