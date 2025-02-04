@@ -2714,6 +2714,11 @@ components:
             pattern: "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"
           maxItems: 2147483647
           pattern: "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"
+        auditContractNegotiation:
+          type: boolean
+          description: "Flag enables and disables auditing, including provisioning\
+            \ of ContractAgreementId inside submodels and shells objects. Default\
+            \ is true."
         batchSize:
           type: integer
           format: int32
@@ -2793,6 +2798,12 @@ components:
       description: Request body for registering a new Batch Order for ESS Investigation
         Job.
       properties:
+        auditContractNegotiation:
+          type: boolean
+          description: "Flag enables and disables auditing, including provisioning\
+            \ of ContractAgreementId inside submodels and shells objects. Default\
+            \ is true."
+          example: true
         batchSize:
           type: integer
           format: int32

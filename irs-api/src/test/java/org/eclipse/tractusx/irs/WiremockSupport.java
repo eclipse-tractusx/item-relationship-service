@@ -128,6 +128,7 @@ public class WiremockSupport {
                                  .collectAspects(true)
                                  .batchSize(5)
                                  .timeout(100)
+                                 .auditContractNegotiation(true)
                                  .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                                  .build();
     }
@@ -142,6 +143,7 @@ public class WiremockSupport {
                                                  .batchSize(1)
                                                  .timeout(100)
                                                  .jobTimeout(100)
+                                                 .auditContractNegotiation(true)
                                                  .build();
     }
 

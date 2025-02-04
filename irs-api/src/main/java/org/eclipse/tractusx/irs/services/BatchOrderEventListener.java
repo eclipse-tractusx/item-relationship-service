@@ -175,6 +175,7 @@ public class BatchOrderEventListener {
                           .depth(batchOrder.getDepth())
                           .direction(batchOrder.getDirection())
                           .collectAspects(batchOrder.getCollectAspects())
+                          .auditContractNegotiation(batchOrder.getAuditContractNegotiation())
                           .lookupBPNs(batchOrder.getLookupBPNs())
                           .callbackUrl(batchOrder.getCallbackUrl())
                           .build();

@@ -67,6 +67,8 @@ public class BatchOrder {
 
     private String callbackUrl;
 
+    private Boolean auditContractNegotiation;
+
     private List<String> incidentBPNSs;
 
     private JobType jobType;

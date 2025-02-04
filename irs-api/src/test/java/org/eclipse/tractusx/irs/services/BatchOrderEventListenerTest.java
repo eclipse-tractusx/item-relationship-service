@@ -99,6 +99,7 @@ class BatchOrderEventListenerTest {
                                                 .timeout(timeout)
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
+                                                .auditContractNegotiation(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.REGULAR)
                                                 .build();
         final Batch firstBatch = Batch.builder()

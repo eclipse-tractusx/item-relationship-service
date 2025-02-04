@@ -137,6 +137,9 @@ public class RegisterBatchOrder {
     @Schema(implementation = BatchStrategy.class/*, defaultValue = BatchStrategy.PRESERVE_BATCH_JOB_ORDER.name()*/, description = "The strategy how the batch is processed internally in IRS.")
     private BatchStrategy batchStrategy;
 
+    @Builder.Default
+    @Schema(description = "Flag enables and disables auditing, including provisioning of ContractAgreementId inside submodels and shells objects. Default is true.")
+    private boolean auditContractNegotiation = true;
 
     /**
      * Returns requested depth if provided, otherwise MAX_TREE_DEPTH value

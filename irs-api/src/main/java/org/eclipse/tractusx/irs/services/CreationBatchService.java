@@ -75,6 +75,7 @@ public class CreationBatchService {
                                                 .timeout(request.getTimeout())
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
+                                                .auditContractNegotiation(request.isAuditContractNegotiation())
                                                 .jobType(BatchOrder.JobType.REGULAR)
                                                 .build();
 
@@ -91,6 +92,7 @@ public class CreationBatchService {
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
                                                 .incidentBPNSs(request.getIncidentBPNSs())
+                                                .auditContractNegotiation(request.isAuditContractNegotiation())
                                                 .jobType(BatchOrder.JobType.ESS)
                                                 .build();
 

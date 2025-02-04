@@ -18,6 +18,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 ### Added
 
 - TRACEX-417 added jobId to transferProcess to allow quick query in database
+- TRACEX-205 Added missing "auditContractNegotiation" flag to Order API
 
 ### Removed
 
