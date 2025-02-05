@@ -219,7 +219,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
             verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
             verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
-            verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+            verify(exactly(0), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
         }
     }
 
