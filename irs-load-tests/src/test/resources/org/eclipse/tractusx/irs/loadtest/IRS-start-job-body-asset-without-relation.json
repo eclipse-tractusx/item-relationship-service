@@ -1,0 +1,22 @@
+{
+	"key":
+	{
+		"globalAssetId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4da01",
+		"bpn": "BPNL000000002BR4"
+	},
+	"bomLifecycle": "asBuilt",
+	"aspects": [
+		"urn:samm:io.catenax.batch:3.0.0#Batch",
+		"urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
+		"urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
+		"urn:samm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
+		"urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+		"urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt",
+		"urn:samm:io.catenax.traction_battery_code:2.0.0#TractionBatteryCode",
+		"urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+		"urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned"
+	],
+	"depth": 10,
+	"direction": "downward",
+	"collectAspects": true
+}

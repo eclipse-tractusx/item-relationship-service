@@ -129,6 +129,7 @@ public class RelationshipDelegate extends AbstractDelegate {
 
         } catch (final JsonParseException e) {
             log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+            log.error(e.getMessage(), e);
             final Tombstone tombstone = createJsonParseSubmodelPayloadTombstone(endpoint, itemId, e);
             itemContainerBuilder.tombstone(tombstone);
         }

@@ -41,6 +41,9 @@ python3 transform-and-upload.py \
 -a https://registry.server1 https://registry.server2 https://registry.server3 \
 -edc https://edc.controlplane1 https://edc.controlplane2 https://edc.controlplane3 \
 -k edc-api-key
+--tokenUrl Auth Token URL from DOS 
+--clientId Client ID from Dos to create a auth token
+--clientSecret Client Secret from Dos to create a auth token
 ```
 
 ### Policies
@@ -148,11 +151,14 @@ id "default-policy".
 **-d, --dataplane <[URL ...] >**  
 (Optional) If specified, these public dataplane URLs will be displayed in the digital twin in attribute 'href'
 
-**--aas3 <[BPN ...] >**  
+**--aas3**  
 (Optional) Flag to create AAS assets according to version 3.0.1
 
 **--allowedBPNs <[BPN ...] >**  
 (Optional) (Required for --aas3) A list of allowed BPNs which will be added to the specificAssetIds when creating DTR assets
+
+**--dos**  
+(Optional) Flag to create AAS assets and submodels for DOS
 
 **-h, --help**  
 Usage help. This lists all current command line options with a short description.

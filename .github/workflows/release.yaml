@@ -21,6 +21,7 @@ on:
 
 env:
   IRS_APPLICATION_PATH: 'irs-api/src/main/java/org/eclipse/tractusx/irs/IrsApplication.java'
+  # Specific CHANGELOG file which is used for releasing the product. Default <CHANGELOG.md>.
   CHANGELOG_PATH: 'CHANGELOG.md'
   OPENAPI_SPEC_PATH: 'docs/src/api/irs-api.yaml'
   HELM_CHART_PATH: 'charts/item-relationship-service'
@@ -30,7 +31,17 @@ env:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
+
+      - uses: actions/create-github-app-token@v1
+        id: generate-token
+        with:
+          app-id: ${{ secrets.TRACE_X_RELEASE_DOCUMENTATION_GH_APP_ID }}
+          private-key: ${{ secrets.TRACE_X_RELEASE_DOCUMENTATION_GH_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
 
       - name: Validate that workflow inputs are SemVer strings
@@ -142,8 +153,9 @@ jobs:
           echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Update docs and Helm chart for release
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ steps.generate-token.outputs.token }}
           commit-message: 'chore(docs): updated docs and Helm chart for IRS release ${{ inputs.irs-version }}'
           branch: action/update-for-release-${{ inputs.irs-version }}
           delete-branch: true

@@ -24,12 +24,16 @@
 package org.eclipse.tractusx.irs.ess.controller;
 
 import static io.restassured.RestAssured.given;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.util.List;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.tractusx.irs.ControllerTest;
 import org.eclipse.tractusx.irs.TestConfig;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
@@ -40,11 +44,13 @@ import org.eclipse.tractusx.irs.ess.service.EssRecursiveService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -75,6 +81,19 @@ class EssRecursiveControllerTest extends ControllerTest {
 
         given().port(port).contentType(ContentType.JSON).body(prepareNotification()).post(path)
                .then().statusCode(CREATED.value());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() {
+        Mockito.when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
+               .thenThrow(new BadCredentialsException("Wrong ApiKey"));
+
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body(prepareNotification())
+               .post(path)
+               .then()
+               .statusCode(UNAUTHORIZED.value());
     }
 
     private EdcNotification<InvestigationNotificationContent> prepareNotification() {
