@@ -32,7 +32,7 @@ Check out the project [Item Relationship Service](https://github.com/eclipse-tra
 > 👉 **Please use [tag 2.6.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/2.6.0) instead
 of the latest version currently (this is the version compatible with IRS 2.4.0).**
 >
-> ```git clone -b 2.6.0 https://github.com/catenax-ng/tx-item-relationship-service```
+> ```git clone -b 2.6.0 https://github.com/eclipse-tractusx/item-relationship-service```
 
 
 ### Step 3: Installing the services
@@ -475,7 +475,6 @@ kubectl port-forward svc/irs-frontend 3000:8080
 3. Deploy on a cloud provider
 4. Vault: store certificates in secrets
 5. Add liveness and readiness probe for irs provider backend service
-6. Use the DAPS chart form: https://catenax-ng.github.io/product-DAPS
 
 
 ### Additional
@@ -493,9 +492,3 @@ kubectl port-forward svc/irs-frontend 3000:8080
    2. Next steps:  
       1. Use the official helm chart from: https://eclipse-tractusx.github.io/sldt-semantic-hub
       2. Include scripts to provide test data into the script ``` upload-testdata.sh ```
-3. Use a custom helm chart for daps.
-   1. Reason: already configured with a default client
-   2. Next steps:  
-      1. Use the official helm chart from: https://catenax-ng.github.io/product-DAPS
-      2. Provide configuration with default client from start.
-
