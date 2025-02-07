@@ -13,23 +13,23 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) https://github.com/eclipse-tractusx/sig-release/issues/939
 - Changed orchestration of EDC negotiations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
 - secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
-- Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists https://github.com/eclipse-tractusx/item-relationship-service/issues/915
-- Release documentation for irs-registry-client https://github.com/eclipse-tractusx/item-relationship-service/issues/915
+- Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists (#915)
+- Release documentation for irs-registry-client (#915)
 - #351 Introduced orchestration to EDC negotiation to be able to limit parallel edc calls and reuse already ongoing negotiations.
-- Cccept dates without time and time zone according to standard https://github.com/eclipse-tractusx/item-relationship-service/issues/915
-- Update Spring-Boot version to 3.2.8 to mitigate CVE-2024-38821 https://github.com/eclipse-tractusx/item-relationship-service/issues/915
-- Setup IRS gatling test workflow using containers https://github.com/eclipse-tractusx/item-relationship-service/issues/915
-- Enabled highcharts in load tests. Updated order test https://github.com/eclipse-tractusx/item-relationship-service/issues/915
+- Cccept dates without time and time zone according to standard (#915)
+- Update Spring-Boot version to 3.2.8 to mitigate CVE-2024-38821 (#915)
+- Setup IRS gatling test workflow using containers (#915)
+- Enabled highcharts in load tests. Updated order test (#915)
 - API Change POST /irs/order providing aas identifier as key https://github.com/eclipse-tractusx/sig-release/issues/942
-- remove fallback for resolving shell via globalAssetId https://github.com/eclipse-tractusx/item-relationship-service/issues/915
+- remove fallback for resolving shell via globalAssetId (#915)
 - API Change POST /irs/jobs providing aas identifier as key https://github.com/eclipse-tractusx/sig-release/issues/942
-- fixed inefficient blob retrieval for irs orders and batches https://github.com/eclipse-tractusx/item-relationship-service/issues/915
-- fixed ExecutorCompletionServiceFactory to actually limit threads of batches https://github.com/eclipse-tractusx/item-relationship-service/issues/915
-- fixed Batch and Order state calculation to display the correct state during batch processing https://github.com/eclipse-tractusx/item-relationship-service/issues/915
+- fixed inefficient blob retrieval for irs orders and batches (#915)
+- fixed ExecutorCompletionServiceFactory to actually limit threads of batches (#915)
+- fixed Batch and Order state calculation to display the correct state during batch processing (#915)
 
 ### Fixed
-- Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position https://github.com/eclipse-tractusx/item-relationship-service/issues/915
-- fixed auto dispatch workflow for auto deployment from main https://github.com/eclipse-tractusx/item-relationship-service/issues/915
+- Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position (#915)
+- fixed auto dispatch workflow for auto deployment from main (#915)
 
 ### Added
 - Added api key authentication for edc notification requests (#915)
