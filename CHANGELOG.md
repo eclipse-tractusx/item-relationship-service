@@ -9,7 +9,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [Unreleased]
 
 ### Changed
-- Resolve Null pointer exception while registering the company https://github.com/eclipse-tractusx/item-relationship-service/issues/888
+- Resolve Null pointer exception while registering the company (#888)
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) https://github.com/eclipse-tractusx/sig-release/issues/939
 - Changed orchestration of EDC negotiations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
 - secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
