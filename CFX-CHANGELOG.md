@@ -30,6 +30,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 
 - TRACEX-417 fixed inefficient blob retrieval for irs orders and batches 
 - TRACEX-417 fixed ExecutorCompletionServiceFactory to actually limit threads of batches
+- TRACEX-417 fixed Batch and Order state calculation to display the correct state during batch processing
 
 ## [5.4.1-cfx-6 - 09.01.2025]
 

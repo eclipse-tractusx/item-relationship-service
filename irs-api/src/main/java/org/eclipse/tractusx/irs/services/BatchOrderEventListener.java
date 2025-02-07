@@ -102,7 +102,7 @@ public class BatchOrderEventListener {
             batchOrder.setBatchOrderState(batchOrderState);
 
             batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
-            if (ProcessingState.COMPLETED.equals(batchOrderState) || ProcessingState.ERROR.equals(batchOrderState)) {
+            if (isFinished(batchOrderState)) {
                 applicationEventPublisher.publishEvent(
                         new BatchOrderProcessingFinishedEvent(batchOrder.getBatchOrderId(),
                                 batchOrder.getBatchOrderState(), batchOrder.getCallbackUrl()));
@@ -113,6 +113,11 @@ public class BatchOrderEventListener {
                                .ifPresent(batch -> startBatch(batchOrder, batch));
             }
         }, () -> log.error("No BatchOrder found for BatchId: {}.", batchEvent.batchId()));
+    }
+
+    private static boolean isFinished(final ProcessingState batchOrderState) {
+        return ProcessingState.COMPLETED.equals(batchOrderState) || ProcessingState.ERROR.equals(batchOrderState)
+                || ProcessingState.PARTIAL.equals(batchOrderState);
     }
 
     private @NotNull Stream<Batch> getBatchesForOrder(final BatchOrder batchOrder) {
@@ -196,20 +201,27 @@ public class BatchOrderEventListener {
                                           .build();
     }
 
-    private ProcessingState calculateBatchOrderState(final List<ProcessingState> stateList) {
+    protected ProcessingState calculateBatchOrderState(final List<ProcessingState> stateList) {
         if (stateList.stream().anyMatch(ProcessingState.PROCESSING::equals)) {
             return ProcessingState.PROCESSING;
-        }
-        if (stateList.stream().anyMatch(ProcessingState.ERROR::equals)) {
-            return ProcessingState.ERROR;
-        }
-        if (stateList.stream().anyMatch(ProcessingState.PARTIAL::equals)) {
-            return ProcessingState.PARTIAL;
         }
         if (stateList.stream().allMatch(ProcessingState.COMPLETED::equals)) {
             return ProcessingState.COMPLETED;
         }
-        return ProcessingState.PARTIAL;
+        if (stateList.stream()
+                     .allMatch(state ->
+                                ProcessingState.COMPLETED.equals(state)
+                             || ProcessingState.PARTIAL.equals(state))) {
+            return ProcessingState.PARTIAL;
+        }
+        if (stateList.stream()
+                     .allMatch(state ->
+                                ProcessingState.COMPLETED.equals(state)
+                             || ProcessingState.PARTIAL.equals(state)
+                             || ProcessingState.ERROR.equals(state))) {
+            return ProcessingState.ERROR;
+        }
+        return ProcessingState.PROCESSING;
     }
 
 }
