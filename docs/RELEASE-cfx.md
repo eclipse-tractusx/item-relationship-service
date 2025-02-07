@@ -32,5 +32,6 @@ Please find [Release Guidelines Upstream](https://github.com/Cofinity-X/item-rel
 12) On dropdown target use your /release/1.0.0-cfx-1
 13) Title = Version of app -> 1.0.0-cfx-1
 14) Description = Changelog Content of app
-15) Verify that GitHub action [Release](https://github.com/Cofinity-X/item-relationship-service/actions/workflows/cofinity-docker-image.yml) generation has been triggered
-18) Merge release branch into main (when merging make sure to restore release branch since it should stay)
+15) Click create release (latest release)
+16) Verify that GitHub action [Release](https://github.com/Cofinity-X/item-relationship-service/actions/workflows/_cfx-docker-image.yaml) generation has been triggered
+17) Merge release branch into main (when merging make sure to restore release branch since it should stay)

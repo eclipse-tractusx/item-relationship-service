@@ -8,13 +8,19 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 
 ## [Unreleased - DD.MM.YYYY]
 
+
+## [5.4.1-cfx-7 - 07.02.2025]
+
 ### Changed
 
 - TRACEX-224 Setup IRS gatling test workflow using containers
-- TRX-226 Enabled highcharts in load tests. Updated order test
-- TRX-143 API Change POST /irs/order providing aas identifier as key
-- TRX-464 remove fallback for resolving shell via globalAssetId
-- TRX-154 API Change POST /irs/jobs providing aas identifier as key
+- TRACEX-226 Enabled highcharts in load tests. Updated order test
+- TRACEX-143 API Change POST /irs/order providing aas identifier as key
+- TRACEX-464 remove fallback for resolving shell via globalAssetId
+- TRACEX-154 API Change POST /irs/jobs providing aas identifier as key
+- TRACEX-417 fixed inefficient blob retrieval for irs orders and batches 
+- TRACEX-417 fixed ExecutorCompletionServiceFactory to actually limit threads of batches
+- TRACEX-417 fixed Batch and Order state calculation to display the correct state during batch processing
 
 ### Added
 
@@ -25,12 +31,6 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 
 - TRACEX-417 removed write lock when creating jobs
 - TRACEX-417 removed read lock since s3 already works on atomic level
-
-### Fixed
-
-- TRACEX-417 fixed inefficient blob retrieval for irs orders and batches 
-- TRACEX-417 fixed ExecutorCompletionServiceFactory to actually limit threads of batches
-- TRACEX-417 fixed Batch and Order state calculation to display the correct state during batch processing
 
 ## [5.4.1-cfx-6 - 09.01.2025]
 
