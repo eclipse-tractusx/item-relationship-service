@@ -75,3 +75,4 @@ docs/src/diagram-replacer/plantuml.jar
 /charts/item-relationship-service/Chart.lock
 /charts/item-relationship-service/charts/
 /docs/src/api/irs-api.actual.yaml
+/.github/workflows/custom/

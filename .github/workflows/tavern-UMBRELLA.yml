@@ -32,6 +32,7 @@ concurrency:
 jobs:
   test:
     runs-on: "${{ github.repository == 'eclipse-tractusx/item-relationship-service' && 'tractusx-runner' || 'ubuntu-latest' }}"
+    permissions: write-all
     steps:
       - uses: actions/checkout@v4
 
@@ -83,7 +84,7 @@ jobs:
             result.xml
 
       - name: Run ESS tests
-        if: always() && steps.setup-env.outcome == 'success'
+        if: ${{ !always() && steps.setup-env.outcome == 'success' }}
         env:
           IRS_HOST: 'http://localhost:8080'
           IRS_ESS_HOST: 'http://localhost:8080'

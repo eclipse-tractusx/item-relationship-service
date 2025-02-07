@@ -26,17 +26,20 @@ import lombok.Getter;
  */
 @Getter
 public enum Notification {
-    RECEIVE_QUALITY_INVESTIGATION_NOTIFICATION("ReceiveQualityInvestigationNotification"),
-    RECEIVE_QUALITY_ALERT_NOTIFICATION("ReceiveQualityAlertNotification"),
-    UPDATE_QUALITY_INVESTIGATION_NOTIFICATION("UpdateQualityInvestigationNotification"),
-    UPDATE_QUALITY_ALERT_NOTIFICATION("UpdateQualityAlertNotification"),
-    RESOLVE_QUALITY_INVESTIGATION_NOTIFICATION("ResolveQualityInvestigationNotification"),
-    RESOLVE_QUALITY_ALERT_NOTIFICATION("ResolveQualityAlertNotification");
+    RECEIVE_QUALITY_INVESTIGATION_NOTIFICATION("ReceiveQualityInvestigationNotification", "qualityinvestigationnotification-receive"),
+    RECEIVE_QUALITY_ALERT_NOTIFICATION("ReceiveQualityAlertNotification", "qualityalertnotification-receipt"),
+    UPDATE_QUALITY_INVESTIGATION_NOTIFICATION("UpdateQualityInvestigationNotification", "qualityinvestigationnotification-update"),
+    UPDATE_QUALITY_ALERT_NOTIFICATION("UpdateQualityAlertNotification", "qualityalertnotification-update"),
+    RESOLVE_QUALITY_INVESTIGATION_NOTIFICATION("ResolveQualityInvestigationNotification", "qualityinvestigationnotification-resolve"),
+    RESOLVE_QUALITY_ALERT_NOTIFICATION("ResolveQualityAlertNotification", "qualityalertnotification-resolve");
 
     private final String value;
 
-    Notification(final String value) {
+    private final String assetId;
+
+    Notification(final String value, final String assetId) {
         this.value = value;
+        this.assetId = assetId;
     }
 
     public static Notification toNotification(final NotificationMethod notificationMethod,

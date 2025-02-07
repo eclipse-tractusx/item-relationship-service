@@ -24,7 +24,6 @@ import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfigurat
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 
 import java.util.Map;
-import java.util.UUID;
 
 import jakarta.json.JsonObject;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +37,8 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.EdcAssetAlreadyExistsException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.GetEdcAssetException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.UpdateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.EdcTechnicalServiceAuthentication;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
@@ -55,6 +56,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.TooManyMethods")
 public class EdcAssetService {
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
     private static final String DEFAULT_POLICY_ID = "use-eu";
@@ -145,9 +147,34 @@ public class EdcAssetService {
         }
     }
 
+    public ResponseEntity<org.eclipse.tractusx.irs.edc.client.asset.model.Asset> getAsset(final String assetId)
+            throws GetEdcAssetException {
+        final String updateUri = UriComponentsBuilder.fromPath(config.getControlplane().getEndpoint().getAsset())
+                                                     .pathSegment("{assetId}")
+                                                     .buildAndExpand(assetId)
+                                                     .toUriString();
+        try {
+            return restTemplate.getForEntity(updateUri, org.eclipse.tractusx.irs.edc.client.asset.model.Asset.class);
+        } catch (RestClientException e) {
+            log.error("Failed to get EDC asset {}. Reason: ", assetId, e);
+            throw new GetEdcAssetException(e);
+        }
+    }
+
+    public void updateAsset(final org.eclipse.tractusx.irs.edc.client.asset.model.Asset assetUpdateRequest) throws UpdateEdcAssetException {
+        final String updateUri = UriComponentsBuilder.fromPath(config.getControlplane().getEndpoint().getAsset())
+                                                     .toUriString();
+
+        try {
+            restTemplate.put(updateUri, assetUpdateRequest);
+        } catch (RestClientException e) {
+            log.error("Failed to update EDC notification asset's data address {}. Reason: ", assetUpdateRequest.getAssetId(), e);
+            throw new UpdateEdcAssetException(e);
+        }
+    }
+
     private Asset createNotificationAssetRequest(final String assetName, final String baseUrl,
             final Notification notification, final EdcTechnicalServiceAuthentication edcTechnicalServiceAuthentication) {
-        final String assetId = UUID.randomUUID().toString();
         final Map<String, Object> properties = Map.of(ASSET_PROPERTY_DESCRIPTION, assetName,
                 ASSET_PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE, ASSET_PROPERTY_POLICY_ID, DEFAULT_POLICY_ID,
                 ASSET_PROPERTY_COMMON_VERSION_KEY, ASSET_PROPERTY_NOTIFICATION_VERSION, ASSET_PROPERTY_DCAT_TYPE,
@@ -171,7 +198,7 @@ public class EdcAssetService {
         final DataAddress dataAddress = dataAddressBuilder.build();
 
         return Asset.Builder.newInstance()
-                            .id(assetId)
+                            .id(notification.getAssetId())
                             .contentType("Asset")
                             .properties(properties)
                             .dataAddress(dataAddress)

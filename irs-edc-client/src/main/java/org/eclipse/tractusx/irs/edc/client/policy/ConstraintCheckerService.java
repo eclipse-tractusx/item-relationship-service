@@ -24,7 +24,6 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.eclipse.edc.policy.model.AndConstraint;
