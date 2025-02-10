@@ -12,6 +12,7 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 
 - Exclude unused transient dependencies of edc packages to mitigate CVE-2024-7254
 - Bump wiremock-standalone to 3.10.0 to mitigate CVE-2024-45801, CVE-2024-48910, CVE-2024-47875
+- Bump irs-registry-client to 2.1.25
 
 ### Fixed
 
