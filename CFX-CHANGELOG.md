@@ -8,6 +8,9 @@ _**For better traceability add the corresponding JIRA issue number in each chang
 
 ## [Unreleased - DD.MM.YYYY]
 
+### Fixed
+
+- TRACEX-417 fixed inefficient blob store interaction when running scheduled job cleanup
 
 ## [5.4.1-cfx-7 - 07.02.2025]
 

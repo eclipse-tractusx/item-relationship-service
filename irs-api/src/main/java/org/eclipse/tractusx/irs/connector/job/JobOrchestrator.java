@@ -110,8 +110,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * Start a job with Batch
      *
      * @param identificationKey root id
-     * @param jobData       additional data for the job to be managed by the {@link JobStore}.
-     * @param batchId       batch id
+     * @param jobData           additional data for the job to be managed by the {@link JobStore}.
+     * @param batchId           batch id
      * @return response.
      */
     public JobInitiateResponse startJob(final PartChainIdentificationKey identificationKey, final JobParameter jobData, final UUID batchId) {
@@ -227,18 +227,12 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
-        return jobs.stream()
-                   .map(job -> deleteJobsAndDecreaseJobsInJobStoreMetrics(job.getJobIdString()))
-                   .flatMap(Optional::stream)
-                   .toList();
-    }
-
-    private Optional<MultiTransferJob> deleteJobsAndDecreaseJobsInJobStoreMetrics(final String jobId) {
-        final Optional<MultiTransferJob> optJob = jobStore.deleteJob(jobId);
-        if (optJob.isPresent()) {
-            meterService.setNumberOfJobsInJobStore((long) jobStore.findAll().size());
-        }
-        return optJob;
+        final List<MultiTransferJob> deletedJobs = jobs.stream()
+                                                       .map(job -> jobStore.deleteJob(job.getJobIdString()))
+                                                       .flatMap(Optional::stream)
+                                                       .toList();
+        meterService.setNumberOfJobsInJobStore((long) jobStore.findAll().size());
+        return deletedJobs;
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {
@@ -299,11 +293,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private Job createJob(final PartChainIdentificationKey identificationKey, final JobParameter jobData) {
         final Job.JobBuilder jobBuilder = Job.builder()
-                                       .id(UUID.randomUUID())
-                                       .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
-                                       .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
-                                       .state(JobState.UNSAVED)
-                                       .parameter(jobData);
+                                             .id(UUID.randomUUID())
+                                             .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
+                                             .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
+                                             .state(JobState.UNSAVED)
+                                             .parameter(jobData);
 
         if (StringUtils.isEmpty(identificationKey.getGlobalAssetId())) {
             jobBuilder.aasIdentifier(identificationKey.getIdentifier());
