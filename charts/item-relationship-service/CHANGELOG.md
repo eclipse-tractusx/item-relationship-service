@@ -8,9 +8,24 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-### Changed
+### Added
 
-- Added the discovery type configurable (discovery.type) default value as bpnl. (#12). 
+- Added the discovery type configurable `discovery.type` default value as bpnl.
+- Added configuration property `edc.negotiationCallbackMapping`
+- Added configuration property `edc.negotiationCallbackurl`
+- Added configuration property `edc.controlplane.endpoint.edrManagement`
+- Added configuration property `edc.controlplane.edrManagementEnabled`
+- Added configuration for edc negotiation orchestration threadPoolSize `edc.orchestration.threadPoolSize`
+- Added configuration properties for IRS thread pools 
+  ```
+  job:
+    batch:
+      threadCount: 5
+    scheduled:
+      threadCount: 5
+    cached:
+      threadCount: 0
+  ```
 
 ## [7.4.1] - 2024-08-19
 

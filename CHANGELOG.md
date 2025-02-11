@@ -9,6 +9,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [Unreleased]
 
 ### Changed
+
 - Resolve Null pointer exception while registering the company (#888)
 - Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) https://github.com/eclipse-tractusx/sig-release/issues/939
 - Changed orchestration of EDC negotiations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
@@ -26,14 +27,19 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - fixed inefficient blob retrieval for irs orders and batches (#915)
 - fixed ExecutorCompletionServiceFactory to actually limit threads of batches (#915)
 - fixed Batch and Order state calculation to display the correct state during batch processing (#915)
+- Bump wiremock-standalone to 3.10.0 to mitigate CVE-2024-45801, CVE-2024-48910, CVE-2024-47875 (#915)
+- Bump irs-registry-client to 2.1.25 (#915)
+- Exclude unused transient dependencies of edc packages to mitigate CVE-2024-7254 (#915)
 
 ### Fixed
+
 - Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position (#915)
 - fixed auto dispatch workflow for auto deployment from main (#915)
 - Lift to newest Spring Boot version to fix vulnerability CVE-2024-50379. Fix and disable some tests
 - Remove version lock on tomcat-embed-core to fix vulnerability CVE-2024-50379
 
 ### Added
+
 - Added api key authentication for edc notification requests (#915)
 - Added Github workflow for publishing build artifacts to Github Packages (#915)
 - Added Maven profile for publishing into Github Packages (#915)
@@ -56,6 +62,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added integration tests for /irs/orders API https://github.com/eclipse-tractusx/sig-release/issues/933
 
 ### Removed
+
 - Removed subjectId from AssetAdministrationShellDescriptor object (#915)
 - removed write lock when creating jobs (#915)
 - removed read lock since s3 already works on atomic level (#915)
