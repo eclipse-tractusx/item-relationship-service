@@ -55,7 +55,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - add missing permissions to workflows (#915)
 - Filtering for duplicated connector endpoint addresses for same bpn (#915)
 - Added new section under crosscuting/api-endpoints to arc42 documentation (#915)
-- Added support for EDC EDR management API. This can be enabled using the config entry `irs-edc-client.controlplane.edr-management-enabled` (#915)
+- Added support for EDC EDR management API. This can be enabled using the config entry `irs-edc-client.controlplane.edr-management-enabled` (#575)
 - added jobId to transferProcess to allow quick query in database(#915)
 - Added missing "auditContractNegotiation" flag to Order API (#915)
 - Added api key authentication for edc notification requests (#915)
