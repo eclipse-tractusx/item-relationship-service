@@ -76,10 +76,10 @@ public final class DtrWiremockSupport {
 
     @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
     public static MappingBuilder getShellDescriptor200(final String urlRegex, final String bpn, final List<String> submodelDescriptors,
-            final String globalAssetId, final String shellId, final String idShort) {
+            final String identifier, final String shellId, final String idShort) {
         final List<String> specificAssetIds = List.of(specificAssetId("manufacturerId", bpn));
         return get(urlPathMatching(urlRegex)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
-                assetAdministrationShellResponse(submodelDescriptors, globalAssetId, idShort, shellId, specificAssetIds)));
+                assetAdministrationShellResponse(submodelDescriptors, identifier, idShort, shellId, specificAssetIds)));
     }
 
     public static String assetAdministrationShellResponse(final List<String> submodelDescriptors,

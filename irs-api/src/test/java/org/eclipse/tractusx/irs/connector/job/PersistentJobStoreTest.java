@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,6 +44,7 @@ import java.util.UUID;
 
 import net.datafaker.Faker;
 import org.assertj.core.api.SoftAssertions;
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.component.Job;
@@ -79,6 +81,7 @@ class PersistentJobStoreTest {
     String processId2 = process2.getId();
     String errorDetail = faker.lorem().sentence();
     MinioBlobPersistence blobStoreSpy;
+    private final JsonUtil jsonUtil = new JsonUtil();
 
     MeterRegistryService meterRegistryService = TestMother.simpleMeterRegistryService(); // mock(MeterRegistryService.class);
 
@@ -106,11 +109,16 @@ class PersistentJobStoreTest {
     }
 
     @Test
-    void findByProcessId_WhenFound() {
+    void findByProcessId_WhenFound() throws BlobPersistenceException {
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
+        final ItemContainer itemContainer = ItemContainer.builder().jobId(job.getJobIdString()).build();
+        blobStoreSpy.putBlob(processId1, jsonUtil.asString(itemContainer).getBytes(StandardCharsets.UTF_8));
+
         sut.create(job2);
         sut.addTransferProcess(job2.getJobIdString(), processId2);
+        final ItemContainer itemContainer2 = ItemContainer.builder().jobId(job2.getJobIdString()).build();
+        blobStoreSpy.putBlob(processId2, jsonUtil.asString(itemContainer2).getBytes(StandardCharsets.UTF_8));
 
         refreshJob();
         assertThat(sut.findByProcessId(processId1)).isPresent().get().usingRecursiveComparison().isEqualTo(job);
@@ -122,6 +130,33 @@ class PersistentJobStoreTest {
         sut.addTransferProcess(job.getJobIdString(), processId1);
 
         assertThat(sut.findByProcessId(processId2)).isEmpty();
+    }
+
+    @Test
+    void findByProcesId_shouldBeEmptyForBlobPersistenceException() throws BlobPersistenceException {
+        // Arrange
+        final var ex = new BlobPersistenceException("test", new RuntimeException());
+        doThrow(ex).when(blobStoreSpy).putBlob(eq(processId1), any());
+
+        // Act
+        final Optional<MultiTransferJob> transferJob = sut.getByProcessId(processId1);
+
+        // Assert
+        assertThat(transferJob).isEmpty();
+    }
+
+    @Test
+    void findByProcesId_shouldReturnEmptyWhenItemContainerIsMalformed() throws BlobPersistenceException {
+        // Arrange
+        String malformedJson = "{\"key\": ";
+        final String processId = "123";
+        blobStoreSpy.putBlob(processId, malformedJson.getBytes(StandardCharsets.UTF_8));
+
+        // Act
+        Optional<MultiTransferJob> actual = sut.getByProcessId(processId);
+
+        // Assert
+        assertThat(actual).isEmpty();
     }
 
     @Test

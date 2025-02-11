@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,13 +32,16 @@ import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.Job;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
+import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
+import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
+import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
-import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -47,7 +50,8 @@ class CancelBatchProcessingServiceTest {
 
     private final IrsItemGraphQueryService irsItemGraphQueryService = mock(IrsItemGraphQueryService.class);
     private final BatchStore batchStore = new InMemoryBatchStore();
-    private final CancelBatchProcessingService cancelBatchProcessingService = new CancelBatchProcessingService(irsItemGraphQueryService, batchStore);
+    private final BatchOrderStore batchOrderStore = new InMemoryBatchOrderStore();
+    private final CancelBatchProcessingService cancelBatchProcessingService = new CancelBatchProcessingService(irsItemGraphQueryService, batchStore, batchOrderStore);
 
     @Test
     void shouldCancelOnlyNotCompletedJob() {
@@ -127,7 +131,8 @@ class CancelBatchProcessingServiceTest {
         given(irsItemGraphQueryService.getJobForJobId(runningJobId, false)).willReturn(
                 jobInState(JobState.RUNNING)
         );
-
+        final BatchOrder batch = BatchOrder.builder().batchOrderId(batchOrderId).batchIds(List.of(batchId)).build();
+        batchOrderStore.save(batchOrderId, batch);
         batchStore.save(batchId, createBatch(batchId, batchOrderId, ProcessingState.PROCESSING,
                 List.of(firstJobId, secondJobId, runningJobId)));
 

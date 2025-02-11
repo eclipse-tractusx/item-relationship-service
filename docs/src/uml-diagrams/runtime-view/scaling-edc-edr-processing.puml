@@ -1,0 +1,29 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+
+autonumber "<b>[00]"
+
+participant "EDC Client" as IRS
+participant "EDC Orchestrator" as orchestrator
+participant "EDC" as EDC
+
+IRS -> EDC: Request Contract Offers {filter": "type=digitalTwinRegistry"}
+IRS <-- EDC: Contract Offer
+
+IRS -> orchestrator: get EDR Token
+
+group EDR negotiation
+
+    orchestrator -> EDC: Initiate EDR negotiation for Offer
+    orchestrator <-- EDC: negotiationId
+    orchestrator <-- EDC: Contract Negotiation Finalized Callback
+    orchestrator --> orchestrator: map negotiationId to contractId
+    orchestrator <-- EDC : EDR Token callback
+end
+
+IRS <-- orchestrator: EDR Token
+
+@enduml

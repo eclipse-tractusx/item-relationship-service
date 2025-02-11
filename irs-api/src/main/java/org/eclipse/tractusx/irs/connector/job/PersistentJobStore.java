@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -76,6 +77,24 @@ public class PersistentJobStore extends BaseJobStore {
             log.error("Error while trying to get job from blobstore", e);
             return Optional.empty();
         }
+    }
+
+    @Override
+    protected Optional<MultiTransferJob> getByProcessId(final String processId) {
+        try {
+            final Optional<ItemContainer> itemContainer = blobStore.getBlob(processId)
+                                                                        .flatMap(this::toItemContainer);
+            if (itemContainer.isPresent()) {
+                return get(itemContainer.get().getJobId());
+            }
+            log.info("No transfer process found for process id {}", processId);
+            return Optional.empty();
+
+        } catch (BlobPersistenceException e) {
+            log.error("Error while trying to get job by processId from blobstore", e);
+            return Optional.empty();
+        }
+
     }
 
     @Override
@@ -126,6 +145,15 @@ public class PersistentJobStore extends BaseJobStore {
             return Optional.of(json.fromString(new String(blob, StandardCharsets.UTF_8), MultiTransferJob.class));
         } catch (JsonParseException exception) {
             log.warn("Stored Job could not be parsed to Job object.");
+            return Optional.empty();
+        }
+    }
+
+    private Optional<ItemContainer> toItemContainer(final byte[] blob) {
+        try {
+            return Optional.of(json.fromString(new String(blob, StandardCharsets.UTF_8), ItemContainer.class));
+        } catch (JsonParseException exception) {
+            log.warn("Stored Blob could not be parsed to ItemContainer object.");
             return Optional.empty();
         }
     }

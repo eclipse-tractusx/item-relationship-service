@@ -23,7 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -60,6 +59,6 @@ public class NegotiationRequest {
     private String protocol;
     @NotNull(message = "offer cannot be null")
     private ContractOffer contractOffer;
-    private List<CallbackAddress> callbackAddresses = new ArrayList<>();
+    private List<CallbackAddress> callbackAddresses;
 }
 

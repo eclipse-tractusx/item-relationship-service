@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
@@ -42,7 +43,6 @@ import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
-import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -75,6 +75,7 @@ public class CreationBatchService {
                                                 .timeout(request.getTimeout())
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
+                                                .auditContractNegotiation(request.isAuditContractNegotiation())
                                                 .jobType(BatchOrder.JobType.REGULAR)
                                                 .build();
 
@@ -91,6 +92,7 @@ public class CreationBatchService {
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
                                                 .incidentBPNSs(request.getIncidentBPNSs())
+                                                .auditContractNegotiation(request.isAuditContractNegotiation())
                                                 .jobType(BatchOrder.JobType.ESS)
                                                 .build();
 
@@ -98,14 +100,15 @@ public class CreationBatchService {
     }
 
     private UUID createAndStore(final Set<PartChainIdentificationKey> keys, final int batchSize, final BatchOrder batchOrder) {
-        batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
-
         final List<Batch> batches = createBatches(List.copyOf(keys),
                 batchSize, batchOrder.getBatchOrderId());
         batches.forEach(batch -> {
             batchStore.save(batch.getBatchId(), batch);
             jobEventLinkedQueueListener.addQueueForBatch(batch.getBatchId(), batch.getJobProgressList().size());
         });
+        final List<UUID> batchIds = batches.stream().map(Batch::getBatchId).toList();
+        batchOrder.setBatchIds(batchIds);
+        batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
 
         applicationEventPublisher.publishEvent(new BatchOrderRegisteredEvent(batchOrder.getBatchOrderId()));
 
@@ -128,9 +131,9 @@ public class CreationBatchService {
                         .batchState(ProcessingState.INITIALIZED)
                         .jobProgressList(batch.stream()
                                               .map(identificationKey -> JobProgress.builder()
-                                                                               .identificationKey(identificationKey)
-                                                                               .jobState(JobState.UNSAVED)
-                                                                               .build())
+                                                                                   .identificationKey(identificationKey)
+                                                                                   .jobState(JobState.UNSAVED)
+                                                                                   .build())
                                               .toList())
                         .build();
         }).toList();

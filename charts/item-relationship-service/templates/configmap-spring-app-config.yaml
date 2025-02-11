@@ -102,13 +102,16 @@ data:
     irs-edc-client:
       callback:
         mapping: {{ .Values.edc.callbackMapping | default "/internal/endpoint-data-reference" | quote }}
+        negotiation-mapping: {{ .Values.edc.negotiationCallbackMapping | default "/internal/negotiation-callback" | quote }}
       callback-url: {{ tpl (.Values.edc.callbackurl | default (printf "http://%s%s" .Release.Name "-item-relationship-service:8181/internal/endpoint-data-reference")) . | quote }}
+      negotiation-callback-url: {{ tpl (.Values.edc.negotiationCallbackurl | default (printf "http://%s%s" .Release.Name "-item-relationship-service:8181/internal/negotiation-callback")) . | quote }}
       asyncTimeout: {{ tpl .Values.edc.asyncTimeout . | default "PT10M" | quote }}
       controlplane:
         request-ttl: {{ .Values.edc.controlplane.request.ttl | default "PT10M" | quote }}
         endpoint:
           data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-tractusx-connector-controlplane:8081/management")) . | quote }}
           catalog: {{ .Values.edc.controlplane.endpoint.catalog | default "/v2/catalog/request" | quote }}
+          edr-management: {{ .Values.edc.controlplane.endpoint.edrManagement | default "/v2/edrs" | quote }}
           contract-negotiation: {{ .Values.edc.controlplane.endpoint.contractnegotiation | default "/v2/contractnegotiations" | quote }}
           transfer-process: {{ .Values.edc.controlplane.endpoint.transferprocess | default "/v2/transferprocesses" | quote }}
           state-suffix: {{ .Values.edc.controlplane.endpoint.statesuffix | default "/state" | quote }}
@@ -116,6 +119,7 @@ data:
         provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
         catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
         catalog-page-size: {{ .Values.edc.controlplane.catalog.pagesize }}
+        edr-management-enabled: {{ .Values.edc.controlplane.edrManagementEnabled | quote }}
         api-key:
           header: {{ tpl (.Values.edc.controlplane.apikey.header | default "") . | quote }}
           secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV

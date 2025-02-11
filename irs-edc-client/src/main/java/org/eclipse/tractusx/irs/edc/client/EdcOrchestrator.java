@@ -36,6 +36,7 @@ import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
+import org.eclipse.tractusx.irs.edc.client.storage.ContractNegotiationIdStorage;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -55,18 +56,22 @@ public class EdcOrchestrator {
     private final AsyncPollingService pollingService;
     private final EDCCatalogFacade catalogFacade;
     private final EndpointDataReferenceCacheService endpointDataReferenceCacheService;
+    private final ContractNegotiationIdStorage contractNegotiationIdStorage;
     private final ExecutorService executorService;
     private final OngoingNegotiationStorage ongoingNegotiationStorage;
 
     public EdcOrchestrator(final EdcConfiguration config, final ContractNegotiationService contractNegotiationService,
             final AsyncPollingService pollingService, final EDCCatalogFacade catalogFacade,
             final EndpointDataReferenceCacheService endpointDataReferenceCacheService,
-            final ExecutorService fixedThreadPoolExecutorService, final OngoingNegotiationStorage ongoingNegotiationStorage) {
+            final ContractNegotiationIdStorage contractNegotiationIdStorage,
+            final ExecutorService fixedThreadPoolExecutorService,
+            final OngoingNegotiationStorage ongoingNegotiationStorage) {
         this.config = config;
         this.contractNegotiationService = contractNegotiationService;
         this.pollingService = pollingService;
         this.catalogFacade = catalogFacade;
         this.endpointDataReferenceCacheService = endpointDataReferenceCacheService;
+        this.contractNegotiationIdStorage = contractNegotiationIdStorage;
         this.executorService = fixedThreadPoolExecutorService;
         this.ongoingNegotiationStorage = ongoingNegotiationStorage;
     }
@@ -228,8 +233,7 @@ public class EdcOrchestrator {
 
         completableFuture.whenCompleteAsync((endpointDataReference, throwable) -> {
             log.info("Completed waiting for EndpointDataReference. Storing EDR and removing from ongoing negotiations");
-            endpointDataReferenceCacheService.putEndpointDataReferenceIntoStorage(storageId,
-                    endpointDataReference);
+            endpointDataReferenceCacheService.putEndpointDataReferenceIntoStorage(storageId, endpointDataReference);
             ongoingNegotiationStorage.removeFromOngoingNegotiations(storageId);
         }, executorService);
 
@@ -241,17 +245,33 @@ public class EdcOrchestrator {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + dspEndpointAddress);
         final String bpn = catalogItem.getConnectorId();
-
-        final CompletableFuture<String> futureStorageId = CompletableFuture.supplyAsync(() -> {
-            try {
-                final TransferProcessResponse response = contractNegotiationService.negotiate(dspEndpointAddress,
-                        catalogItem, endpointDataReferenceStatus, bpn);
-                return getStorageId(endpointDataReferenceStatus, response);
-            } catch (EdcClientException e) {
-                throw new CompletionException(e);
+        CompletableFuture<String> futureStorageId;
+        try {
+            if (config.getControlplane().isEdrManagementEnabled()) {
+                log.debug("Starting negotiation with EDR Endpoint.");
+                final String contractNegotiationId = contractNegotiationService.negotiateWithEdrManagement(
+                        dspEndpointAddress, catalogItem, bpn);
+                futureStorageId = pollingService.<String>createJob()
+                                                .action(() -> retrieveContractAgreementId(contractNegotiationId))
+                                                .timeToLive(config.getSubmodel().getRequestTtl())
+                                                .description("waiting for contract agreement id retrieval")
+                                                .build()
+                                                .schedule();
+            } else {
+                log.debug("Starting classic EDC negotiation.");
+                futureStorageId = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        final TransferProcessResponse response = contractNegotiationService.negotiate(
+                                dspEndpointAddress, catalogItem, endpointDataReferenceStatus, bpn);
+                        return getStorageId(endpointDataReferenceStatus, response);
+                    } catch (EdcClientException e) {
+                        throw new CompletionException(e);
+                    }
+                });
             }
-        });
-
+        } catch (EdcClientException e) {
+            throw new CompletionException(e);
+        }
         return futureStorageId.thenComposeAsync(storageId -> pollingService.<EndpointDataReference>createJob()
                                                                            .action(() -> retrieveEndpointReference(
                                                                                    storageId, stopWatch))
@@ -289,5 +309,17 @@ public class EdcOrchestrator {
             storageId = endpointDataReferenceStatus.endpointDataReference().getContractId();
         }
         return storageId;
+    }
+
+    private Optional<String> retrieveContractAgreementId(final String contractNegotiationId) {
+        log.info("Retrieving contractAgreementId from storage for storageId (contractNegotiationId): {}",
+                contractNegotiationId);
+
+        if (contractNegotiationId != null) {
+            final Optional<String> contractAgreementId = contractNegotiationIdStorage.get(contractNegotiationId);
+            log.info("Retrieving mapped ContractAgreementId from Storage: {}", contractAgreementId);
+            return contractAgreementId;
+        }
+        return Optional.empty();
     }
 }

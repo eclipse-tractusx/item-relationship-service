@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -68,19 +68,19 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     @Override
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
             final Consumer<String> preExecutionHandler, final Consumer<AASTransferProcess> completionCallback,
-            final JobParameter jobData) {
+            final JobParameter jobData, final String jobId) {
 
         final String processId = UUID.randomUUID().toString();
         preExecutionHandler.accept(processId);
 
-        executor.execute(getRunnable(dataRequest, completionCallback, processId, jobData));
+        executor.execute(getRunnable(dataRequest, completionCallback, processId, jobData, jobId));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
     private Runnable getRunnable(final ItemDataRequest dataRequest,
             final Consumer<AASTransferProcess> transferProcessCompleted, final String processId,
-            final JobParameter jobData) {
+            final JobParameter jobData, final String jobId) {
 
         return () -> {
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
@@ -90,6 +90,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
             final ItemContainer itemContainer = abstractDelegate.process(ItemContainer.builder(), jobData,
                     aasTransferProcess, itemId);
+            itemContainer.addJobId(jobId);
             storeItemContainer(processId, itemContainer);
 
             transferProcessCompleted.accept(aasTransferProcess);

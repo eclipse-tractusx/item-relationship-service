@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -111,7 +112,7 @@ class IrsApplicationTests {
                                                       .aspects(List.of())
                                                       .build();
 
-        final JobInitiateResponse response = jobOrchestrator.startJob("rootitemid", jobParameter, null);
+        final JobInitiateResponse response = jobOrchestrator.startJob(PartChainIdentificationKey.builder().build(), jobParameter, null);
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,8 +28,10 @@ import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.JOB_EXECUTION
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -44,6 +46,7 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.util.TestMother;
@@ -127,16 +130,17 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.of(dataRequest, dataRequest2));
 
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
-        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()))).thenReturn(
-                okResponse2);
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString())).thenReturn(
+                okResponse);
+        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()),
+                anyString())).thenReturn(okResponse2);
 
         // Act
         startJob();
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
-        verify(processManager).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString());
+        verify(processManager).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()), anyString());
     }
 
     @Test
@@ -144,7 +148,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJob().getParameter(), null);
         var newJob = getStartedJob();
 
         // Assert
@@ -161,10 +165,11 @@ class JobOrchestratorTest {
     void startJob_WithSuccessfulTransferStarts_ReturnsOk() {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.of(dataRequest));
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString())).thenReturn(
+                okResponse);
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJob().getParameter(), null);
 
         // Assert
         var newJob = getStartedJob();
@@ -177,15 +182,16 @@ class JobOrchestratorTest {
     void startJob_WhenTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
         when(handler.initiate(any())).thenReturn(Stream.of(dataRequest, dataRequest2));
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString())).thenReturn(
                 generate.response(status));
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(), null);
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
-        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString());
+        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()),
+                anyString());
 
         // temporarily created job should be deleted
         verify(jobStore).create(jobCaptor.capture());
@@ -201,7 +207,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new RuntimeException());
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(), null);
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -223,7 +229,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new JobException("Cannot process the request"));
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(), null);
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -238,16 +244,42 @@ class JobOrchestratorTest {
     }
 
     @Test
+    void startJob_todo_StopJob() {
+        // Arrange
+        when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.of());
+        when(jobStore.find(any())).thenReturn(Optional.of(generate.job(JobState.ERROR)));
+        doThrow(new JobException("Timeout acquiring WriteLock")).when(jobStore).completeJob(any(), any(Consumer.class));
+
+        // Act
+        var response = sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(),
+                null);
+
+        // Assert
+        verify(jobStore).create(jobCaptor.capture());
+        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), "Error while completing Job.",
+                "org.eclipse.tractusx.irs.connector.job.JobException");
+        verify(jobStore).find(jobCaptor.getValue().getJobIdString());
+        verifyNoMoreInteractions(jobStore);
+        verify(applicationEventPublisher).publishEvent(any(JobProcessingFinishedEvent.class));
+        assertThat(response).isEqualTo(JobInitiateResponse.builder()
+                                                          .jobId(jobCaptor.getValue().getJobIdString())
+                                                          .status(ResponseStatus.FATAL_ERROR)
+                                                          .error("Timeout acquiring WriteLock")
+                                                          .build());
+    }
+
+    @Test
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_RunsNextTransfers() {
         // Arrange
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
-        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()))).thenReturn(
-                okResponse2);
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString())).thenReturn(
+                okResponse);
+        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()),
+                anyString())).thenReturn(okResponse2);
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString());
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
 
     }
@@ -351,15 +383,16 @@ class JobOrchestratorTest {
     @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
     void transferProcessCompleted_WhenNextTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString())).thenReturn(
                 generate.response(status));
 
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
-        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()), anyString());
+        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()),
+                anyString());
 
         // temporarily created job should be deleted
         verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer",
@@ -391,7 +424,7 @@ class JobOrchestratorTest {
     }
 
     private MultiTransferJob startJob() {
-        sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
+        sut.startJob(generate.partChainIdentificationKey(job.getGlobalAssetId()), job.getJobParameter(), null);
         return getStartedJob();
     }
 

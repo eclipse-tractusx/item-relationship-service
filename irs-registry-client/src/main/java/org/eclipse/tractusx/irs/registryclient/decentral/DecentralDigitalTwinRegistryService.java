@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -38,9 +40,11 @@ import java.util.stream.Stream;
 import io.github.resilience4j.core.functions.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.ExceptionUtils;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -131,6 +135,37 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
+    @Override
+    public Optional<Shell> fetchShell(final PartChainIdentificationKey key) throws RegistryServiceException {
+        if (StringUtils.isBlank(key.getGlobalAssetId())) {
+            final List<String> edcUrls = connectorEndpointsService.fetchConnectorEndpoints(key.getBpn());
+
+            return endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(edcUrls, key.getBpn())
+                                                   .stream()
+                                                   .map(edrFuture -> {
+                                                       try {
+                                                           final EndpointDataReference edr = edrFuture.get();
+                                                           return new Shell(edr.getContractId(),
+                                                                   decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
+                                                                           edr, key.getIdentifier()));
+                                                       } catch (InterruptedException e) {
+                                                           log.info("Unable to find any of the requested shells, reason: {}", e.getMessage());
+                                                           Thread.currentThread().interrupt();
+                                                       } catch (ExecutionException e) {
+                                                           log.info("Unable to find any of the requested shells, reason: {}", e.getMessage());
+                                                       }
+                                                       return null;
+                                                   })
+                                                   .filter(Objects::nonNull)
+                                                   .findFirst();
+        }
+
+        return fetchShells(List.of(new DigitalTwinRegistryKey(key.getGlobalAssetId(), key.getBpn()))).stream()
+                                                                                                     .map(Either::getOrNull)
+                                                                                                     .filter(Objects::nonNull)
+                                                                                                     .findFirst();
+    }
+
     private Stream<Either<Exception, Shell>> fetchShellDescriptors(
             final Map.Entry<String, List<DigitalTwinRegistryKey>> entry, final Set<String> calledEndpoints)
             throws TimeoutException {
@@ -204,9 +239,15 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         try {
             return keys.stream()
-                       .map(key -> Either.<Exception, Shell>right(
-                               new Shell(endpointDataReference.getContractId(),
-                                       fetchShellDescriptor(endpointDataReference, key))))
+                       .map(key -> {
+                           try {
+                               return Either.<Exception, Shell>right(
+                                       new Shell(endpointDataReference.getContractId(),
+                                               fetchShellDescriptor(endpointDataReference, key)));
+                           } catch (RegistryServiceException e) {
+                               return Either.<Exception, Shell>left(e);
+                           }
+                       })
                        .toList();
         } finally {
             watch.stop();
@@ -215,7 +256,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private AssetAdministrationShellDescriptor fetchShellDescriptor(final EndpointDataReference endpointDataReference,
-            final DigitalTwinRegistryKey key) {
+            final DigitalTwinRegistryKey key) throws RegistryServiceException {
 
         final var watch = new StopWatch();
         final String msg = "Retrieving AAS identification for DigitalTwinRegistryKey: '%s'".formatted(key);
@@ -232,19 +273,19 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     /**
-     * This method takes the provided ID and maps it to the corresponding asset administration shell ID.
-     * If the ID is already a shellId, the same ID will be returned.
-     * If the ID is a globalAssetId, the corresponding shellId will be returned.
+     * This method takes the provided globalAssetId and maps it to the corresponding asset administration shell ID.
      *
      * @param endpointDataReference the reference to access the digital twin registry
-     * @param providedId            the ambiguous ID (shellId or globalAssetId)
+     * @param globalAssetId         globalAssetId
+     * @throws RegistryServiceException if the mapping does not return any results
      * @return the corresponding asset administration shell ID
      */
     @NotNull
-    private String mapToShellId(final EndpointDataReference endpointDataReference, final String providedId) {
+    private String mapToShellId(final EndpointDataReference endpointDataReference, final String globalAssetId)
+            throws RegistryServiceException {
 
         final var watch = new StopWatch();
-        final String msg = "Mapping '%s' to shell ID for endpoint '%s'".formatted(providedId,
+        final String msg = "Mapping '%s' to shell ID for endpoint '%s'".formatted(globalAssetId,
                 endpointDataReference.getEndpoint());
         watch.start(msg);
         log.info(msg);
@@ -253,7 +294,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
             final var identifierKeyValuePair = IdentifierKeyValuePair.builder()
                                                                      .name("globalAssetId")
-                                                                     .value(providedId)
+                                                                     .value(globalAssetId)
                                                                      .build();
 
             // Try to map the provided ID to the corresponding asset administration shell ID
@@ -264,16 +305,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             // docs/arc42/cross-cutting/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml
             final var mappingResult = mappingResultStream.findFirst();
 
-            // Empty Optional means that the ID is already a shellId
-            final var shellId = mappingResult.orElse(providedId);
+            mappingResult.ifPresent(s -> log.info("Retrieved shellId {} for globalAssetId {}", s, globalAssetId));
 
-            if (providedId.equals(shellId)) {
-                log.info("Found shell with shellId {} in registry", shellId);
-            } else {
-                log.info("Retrieved shellId {} for globalAssetId {}", shellId, providedId);
-            }
-
-            return shellId;
+            return mappingResult.orElseThrow(() -> new RegistryServiceException(
+                    "Unable to find shell ID for global asset ID '%s'".formatted(globalAssetId)));
 
         } finally {
             watch.stop();

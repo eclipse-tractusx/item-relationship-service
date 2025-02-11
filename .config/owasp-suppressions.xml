@@ -39,7 +39,7 @@
         <notes><![CDATA[
         Dataspace components for models and JSON ID transformer, therefore OAUTH not relevant.
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org.eclipse.edc.connector.core@0.6.0$</packageUrl>
+        <packageUrl regex="true">^pkg:maven/org.eclipse.edc.*@0.6.0$</packageUrl>
         <vulnerabilityName>CVE-2024-4536</vulnerabilityName>
     </suppress>
 </suppressions>

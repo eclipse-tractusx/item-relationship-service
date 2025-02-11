@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,8 +42,9 @@ public interface TransferProcessManager<T extends DataRequest, P extends Transfe
      * @param transferProcessStarted   callback which is executed as soon as a request is being started
      * @param transferProcessCompleted callback which is executed after the request is finished
      * @param jobData                  of the BomLifecycle from the RegisterJob request
+     * @param jobId                    id of the job for which the request was started
      * @return the initialization response, indicating the acceptance status of the transfer
      */
     TransferInitiateResponse initiateRequest(T dataRequest, Consumer<String> transferProcessStarted,
-            Consumer<P> transferProcessCompleted, JobParameter jobData);
+            Consumer<P> transferProcessCompleted, JobParameter jobData, String jobId);
 }

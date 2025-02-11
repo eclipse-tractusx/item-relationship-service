@@ -40,6 +40,7 @@ public final class SubmodelFacadeWiremockSupport {
     public static final String PATH_NEGOTIATE = "/contractnegotiations";
     public static final String PATH_TRANSFER = "/transferprocesses";
     public static final String PATH_STATE = "/state";
+    public static final String PATH_EDR_NEGOTIATE = "/edrs";
     public static final String PATH_DATAPLANE_PUBLIC = "/api/public";
     public static final String DATAPLANE_HOST = "http://provider.dataplane";
     public static final String CONTEXT = """
@@ -78,7 +79,7 @@ public final class SubmodelFacadeWiremockSupport {
 
     @SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
                         "PMD.UseObjectForClearerAPI"
-    }) // used only for testing
+    })
     public static void prepareNegotiation(final String negotiationId, final String transferProcessId,
             final String contractAgreementId, final String edcAssetId) {
         stubAssetCatalog(contractAgreementId, edcAssetId, createConstraints());
@@ -86,7 +87,23 @@ public final class SubmodelFacadeWiremockSupport {
         stubNegotiation(negotiationId, transferProcessId, contractAgreementId, edcAssetId);
     }
 
-    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
+    public static void prepareEdrNegotiation(final String negotiationId, final String contractAgreementId,
+            final String edcAssetId) {
+        stubAssetCatalog(contractAgreementId, edcAssetId, createConstraints());
+
+        stubEdrNegotiation(negotiationId, edcAssetId);
+    }
+
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
+    public static void prepareEdrRegistryNegotiation(final String negotiationId, final String contractAgreementId,
+            final String edcAssetId) {
+        stubRegistryCatalog(contractAgreementId, edcAssetId, createConstraints());
+
+        stubEdrNegotiation(negotiationId, edcAssetId);
+    }
+
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
     public static void prepareRegistryNegotiation(final String negotiationId, final String transferProcessId,
             final String contractAgreementId, final String edcAssetId) {
         stubRegistryCatalog(contractAgreementId, edcAssetId, createConstraints());
@@ -161,6 +178,12 @@ public final class SubmodelFacadeWiremockSupport {
                                               contractAgreementId))));
     }
 
+    private static void stubEdrNegotiation(final String negotiationId, final String edcAssetId) {
+        stubFor(post(urlPathEqualTo(PATH_EDR_NEGOTIATE)).withRequestBody(
+                containing(edcAssetId)).willReturn(
+                WireMockConfig.responseWithStatus(STATUS_CODE_OK).withBody(startNegotiationResponse(negotiationId))));
+    }
+
     public static void prepareFailingCatalog() {
         stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(
                 WireMockConfig.responseWithStatus(STATUS_CODE_BAD_GATEWAY).withBody("")));
@@ -202,7 +225,7 @@ public final class SubmodelFacadeWiremockSupport {
         return startNegotiationResponse(transferProcessId);
     }
 
-    private static String startNegotiationResponse(final String negotiationId) {
+    public static String startNegotiationResponse(final String negotiationId) {
         return """
                 {
                     "@type": "IdResponse",
@@ -279,13 +302,13 @@ public final class SubmodelFacadeWiremockSupport {
                 edcAssetId, contractAgreementId, CONTEXT);
     }
 
-    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
     public static String getCatalogResponse(final String edcAssetId, final String offerId, final String permissionType,
             final String edcProviderBpn, final String constraints) {
         return getCatalogResponse(edcAssetId, offerId, permissionType, edcProviderBpn, constraints, "");
     }
 
-    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
     public static String getCatalogResponse(final String edcAssetId, final String offerId, final String permissionType,
             final String edcProviderBpn, final String constraints, final String properties) {
         return """
