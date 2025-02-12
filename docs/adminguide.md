@@ -131,6 +131,12 @@ springdoc: # API docs configuration
 irs: # Application config
   apiUrl: "${IRS_API_URL:http://localhost:8080}" # Public URL of the application, used in Swagger UI
   job:
+    batch:
+      threadCount: 5
+    scheduled:
+      threadCount: 5
+    cached:
+      threadCount: 5
     callback:
       timeout:
         read: PT90S # HTTP read timeout for the Job API callback
@@ -152,7 +158,7 @@ irs: # Application config
         failed: P7D # ISO 8601 Duration
         completed: P7D # ISO 8601 Duration
       cron:
-        expression: "*/10 * * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
+        expression: "0 */5 * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
   security:
     api:
       keys:
@@ -190,20 +196,24 @@ resilience4j:
 
 irs-edc-client:
   callback:
-    mapping: /internal/endpoint-data-reference  # The callback endpoint mapping
+    mapping: /internal/endpoint-data-reference  # The EDR token callback endpoint mapping
+    negotiation-mapping: /internal/negotiation-callback  # The EDR negotiation callback endpoint mapping
   callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
+  negotiation-callback-url: ${EDC_NEGOTIATION_CALLBACK_URL:} # The URL where the negotiation callback will be sent to.
   asyncTimeout: PT10M # Timout for future.get requests as ISO 8601 Duration
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
       data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
       catalog: ${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request} # EDC consumer controlplane catalog path
+      edr-management: ${EDC_CONTROLPLANE_ENDPOINT_EDRS:/v2/edrs} # EDC consumer controlplane EDR management path
       contract-negotiation: ${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations} # EDC consumer controlplane contract negotiation path
       transfer-process: ${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses} # EDC consumer controlplane transfer process path
       state-suffix: ${EDC_CONTROLPLANE_ENDPOINT_DATA:/state} # Path of the state suffix for contract negotiation and transfer process
     provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp} # Suffix to add to data requests to the EDC provider controlplane
     catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000} # Max number of items to fetch from the EDC provider catalog
     catalog-page-size: ${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50} # Number of items to fetch at one page from the EDC provider catalog when using pagination
+    edr-management-enabled: false # Flag whether IRS uses classic EDC negotiation or EDR negotiation
     api-key:
       header: ${EDC_API_KEY_HEADER:} # API header key to use in communication with the EDC consumer controlplane
       secret: ${EDC_API_KEY_SECRET:} # API header secret to use in communication with the EDC consumer controlplane
@@ -292,10 +302,13 @@ ess:
 ### Helm configuration IRS (values.yaml)
 
 ```yaml
-#####################
-# IRS Configuration #
-#####################
-irsUrl:  # "https://<irs-url>"
+job:
+  batch:
+    threadCount: 5
+  scheduled:
+    threadCount: 5
+  cached:
+    threadCount: 5
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
@@ -356,6 +369,7 @@ edc:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
       catalog: /v2/catalog/request  # EDC consumer controlplane catalog path
+      edrManagement: /v2/edrs  # EDC consumer controlplane EDR management path
       contractnegotiation: /v2/contractnegotiations  # EDC consumer controlplane contract negotiation path
       transferprocess: /v2/transferprocesses  # EDC consumer controlplane transfer process path
       statesuffix: /state  # Path of the state suffix for contract negotiation and transfer process
@@ -370,8 +384,11 @@ edc:
     apikey:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
-  callbackMapping:  # The callback endpoint path mapping - used to expose callback endpoint
+    edrManagementEnabled: false  # Flag whether IRS uses classic EDC negotiation or EDR negotiation
+  callbackMapping:  # The EDR token callback endpoint path mapping - used to expose EDR callback endpoint
+  negotiationCallbackMapping:  # The EDR negotiation callback endpoint mapping - used to expose negotiation callback endpoint
   callbackurl:  # The URL where the EDR token callback will be sent to.
+  negotiationCallbackurl:  # The URL where the negotiation callback will be sent to.
   asyncTimeout: PT10M  # Timout for future.get requests as ISO 8601 Duration
   submodel:
     request:
@@ -520,13 +537,6 @@ grafana:
     existingSecret: "{{ .Release.Name }}-item-relationship-service"
     userKey: grafanaUser
     passwordKey: grafanaPassword
-
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
 ```
 
 1. Use this to enable or disable the monitoring components

@@ -777,6 +777,12 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <span class="na">irs</span><span class="pi">:</span> <span class="c1"># Application config</span>
   <span class="na">apiUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_API_URL:http://localhost:8080}"</span> <span class="c1"># Public URL of the application, used in Swagger UI</span>
   <span class="na">job</span><span class="pi">:</span>
+    <span class="na">batch</span><span class="pi">:</span>
+      <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
+    <span class="na">scheduled</span><span class="pi">:</span>
+      <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
+    <span class="na">cached</span><span class="pi">:</span>
+      <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
     <span class="na">callback</span><span class="pi">:</span>
       <span class="na">timeout</span><span class="pi">:</span>
         <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the Job API callback</span>
@@ -798,7 +804,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
         <span class="na">failed</span><span class="pi">:</span> <span class="s">P7D</span> <span class="c1"># ISO 8601 Duration</span>
         <span class="na">completed</span><span class="pi">:</span> <span class="s">P7D</span> <span class="c1"># ISO 8601 Duration</span>
       <span class="na">cron</span><span class="pi">:</span>
-        <span class="na">expression</span><span class="pi">:</span> <span class="s2">"</span><span class="s">*/10</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">?"</span> <span class="c1"># Determines how often the number of stored jobs is updated in the metrics API.</span>
+        <span class="na">expression</span><span class="pi">:</span> <span class="s2">"</span><span class="s">0</span><span class="nv"> </span><span class="s">*/5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">?"</span> <span class="c1"># Determines how often the number of stored jobs is updated in the metrics API.</span>
   <span class="na">security</span><span class="pi">:</span>
     <span class="na">api</span><span class="pi">:</span>
       <span class="na">keys</span><span class="pi">:</span>
@@ -836,20 +842,24 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
 <span class="na">irs-edc-client</span><span class="pi">:</span>
   <span class="na">callback</span><span class="pi">:</span>
-    <span class="na">mapping</span><span class="pi">:</span> <span class="s">/internal/endpoint-data-reference</span>  <span class="c1"># The callback endpoint mapping</span>
+    <span class="na">mapping</span><span class="pi">:</span> <span class="s">/internal/endpoint-data-reference</span>  <span class="c1"># The EDR token callback endpoint mapping</span>
+    <span class="na">negotiation-mapping</span><span class="pi">:</span> <span class="s">/internal/negotiation-callback</span>  <span class="c1"># The EDR negotiation callback endpoint mapping</span>
   <span class="na">callback-url</span><span class="pi">:</span> <span class="s">${EDC_TRANSFER_CALLBACK_URL:}</span> <span class="c1"># The URL where the EDR token callback will be sent to.</span>
+  <span class="na">negotiation-callback-url</span><span class="pi">:</span> <span class="s">${EDC_NEGOTIATION_CALLBACK_URL:}</span> <span class="c1"># The URL where the negotiation callback will be sent to.</span>
   <span class="na">asyncTimeout</span><span class="pi">:</span> <span class="s">PT10M</span> <span class="c1"># Timout for future.get requests as ISO 8601 Duration</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration</span>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:}</span> <span class="c1"># URL of the EDC consumer controlplane data endpoint</span>
       <span class="na">catalog</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request}</span> <span class="c1"># EDC consumer controlplane catalog path</span>
+      <span class="na">edr-management</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_EDRS:/v2/edrs}</span> <span class="c1"># EDC consumer controlplane EDR management path</span>
       <span class="na">contract-negotiation</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations}</span> <span class="c1"># EDC consumer controlplane contract negotiation path</span>
       <span class="na">transfer-process</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses}</span> <span class="c1"># EDC consumer controlplane transfer process path</span>
       <span class="na">state-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:/state}</span> <span class="c1"># Path of the state suffix for contract negotiation and transfer process</span>
     <span class="na">provider-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp}</span> <span class="c1"># Suffix to add to data requests to the EDC provider controlplane</span>
     <span class="na">catalog-limit</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_LIMIT:1000}</span> <span class="c1"># Max number of items to fetch from the EDC provider catalog</span>
     <span class="na">catalog-page-size</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50}</span> <span class="c1"># Number of items to fetch at one page from the EDC provider catalog when using pagination</span>
+    <span class="na">edr-management-enabled</span><span class="pi">:</span> <span class="no">false</span> <span class="c1"># Flag whether IRS uses classic EDC negotiation or EDR negotiation</span>
     <span class="na">api-key</span><span class="pi">:</span>
       <span class="na">header</span><span class="pi">:</span> <span class="s">${EDC_API_KEY_HEADER:}</span> <span class="c1"># API header key to use in communication with the EDC consumer controlplane</span>
       <span class="na">secret</span><span class="pi">:</span> <span class="s">${EDC_API_KEY_SECRET:}</span> <span class="c1"># API header secret to use in communication with the EDC consumer controlplane</span>
@@ -942,10 +952,13 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="c1">#####################</span>
-<span class="c1"># IRS Configuration #</span>
-<span class="c1">#####################</span>
-<span class="na">irsUrl</span><span class="pi">:</span>  <span class="c1"># "https://&lt;irs-url&gt;"</span>
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">job</span><span class="pi">:</span>
+  <span class="na">batch</span><span class="pi">:</span>
+    <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
+  <span class="na">scheduled</span><span class="pi">:</span>
+    <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
+  <span class="na">cached</span><span class="pi">:</span>
+    <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
 <span class="na">bpn</span><span class="pi">:</span>  <span class="c1"># BPN for this IRS instance; only users with this BPN are allowed to access the API</span>
 <span class="na">apiKeyAdmin</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-admin&gt; Admin auth key, Should be changed!</span>
 <span class="na">apiKeyRegular</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-regular&gt; View auth key, Should be changed!</span>
@@ -1006,6 +1019,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>  <span class="c1"># &lt;edc-controlplane-endpoint-data&gt;</span>
       <span class="na">catalog</span><span class="pi">:</span> <span class="s">/v2/catalog/request</span>  <span class="c1"># EDC consumer controlplane catalog path</span>
+      <span class="na">edrManagement</span><span class="pi">:</span> <span class="s">/v2/edrs</span>  <span class="c1"># EDC consumer controlplane EDR management path</span>
       <span class="na">contractnegotiation</span><span class="pi">:</span> <span class="s">/v2/contractnegotiations</span>  <span class="c1"># EDC consumer controlplane contract negotiation path</span>
       <span class="na">transferprocess</span><span class="pi">:</span> <span class="s">/v2/transferprocesses</span>  <span class="c1"># EDC consumer controlplane transfer process path</span>
       <span class="na">statesuffix</span><span class="pi">:</span> <span class="s">/state</span>  <span class="c1"># Path of the state suffix for contract negotiation and transfer process</span>
@@ -1020,8 +1034,11 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">apikey</span><span class="pi">:</span>
       <span class="na">header</span><span class="pi">:</span> <span class="s2">"</span><span class="s">X-Api-Key"</span>  <span class="c1"># Name of the EDC api key header field</span>
       <span class="na">secret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>  <span class="c1"># &lt;edc-api-key&gt;</span>
-  <span class="na">callbackMapping</span><span class="pi">:</span>  <span class="c1"># The callback endpoint path mapping - used to expose callback endpoint</span>
+    <span class="na">edrManagementEnabled</span><span class="pi">:</span> <span class="no">false</span>  <span class="c1"># Flag whether IRS uses classic EDC negotiation or EDR negotiation</span>
+  <span class="na">callbackMapping</span><span class="pi">:</span>  <span class="c1"># The EDR token callback endpoint path mapping - used to expose EDR callback endpoint</span>
+  <span class="na">negotiationCallbackMapping</span><span class="pi">:</span>  <span class="c1"># The EDR negotiation callback endpoint mapping - used to expose negotiation callback endpoint</span>
   <span class="na">callbackurl</span><span class="pi">:</span>  <span class="c1"># The URL where the EDR token callback will be sent to.</span>
+  <span class="na">negotiationCallbackurl</span><span class="pi">:</span>  <span class="c1"># The URL where the negotiation callback will be sent to.</span>
   <span class="na">asyncTimeout</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Timout for future.get requests as ISO 8601 Duration</span>
   <span class="na">submodel</span><span class="pi">:</span>
     <span class="na">request</span><span class="pi">:</span>
@@ -1169,14 +1186,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">admin</span><span class="pi">:</span>
     <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-item-relationship-service"</span>
     <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
-    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span>
-
-  <span class="na">datasources</span><span class="pi">:</span>
-    <span class="na">datasources.yaml</span><span class="pi">:</span>
-      <span class="na">apiVersion</span><span class="pi">:</span> <span class="m">1</span>
-      <span class="na">datasources</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Prometheus</span>
-          <span class="na">type</span><span class="pi">:</span> <span class="s">prometheus</span></code></pre>
+    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1467,7 +1477,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-14 15:11:31 UTC
+Last updated 2025-02-12 07:59:54 UTC
 </div>
 </div>
 </body>

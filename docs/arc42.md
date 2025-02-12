@@ -1383,6 +1383,257 @@ Due to limitations in the IATP mock, the only way of using multiple BPNs in the 
 However, the chart is used inside GitHub Workflows, so compute resources are limited.
 For this reason, the IRS test data was changed to include only data pointing to a single BPN.
 
+## API Documentation
+
+This document provides an overview of the API endpoints, their supported HTTP methods, visibility status, and the reasons for their current or future public accessibility.
+
+### Table of Contents
+
+1. [ESS Endpoints](#ess-endpoints)
+   1. [Investigations](#investigations)
+   2. [Notifications](#notifications)
+2. [IRS Endpoints](#irs-endpoints)
+   1. [Aspect Models](#aspect-models)
+   2. [Jobs](#jobs)
+   3. [Orders](#orders)
+   4. [Policies](#policies)
+
+### ESS Endpoints
+
+#### Investigations
+
+##### POST `/ess/bpn/investigations`
+
+**Description**: Create new investigations for a Business Partner Number (BPN).
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### GET `/ess/bpn/investigations/{id}`
+
+**Description**: Retrieve a specific investigation by ID.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+#### Notifications
+
+##### POST `/ess/notification/receive`
+
+**Description**: Receive notifications from other instances.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+### IRS Endpoints
+
+#### Aspect Models
+
+##### GET `/irs/aspectmodels`
+
+**Description**: Retrieve a list of aspect models.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+#### Jobs
+
+##### GET `/irs/Jobs`
+
+**Description**: Retrieve a list of jobs.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### POST `/irs/Jobs`
+
+**Description**: Create a new job.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### GET `/irs/jobs/{id}`
+
+**Description**: Retrieve a specific job by ID.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### PUT `/irs/jobs/{id}`
+
+**Description**: Update a specific job by ID.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+#### Orders
+
+##### POST `/irs/ess/orders`
+
+**Description**: Create ESS orders in IRS.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### POST `/irs/orders`
+
+**Description**: Create new orders.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### GET `/irs/orders/{orderId}`
+
+**Description**: Retrieve a specific order by ID.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### PUT `/irs/orders/{orderId}`
+
+**Description**: Update a specific order by ID.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### GET `/irs/orders/{orderId}/batches/{batchId}`
+
+**Description**: Retrieve a specific batch within an order.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+#### Policies
+
+##### GET `/irs/policies`
+
+**Description**: Retrieve a list of policies.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### PUT `/irs/policies`
+
+**Description**: Update existing policies.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### POST `/irs/policies`
+
+**Description**: Create new policies.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### GET `/irs/policies/attributes/{field}`
+
+**Description**: Retrieve policy attributes for a specific field.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### GET `/irs/policies/paged`
+
+**Description**: Retrieve policies with pagination.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### DELETE `/irs/policies/{policyId}`
+
+**Description**: Delete a specific policy by ID.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
+##### DELETE `/irs/policies/{policyId}/bpnl/{bpnl}`
+
+**Description**: Delete a policy’s BPNL association.
+
+* **Visibility**:
+
+  * Current: Public
+  * Future: Public
+
+**Reason for visibility**: Is accessed from other instances.
+
 ## Quality requirements
 
 The quality scenarios in this section depict the fundamental quality goals as well as other required quality properties. They allow the evaluation of decision alternatives.

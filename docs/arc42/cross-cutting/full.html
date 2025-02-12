@@ -503,6 +503,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_umbrella">Umbrella</a></li>
 </ul>
 </li>
+<li><a href="#_api_documentation">API Documentation</a>
+<ul class="sectlevel2">
+<li><a href="#_table_of_contents">Table of Contents</a></li>
+<li><a href="#_ess_endpoints">ESS Endpoints</a></li>
+<li><a href="#_irs_endpoints">IRS Endpoints</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1460,10 +1467,681 @@ For this reason, the IRS test data was changed to include only data pointing to 
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_api_documentation">API Documentation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document provides an overview of the API endpoints, their supported HTTP methods, visibility status, and the reasons for their current or future public accessibility.</p>
+</div>
+<div class="sect2">
+<h3 id="_table_of_contents">Table of Contents</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#_ess_endpoints">ESS Endpoints</a></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><a href="#_investigations">Investigations</a></p>
+</li>
+<li>
+<p><a href="#_notifications">Notifications</a></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p><a href="#_irs_endpoints">IRS Endpoints</a></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><a href="#_aspect_models">Aspect Models</a></p>
+</li>
+<li>
+<p><a href="#_jobs">Jobs</a></p>
+</li>
+<li>
+<p><a href="#_orders">Orders</a></p>
+</li>
+<li>
+<p><a href="#_policies">Policies</a></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ess_endpoints">ESS Endpoints</h3>
+<div class="sect3">
+<h4 id="_investigations">Investigations</h4>
+<div class="sect4">
+<h5 id="_post_essbpninvestigations">POST <code>/ess/bpn/investigations</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Create new investigations for a Business Partner Number (BPN).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_essbpninvestigationsid">GET <code>/ess/bpn/investigations/{id}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve a specific investigation by ID.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_notifications">Notifications</h4>
+<div class="sect4">
+<h5 id="_post_essnotificationreceive">POST <code>/ess/notification/receive</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Receive notifications from other instances.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_irs_endpoints">IRS Endpoints</h3>
+<div class="sect3">
+<h4 id="_aspect_models">Aspect Models</h4>
+<div class="sect4">
+<h5 id="_get_irsaspectmodels">GET <code>/irs/aspectmodels</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve a list of aspect models.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_jobs">Jobs</h4>
+<div class="sect4">
+<h5 id="_get_irsjobs">GET <code>/irs/Jobs</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve a list of jobs.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_post_irsjobs">POST <code>/irs/Jobs</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Create a new job.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_irsjobsid">GET <code>/irs/jobs/{id}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve a specific job by ID.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_put_irsjobsid">PUT <code>/irs/jobs/{id}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Update a specific job by ID.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_orders">Orders</h4>
+<div class="sect4">
+<h5 id="_post_irsessorders">POST <code>/irs/ess/orders</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Create ESS orders in IRS.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_post_irsorders">POST <code>/irs/orders</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Create new orders.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_irsordersorderid">GET <code>/irs/orders/{orderId}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve a specific order by ID.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_put_irsordersorderid">PUT <code>/irs/orders/{orderId}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Update a specific order by ID.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_irsordersorderidbatchesbatchid">GET <code>/irs/orders/{orderId}/batches/{batchId}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve a specific batch within an order.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_policies">Policies</h4>
+<div class="sect4">
+<h5 id="_get_irspolicies">GET <code>/irs/policies</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve a list of policies.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_put_irspolicies">PUT <code>/irs/policies</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Update existing policies.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_post_irspolicies">POST <code>/irs/policies</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Create new policies.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_irspoliciesattributesfield">GET <code>/irs/policies/attributes/{field}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve policy attributes for a specific field.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_irspoliciespaged">GET <code>/irs/policies/paged</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Retrieve policies with pagination.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_delete_irspoliciespolicyid">DELETE <code>/irs/policies/{policyId}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Delete a specific policy by ID.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_delete_irspoliciespolicyidbpnlbpnl">DELETE <code>/irs/policies/{policyId}/bpnl/{bpnl}</code></h5>
+<div class="paragraph">
+<p><strong>Description</strong>: Delete a policy&#8217;s BPNL association.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Visibility</strong>:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Current: Public</p>
+</li>
+<li>
+<p>Future: Public</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Reason for visibility</strong>: Is accessed from other instances.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-14 15:11:31 UTC
+Last updated 2025-02-12 07:59:54 UTC
 </div>
 </div>
 </body>
