@@ -150,36 +150,16 @@ minio:
   rootUser: <path:item-relationship-service/data/int/minio#minioUser>
   rootPassword: <path:item-relationship-service/data/int/minio#minioPassword>
   serviceAccount:
-    name: "irs-int-minio-sa"
+    name: "irs-test-int-minio-sa"
 
 #########################
 # Grafana Configuration #
 #########################
 grafana:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 256Mi
-    limits:
-      cpu: 400m
-      memory: 256Mi
-  enabled: true
-  ingress:
-    enabled: true
-    annotations:
-      cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    hosts:
-      - "irs-grafana.int.catena-x.net"
-    tls:
-      - hosts:
-          - "irs-grafana.int.catena-x.net"
-        secretName: tls-secret-irs-int-grafana
-
-  user: <path:item-relationship-service/data/int/grafana#username>
-  password: <path:item-relationship-service/data/int/grafana#password>
+  enabled: false
 
 ############################
 # Prometheus Configuration #
 ############################
 prometheus:
-  enabled: true
+  enabled: false
