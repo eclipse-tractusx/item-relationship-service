@@ -24,6 +24,7 @@ digitalTwinRegistry:
   lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
 discovery:
   discoveryFinderUrl: https://semantics.int.catena-x.net/discoveryfinder/api/v1.0/administration/connectors/discovery/search
+  type: "bpn"
 semanticshub:
   # url: https://semantics.int.catena-x.net/hub/api/v1/models
   # pageSize: "200"
