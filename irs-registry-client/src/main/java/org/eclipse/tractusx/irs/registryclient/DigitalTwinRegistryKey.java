@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.registryclient;
 
 /**
  * Key object contains required attributes for identify part chain entry node
- * @param shellId ID of an asset administration shell (note: this is NOT a globalAssetId)
+ * @param shellId ID of an asset administration shell
  * @param bpn the business partner number which owns the asset
  */
 public record DigitalTwinRegistryKey(String shellId, String bpn) {

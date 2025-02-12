@@ -107,7 +107,7 @@ job:
   scheduled:
     threadCount: 5
   cached:
-    threadCount: 0
+    threadCount: 5
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
@@ -168,6 +168,7 @@ edc:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
       catalog: /v2/catalog/request  # EDC consumer controlplane catalog path
+      edrManagement: /v2/edrs  # EDC consumer controlplane EDR management path
       contractnegotiation: /v2/contractnegotiations  # EDC consumer controlplane contract negotiation path
       transferprocess: /v2/transferprocesses  # EDC consumer controlplane transfer process path
       statesuffix: /state  # Path of the state suffix for contract negotiation and transfer process
@@ -182,8 +183,11 @@ edc:
     apikey:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
-  callbackMapping:  # The callback endpoint path mapping - used to expose callback endpoint
+    edrManagementEnabled: false  # Flag whether IRS uses classic EDC negotiation or EDR negotiation
+  callbackMapping:  # The EDR token callback endpoint path mapping - used to expose EDR callback endpoint
+  negotiationCallbackMapping:  # The EDR negotiation callback endpoint mapping - used to expose negotiation callback endpoint
   callbackurl:  # The URL where the EDR token callback will be sent to.
+  negotiationCallbackurl:  # The URL where the negotiation callback will be sent to.
   asyncTimeout: PT10M  # Timout for future.get requests as ISO 8601 Duration
   submodel:
     request:

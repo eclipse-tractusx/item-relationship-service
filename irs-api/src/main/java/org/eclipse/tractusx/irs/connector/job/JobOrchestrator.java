@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,6 +38,7 @@ import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.springframework.context.ApplicationEventPublisher;
@@ -82,6 +83,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      */
     private final JobTTL jobTTL;
 
+    private final Object jobCompletionSyncObject = new Object();
+
     /**
      * Create a new instance of {@link JobOrchestrator}.
      *
@@ -106,13 +109,13 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * Start a job with Batch
      *
-     * @param globalAssetId root id
-     * @param jobData       additional data for the job to be managed by the {@link JobStore}.
-     * @param batchId       batch id
+     * @param identificationKey root id
+     * @param jobData           additional data for the job to be managed by the {@link JobStore}.
+     * @param batchId           batch id
      * @return response.
      */
-    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData, final UUID batchId) {
-        final Job job = createJob(globalAssetId, jobData);
+    public JobInitiateResponse startJob(final PartChainIdentificationKey identificationKey, final JobParameter jobData, final UUID batchId) {
+        final Job job = createJob(identificationKey, jobData);
         final var multiJob = MultiTransferJob.builder().job(job).batchId(Optional.ofNullable(batchId)).build();
         jobStore.create(multiJob);
 
@@ -140,7 +143,17 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
         // If no transfers are requested, job is already complete
         if (transferCount == 0) {
-            callCompleteHandlerIfFinished(multiJob.getJobIdString());
+            try {
+                callCompleteHandlerIfFinished(multiJob.getJobIdString());
+            } catch (JobException e) {
+                markJobInError(multiJob, e, "Error while completing Job.");
+                meterService.incrementJobFailed();
+                return JobInitiateResponse.builder()
+                                          .jobId(multiJob.getJobIdString())
+                                          .status(ResponseStatus.FATAL_ERROR)
+                                          .error(e.getMessage())
+                                          .build();
+            }
         }
 
         return JobInitiateResponse.builder().jobId(multiJob.getJobIdString()).status(ResponseStatus.OK).build();
@@ -214,23 +227,19 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
-        return jobs.stream()
-                   .map(job -> deleteJobsAndDecreaseJobsInJobStoreMetrics(job.getJobIdString()))
-                   .flatMap(Optional::stream)
-                   .toList();
-    }
-
-    private Optional<MultiTransferJob> deleteJobsAndDecreaseJobsInJobStoreMetrics(final String jobId) {
-        final Optional<MultiTransferJob> optJob = jobStore.deleteJob(jobId);
-        if (optJob.isPresent()) {
-            meterService.setNumberOfJobsInJobStore((long) jobStore.findAll().size());
-        }
-        return optJob;
+        final List<MultiTransferJob> deletedJobs = jobs.stream()
+                                                       .map(job -> jobStore.deleteJob(job.getJobIdString()))
+                                                       .flatMap(Optional::stream)
+                                                       .toList();
+        meterService.setNumberOfJobsInJobStore((long) jobStore.findAll().size());
+        return deletedJobs;
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {
-        jobStore.completeJob(jobId, this::completeJob);
-        publishJobProcessingFinishedEventIfFinished(jobId);
+        synchronized (jobCompletionSyncObject) {
+            jobStore.completeJob(jobId, this::completeJob);
+            publishJobProcessingFinishedEventIfFinished(jobId);
+        }
     }
 
     private void completeJob(final MultiTransferJob job) {
@@ -270,10 +279,10 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
             final T dataRequest)  /* throws JobErrorDetails */ {
         final JobParameter jobData = job.getJobParameter();
-
+        final String jobId = job.getJobIdString();
         final var response = processManager.initiateRequest(dataRequest,
                 transferId -> jobStore.addTransferProcess(job.getJobIdString(), transferId),
-                this::transferProcessCompleted, jobData);
+                this::transferProcessCompleted, jobData, jobId);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw new JobException(response.getStatus().toString());
@@ -282,19 +291,21 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return response;
     }
 
-    private Job createJob(final String globalAssetId, final JobParameter jobData) {
-        if (StringUtils.isEmpty(globalAssetId)) {
-            throw new JobException("GlobalAsset Identifier cannot be null or empty string");
+    private Job createJob(final PartChainIdentificationKey identificationKey, final JobParameter jobData) {
+        final Job.JobBuilder jobBuilder = Job.builder()
+                                             .id(UUID.randomUUID())
+                                             .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
+                                             .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
+                                             .state(JobState.UNSAVED)
+                                             .parameter(jobData);
+
+        if (StringUtils.isEmpty(identificationKey.getGlobalAssetId())) {
+            jobBuilder.aasIdentifier(identificationKey.getIdentifier());
+        } else {
+            jobBuilder.globalAssetId(GlobalAssetIdentification.of(identificationKey.getGlobalAssetId()));
         }
 
-        return Job.builder()
-                  .id(UUID.randomUUID())
-                  .globalAssetId(GlobalAssetIdentification.of(globalAssetId))
-                  .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
-                  .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
-                  .state(JobState.UNSAVED)
-                  .parameter(jobData)
-                  .build();
+        return jobBuilder.build();
     }
 
     private ResponseStatus convertMessage(final String message) {

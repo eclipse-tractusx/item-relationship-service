@@ -32,6 +32,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 
 /**
@@ -91,5 +92,4 @@ public class Batch {
      */
     @Setter
     private ZonedDateTime completedOn;
-
 }

@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,39 +17,25 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.connector.batch;
+package org.eclipse.tractusx.irs.edc.client.model.edr;
 
-import java.util.UUID;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
-import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
- * Details about job progress used to monitor progress in job
+ * NegotiationEndpointCallback represents a transfer process callback containing the EndpointDataReference.
  */
-@Data
-@Builder(toBuilder = true)
-@Slf4j
+
+@Builder
+@Value
 @Jacksonized
-public class JobProgress {
-
-    /**
-     * Key object contains required attributes for identify part chain entry node
-     */
-    private PartChainIdentificationKey identificationKey;
-
-    /**
-     * Job Id that was registered by Batch Order process
-     */
-    private UUID jobId;
-
-    /**
-     * Job status that will be updated by handle job events
-     */
-    private JobState jobState;
-
+public class NegotiationEndpointCallback {
+    @JsonProperty("id")
+    private String callbackId;
+    @JsonProperty("at")
+    private long createdAt;
+    private NegotiationCallbackPayload payload;
+    private String type;
 }

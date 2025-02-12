@@ -23,7 +23,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,8 +42,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
@@ -50,7 +54,6 @@ import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
-import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.ess.service.EssService;
 import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
@@ -59,6 +62,9 @@ import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessin
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -72,9 +78,12 @@ class BatchOrderEventListenerTest {
     private final IrsItemGraphQueryService irsItemGraphQueryService = mock(IrsItemGraphQueryService.class);
     private final EssService essService = mock(EssService.class);
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+    private final ArgumentCaptor<BatchOrderProcessingFinishedEvent> eventCaptor = forClass(
+            BatchOrderProcessingFinishedEvent.class);
     private final TimeoutSchedulerBatchProcessingService timeoutScheduler = mock(
             TimeoutSchedulerBatchProcessingService.class);
-    private final ExecutorCompletionServiceFactory executorCompletionServiceFactory = mock(ExecutorCompletionServiceFactory.class);
+    private final ExecutorCompletionServiceFactory executorCompletionServiceFactory = mock(
+            ExecutorCompletionServiceFactory.class);
 
     private BatchOrderEventListener eventListener;
 
@@ -82,12 +91,12 @@ class BatchOrderEventListenerTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService,
-                essService, applicationEventPublisher, timeoutScheduler, executorCompletionServiceFactory);
+        eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService, essService,
+                applicationEventPublisher, timeoutScheduler, executorCompletionServiceFactory);
     }
 
     @Test
-    void shouldStartFirstBatch_regularJob() throws InterruptedException {
+    void shouldStartFirstBatch_regularJob() {
         // given
         final int numberOfJobs = 10;
         final int timeout = 60;
@@ -99,7 +108,9 @@ class BatchOrderEventListenerTest {
                                                 .timeout(timeout)
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
+                                                .auditContractNegotiation(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.REGULAR)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -119,7 +130,8 @@ class BatchOrderEventListenerTest {
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
         ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
-        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+        given(executorCompletionService.submit(any())).willReturn(
+                CompletableFuture.completedFuture(JobProgress.builder().build()));
 
         when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
 
@@ -146,7 +158,7 @@ class BatchOrderEventListenerTest {
     }
 
     @Test
-    void shouldStartFirstBatch_essJob() throws InterruptedException {
+    void shouldStartFirstBatch_essJob() {
         // given
         final int numberOfJobs = 10;
         final int timeout = 60;
@@ -159,6 +171,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.ESS)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -177,7 +190,8 @@ class BatchOrderEventListenerTest {
         given(essService.startIrsJob(any(), any())).willReturn(JobHandle.builder().id(UUID.randomUUID()).build());
 
         ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
-        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+        given(executorCompletionService.submit(any())).willReturn(
+                CompletableFuture.completedFuture(JobProgress.builder().build()));
 
         when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
 
@@ -204,7 +218,7 @@ class BatchOrderEventListenerTest {
     }
 
     @Test
-    void shouldStartNextBatchWhenPreviousFinished() throws InterruptedException {
+    void shouldStartNextBatchWhenPreviousFinished() {
         // given
         final int numberOfJobs = 10;
         final int timeout = 60;
@@ -216,6 +230,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.ESS)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -231,11 +246,11 @@ class BatchOrderEventListenerTest {
                                        .jobProgressList(createJobProgressList())
                                        .build();
 
-        given(essService.startIrsJob(any(), any())).willReturn(
-                JobHandle.builder().id(UUID.randomUUID()).build());
+        given(essService.startIrsJob(any(), any())).willReturn(JobHandle.builder().id(UUID.randomUUID()).build());
 
         ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
-        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+        given(executorCompletionService.submit(any())).willReturn(
+                CompletableFuture.completedFuture(JobProgress.builder().build()));
 
         when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
 
@@ -243,7 +258,9 @@ class BatchOrderEventListenerTest {
         batchStore.save(FIRST_BATCH_ID, firstBatch);
         batchStore.save(SECOND_BATCH_ID, secondBatch);
         // when
-        eventListener.handleBatchProcessingFinishedEvent(new BatchProcessingFinishedEvent(BATCH_ORDER_ID, FIRST_BATCH_ID, ProcessingState.PARTIAL, ProcessingState.COMPLETED, 1, ""));
+        eventListener.handleBatchProcessingFinishedEvent(
+                new BatchProcessingFinishedEvent(BATCH_ORDER_ID, FIRST_BATCH_ID, ProcessingState.PARTIAL,
+                        ProcessingState.COMPLETED, 1, ""));
         // then
         ArgumentCaptor<Callable<JobProgress>> callableCaptor = ArgumentCaptor.forClass(Callable.class);
         verify(executorCompletionService, times(numberOfJobs)).submit(callableCaptor.capture());
@@ -262,6 +279,85 @@ class BatchOrderEventListenerTest {
     }
 
     @Test
+    void shouldSendOrderFinishEventOnStatePartial() {
+        // given
+        final int timeout = 60;
+        final BatchOrder batchOrder = BatchOrder.builder()
+                                                .batchOrderId(BATCH_ORDER_ID)
+                                                .batchOrderState(ProcessingState.INITIALIZED)
+                                                .collectAspects(Boolean.TRUE)
+                                                .timeout(timeout)
+                                                .jobTimeout(timeout)
+                                                .lookupBPNs(Boolean.TRUE)
+                                                .jobType(BatchOrder.JobType.ESS)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
+                                                .build();
+        final Batch firstBatch = Batch.builder()
+                                      .batchId(FIRST_BATCH_ID)
+                                      .batchState(ProcessingState.PARTIAL)
+                                      .batchNumber(1)
+                                      .batchOrderId(BATCH_ORDER_ID)
+                                      .build();
+        final Batch secondBatch = Batch.builder()
+                                       .batchId(SECOND_BATCH_ID)
+                                       .batchState(ProcessingState.COMPLETED)
+                                       .batchNumber(2)
+                                       .batchOrderId(BATCH_ORDER_ID)
+                                       .jobProgressList(createJobProgressList())
+                                       .build();
+
+        given(irsItemGraphQueryService.registerItemJob(any(), any())).willReturn(
+                JobHandle.builder().id(UUID.randomUUID()).build());
+
+        ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
+        given(executorCompletionService.submit(any())).willReturn(
+                CompletableFuture.completedFuture(JobProgress.builder().build()));
+
+        when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
+
+        batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
+        batchStore.save(FIRST_BATCH_ID, firstBatch);
+        batchStore.save(SECOND_BATCH_ID, secondBatch);
+        // when
+        eventListener.handleBatchProcessingFinishedEvent(
+                new BatchProcessingFinishedEvent(BATCH_ORDER_ID, SECOND_BATCH_ID, ProcessingState.PARTIAL,
+                        ProcessingState.COMPLETED, 2, ""));
+
+        // then
+        verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().batchOrderId()).isEqualTo(BATCH_ORDER_ID);
+        assertThat(eventCaptor.getValue().batchOrderState()).isEqualTo(ProcessingState.PARTIAL);
+    }
+
+    @ParameterizedTest
+    @MethodSource("batchStates")
+    void shouldCalculateCorrectBatchState(ProcessingState expected, List<ProcessingState> states) {
+        final ProcessingState processingState = eventListener.calculateBatchOrderState(states);
+        assertThat(processingState).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> batchStates() {
+        return Stream.of(
+                Arguments.of(ProcessingState.COMPLETED, List.of(ProcessingState.COMPLETED, ProcessingState.COMPLETED)),
+                Arguments.of(ProcessingState.PARTIAL, List.of(ProcessingState.PARTIAL, ProcessingState.PARTIAL)),
+                Arguments.of(ProcessingState.PARTIAL, List.of(ProcessingState.COMPLETED, ProcessingState.PARTIAL)),
+                Arguments.of(ProcessingState.ERROR, List.of(ProcessingState.COMPLETED, ProcessingState.ERROR)),
+                Arguments.of(ProcessingState.ERROR, List.of(ProcessingState.PARTIAL, ProcessingState.ERROR)),
+                Arguments.of(ProcessingState.ERROR, List.of(ProcessingState.ERROR, ProcessingState.ERROR)),
+
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.INITIALIZED, ProcessingState.INITIALIZED)),
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.INITIALIZED, ProcessingState.PROCESSING)),
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.INITIALIZED, ProcessingState.PARTIAL)),
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.INITIALIZED, ProcessingState.COMPLETED)),
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.INITIALIZED, ProcessingState.ERROR)),
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.PROCESSING, ProcessingState.PROCESSING)),
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.PROCESSING, ProcessingState.PARTIAL)),
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.PROCESSING, ProcessingState.COMPLETED)),
+                Arguments.of(ProcessingState.PROCESSING, List.of(ProcessingState.PROCESSING, ProcessingState.ERROR))
+        );
+    }
+
+    @Test
     void shouldPublishBatchOrderProcessingFinishedEventWhenAllBatchesCompleted() {
         // given
         final int timeout = 60;
@@ -273,17 +369,16 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .jobType(BatchOrder.JobType.REGULAR)
+                                                .batchIds(List.of(FIRST_BATCH_ID, SECOND_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
-                                      .batchState(ProcessingState.PARTIAL)
                                       .batchNumber(1)
                                       .batchState(ProcessingState.COMPLETED)
                                       .batchOrderId(BATCH_ORDER_ID)
                                       .build();
         final Batch secondBatch = Batch.builder()
                                        .batchId(SECOND_BATCH_ID)
-                                       .batchState(ProcessingState.INITIALIZED)
                                        .batchNumber(2)
                                        .batchState(ProcessingState.COMPLETED)
                                        .batchOrderId(BATCH_ORDER_ID)
@@ -294,13 +389,15 @@ class BatchOrderEventListenerTest {
         batchStore.save(FIRST_BATCH_ID, firstBatch);
         batchStore.save(SECOND_BATCH_ID, secondBatch);
         // when
-        eventListener.handleBatchProcessingFinishedEvent(new BatchProcessingFinishedEvent(BATCH_ORDER_ID, SECOND_BATCH_ID, ProcessingState.PARTIAL, ProcessingState.COMPLETED, 2, ""));
+        eventListener.handleBatchProcessingFinishedEvent(
+                new BatchProcessingFinishedEvent(BATCH_ORDER_ID, SECOND_BATCH_ID, ProcessingState.PARTIAL,
+                        ProcessingState.COMPLETED, 2, ""));
         // then
         verify(applicationEventPublisher).publishEvent(any(BatchOrderProcessingFinishedEvent.class));
     }
 
     @Test
-    void shouldNotStartBatchWhenJobTypeIsUnknown() throws InterruptedException {
+    void shouldNotStartBatchWhenJobTypeIsUnknown() {
         // given
         final int numberOfJobs = 10;
         final int timeout = 60;
@@ -313,6 +410,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .jobType(null)
+                                                .batchIds(List.of(FIRST_BATCH_ID))
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -326,7 +424,7 @@ class BatchOrderEventListenerTest {
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
         ExecutorCompletionService executorCompletionService = mock(ExecutorCompletionService.class);
-        given(executorCompletionService.take()).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
+        given(executorCompletionService.submit(any())).willReturn(CompletableFuture.completedFuture(JobProgress.builder().build()));
 
         when(executorCompletionServiceFactory.create()).thenReturn(executorCompletionService);
 

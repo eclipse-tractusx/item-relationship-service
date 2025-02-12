@@ -4,17 +4,17 @@ This document provides an overview of the API endpoints, their supported HTTP me
 
 == Table of Contents
 
-. <<_1_ess_endpoints,1. ESS Endpoints>>
+. <<_ess_endpoints,ESS Endpoints>>
 .. <<_investigations,Investigations>>
 .. <<_notifications,Notifications>>
-. <<_2_irs_endpoints,2. IRS Endpoints>>
+. <<_irs_endpoints,IRS Endpoints>>
 .. <<_aspect_models,Aspect Models>>
 .. <<_jobs,Jobs>>
 .. <<_orders,Orders>>
 .. <<_policies,Policies>>
 
-[#_1_ess_endpoints]
-== 1. ESS Endpoints
+[#_ess_endpoints]
+== ESS Endpoints
 
 [#_investigations]
 === Investigations
@@ -61,8 +61,8 @@ This document provides an overview of the API endpoints, their supported HTTP me
 
 *Reason for visibility*: Is accessed from other instances.
 
-[#_2_irs_endpoints]
-== 2. IRS Endpoints
+[#_irs_endpoints]
+== IRS Endpoints
 
 [#_aspect_models]
 === Aspect Models

@@ -1,6 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,6 +20,7 @@
 package org.eclipse.tractusx.irs.services;
 
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -32,13 +33,13 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings({ "PMD.MissingStaticMethodInNonInstantiatableClass" })
 public final class ExecutorCompletionServiceFactory {
 
-    private final int threadCount;
+    private final ExecutorService executorService;
 
     private ExecutorCompletionServiceFactory(@Value("${irs.job.batch.threadCount}") final int threadCount) {
-        this.threadCount = threadCount;
+        executorService = Executors.newFixedThreadPool(threadCount);
     }
 
     public <T> ExecutorCompletionService<T> create() {
-        return new ExecutorCompletionService<>(Executors.newFixedThreadPool(threadCount));
+        return new ExecutorCompletionService<>(executorService);
     }
 }

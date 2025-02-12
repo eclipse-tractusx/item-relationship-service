@@ -34,7 +34,7 @@ job:
   scheduled:
     threadCount: 5
   cached:
-    threadCount: 0
+    threadCount: 5
 bpn: BPNL00000003AZQP
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
@@ -115,6 +115,11 @@ edc:
       data: http://umbrella-dataconsumer-1-edc-controlplane:8081/management
     apikey:
       secret: "TEST1"
+    edrManagementEnabled: true
+  asyncTimeout: PT30S
+  submodel:
+    request:
+      ttl: PT30S
 
 minio:
   resources:

@@ -53,6 +53,10 @@
     {
       "bpn": "BPNL000000002BR4",
       "globalAssetId": "urn:uuid:aba71b24-0af9-482c-8d4b-2048113c55e9"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:4e390dab-707f-446e-bfbe-653f6f5b1f37"
     }
   ],
   "timeout": 43200

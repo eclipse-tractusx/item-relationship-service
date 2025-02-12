@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,15 +17,10 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client;
+package org.eclipse.tractusx.irs.edc.client.storage;
 
 import java.time.Duration;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,48 +33,23 @@ import org.springframework.stereotype.Service;
 @Service("irsEdcClientEndpointDataReferenceStorage")
 public class EndpointDataReferenceStorage {
 
-    private final Map<String, ExpiringContainer> storageMap = new ConcurrentHashMap<>();
-    private final Duration storageDuration;
+    private final ExpiringStorage<EndpointDataReference> storage;
 
     public EndpointDataReferenceStorage(
             @Value("${irs-edc-client.controlplane.datareference.storage.duration}") final Duration storageDuration) {
-        this.storageDuration = storageDuration;
+        storage = new ExpiringStorage<>(storageDuration);
     }
 
-    public void put(final String storageId, final EndpointDataReference dataReference) {
-        storageMap.put(storageId, new ExpiringContainer(Instant.now(), dataReference));
-        cleanup();
-    }
-
-    /**
-     * Cleans up all dangling references which were not collected after the STORAGE_DURATION.
-     */
-    private void cleanup() {
-        final Set<String> keys = new HashSet<>(storageMap.keySet());
-        keys.forEach(key -> {
-            final Instant creationTimestamp = storageMap.get(key).getCreationTimestamp();
-            if (Instant.now().isAfter(creationTimestamp.plus(storageDuration))) {
-                storageMap.remove(key);
-            }
-        });
+    public void put(final String contractNegotiationId, final EndpointDataReference dataReference) {
+        storage.put(contractNegotiationId, dataReference);
     }
 
     public Optional<EndpointDataReference> get(final String storageId) {
-        return Optional.ofNullable(storageMap.get(storageId)).map(ExpiringContainer::getDataReference);
+        return storage.get(storageId);
     }
 
     public void clear() {
-        storageMap.clear();
-    }
-
-    /**
-     * Stores the data reference with its creation date.
-     */
-    @lombok.Value
-    private static final class ExpiringContainer {
-        private final Instant creationTimestamp;
-        private final EndpointDataReference dataReference;
+        storage.clear();
     }
 
 }
-

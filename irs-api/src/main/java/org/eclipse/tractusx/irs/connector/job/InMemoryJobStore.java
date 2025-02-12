@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -51,6 +51,12 @@ public class InMemoryJobStore extends BaseJobStore {
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {
         return Optional.ofNullable(jobsById.get(jobId));
+    }
+
+    @Override
+    protected Optional<MultiTransferJob> getByProcessId(final String processId) {
+        return jobsById.entrySet().stream().filter(entry -> entry.getValue().getTransferProcessIds().contains(processId)).findFirst().map(
+                Map.Entry::getValue);
     }
 
     @Override

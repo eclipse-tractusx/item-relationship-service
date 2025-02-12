@@ -118,6 +118,10 @@ public class RegisterBpnInvestigationBatchOrder {
     private BatchStrategy batchStrategy;
 
 
+    @Schema(implementation = Boolean.class, example = "true", description = "Flag enables and disables auditing, including provisioning of ContractAgreementId inside submodels and shells objects. Default is true.")
+    private boolean auditContractNegotiation = true;
+
+
     /**
      * Validation constants
      */
