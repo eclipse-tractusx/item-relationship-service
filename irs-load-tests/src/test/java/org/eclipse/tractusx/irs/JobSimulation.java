@@ -35,7 +35,11 @@ public class JobSimulation extends Simulation {
                                            getRequestBody()))
                                    .check(status().is(201))
                                    .check(jsonPath("$.id").saveAs("id")))
-            .doWhile(session -> !Objects.equals(session.getString("state"), "COMPLETED"))
+            .doWhile(session -> !(
+                    Objects.equals(session.getString("state"), "COMPLETED")
+                    || Objects.equals(session.getString("state"), "CANCELED")
+                    || Objects.equals(session.getString("state"), "ERROR")
+                ))
             .on(
                     exec(session -> {
                         System.out.println("id: " + session.getString("id") + ", status: "+ session.getString("state"));

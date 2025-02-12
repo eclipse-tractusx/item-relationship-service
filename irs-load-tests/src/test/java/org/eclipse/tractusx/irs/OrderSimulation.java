@@ -27,14 +27,17 @@ public class OrderSimulation extends Simulation {
     HttpProtocolBuilder httpProtocol = http.baseUrl(BASE_URL).acceptHeader("application/json").contentTypeHeader("application/json");
 
     ScenarioBuilder scenario = scenario("Creating Orders")
-            .exec(http("Start Job")
+            .exec(http("Start Order")
                     .post("/irs/orders")
                     .header("X-API-KEY", X_API_KEY)
                     .body(RawFileBody(
                             "org/eclipse/tractusx/irs/loadtest/IRS-start-order-body.json"))
                     .check(status().is(201))
                     .check(jsonPath("$.id").saveAs("id")))
-            .doWhile(session -> !Objects.equals(session.getString("state"), "COMPLETED"))
+            .doWhile(session -> !(
+                    Objects.equals(session.getString("state"), "COMPLETED")
+                    || Objects.equals(session.getString("state"), "PARTIAL")
+                    || Objects.equals(session.getString("state"), "ERROR")))
             .on(
                     exec(session -> {
                         System.out.println("id: " + session.getString("id") + ", status: "+ session.getString("state"));
