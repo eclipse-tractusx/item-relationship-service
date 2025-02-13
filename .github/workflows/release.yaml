@@ -35,13 +35,6 @@ jobs:
       pull-requests: write
       contents: write
     steps:
-
-      - uses: actions/create-github-app-token@v1
-        id: generate-token
-        with:
-          app-id: ${{ secrets.TRACE_X_RELEASE_DOCUMENTATION_GH_APP_ID }}
-          private-key: ${{ secrets.TRACE_X_RELEASE_DOCUMENTATION_GH_APP_PRIVATE_KEY }}
-
       - uses: actions/checkout@v4
 
       - name: Validate that workflow inputs are SemVer strings
