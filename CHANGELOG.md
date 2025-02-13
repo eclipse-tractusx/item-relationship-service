@@ -8,6 +8,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## [6.0.0] - 2025-02-13
+
 ### Changed
 
 - Resolve Null pointer exception while registering the company (#888)
@@ -820,7 +822,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...HEAD
+[6.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...6.0.0
 [5.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.0...5.4.1
 [5.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.0...5.4.0
 [5.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.2.0...5.3.0
