@@ -101,11 +101,13 @@ item-relationship-service:
     submodel:
       request:
         ttl: PT2M
+    asyncTimeout: PT2M
     controlplane:
       request:
         ttl: PT2M
       apikey:
         secret: <path:item-relationship-service/data/int/controlplane#apiKey>
+      edrManagementEnabled: true
     catalog:
       acceptedPolicies: >
         [{
