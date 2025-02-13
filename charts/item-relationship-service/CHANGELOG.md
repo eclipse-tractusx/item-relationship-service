@@ -30,7 +30,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
     scheduled:
       threadCount: 5
     cached:
-      threadCount: 0
+      threadCount: 5
   ```
 
 ## [7.4.1] - 2024-08-19
