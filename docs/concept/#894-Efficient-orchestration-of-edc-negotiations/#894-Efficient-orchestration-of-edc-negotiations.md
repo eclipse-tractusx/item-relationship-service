@@ -59,6 +59,21 @@ eviction is handled independent of token state and will use a configurable TTL t
 See [docs/src/uml-diagrams/runtime-view/edc-flow-orchestrated.puml](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/docs/src/uml-diagrams/runtime-view/edc-flow-orchestrated.puml)
 for sources.
 
+| Step  | Description                                                                                                                                                                                                                                             |
+|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [001] | Request for a Contract Offer by EDC asset id                                                                                                                                                                                                            |
+| [002] | Request for a Contract Offer by EDC asset id, but managed by an executor service to limit the amount of parallel requests                                                                                                                               |
+| [003] | Return Contract Offer for asset id                                                                                                                                                                                                                      |
+| [004] | Return Contract Offer for asset id                                                                                                                                                                                                                      |
+| [005] | Initiate negotiation of a EndpointDataReference (EDR) for Contract Offer                                                                                                                                                                                |
+| [006] | Get EDR from EndpointDataReferenceCacheService                                                                                                                                                                                                          |
+| [007] | If EDR it is present and valid, return directly                                                                                                                                                                                                         |
+| [008] | If not present, but negotiation currently already ongoing, return ongoing negotiation                                                                                                                                                                   |
+| [009] | If not present and no ongoing negotiation, initiate a new negotiation. During negotiation, the process is added to the ongoing negotiations. Initiation of new negotiations are managed by an executor service to limit the amount of parallel requests |
+| [010] | Return newly negotiated EDR                                                                                                                                                                                                                             |
+| [011] | Return asynchronous steps [006] - [010] as a completable future                                                                                                                                                                                         |
+| [012] | Wait for completable future to be completed                                                                                                                                                                                                             |
+
 ### Special Case: Registry Negotiation
 
 Contract offers for the digital twin registry are identified by a type. This changes the process slightly, so it is not
@@ -73,6 +88,16 @@ The process of NegotiationOrchestrator is left out of the chart, since it is the
 
 See [docs/src/uml-diagrams/runtime-view/edc-flow-orchestrated-ddtr.puml](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/docs/src/uml-diagrams/runtime-view/edc-flow-orchestrated-ddtr.puml)
 for sources.
+
+| Step  | Description                                                                                                                                                               |
+|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [001] | Request for a Contract Offers by EDC asset type                                                                                                                           |
+| [002] | Request for a Contract Offers by EDC asset type, but managed by an executor service to limit the amount of parallel requests                                              |
+| [003] | Return Contract Offers for asset type                                                                                                                                     |
+| [004] | Return Contract Offers for asset type                                                                                                                                     |
+| [005] | For each Contract Offer, a negotiation is initiated. This consists of the same steps [006] - [010] as the previous chart and for this reason simplified as a single step. |
+| [006] | For each Contract Offer a completable future is returned                                                                                                                  |
+| [007] | Wait for all completable futures to be completed                                                                                                                          |
 
 ## Testing Strategy
 
