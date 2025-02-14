@@ -2,7 +2,7 @@
 
 | Key           | Value                                                                    |
 |---------------|--------------------------------------------------------------------------|
-| Creation date | 09.10.2024                                                               |
+| Creation date | 05.020.2025                                                              |
 | Ticket Id     | https://github.com/eclipse-tractusx/item-relationship-service/issues/894 |    
 | State         | DONE                                                                     | 
 
@@ -15,15 +15,16 @@
 
 ## Decision
 
-Implementation of a new EDC Orchestrator within the EDC Client Library for efficient management of negotiations. The
-goal is to prevent duplicate negotiations for assets, thereby ensuring more efficient processing in asset consumption.
+Implementation of a new EDC Orchestrator within the IRS EDC Client Library for efficient management of negotiations. The
+goal is to avoid redundant and unnecessary negotiations, thereby ensuring more efficient processing in asset
+consumption.
 
 ## Rationale
 
-Each job is executed in isolation. This results in many jobs conducting a multitude of unnecessary contract negotiations
-for the same DT Registry Asset in the EDC catalog. In case the same catalog offer is requested in different jobs this
-leads to not performant overall executions. Therefore, a concept is required how to handle this in the most efficient
-way.
+Each IRS job is executed in isolation. This results in many jobs conducting a multitude of unnecessary contract
+negotiations for the same DT Registry Asset in the EDC catalog. In case the same catalog offer is requested in different
+jobs this leads to not performant overall executions. Therefore, a concept is required how to handle this in the most
+efficient way.
 
 ## Approach
 
@@ -32,8 +33,8 @@ EdcSubmodelClientImpl and ContractNegotiationService, EDCCatalogFacade and Endpo
 
 The service handles the following tasks:
 
-- orchestration of catalog requests by id
-- orchestration of catalog requests by type
+- orchestration of catalog requests by asset ID
+- orchestration of catalog requests by asset type
 - orchestration of contract negotiations
 - caching of ongoing contract negotiations
 - caching of EDR tokens
@@ -41,10 +42,12 @@ The service handles the following tasks:
 To prevent too many parallel requests to the EDC, an ExecutorService handles the catalog requests and negotiations with
 a defined thread pool.
 
-To cache the currently ongoing negotiations, a ConcurrentHashMap with EDC AssetIds as key can be used. Due to the
-asynchronous process within NegotiationOrchestrator, the future EDR can be created and added to the cache as soon as the
-method is called and will be removed only after the negotiation is completed. In addition, a time to live can be added
-for cleanup.
+To store the currently ongoing negotiations, a Cache with EDC AssetIds as key can be used. For a first MVP an in-memory
+Cache (e.g. ConcurrentHashMap) can be used. Due to the asynchronous process within NegotiationOrchestrator, the future
+EDR can be created and added to the cache as soon as the method is called and will be removed only after the negotiation
+is completed. In addition, a configurable time to live should be added to the stored EDR. This enables a cleanup
+mechanism to remove outdated EDRs from the cache which will ensure that a new negotiation will take place after the
+defined TTL.
 
 To cache EDR tokens, the EndpointDataReferenceCacheService can be used. The caching service wraps EDR tokens into an
 object with a state indicating if the token is valid (i.e. can be used directly to authenticate the dataplane request)
@@ -85,7 +88,7 @@ The communication to EDC does not change so the already existing *Support Classe
 
 New scenarios have to be defined which aim to test the parallel execution of negotiations.
 
-### Test case: start 2 jobs with the same globalAssetId at the same time
+### Test case: start 2 IRS jobs with the same globalAssetId at the same time
 
 Expected result is that both jobs complete, but for the second job, no new negotiations should be started .
 
@@ -94,7 +97,7 @@ WiremockSupport.
 
 Verify that the Cache has been used for the registry and submodel negotiation.
 
-### Test case: start 2 jobs with different globalAssetIds at the same time
+### Test case: start 2 IRS jobs with different globalAssetIds at the same time
 
 Expected result is that both jobs complete and both had their full set of negotiations conducted.
 
