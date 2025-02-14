@@ -88,7 +88,7 @@ The communication to EDC does not change so the already existing *Support Classe
 
 New scenarios have to be defined which aim to test the parallel execution of negotiations.
 
-### Test case: start 2 IRS jobs with the same globalAssetId at the same time
+### Test case: Start two IRS jobs with the same globalAssetId at the same time
 
 Expected result is that both jobs complete, but for the second job, no new negotiations should be started .
 
@@ -97,7 +97,7 @@ WiremockSupport.
 
 Verify that the Cache has been used for the registry and submodel negotiation.
 
-### Test case: start 2 IRS jobs with different globalAssetIds at the same time
+### Test case: Start two IRS jobs with different globalAssetIds at the same time
 
 Expected result is that both jobs complete and both had their full set of negotiations conducted.
 
