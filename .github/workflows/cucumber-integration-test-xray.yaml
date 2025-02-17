@@ -20,6 +20,9 @@ on:
       exportFilter:
         required: true
         type: string
+      publishToCucumber:
+        default: true
+        type: boolean
 
 jobs:
 
@@ -67,13 +70,14 @@ jobs:
           ADMIN_USER_API_KEY: ${{ secrets.adminUserApiKey }}
           ISSUE_FILTER: ${{ inputs.executionFilter }}
           CUCUMBER_PUBLISH_TOKEN: ${{ secrets.cucumberPublishToken }}
+          PUBLISH_ON_CUCUMBER: ${{ inputs.publishOnCucumber }}
         run: |
           unzip -o features.zip -d irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features
           
           # workaround replacement since injecting the token via environment variable does not work
           sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
 
-          mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
+          mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -Dcucumber.publish.enabled="$PUBLISH_ON_CUCUMBER" -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
 
       - name: Submit results to Xray
         if: ${{ always() && steps.download.outputs.http_response == '200' }}
@@ -93,13 +97,13 @@ jobs:
 
       - name: Publish Cucumber Results
         uses: EnricoMi/publish-unit-test-result-action@v2.17.0
-        if: always()
+        if: ${{ always() && inputs.publishToCucumber }}
         with:
           files: |
             irs-cucumber-tests/target/cucumber-junit-report.xml
 
       - name: Get Cucumber Report
-        if: always()
+        if: ${{ always() && inputs.publishToCucumber }}
         id: get-cucumber-report
         run: |
           grep -E "^│.*│$" irs-cucumber-tests/report-banner.txt > irs-cucumber-tests/cucumber-report.txt
