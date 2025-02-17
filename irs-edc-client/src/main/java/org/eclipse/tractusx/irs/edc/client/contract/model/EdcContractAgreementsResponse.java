@@ -25,7 +25,7 @@ import lombok.Builder;
 
 /**
  * EdcContractAgreementsResponse used for representing the response of
- * /management/v2/contractagreements/request where an array of
+ * /management/v3/contractagreements/request where an array of
  * EdcContractAgreementsResponse is returned.
  */
 

@@ -122,7 +122,7 @@ class EdcPolicyDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v3/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.ok("test"));
@@ -140,7 +140,7 @@ class EdcPolicyDefinitionServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         String policyName = "policyName";
-        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions" + "/" + policyName);
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v3/policydefinitions" + "/" + policyName);
 
         ResponseEntity<String> responseEntity = ResponseEntity.ok("Mocked response");
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
@@ -158,7 +158,7 @@ class EdcPolicyDefinitionServiceTest {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         String policyName = "policyName";
-        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions" + "/" + policyName);
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v3/policydefinitions" + "/" + policyName);
 
         ResponseEntity<String> responseEntity = ResponseEntity.notFound().build();
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
@@ -175,7 +175,7 @@ class EdcPolicyDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v3/policydefinitions");
         final String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenThrow(
@@ -190,7 +190,7 @@ class EdcPolicyDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v3/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).build());
@@ -203,7 +203,7 @@ class EdcPolicyDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v3/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenThrow(
@@ -217,7 +217,7 @@ class EdcPolicyDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v3/policydefinitions");
         String policyName = "policyName";
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 
@@ -230,7 +230,7 @@ class EdcPolicyDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v3/policydefinitions");
         String policyName = "policyName";
 
         // when

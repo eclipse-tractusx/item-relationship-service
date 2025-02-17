@@ -44,9 +44,9 @@ irs-edc-client:
     request-ttl: PT10M # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
       data: "" # URL of the EDC consumer controlplane data endpoint
-      catalog: /v2/catalog/request # EDC consumer controlplane catalog path
-      contract-negotiation: /v2/contractnegotiations # EDC consumer controlplane contract negotiation path
-      transfer-process: /v2/transferprocesses # EDC consumer controlplane transfer process path
+      catalog: /v3/catalog/request # EDC consumer controlplane catalog path
+      contract-negotiation: /v3/contractnegotiations # EDC consumer controlplane contract negotiation path
+      transfer-process: /v3/transferprocesses # EDC consumer controlplane transfer process path
       state-suffix: /state # Path of the state suffix for contract negotiation and transfer process
     provider-suffix: /api/v1/dsp # Suffix to add to data requests to the EDC provider controlplane
     catalog-limit: 1000 # Max number of items to fetch from the EDC provider catalog

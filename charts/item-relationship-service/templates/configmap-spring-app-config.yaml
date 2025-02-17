@@ -110,12 +110,12 @@ data:
         request-ttl: {{ .Values.edc.controlplane.request.ttl | default "PT10M" | quote }}
         endpoint:
           data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-tractusx-connector-controlplane:8081/management")) . | quote }}
-          catalog: {{ .Values.edc.controlplane.endpoint.catalog | default "/v2/catalog/request" | quote }}
-          edr-management: {{ .Values.edc.controlplane.endpoint.edrManagement | default "/v2/edrs" | quote }}
-          contract-negotiation: {{ .Values.edc.controlplane.endpoint.contractnegotiation | default "/v2/contractnegotiations" | quote }}
-          transfer-process: {{ .Values.edc.controlplane.endpoint.transferprocess | default "/v2/transferprocesses" | quote }}
+          catalog: {{ .Values.edc.controlplane.endpoint.catalog | default "/v3/catalog/request" | quote }}
+          edr-management: {{ .Values.edc.controlplane.endpoint.edrManagement | default "/v3/edrs" | quote }}
+          contract-negotiation: {{ .Values.edc.controlplane.endpoint.contractnegotiation | default "/v3/contractnegotiations" | quote }}
+          transfer-process: {{ .Values.edc.controlplane.endpoint.transferprocess | default "/v3/transferprocesses" | quote }}
           state-suffix: {{ .Values.edc.controlplane.endpoint.statesuffix | default "/state" | quote }}
-          contract-agreements: {{ .Values.edc.controlplane.endpoint.contractAgreements | default "/v2/contractagreements" | quote }}
+          contract-agreements: {{ .Values.edc.controlplane.endpoint.contractAgreements | default "/v3/contractagreements" | quote }}
         provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
         catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
         catalog-page-size: {{ .Values.edc.controlplane.catalog.pagesize }}
@@ -141,8 +141,8 @@ data:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.ess.edc.host | default "") . | quote }}
       assetsPath: {{ tpl (.Values.ess.assetsPath | default "/management/v3/assets") . | quote }}
-      policydefinitionsPath: {{ tpl (.Values.ess.policydefinitionsPath | default "/management/v2/policydefinitions") . | quote }}
-      contractdefinitionsPath: {{ tpl (.Values.ess.contractdefinitionsPath | default "/management/v2/contractdefinitions") . | quote }}
+      policydefinitionsPath: {{ tpl (.Values.ess.policydefinitionsPath | default "/management/v3/policydefinitions") . | quote }}
+      contractdefinitionsPath: {{ tpl (.Values.ess.contractdefinitionsPath | default "/management/v3/contractdefinitions") . | quote }}
       irs:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:
