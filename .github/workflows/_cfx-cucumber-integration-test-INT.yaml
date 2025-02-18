@@ -1,4 +1,4 @@
-name: IRS Association INT Cucumber Integration test execution
+name: [CFX] IRS Cucumber Integration Test execution with Xray
 
 on:
   workflow_dispatch: # Trigger manually
@@ -12,53 +12,101 @@ on:
         required: false
         default: '10433'
 
-# Cancel previous Test executions if a new one is triggered.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-
-  check-config:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: [ self-hosted, linux ]
+    container:
+      image: maven:3-eclipse-temurin-21
     steps:
-      - name: Check if INT_REGULAR_USER_API_KEY is defined
-        run: |
-          if [[ -z "${{ secrets.INT_REGULAR_USER_API_KEY }}" ]]; then
-            echo "Error: Missing secret: Please configure INT_REGULAR_USER_API_KEY."
-            exit 1
-          fi
-      - name: Check if INT_ADMIN_USER_API_KEY is defined
-        run: |
-          if [[ -z "${{ secrets.INT_ADMIN_USER_API_KEY }}" ]]; then
-            echo "Error: Missing secret: Please configure INT_ADMIN_USER_API_KEY."
-            exit 1
-          fi
-      - name: Check if is defined IRS_XRAY_JIRA_USER is defined
-        run: |
-          if [[ -z "${{ secrets.IRS_XRAY_JIRA_USER  }}" ]]; then
-            echo "Error: Missing secret: Please configure IRS_XRAY_JIRA_USER."
-            exit 1
-          fi
-      - name: Check if is defined IRS_XRAY_JIRA_SECRET is defined
-        run: |
-          if [[ -z "${{ secrets.IRS_XRAY_JIRA_SECRET  }}" ]]; then
-            echo "Error: Missing secret: Please configure IRS_XRAY_JIRA_SECRET."
-            exit 1
-          fi
+      - uses: actions/checkout@v4
 
-  trigger-integration-test:
-    needs: check-config
-    uses: ./.github/workflows/cucumber-integration-test-xray.yaml
-    secrets:
-      regularUserApiKey: ${{ secrets.INT_REGULAR_USER_API_KEY }}
-      adminUserApiKey: ${{ secrets.INT_ADMIN_USER_API_KEY }}
-      cucumberPublishToken: ''
-      jiraUser: ${{ secrets.IRS_XRAY_JIRA_USER  }}
-      jiraPassword: ${{ secrets.IRS_XRAY_JIRA_SECRET  }}
-    with:
-      executionFilter:  ${{ github.event.inputs.executionFilter || '!Ignore& !INACTIVE & IRS & INT' }}
-      # JIRA filter 10433: project = TRACEX AND labels = "INT" AND labels = "IRS" AND labels = "cucumber_test" AND status = Active
-      exportFilter: ${{ github.event.inputs.exportFilter || '10433' }}
-      publishToCucumber: false
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
+      - name: Cache maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Download Feature Files
+        id: download
+        env:
+          JIRA_USERNAME: ${{ secrets.IRS_XRAY_JIRA_USER }}
+          JIRA_PASSWORD: ${{ secrets.IRS_XRAY_JIRA_SECRET }}
+          EXPORT_FILTER: ${{ inputs.exportFilter }}
+          # Downloads all IRS feature files of cucumber tests
+        run: |
+          token=$(curl -H "Content-Type: application/json" -X POST \
+          --data "{ \"client_id\": \"$JIRA_USERNAME\",\"client_secret\": \"$JIRA_PASSWORD\" }" \
+          https://xray.cloud.getxray.app/api/v2/authenticate | tr -d '"')
+          
+          export HTTP_RESULT=$(curl -s --show-error -w "%{http_code}" --header "Authorization: Bearer $token" \
+          "https://xray.cloud.getxray.app/api/v2/export/cucumber?filter=$EXPORT_FILTER&fz=true" -o features.zip)
+          
+          [[ $HTTP_RESULT == 200 || $HTTP_RESULT == 400 ]]
+          echo "::set-output name=http_response::$HTTP_RESULT"
+
+      - name: Run Tests with Maven
+        if: ${{ steps.download.outputs.http_response == '200' }}
+        env:
+          REGULAR_USER_API_KEY: ${{ secrets.INT_REGULAR_USER_API_KEY }}
+          ADMIN_USER_API_KEY: ${{ secrets.INT_ADMIN_USER_API_KEY }}
+          ISSUE_FILTER: ${{ inputs.executionFilter }}
+        run: |
+          unzip -o features.zip -d irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features
+
+          mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -Dcucumber.publish.enabled=false -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
+
+      - name: Submit results to Xray
+        if: ${{ always() && steps.download.outputs.http_response == '200' }}
+        env:
+          JIRA_USERNAME: ${{ secrets.IRS_XRAY_JIRA_USER }}
+          JIRA_PASSWORD: ${{ secrets.IRS_XRAY_JIRA_SECRET }}
+        run: |
+          token=$(curl -H "Content-Type: application/json" -X POST \
+          --data "{ \"client_id\": \"$JIRA_USERNAME\",\"client_secret\": \"$JIRA_PASSWORD\" }" \
+          https://xray.cloud.getxray.app/api/v2/authenticate | tr -d '"')
+          
+          curl --request POST \
+          --header 'Content-Type: application/json' \
+          --header "Authorization: Bearer $token" \
+          --data-binary '@irs-cucumber-tests/target/report.json' \
+          "https://xray.cloud.getxray.app/api/v2/import/execution/cucumber"
+
+      - name: Get Cucumber Report
+        if: always()
+        id: get-cucumber-report
+        run: |
+          grep -E "^│.*│$" irs-cucumber-tests/report-banner.txt > irs-cucumber-tests/cucumber-report.txt
+          sed -i 's/│//g' irs-cucumber-tests/cucumber-report.txt
+          cat irs-cucumber-tests/cucumber-report.txt
+          cat irs-cucumber-tests/cucumber-report.txt >> $GITHUB_STEP_SUMMARY
+
+      - name: Find previous comment in PR
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'View your Cucumber Report at'
+
+      - name: Create or update comment in PR
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: 'irs-cucumber-tests/cucumber-report.txt'
+          edit-mode: replace
+
+      - name: Upload Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          path: 'irs-cucumber-tests/target/report.html'
