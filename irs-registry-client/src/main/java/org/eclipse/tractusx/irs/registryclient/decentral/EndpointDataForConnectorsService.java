@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.springframework.util.StopWatch;
 
 /**
@@ -43,6 +44,8 @@ public class EndpointDataForConnectorsService {
     private static final String TOOK_MS = "{} took {} ms";
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
+
+    private final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache;
 
     public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
             final List<String> edcUrls, final String bpn) {
@@ -65,7 +68,7 @@ public class EndpointDataForConnectorsService {
         }
     }
 
-    private List<CompletableFuture<EndpointDataReference>> createGetEndpointReferencesForAssetFutures(
+    public List<CompletableFuture<EndpointDataReference>> createGetEndpointReferencesForAssetFutures(
             final String edcUrl, final String bpn) {
 
         final var watch = new StopWatch();
@@ -74,9 +77,13 @@ public class EndpointDataForConnectorsService {
         log.info(msg);
 
         try {
-            return edcSubmodelFacade.getEndpointReferencesForAsset(edcUrl, bpn);
+            final List<CompletableFuture<EndpointDataReference>> endpointReferencesForAsset = edcSubmodelFacade.getEndpointReferencesForAsset(
+                    edcUrl, bpn);
+            preferredConnectorEndpointsCache.store(bpn, edcUrl);
+            return endpointReferencesForAsset;
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
+            preferredConnectorEndpointsCache.remove(bpn);
             return List.of(CompletableFuture.failedFuture(
                     new EdcRetrieverException.Builder(e).withBpn(bpn).withEdcUrl(edcUrl).build()));
         } finally {
