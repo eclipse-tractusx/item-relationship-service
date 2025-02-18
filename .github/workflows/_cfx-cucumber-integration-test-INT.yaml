@@ -1,4 +1,4 @@
-name: [CFX] IRS Cucumber Integration Test execution with Xray
+name: CFX | IRS Cucumber Integration Test execution with Xray
 
 on:
   workflow_dispatch: # Trigger manually
