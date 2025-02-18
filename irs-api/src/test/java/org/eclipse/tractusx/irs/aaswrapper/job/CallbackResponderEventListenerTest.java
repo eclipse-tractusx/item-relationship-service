@@ -3,7 +3,6 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -26,6 +25,8 @@ import org.springframework.web.client.RestTemplate;
 
 class CallbackResponderEventListenerTest {
 
+    private static final String CALLBACK_BASE_URL = "https://hostname.com";
+
     private final RestTemplate restTemplate = mock(RestTemplate.class);
     private final CallbackResponderEventListener callbackResponderEventListener = new CallbackResponderEventListener(
             restTemplate);
@@ -38,109 +39,72 @@ class CallbackResponderEventListenerTest {
     @Test
     void shouldCallCallbackUrlIfIsValidAndStateCompletedAndJobProcessingFinishedEvent() throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "https://hostname.com/callback?id={id}&state={state}";
         final String jobId = UUID.randomUUID().toString();
         final JobState jobState = JobState.COMPLETED;
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId,
-                jobState.name(), callbackUrlTemplate, Optional.empty());
+                jobState.name(), CALLBACK_BASE_URL, Optional.empty());
 
         // when
         callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
-        final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId + "&state=" + jobState;
+        final String expectedCallbackUrl = "https://hostname.com?id=" + jobId + "&state=" + jobState;
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+        verify(this.restTemplate).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
     void shouldCallCallbackUrlIfIsValidAndStateCompletedAndBatchProcessingFinishedEvent() throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}";
         final UUID orderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
         final ProcessingState orderState = ProcessingState.COMPLETED;
         final ProcessingState batchState = ProcessingState.COMPLETED;
         final BatchProcessingFinishedEvent batchProcessingFinishedEvent = new BatchProcessingFinishedEvent(orderId,
-                batchId, orderState, batchState, 1, callbackUrlTemplate);
+                batchId, orderState, batchState, 1, CALLBACK_BASE_URL);
 
         // when
         callbackResponderEventListener.handleBatchProcessingFinishedEvent(batchProcessingFinishedEvent);
         final String expectedCallbackUrl =
-                "https://hostname.com/callback?orderId=" + orderId + "&batchId=" + batchId + "&orderState=" + orderState
+                "https://hostname.com?orderId=" + orderId + "&batchId=" + batchId + "&orderState=" + orderState
                         + "&batchState=" + batchState;
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+        verify(this.restTemplate).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
     void shouldCallCallbackUrlIfIsValidAndStateCompletedAndBatchOrderProcessingFinishedEvent()
             throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}";
         final UUID orderId = UUID.randomUUID();
         final ProcessingState orderState = ProcessingState.COMPLETED;
         final BatchOrderProcessingFinishedEvent batchOrderProcessingFinishedEvent = new BatchOrderProcessingFinishedEvent(
-                orderId, orderState, callbackUrlTemplate);
+                orderId, orderState, CALLBACK_BASE_URL);
 
         // when
         callbackResponderEventListener.handleBatchOrderProcessingFinishedEvent(batchOrderProcessingFinishedEvent);
         final String expectedCallbackUrl =
-                "https://hostname.com/callback?orderId=" + orderId + "&batchId=" + "&orderState=" + orderState
+                "https://hostname.com?orderId=" + orderId + "&batchId=" + "&orderState=" + orderState
                         + "&batchState=";
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+        verify(this.restTemplate).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
     void shouldCallCallbackUrlIfIsValidAndStateError() throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "http://qwerty.de/{id}/{state}";
         final String jobId = UUID.randomUUID().toString();
         final JobState jobState = JobState.ERROR;
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId,
-                jobState.name(), callbackUrlTemplate, Optional.empty());
+                jobState.name(), CALLBACK_BASE_URL, Optional.empty());
 
         // when
         callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
-        final String expectedCallbackUrl = "http://qwerty.de/" + jobId + "/" + jobState;
+        final String expectedCallbackUrl = "https://hostname.com?id=" + jobId + "&state=" + jobState;
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
-    }
-
-    @Test
-    void shouldCallCallbackUrlIfUrlIsValidAndWithoutPlaceholders() throws URISyntaxException {
-        // given
-        final String callbackUrlTemplate = "https://hostname.com/";
-        final String jobId = UUID.randomUUID().toString();
-        final JobState jobState = JobState.COMPLETED;
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId,
-                jobState.name(), callbackUrlTemplate, Optional.empty());
-
-        // when
-        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
-        final String expectedCallbackUrl = "https://hostname.com/";
-
-        // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
-    }
-
-    @Test
-    void shouldCallCallbackUrlIfUrlIsValidAndWithOnePlaceholder() throws URISyntaxException {
-        // given
-        final String callbackUrlTemplate = "https://hostname.com/callback?id={id}";
-        final String jobId = UUID.randomUUID().toString();
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId,
-                JobState.COMPLETED.name(), callbackUrlTemplate, Optional.empty());
-
-        // when
-        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
-        final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId;
-
-        // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+        verify(this.restTemplate).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
@@ -189,7 +153,7 @@ class CallbackResponderEventListenerTest {
     @Test
     void shouldCallCallbackUrlIfIsInternalAndStateCompletedAndJobProcessingFinishedEvent() throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "https://internal:1234/callback?id={id}&state={state}";
+        final String callbackUrlTemplate = "https://internal:1234";
         final String jobId = UUID.randomUUID().toString();
         final JobState jobState = JobState.COMPLETED;
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId,
@@ -198,8 +162,8 @@ class CallbackResponderEventListenerTest {
         callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        final String expectedCallbackUrl = "https://internal:1234/callback?id=" + jobId + "&state=" + jobState;
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+        final String expectedCallbackUrl = "https://internal:1234?id=" + jobId + "&state=" + jobState;
+        verify(this.restTemplate).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
@@ -233,59 +197,55 @@ class CallbackResponderEventListenerTest {
 
     @Test
     void shouldNotSendCallbackIfAlreadyPublished() throws URISyntaxException {
-        final String callbackUrlTemplate = "https://hostname.com/callback?id={id}";
         final String jobId = UUID.randomUUID().toString();
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId,
-                JobState.COMPLETED.toString(), callbackUrlTemplate, Optional.empty());
+                JobState.COMPLETED.toString(), CALLBACK_BASE_URL, Optional.empty());
 
         // when
         callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
         callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
-        final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId;
+        final String expectedCallbackUrl = "https://hostname.com?id=" + jobId + "&state=COMPLETED";
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+        verify(this.restTemplate).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
     void shouldNotSendBatchCallbackIfAlreadyPublished() throws URISyntaxException {
-        final String callbackUrlTemplate = "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}";
         final UUID orderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
         final ProcessingState orderState = ProcessingState.COMPLETED;
         final ProcessingState batchState = ProcessingState.COMPLETED;
         final BatchProcessingFinishedEvent batchProcessingFinishedEvent = new BatchProcessingFinishedEvent(orderId,
-                batchId, orderState, batchState, 1, callbackUrlTemplate);
+                batchId, orderState, batchState, 1, CALLBACK_BASE_URL);
 
         // when
         callbackResponderEventListener.handleBatchProcessingFinishedEvent(batchProcessingFinishedEvent);
         callbackResponderEventListener.handleBatchProcessingFinishedEvent(batchProcessingFinishedEvent);
         final String expectedCallbackUrl =
-                "https://hostname.com/callback?orderId=" + orderId + "&batchId=" + batchId + "&orderState=" + orderState
+                "https://hostname.com?orderId=" + orderId + "&batchId=" + batchId + "&orderState=" + orderState
                         + "&batchState=" + batchState;
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+        verify(this.restTemplate).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
-    void shouldNotSendBatchOrderCallbackIfAlreadyPublished()
-            throws URISyntaxException {
+    void shouldNotSendBatchOrderCallbackIfAlreadyPublished() throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}";
         final UUID orderId = UUID.randomUUID();
         final ProcessingState orderState = ProcessingState.COMPLETED;
         final BatchOrderProcessingFinishedEvent batchOrderProcessingFinishedEvent = new BatchOrderProcessingFinishedEvent(
-                orderId, orderState, callbackUrlTemplate);
+                orderId, orderState, CALLBACK_BASE_URL);
 
         // when
         callbackResponderEventListener.handleBatchOrderProcessingFinishedEvent(batchOrderProcessingFinishedEvent);
         callbackResponderEventListener.handleBatchOrderProcessingFinishedEvent(batchOrderProcessingFinishedEvent);
         final String expectedCallbackUrl =
-                "https://hostname.com/callback?orderId=" + orderId + "&batchId=" + "&orderState=" + orderState
+                "https://hostname.com?orderId=" + orderId + "&batchId=" + "&orderState=" + orderState
                         + "&batchState=";
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
+        verify(this.restTemplate).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 }

@@ -185,7 +185,9 @@ class CallbackResponderEventListener {
         uriVariables.put("id", jobId);
         uriVariables.put("state", jobState);
 
-        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(callbackUrl);
+        final String callbackTemplate = "?id={id}&state={state}";
+
+        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(callbackUrl.concat(callbackTemplate));
         uriComponentsBuilder.uriVariables(uriVariables);
         return uriComponentsBuilder.build().toUri();
     }
@@ -199,7 +201,9 @@ class CallbackResponderEventListener {
         uriVariables.put("orderState", orderState);
         uriVariables.put("batchState", batchState);
 
-        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(callbackUrl);
+        final String callbackTemplate = "?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}";
+
+        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(callbackUrl.concat(callbackTemplate));
         uriComponentsBuilder.uriVariables(uriVariables);
         return uriComponentsBuilder.build().toUri();
     }
