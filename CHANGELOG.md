@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Changed
+
+- Updated EDC management endpoint paths to /v3/
+
 ### Fixed
 
 - Added missing discovery type config `digitalTwinRegistry.discovery.type`

@@ -108,7 +108,7 @@ class EdcContractDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v3/contractdefinitions");
         String assetId = "Asset1";
         String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcContractDefinition.class),
@@ -124,7 +124,7 @@ class EdcContractDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v3/contractdefinitions");
         final String assetId = "Asset1";
         final String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcContractDefinition.class),
@@ -140,7 +140,7 @@ class EdcContractDefinitionServiceTest {
     void givenCreateContractDefinition_whenBadRequest_thenThrowException() {
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v3/contractdefinitions");
         String assetId = "Asset1";
         String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcContractDefinition.class),
@@ -155,7 +155,7 @@ class EdcContractDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v3/contractdefinitions");
         String assetId = "Asset1";
         String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcContractDefinition.class),
@@ -170,7 +170,7 @@ class EdcContractDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v3/contractdefinitions");
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class),
                 any(), any(ParameterizedTypeReference.class))).thenReturn(ResponseEntity.of(
                 Optional.of(List.of(EdcContractDefinition.builder().accessPolicyId("").contractPolicyId("").build()))));
@@ -188,7 +188,7 @@ class EdcContractDefinitionServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v3/contractdefinitions");
 
         //when
         service.deleteContractDefinition("");

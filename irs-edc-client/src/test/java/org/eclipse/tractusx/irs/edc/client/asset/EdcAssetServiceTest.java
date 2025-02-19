@@ -74,7 +74,7 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(MockitoExtension.class)
 class EdcAssetServiceTest {
 
-    public static final String MANAGEMENT_ASSETS_PATH = "/management/v2/assets";
+    public static final String MANAGEMENT_ASSETS_PATH = "/management/v3/assets";
     @Mock
     EdcConfiguration edcConfiguration;
     @Mock
@@ -417,7 +417,7 @@ class EdcAssetServiceTest {
         service.updateAsset(request);
 
         // then
-        verify(restTemplate).put(eq("/management/v2/assets"), eq(request));
+        verify(restTemplate).put(eq("/management/v3/assets"), eq(request));
     }
 
     @Test
