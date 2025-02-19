@@ -347,6 +347,7 @@
                         <artifactId>dependency-check-maven</artifactId>
                         <version>${owasp-plugin.version}</version>
                         <configuration>
+                            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                             <skip>false</skip>
                             <suppressionFile>.config/owasp-suppressions.xml</suppressionFile>
                         </configuration>
