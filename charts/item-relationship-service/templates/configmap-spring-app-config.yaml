@@ -111,7 +111,7 @@ data:
         endpoint:
           data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-tractusx-connector-controlplane:8081/management")) . | quote }}
           catalog: {{ .Values.edc.controlplane.endpoint.catalog | default "/v3/catalog/request" | quote }}
-          edr-management: {{ .Values.edc.controlplane.endpoint.edrManagement | default "/v3/edrs" | quote }}
+          edr-management: {{ .Values.edc.controlplane.endpoint.edrManagement | default "/v2/edrs" | quote }}
           contract-negotiation: {{ .Values.edc.controlplane.endpoint.contractnegotiation | default "/v3/contractnegotiations" | quote }}
           transfer-process: {{ .Values.edc.controlplane.endpoint.transferprocess | default "/v3/transferprocesses" | quote }}
           state-suffix: {{ .Values.edc.controlplane.endpoint.statesuffix | default "/state" | quote }}

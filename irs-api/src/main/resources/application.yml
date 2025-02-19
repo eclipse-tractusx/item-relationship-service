@@ -140,7 +140,7 @@ irs-edc-client:
     endpoint:
       data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
       catalog: ${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v3/catalog/request} # EDC consumer controlplane catalog path
-      edr-management: ${EDC_CONTROLPLANE_ENDPOINT_EDRS:/v3/edrs} # EDC consumer controlplane EDR management path
+      edr-management: ${EDC_CONTROLPLANE_ENDPOINT_EDRS:/v2/edrs} # EDC consumer controlplane EDR management path
       contract-negotiation: ${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v3/contractnegotiations} # EDC consumer controlplane contract negotiation path
       transfer-process: ${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v3/transferprocesses} # EDC consumer controlplane transfer process path
       state-suffix: ${EDC_CONTROLPLANE_ENDPOINT_DATA:/state} # Path of the state suffix for contract negotiation and transfer process
