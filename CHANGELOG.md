@@ -11,6 +11,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 
 - Updated EDC management endpoint paths to /v3/
+- Bump Spring Boot to 3.4.2
 
 ### Fixed
 
