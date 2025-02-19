@@ -190,6 +190,7 @@ digitalTwinRegistry:
   discovery:
     oAuthClientId: discovery # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
     discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
+    type: bpnl # The type of discovery to be searched for
     timeout:
       read: PT90S # HTTP read timeout for the discovery client
       connect: PT90S # HTTP connect timeout for the discovery client
