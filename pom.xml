@@ -81,7 +81,6 @@
         <jsonassert.version>1.5.1</jsonassert.version>
         <junit-bom.version>5.10.2</junit-bom.version>
         <cucumber-bom.version>7.18.0</cucumber-bom.version>
-        <snakeyaml.version>2.0</snakeyaml.version>
         <commons-validator.version>1.8.0</commons-validator.version>
         <swagger-annotations.version>2.2.18</swagger-annotations.version>
         <edc.version>0.6.0</edc.version>
@@ -95,7 +94,6 @@
         <okhttp.version>4.12.0</okhttp.version>
         <jackson-databind.version>2.15.1</jackson-databind.version>
         <junit-jupiter-engine.version>5.11.4</junit-jupiter-engine.version>
-        <json-smart.version>2.5.1</json-smart.version>
         <testcontainers-bom.version>1.19.7</testcontainers-bom.version>
 
         <!-- Plugins -->
