@@ -40,21 +40,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SingleIdentifierOnly
 public class PartChainIdentificationKey {
 
     private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
-    private static final String AAS_ID_REGEX = "^(urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$";
     private static final int UUID_SIZE = 36;
     private static final int URN_PREFIX_SIZE = 9;
-    private static final int ID_SIZE = URN_PREFIX_SIZE + UUID_SIZE;
+    private static final int GLOBAL_ASSET_ID_SIZE = URN_PREFIX_SIZE + UUID_SIZE;
     private static final String BPN_REGEX = "^(BPN)(L|S|A)(\\d{10})([a-zA-Z0-9]{2})$";
     private static final int BPN_SIZE = 16;
 
     @Pattern(regexp = GLOBAL_ASSET_ID_REGEX)
-    @Size(min = ID_SIZE, max = ID_SIZE)
+    @NotBlank
+    @Size(min = GLOBAL_ASSET_ID_SIZE, max = GLOBAL_ASSET_ID_SIZE)
     @Schema(description = "Id of global asset.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            implementation = String.class, minLength = ID_SIZE, maxLength = ID_SIZE)
+            implementation = String.class, minLength = GLOBAL_ASSET_ID_SIZE, maxLength = GLOBAL_ASSET_ID_SIZE)
     private String globalAssetId;
 
     // The BPN validation can be activated once all partners follow the pattern correctly
@@ -64,10 +63,4 @@ public class PartChainIdentificationKey {
     @Schema(description = "BPN of partner providing the initial asset", example = "BPNL0123456789XX",
             implementation = String.class, minLength = BPN_SIZE, maxLength = BPN_SIZE)
     private String bpn;
-
-    @Pattern(regexp = AAS_ID_REGEX)
-    @Size(min = UUID_SIZE, max = ID_SIZE)
-    @Schema(description = "Id of Asset Administration Shell.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            implementation = String.class, minLength = UUID_SIZE, maxLength = ID_SIZE)
-    private String identifier;
 }

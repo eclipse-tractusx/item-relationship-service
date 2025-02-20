@@ -26,7 +26,6 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.RecursiveJobHandler;
@@ -46,18 +45,11 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     @Override
     public Stream<ItemDataRequest> initiate(final MultiTransferJob job) {
         log.info("Initiating request for job {}", job.getJobIdString());
-        final var globalAssetId = job.getGlobalAssetId();
+        final var partId = job.getGlobalAssetId();
         final var bpn = job.getJobParameter().getBpn();
-
-        PartChainIdentificationKey.PartChainIdentificationKeyBuilder builder = PartChainIdentificationKey.builder().bpn(bpn);
-
-        if (StringUtils.isNotBlank(globalAssetId)) {
-            builder = builder.globalAssetId(globalAssetId);
-        } else {
-            builder.identifier(job.getAasId());
-        }
-
-        return Stream.of(ItemDataRequest.rootNode(builder.build()));
+        final var dataRequest = ItemDataRequest.rootNode(
+                PartChainIdentificationKey.builder().globalAssetId(partId).bpn(bpn).build());
+        return Stream.of(dataRequest);
     }
 
     @Override

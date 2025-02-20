@@ -98,12 +98,7 @@ public class MultiTransferJob {
 
     @JsonIgnore
     public String getGlobalAssetId() {
-        return getJob().getGlobalAssetId() != null ? getJob().getGlobalAssetId().getGlobalAssetId() : null;
-    }
-
-    @JsonIgnore
-    public String getAasId() {
-        return getJob().getAasIdentifier();
+        return getJob().getGlobalAssetId().getGlobalAssetId();
     }
 
     @JsonIgnore

@@ -18,7 +18,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterBpnInvestigationJob'
+              $ref: "#/components/schemas/RegisterBpnInvestigationJob"
         required: true
       responses:
         "201":
@@ -26,36 +26,36 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/job-handle'
+                  $ref: "#/components/examples/job-handle"
               schema:
-                $ref: '#/components/schemas/JobHandle'
+                $ref: "#/components/schemas/JobHandle"
           description: Returns id of registered job.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Job registration failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -82,45 +82,45 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/complete-ess-job-result'
+                  $ref: "#/components/examples/complete-ess-job-result"
               schema:
-                $ref: '#/components/schemas/Jobs'
+                $ref: "#/components/schemas/Jobs"
           description: Return job with item graph for the requested id.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Return job failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
         "404":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-404'
+                  $ref: "#/components/examples/error-response-404"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Job with the requested jobId not found.
       security:
         - api_key: []
@@ -136,7 +136,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EdcNotificationResponseNotificationContent'
+              $ref: "#/components/schemas/EdcNotificationResponseNotificationContent"
         required: true
       responses:
         "200":
@@ -146,9 +146,9 @@ paths:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Notification malformed.
       summary: Accepts notifications sent via EDC.
       tags:
@@ -163,27 +163,27 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/aspect-models-list'
+                  $ref: "#/components/examples/aspect-models-list"
               schema:
-                $ref: '#/components/schemas/AspectModels'
+                $ref: "#/components/schemas/AspectModels"
           description: Returns all available aspect models.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -199,7 +199,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterBpnInvestigationBatchOrder'
+              $ref: "#/components/schemas/RegisterBpnInvestigationBatchOrder"
         required: true
       responses:
         "201":
@@ -207,36 +207,36 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/job-handle'
+                  $ref: "#/components/examples/job-handle"
               schema:
-                $ref: '#/components/schemas/BatchOrderCreated'
+                $ref: "#/components/schemas/BatchOrderCreated"
           description: Returns orderId of registered Batch order.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Batch Order registration failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -295,7 +295,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageResult'
+                $ref: "#/components/schemas/PageResult"
           description: Paginated list of jobs with state and execution times for requested
             job states.
         "400":
@@ -303,27 +303,27 @@ paths:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Return jobs for requested job states failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -337,7 +337,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterJob'
+              $ref: "#/components/schemas/RegisterJob"
         required: true
       responses:
         "201":
@@ -345,36 +345,36 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/job-handle'
+                  $ref: "#/components/examples/job-handle"
               schema:
-                $ref: '#/components/schemas/JobHandle'
+                $ref: "#/components/schemas/JobHandle"
           description: Returns id of registered job.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Job registration failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -409,18 +409,18 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/complete-job-result'
+                  $ref: "#/components/examples/complete-job-result"
               schema:
-                $ref: '#/components/schemas/Jobs'
+                $ref: "#/components/schemas/Jobs"
           description: Return job with item graph for the requested id.
         "206":
           content:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/partial-job-result'
+                  $ref: "#/components/examples/partial-job-result"
               schema:
-                $ref: '#/components/schemas/Jobs'
+                $ref: "#/components/schemas/Jobs"
           description: Return job with current processed item graph for the requested
             id.
         "400":
@@ -428,36 +428,36 @@ paths:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Return job failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
         "404":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-404'
+                  $ref: "#/components/examples/error-response-404"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Job with the requested jobId not found.
       security:
         - api_key: []
@@ -482,45 +482,45 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/canceled-job-response'
+                  $ref: "#/components/examples/canceled-job-response"
               schema:
-                $ref: '#/components/schemas/Job'
+                $ref: "#/components/schemas/Job"
           description: Job with requested jobId canceled.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Cancel job failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
         "404":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-404'
+                  $ref: "#/components/examples/error-response-404"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Job for requested jobId not found.
       security:
         - api_key: []
@@ -536,7 +536,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterBatchOrder'
+              $ref: "#/components/schemas/RegisterBatchOrder"
         required: true
       responses:
         "201":
@@ -544,36 +544,36 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/job-handle'
+                  $ref: "#/components/examples/job-handle"
               schema:
-                $ref: '#/components/schemas/BatchOrderCreated'
+                $ref: "#/components/schemas/BatchOrderCreated"
           description: Returns orderId of registered Batch order.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Batch Order registration failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -600,45 +600,45 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/complete-order-result'
+                  $ref: "#/components/examples/complete-order-result"
               schema:
-                $ref: '#/components/schemas/BatchOrderResponse'
+                $ref: "#/components/schemas/BatchOrderResponse"
           description: Get a batch order for a given orderId.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Return Batch Order failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
         "404":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-404'
+                  $ref: "#/components/examples/error-response-404"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Batch Order with the requested orderId not found.
       security:
         - api_key: []
@@ -663,45 +663,45 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/complete-order-result'
+                  $ref: "#/components/examples/complete-order-result"
               schema:
-                $ref: '#/components/schemas/BatchOrderResponse'
+                $ref: "#/components/schemas/BatchOrderResponse"
           description: Cancel a batch order for a given orderId.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Return Batch Order failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
         "404":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-404'
+                  $ref: "#/components/examples/error-response-404"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Batch Order with the requested orderId not found.
       security:
         - api_key: []
@@ -735,45 +735,45 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/complete-batch-result'
+                  $ref: "#/components/examples/complete-batch-result"
               schema:
-                $ref: '#/components/schemas/BatchResponse'
+                $ref: "#/components/schemas/BatchResponse"
           description: Get a batch with a given batchId for a given orderId.
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Return batch failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
         "404":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-404'
+                  $ref: "#/components/examples/error-response-404"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Batch with the requested orderId and batchId not found.
       security:
         - api_key: []
@@ -833,18 +833,18 @@ paths:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -859,50 +859,50 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePolicyRequest'
+              $ref: "#/components/schemas/CreatePolicyRequest"
         required: true
       responses:
         "201":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/CreatePoliciesResponse'
+                $ref: "#/components/schemas/CreatePoliciesResponse"
           description: Created
         "400":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Policy registration failed due to an invalid request.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
         "500":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-500'
+                  $ref: "#/components/examples/error-response-500"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Policy registration failed due to an internal error.
       security:
         - api_key: []
@@ -916,7 +916,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdatePolicyRequest'
+              $ref: "#/components/schemas/UpdatePolicyRequest"
         required: true
       responses:
         "200":
@@ -926,36 +926,36 @@ paths:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Policy update failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
         "500":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-500'
+                  $ref: "#/components/examples/error-response-500"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Updating policies failed due to an internal error.
       security:
         - api_key: []
@@ -1003,27 +1003,27 @@ paths:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Invalid input parameters
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -1065,27 +1065,27 @@ paths:
             application/json:
               examples:
                 success:
-                  $ref: '#/components/examples/get-policies-paged-result'
+                  $ref: "#/components/examples/get-policies-paged-result"
               schema:
-                $ref: '#/components/schemas/Page'
+                $ref: "#/components/schemas/Page"
           description: Successfully retrieved the paged policies
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -1111,27 +1111,27 @@ paths:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Policy deletion failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -1163,27 +1163,27 @@ paths:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-400'
+                  $ref: "#/components/examples/error-response-400"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Policy deletion failed.
         "401":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-401'
+                  $ref: "#/components/examples/error-response-401"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: No valid authentication credentials.
         "403":
           content:
             application/json:
               examples:
                 error:
-                  $ref: '#/components/examples/error-response-403'
+                  $ref: "#/components/examples/error-response-403"
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
         - api_key: []
@@ -1836,18 +1836,18 @@ components:
         models:
           type: array
           items:
-            $ref: '#/components/schemas/AspectModel'
+            $ref: "#/components/schemas/AspectModel"
     AssetAdministrationShellDescriptor:
       type: object
       additionalProperties: false
       description: AAS shells.
       properties:
         administration:
-          $ref: '#/components/schemas/AdministrativeInformation'
+          $ref: "#/components/schemas/AdministrativeInformation"
         description:
           type: array
           items:
-            $ref: '#/components/schemas/LangString'
+            $ref: "#/components/schemas/LangString"
           maxItems: 2147483647
         globalAssetId:
           type: string
@@ -1862,12 +1862,12 @@ components:
         specificAssetIds:
           type: array
           items:
-            $ref: '#/components/schemas/IdentifierKeyValuePair'
+            $ref: "#/components/schemas/IdentifierKeyValuePair"
           maxItems: 2147483647
         submodelDescriptors:
           type: array
           items:
-            $ref: '#/components/schemas/SubmodelDescriptor'
+            $ref: "#/components/schemas/SubmodelDescriptor"
           maxItems: 2147483647
     AsyncFetchedItems:
       type: object
@@ -1919,7 +1919,7 @@ components:
           type: array
           description: Array of batches.
           items:
-            $ref: '#/components/schemas/BatchResponse'
+            $ref: "#/components/schemas/BatchResponse"
           maxItems: 2147483647
         orderId:
           type: string
@@ -1979,7 +1979,7 @@ components:
           type: array
           description: Array of jobs.
           items:
-            $ref: '#/components/schemas/JobStatusResult'
+            $ref: "#/components/schemas/JobStatusResult"
           maxItems: 2147483647
         jobsInBatchChecksum:
           type: integer
@@ -2033,7 +2033,7 @@ components:
         payload:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/JsonValue'
+            $ref: "#/components/schemas/JsonValue"
           description: The policy payload.
           example:
             '@context':
@@ -2107,9 +2107,9 @@ components:
       additionalProperties: false
       properties:
         content:
-          $ref: '#/components/schemas/ResponseNotificationContent'
+          $ref: "#/components/schemas/ResponseNotificationContent"
         header:
-          $ref: '#/components/schemas/EdcNotificationHeader'
+          $ref: "#/components/schemas/EdcNotificationHeader"
       required:
         - content
         - header
@@ -2121,7 +2121,7 @@ components:
           type: string
           example: HTTP
         protocolInformation:
-          $ref: '#/components/schemas/ProtocolInformation'
+          $ref: "#/components/schemas/ProtocolInformation"
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -2214,12 +2214,12 @@ components:
       additionalProperties: false
       properties:
         externalSubjectId:
-          $ref: '#/components/schemas/Reference'
+          $ref: "#/components/schemas/Reference"
         name:
           type: string
           example: engineserialid
         semanticId:
-          $ref: '#/components/schemas/Reference'
+          $ref: "#/components/schemas/Reference"
         value:
           type: string
           example: "12309481209312"
@@ -2228,10 +2228,6 @@ components:
       additionalProperties: false
       description: Executable unit with meta information and item graph result.
       properties:
-        aasIdentifier:
-          type: string
-          description: Asset Administration Shell Id
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
         completedOn:
           type: string
           format: date-time
@@ -2241,7 +2237,7 @@ components:
           format: date-time
           example: 2022-02-03T14:48:54.709Z
         exception:
-          $ref: '#/components/schemas/JobErrorDetails'
+          $ref: "#/components/schemas/JobErrorDetails"
         globalAssetId:
           type: string
           description: Part global unique id in the format urn:uuid:uuid4.
@@ -2262,7 +2258,7 @@ components:
           format: date-time
           example: 2022-02-03T14:48:54.709Z
         parameter:
-          $ref: '#/components/schemas/JobParameter'
+          $ref: "#/components/schemas/JobParameter"
         startedOn:
           type: string
           format: date-time
@@ -2279,7 +2275,7 @@ components:
             - ERROR
           example: COMPLETED
         summary:
-          $ref: '#/components/schemas/Summary'
+          $ref: "#/components/schemas/Summary"
       required:
         - id
         - state
@@ -2395,35 +2391,35 @@ components:
           type: array
           description: Collection of bpn mappings
           items:
-            $ref: '#/components/schemas/Bpn'
+            $ref: "#/components/schemas/Bpn"
           maxItems: 2147483647
           uniqueItems: true
         job:
-          $ref: '#/components/schemas/Job'
+          $ref: "#/components/schemas/Job"
         relationships:
           type: array
           description: Relationships between parent and child items.
           items:
-            $ref: '#/components/schemas/Relationship'
+            $ref: "#/components/schemas/Relationship"
           maxItems: 2147483647
         shells:
           type: array
           description: AAS shells.
           items:
-            $ref: '#/components/schemas/Shell'
+            $ref: "#/components/schemas/Shell"
           maxItems: 2147483647
         submodels:
           type: array
           description: Collection of requested Submodels
           items:
-            $ref: '#/components/schemas/Submodel'
+            $ref: "#/components/schemas/Submodel"
           maxItems: 2147483647
         tombstones:
           type: array
           description: Collection of not resolvable endpoints as tombstones. Including
             cause of error and endpoint URL.
           items:
-            $ref: '#/components/schemas/Tombstone'
+            $ref: "#/components/schemas/Tombstone"
           maxItems: 2147483647
     JsonValue:
       type: object
@@ -2506,7 +2502,7 @@ components:
             - asSpecified
           example: asBuilt
         quantity:
-          $ref: '#/components/schemas/Quantity'
+          $ref: "#/components/schemas/Quantity"
     MeasurementUnit:
       type: object
       additionalProperties: false
@@ -2538,12 +2534,12 @@ components:
           type: integer
           format: int32
         pageable:
-          $ref: '#/components/schemas/PageableObject'
+          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32
         sort:
-          $ref: '#/components/schemas/SortObject'
+          $ref: "#/components/schemas/SortObject"
         totalElements:
           type: integer
           format: int64
@@ -2560,7 +2556,7 @@ components:
         content:
           type: array
           items:
-            $ref: '#/components/schemas/JobStatusResult'
+            $ref: "#/components/schemas/JobStatusResult"
         pageCount:
           type: integer
           format: int32
@@ -2589,7 +2585,7 @@ components:
         paged:
           type: boolean
         sort:
-          $ref: '#/components/schemas/SortObject'
+          $ref: "#/components/schemas/SortObject"
         unpaged:
           type: boolean
     PartChainIdentificationKey:
@@ -2611,15 +2607,9 @@ components:
           maxLength: 45
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-        identifier:
-          type: string
-          description: Id of Asset Administration Shell.
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          maxLength: 45
-          minLength: 36
-          pattern: "^(urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
       required:
         - bpn
+        - globalAssetId
     ProcessingError:
       type: object
       additionalProperties: false
@@ -2666,7 +2656,7 @@ components:
         securityAttributes:
           type: array
           items:
-            $ref: '#/components/schemas/SecurityAttribute'
+            $ref: "#/components/schemas/SecurityAttribute"
           maxItems: 2147483647
         subprotocol:
           type: string
@@ -2680,7 +2670,7 @@ components:
       description: Quantity component.
       properties:
         measurementUnit:
-          $ref: '#/components/schemas/MeasurementUnit'
+          $ref: "#/components/schemas/MeasurementUnit"
         quantityNumber:
           type: number
           format: double
@@ -2694,7 +2684,7 @@ components:
         keys:
           type: array
           items:
-            $ref: '#/components/schemas/SemanticId'
+            $ref: "#/components/schemas/SemanticId"
           maxItems: 2147483647
         type:
           type: string
@@ -2776,7 +2766,7 @@ components:
         keys:
           type: array
           items:
-            $ref: '#/components/schemas/PartChainIdentificationKey'
+            $ref: "#/components/schemas/PartChainIdentificationKey"
           maxItems: 2147483647
         lookupBPNs:
           type: boolean
@@ -2849,7 +2839,7 @@ components:
         keys:
           type: array
           items:
-            $ref: '#/components/schemas/PartChainIdentificationKey'
+            $ref: "#/components/schemas/PartChainIdentificationKey"
           maxItems: 2147483647
         timeout:
           type: integer
@@ -2892,7 +2882,7 @@ components:
           maxItems: 2147483647
           pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
         key:
-          $ref: '#/components/schemas/PartChainIdentificationKey'
+          $ref: "#/components/schemas/PartChainIdentificationKey"
       required:
         - incidentBPNSs
         - key
@@ -2949,7 +2939,7 @@ components:
             - upward
             - downward
         key:
-          $ref: '#/components/schemas/PartChainIdentificationKey'
+          $ref: "#/components/schemas/PartChainIdentificationKey"
         lookupBPNs:
           type: boolean
           deprecated: true
@@ -2976,7 +2966,7 @@ components:
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
-          $ref: '#/components/schemas/LinkedItem'
+          $ref: "#/components/schemas/LinkedItem"
     ResponseNotificationContent:
       type: object
       additionalProperties: false
@@ -3015,7 +3005,7 @@ components:
         contractAgreementId:
           type: string
         payload:
-          $ref: '#/components/schemas/AssetAdministrationShellDescriptor'
+          $ref: "#/components/schemas/AssetAdministrationShellDescriptor"
     SortObject:
       type: object
       additionalProperties: false
@@ -3047,30 +3037,30 @@ components:
       additionalProperties: false
       properties:
         administration:
-          $ref: '#/components/schemas/AdministrativeInformation'
+          $ref: "#/components/schemas/AdministrativeInformation"
         description:
           type: array
           items:
-            $ref: '#/components/schemas/LangString'
+            $ref: "#/components/schemas/LangString"
           maxItems: 2147483647
         endpoints:
           type: array
           items:
-            $ref: '#/components/schemas/Endpoint'
+            $ref: "#/components/schemas/Endpoint"
           maxItems: 2147483647
         id:
           type: string
         idShort:
           type: string
         semanticId:
-          $ref: '#/components/schemas/Reference'
+          $ref: "#/components/schemas/Reference"
     Summary:
       type: object
       additionalProperties: false
       description: Summary of the job with statistics of the job processing.
       properties:
         asyncFetchedItems:
-          $ref: '#/components/schemas/AsyncFetchedItems'
+          $ref: "#/components/schemas/AsyncFetchedItems"
     Tombstone:
       type: object
       additionalProperties: false
@@ -3092,7 +3082,7 @@ components:
           additionalProperties:
             type: object
         processingError:
-          $ref: '#/components/schemas/ProcessingError'
+          $ref: "#/components/schemas/ProcessingError"
     UpdatePolicyRequest:
       type: object
       additionalProperties: false

@@ -102,7 +102,7 @@ public class E2ETestStepDefinitionsForJobApi {
 
     @DataTableType
     public PartChainIdentificationKey definePartChainIdentificationKey(Map<String, String> entry) {
-        return new PartChainIdentificationKey(entry.get("globalAssetId"), entry.get("bpn"), null);
+        return new PartChainIdentificationKey(entry.get("globalAssetId"), entry.get("bpn"));
     }
 
     @Given("the IRS URL {string}")

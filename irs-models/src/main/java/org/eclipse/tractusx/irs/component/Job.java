@@ -66,9 +66,6 @@ public class Job {
     @JsonUnwrapped
     private GlobalAssetIdentification globalAssetId;
 
-    @Schema(implementation = String.class, description = "Asset Administration Shell Id", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0")
-    private String aasIdentifier;
-
     @NotBlank
     @JsonAlias("jobState")
     @Schema(implementation = JobState.class, example = "COMPLETED")
