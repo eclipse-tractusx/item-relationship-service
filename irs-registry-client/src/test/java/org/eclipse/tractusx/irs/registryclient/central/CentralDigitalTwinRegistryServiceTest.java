@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -145,8 +144,8 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
         dtRegistryFacadeWithMock.fetchShells(List.of(new DigitalTwinRegistryKey(catenaXId, "")));
 
-        verify(this.dtRegistryClientMock, times(1)).getAllAssetAdministrationShellIdsByAssetLink(anyList());
-        verify(this.dtRegistryClientMock, times(1)).getAssetAdministrationShellDescriptor(catenaXId);
+        verify(this.dtRegistryClientMock).getAllAssetAdministrationShellIdsByAssetLink(anyList());
+        verify(this.dtRegistryClientMock).getAssetAdministrationShellDescriptor(catenaXId);
     }
 
     @Test

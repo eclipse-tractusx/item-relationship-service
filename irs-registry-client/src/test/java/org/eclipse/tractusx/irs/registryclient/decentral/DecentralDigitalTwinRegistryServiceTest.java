@@ -91,11 +91,11 @@ class DecentralDigitalTwinRegistryServiceTest {
         @Test
         void shouldReturnExpectedShell() throws RegistryServiceException {
             // given
-            final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
-                    "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
+            final var shellId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+            final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(shellId, "bpn");
             final var expectedShell = shellDescriptor(emptyList());
             final var endpointDataReference = endpointDataReference("url.to.host");
-            final var lookupShellsResponse = LookupShellsResponse.builder().result(emptyList()).build();
+            final var lookupShellsResponse = LookupShellsResponse.builder().result(List.of(shellId)).build();
 
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
 
@@ -279,5 +279,4 @@ class DecentralDigitalTwinRegistryServiceTest {
                                     .hasMessageContaining("'" + bpn + "'");
         }
     }
-
 }
