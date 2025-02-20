@@ -39,7 +39,6 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.junit.jupiter.api.Test;
@@ -52,7 +51,6 @@ class DefaultConfigurationTest {
     private final EdcConfiguration edcConfiguration = new EdcConfiguration();
     private final String descriptorTemplate = "descriptor/{aasIdentifier}";
     private final String shellLookupTemplate = "shell?{assetIds}";
-    private final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache = new PreferredConnectorEndpointsCache();
 
     @Test
     void centralDigitalTwinRegistryService() {
@@ -67,9 +65,9 @@ class DefaultConfigurationTest {
         final EdcSubmodelFacade facadeMock = mock(EdcSubmodelFacade.class);
         final var service = testee.decentralDigitalTwinRegistryService(
                 testee.connectorEndpointsService(testee.discoveryFinderClient(new RestTemplate(), "finder"), "bpnl"),
-                testee.endpointDataForConnectorsService(facadeMock, preferredConnectorEndpointsCache),
+                testee.endpointDataForConnectorsService(facadeMock),
                 testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate),
-                edcConfiguration, new PreferredConnectorEndpointsCache());
+                edcConfiguration);
 
         assertThat(service).isNotNull();
     }
@@ -94,7 +92,7 @@ class DefaultConfigurationTest {
                 List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
         // ACT
-        final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock, preferredConnectorEndpointsCache);
+        final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
 
         endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(List.of(endpointAddress), "bpn") //
                                         .forEach(future -> {
@@ -117,7 +115,7 @@ class DefaultConfigurationTest {
         final var mock = mock(EdcSubmodelFacade.class);
         when(mock.getEndpointReferencesForRegistryAsset(any(), any())).thenThrow(new EdcClientException("test"));
 
-        final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock, preferredConnectorEndpointsCache);
+        final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
         final var dummyEndpoints = List.of("test");
         endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(dummyEndpoints, "bpn").forEach(future -> {
             assertThatThrownBy(future::get).isInstanceOf(ExecutionException.class)

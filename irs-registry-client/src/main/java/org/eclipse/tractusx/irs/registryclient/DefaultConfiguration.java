@@ -35,7 +35,6 @@ import org.eclipse.tractusx.irs.edc.client.EdcOrchestrator;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
@@ -94,10 +93,9 @@ public class DefaultConfiguration {
             final ConnectorEndpointsService connectorEndpointsService,
             final EndpointDataForConnectorsService endpointDataForConnectorsService,
             final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient,
-            final EdcConfiguration edcConfiguration,
-            final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache) {
+            final EdcConfiguration edcConfiguration) {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService, endpointDataForConnectorsService,
-                decentralDigitalTwinRegistryClient, edcConfiguration, preferredConnectorEndpointsCache);
+                decentralDigitalTwinRegistryClient, edcConfiguration);
     }
 
     @Bean
@@ -117,9 +115,7 @@ public class DefaultConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
-    public EndpointDataForConnectorsService endpointDataForConnectorsService(
-            final EdcSubmodelFacade facade,
-            final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache) {
+    public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
 
         final EdcEndpointReferenceRetriever edcEndpointReferenceRetriever = (edcConnectorEndpoint, bpn) -> {
             try {
@@ -129,7 +125,7 @@ public class DefaultConfiguration {
             }
         };
 
-        return new EndpointDataForConnectorsService(edcEndpointReferenceRetriever, preferredConnectorEndpointsCache);
+        return new EndpointDataForConnectorsService(edcEndpointReferenceRetriever);
     }
 
     @Bean

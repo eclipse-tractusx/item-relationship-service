@@ -48,7 +48,6 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
@@ -71,7 +70,7 @@ class DecentralDigitalTwinRegistryServiceTest {
 
     private final DecentralDigitalTwinRegistryService sut = new DecentralDigitalTwinRegistryService(
             connectorEndpointsService, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient,
-            new EdcConfiguration(), new PreferredConnectorEndpointsCache());
+            new EdcConfiguration());
 
     public static AssetAdministrationShellDescriptor shellDescriptor(
             final List<SubmodelDescriptor> submodelDescriptors) {

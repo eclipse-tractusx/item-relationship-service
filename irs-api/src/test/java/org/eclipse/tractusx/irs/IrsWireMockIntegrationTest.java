@@ -80,7 +80,6 @@ import org.eclipse.tractusx.irs.connector.batch.PersistentBatchStore;
 import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
 import org.eclipse.tractusx.irs.edc.client.EdcCallbackController;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.edc.client.OngoingNegotiationStorage;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -120,11 +119,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("integrationtest")
 class IrsWireMockIntegrationTest {
 
+    private static final String BATCH_PREFIX = "batch:";
+    private static final String DSP_PATH = "/api/v1/dsp";
     public static final String SEMANTIC_HUB_URL = "http://semantic.hub/models";
     public static final String EDC_URL = "http://edc.test";
 
-    private static final String BATCH_PREFIX = "batch:";
-    private static final String DSP_PATH = "/api/v1/dsp";
     private static final String ACCESS_KEY = "accessKey";
     private static final String SECRET_KEY = "secretKey";
     private static final MinioContainer minioContainer = new MinioContainer(
@@ -164,9 +163,6 @@ class IrsWireMockIntegrationTest {
     @Autowired
     private EdcConfiguration edcConfiguration;
 
-    @Autowired
-    private PreferredConnectorEndpointsCache preferredConnectorEndpointsCache;
-
     @BeforeAll
     static void startContainer() {
         minioContainer.start();
@@ -184,7 +180,6 @@ class IrsWireMockIntegrationTest {
         registry.add("digitalTwinRegistry.shellDescriptorTemplate", () -> SHELL_DESCRIPTORS_TEMPLATE);
         registry.add("digitalTwinRegistry.lookupShellsTemplate", () -> LOOKUP_SHELLS_TEMPLATE);
         registry.add("digitalTwinRegistry.type", () -> "decentral");
-        registry.add("digitalTwinRegistry.cacheEdcUrls", () -> "true");
         registry.add("semanticshub.url", () -> SEMANTIC_HUB_URL);
         registry.add("semanticshub.modelJsonSchemaEndpoint", () -> SemanticHubWireMockSupport.SEMANTIC_HUB_SCHEMA_URL);
         registry.add("semanticshub.defaultUrns", () -> "");
@@ -205,7 +200,6 @@ class IrsWireMockIntegrationTest {
     @BeforeEach
     void setUp() {
         edcConfiguration.getControlplane().setEdrManagementEnabled(false);
-        preferredConnectorEndpointsCache.remove(TEST_BPN);
     }
 
     @AfterEach
@@ -241,7 +235,7 @@ class IrsWireMockIntegrationTest {
         successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
                 "integrationtesting/singleLevelBomAsBuilt-1.json");
         successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
-                "integrationtesting/singleLevelBomAsBuilt-2.json", globalAssetIdLevel2);
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1);
 
@@ -264,41 +258,6 @@ class IrsWireMockIntegrationTest {
     }
 
     @Test
-    void shouldStopJobAfterDepthIsReached_cachedEdcUrl() {
-        // Arrange
-        final String globalAssetIdLevel1 = "globalAssetId";
-        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
-
-        WiremockSupport.successfulSemanticModelRequest();
-        WiremockSupport.successfulSemanticHubRequests();
-        WiremockSupport.successfulDiscovery(List.of("https://test.edc1.io", "https://test.edc2.io", "https://test.edc3.io"));
-
-        successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
-                "integrationtesting/singleLevelBomAsBuilt-1.json", globalAssetIdLevel2);
-
-        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1);
-
-        // Act
-        final JobHandle jobHandle = irsService.registerItemJob(request);
-        assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle.getId());
-
-        Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
-
-        // Assert
-        WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(4);
-        // 2 shells * 3 urls  + 1 submodel asset = 7 catalog calls before cache
-        // 1 shells * 3 urls (then cached) + 1 shell * 1 url (from cache, instead of 3) + 1 submodel asset = 5 catalog calls after cache
-        WiremockSupport.verifyCatalogCalls(5);
-
-        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
-        assertThat(jobForJobId.getShells()).hasSize(2);
-        assertThat(jobForJobId.getRelationships()).hasSize(1);
-        assertThat(jobForJobId.getTombstones()).isEmpty();
-    }
-
-    @Test
     void shouldStopJobAfterDepthIsReachedWithEdr() {
         // Arrange
         final String globalAssetIdLevel1 = "globalAssetId";
@@ -312,7 +271,7 @@ class IrsWireMockIntegrationTest {
         successfulEdrRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
                 "integrationtesting/singleLevelBomAsBuilt-1.json");
         successfulEdrRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN,
-                "integrationtesting/batch-2.json", "integrationtesting/singleLevelBomAsBuilt-2.json", globalAssetIdLevel2);
+                "integrationtesting/batch-2.json", "integrationtesting/singleLevelBomAsBuilt-2.json");
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1);
 
@@ -338,6 +297,7 @@ class IrsWireMockIntegrationTest {
     void shouldSendOneCallbackAfterJobCompletion() {
         // Arrange
         final String globalAssetIdLevel1 = "globalAssetId";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
 
         WiremockSupport.successfulSemanticModelRequest();
         WiremockSupport.successfulSemanticHubRequests();
@@ -346,6 +306,8 @@ class IrsWireMockIntegrationTest {
 
         successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
                 "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1,
                 WiremockSupport.CALLBACK_URL);
@@ -447,9 +409,9 @@ class IrsWireMockIntegrationTest {
         successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
                 "integrationtesting/singleLevelBomAsBuilt-1.json");
         successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
-                "integrationtesting/singleLevelBomAsBuilt-2.json", globalAssetIdLevel2);
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
         successfulRegistryAndDataRequest(globalAssetIdLevel3, "GenericChemical", TEST_BPN,
-                "integrationtesting/batch-3.json", "integrationtesting/singleLevelBomAsBuilt-3.json", globalAssetIdLevel3);
+                "integrationtesting/batch-3.json", "integrationtesting/singleLevelBomAsBuilt-3.json");
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 4);
 
@@ -694,9 +656,9 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.successfulDiscovery();
 
         successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
-                "integrationtesting/singleLevelBomAsBuilt-1.json", globalAssetIdLevel1);
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
         successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
-                "integrationtesting/singleLevelBomAsBuilt-2.json", globalAssetIdLevel2);
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
 
         Set<PartChainIdentificationKey> keys = Set.of(
                 PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel1).build(),
@@ -772,17 +734,18 @@ class IrsWireMockIntegrationTest {
     @Test
     void shouldDoABatchRequestAndFinishAllJobs_essJob() {
         // Arrange
-        final String globalAssetIdLevel1 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf4";
+        final String globalAssetIdLevel1 = "globalAssetId";
         final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
 
         WiremockSupport.successfulSemanticModelRequest();
         WiremockSupport.successfulSemanticHubRequests();
         WiremockSupport.successfulDiscovery();
+        WiremockSupport.successfulBatchCallbackRequest();
 
         successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
-                "integrationtesting/singleLevelBomAsBuilt-1.json", globalAssetIdLevel1);
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
         successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
-                "integrationtesting/singleLevelBomAsBuilt-2.json", globalAssetIdLevel2);
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
 
         Set<PartChainIdentificationKey> keys = Set.of(
                 PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel1).build(),
@@ -859,12 +822,12 @@ class IrsWireMockIntegrationTest {
                 "integrationtesting/singleLevelBomAsBuilt-2.json", aasIdLevel2);
 
         final RegisterJob request = RegisterJob.builder()
-                                               .key(PartChainIdentificationKey.builder().bpn(TEST_BPN).identifier(aasIdLevel1).build())
-                                               .depth(1)
-                                               .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
-                                               .collectAspects(true)
-                                               .direction(Direction.DOWNWARD)
-                                               .build();
+                          .key(PartChainIdentificationKey.builder().bpn(TEST_BPN).identifier(aasIdLevel1).build())
+                          .depth(1)
+                          .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
+                          .collectAspects(true)
+                          .direction(Direction.DOWNWARD)
+                          .build();
 
         // Act
         final JobHandle jobHandle = irsService.registerItemJob(request);
@@ -944,11 +907,6 @@ class IrsWireMockIntegrationTest {
 
     private void successfulEdrRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
             final String batchFileName, final String sbomFileName) {
-        successfulEdrRegistryAndDataRequest(globalAssetId, idShort, bpn, batchFileName, sbomFileName, WiremockSupport.randomUUIDwithPrefix());
-    }
-
-    private void successfulEdrRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
-            final String batchFileName, final String sbomFileName, final String shellId) {
 
         final String edcAssetId = WiremockSupport.randomUUIDwithPrefix();
         final String batch = WiremockSupport.submodelRequest(edcAssetId, BATCH, BATCH_3_0_0, batchFileName);
@@ -958,6 +916,7 @@ class IrsWireMockIntegrationTest {
 
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);
 
+        final String shellId = WiremockSupport.randomUUIDwithPrefix();
         final String registryEdcAssetId = "registry-asset";
         successfulEdrRegistryNegotiation(registryEdcAssetId);
         stubFor(getLookupShells200(PUBLIC_LOOKUP_SHELLS_PATH, List.of(shellId)).withQueryParam("assetIds",

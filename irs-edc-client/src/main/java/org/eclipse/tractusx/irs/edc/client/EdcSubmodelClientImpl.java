@@ -156,6 +156,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         final String dspEndpointAddress = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
 
+        // CatalogItem = contract offer
         final List<CatalogItem> contractOffers = new ArrayList<>(execute(dspEndpointAddress,
                 () -> edcOrchestrator.getCatalogItems(dspEndpointAddress, DT_DCAT_TYPE_ID, DT_TAXONOMY_REGISTRY, bpn)));
 

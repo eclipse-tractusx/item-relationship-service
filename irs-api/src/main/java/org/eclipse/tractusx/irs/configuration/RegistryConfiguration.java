@@ -25,7 +25,6 @@ package org.eclipse.tractusx.irs.configuration;
 
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
@@ -75,8 +74,7 @@ public class RegistryConfiguration {
             final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade facade,
             @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
             @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate,
-            final EdcConfiguration edcConfiguration,
-            final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache) {
+            final EdcConfiguration edcConfiguration) {
 
         final EdcEndpointReferenceRetriever endpointReferenceRetriever = (edcConnectorEndpoint, bpn) -> {
             try {
@@ -90,10 +88,10 @@ public class RegistryConfiguration {
                 edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate);
 
         final EndpointDataForConnectorsService endpointDataForConnectorsService = new EndpointDataForConnectorsService(
-                endpointReferenceRetriever, preferredConnectorEndpointsCache);
+                endpointReferenceRetriever);
 
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService, endpointDataForConnectorsService,
-                digitalTwinRegistryClient, edcConfiguration, preferredConnectorEndpointsCache);
+                digitalTwinRegistryClient, edcConfiguration);
     }
 
     @Bean

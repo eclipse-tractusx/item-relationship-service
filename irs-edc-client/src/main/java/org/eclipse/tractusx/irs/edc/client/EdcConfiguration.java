@@ -46,7 +46,6 @@ public class EdcConfiguration {
     private String negotiationCallbackUrl;
     private CallbackConfig callback = new CallbackConfig();
     private Duration asyncTimeout = Duration.ofMinutes(ASYNC_TIMEOUT_MINUTES_DEFAULT);
-    private boolean cacheEdcUrls = true;
 
     public Long getAsyncTimeoutMillis() {
         return asyncTimeout.toMillis();

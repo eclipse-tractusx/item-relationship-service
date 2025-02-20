@@ -9,8 +9,7 @@ policystore:
     accessKey: minioadmin
     secretKey: minioadmin
 
-digitalTwinRegistry:
-  type: decentral
+digitalTwinRegistry.type: central
 
 irs:
   job:
@@ -27,6 +26,8 @@ irs:
       keys:
         admin: 01234567890123456789
         regular: 09876543210987654321
+
+
 
 spring:
   security:

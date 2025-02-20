@@ -24,7 +24,6 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,6 @@ import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -71,7 +69,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private final EndpointDataForConnectorsService endpointDataForConnectorsService;
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
     private final EdcConfiguration config;
-    private final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache;
 
     private ResultFinder resultFinder = new ResultFinder();
 
@@ -91,48 +88,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     @Override
-    public Collection<Either<Exception, Shell>> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
-            throws RegistryServiceException {
-
-        if (!config.isCacheEdcUrls()) {
-            return fetchShellsOnCacheMiss(keys);
-        }
-
-        final Collection<Either<Exception, Shell>> results = keys.stream()
-                                                                 .map(this::fetchShellForKey)
-                                                                 .flatMap(Collection::stream)
-                                                                 .toList();
-
-        return results.isEmpty() || results.stream().anyMatch(Either::isLeft)
-                ? fetchShellsOnCacheMiss(keys)
-                : results;
-    }
-
-    private Collection<Either<Exception, Shell>> fetchShellForKey(final DigitalTwinRegistryKey key) {
-        return preferredConnectorEndpointsCache.findByBpn(key.bpn())
-                                               .map(edcUrl -> fetchShellFromEdcUrl(edcUrl, key))
-                                               .orElseGet(() -> {
-                                                   log.info("Cached EDC url for BPN: {} not found", key.bpn());
-                                                   return Collections.emptyList();
-                                               });
-    }
-
-    private Collection<Either<Exception, Shell>> fetchShellFromEdcUrl(final String edcUrl, final DigitalTwinRegistryKey key) {
-        return endpointDataForConnectorsService.createGetEndpointReferencesForAssetFutures(edcUrl, key.bpn())
-                                               .stream()
-                                               .map(future -> future.handle((edr, ex) -> {
-                                                   if (ex != null) {
-                                                       return Either.<Exception, Shell>left(new Exception(ex instanceof ExecutionException ? ex.getCause() : ex));
-                                                   }
-                                                   return Either.<Exception, Shell>right(new Shell(edr.getContractId(),
-                                                           decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(edr, key.shellId())));
-                                               }))
-                                               .map(CompletableFuture::join)
-                                               .toList();
-    }
-
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private Collection<Either<Exception, Shell>> fetchShellsOnCacheMiss(final Collection<DigitalTwinRegistryKey> keys)
+    public Collection<Either<Exception, Shell>> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
             throws RegistryServiceException {
 
         final var watch = new StopWatch();
@@ -402,4 +359,5 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     public Collection<DigitalTwinRegistryKey> lookupShellIdentifiers(final String bpn) throws RegistryServiceException {
         return lookupShellIds(bpn).stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
     }
+
 }
