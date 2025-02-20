@@ -931,10 +931,10 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration</span>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:}</span> <span class="c1"># URL of the EDC consumer controlplane data endpoint</span>
-      <span class="na">catalog</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request}</span> <span class="c1"># EDC consumer controlplane catalog path</span>
+      <span class="na">catalog</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v3/catalog/request}</span> <span class="c1"># EDC consumer controlplane catalog path</span>
       <span class="na">edr-management</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_EDRS:/v2/edrs}</span> <span class="c1"># EDC consumer controlplane EDR management path</span>
-      <span class="na">contract-negotiation</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations}</span> <span class="c1"># EDC consumer controlplane contract negotiation path</span>
-      <span class="na">transfer-process</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses}</span> <span class="c1"># EDC consumer controlplane transfer process path</span>
+      <span class="na">contract-negotiation</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v3/contractnegotiations}</span> <span class="c1"># EDC consumer controlplane contract negotiation path</span>
+      <span class="na">transfer-process</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v3/transferprocesses}</span> <span class="c1"># EDC consumer controlplane transfer process path</span>
       <span class="na">state-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:/state}</span> <span class="c1"># Path of the state suffix for contract negotiation and transfer process</span>
     <span class="na">provider-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp}</span> <span class="c1"># Suffix to add to data requests to the EDC provider controlplane</span>
     <span class="na">catalog-limit</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_LIMIT:1000}</span> <span class="c1"># Max number of items to fetch from the EDC provider catalog</span>
@@ -982,6 +982,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">discovery</span><span class="pi">:</span>
     <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">discovery</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
     <span class="na">discoveryFinderUrl</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:}</span> <span class="c1"># The endpoint to discover EDC endpoints to a particular BPN.</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">bpnl</span> <span class="c1"># The type of discovery to be searched for</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the discovery client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the discovery client</span>
@@ -1016,8 +1017,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">localBpn</span><span class="pi">:</span> <span class="s">${ESS_LOCAL_BPN:}</span> <span class="c1"># BPN value of product - used during EDC notification communication</span>
   <span class="na">localEdcEndpoint</span><span class="pi">:</span> <span class="s">${ESS_EDC_URL:}</span> <span class="c1"># EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications</span>
   <span class="na">assetsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v3/assets}</span> <span class="c1"># EDC management API "assets" path - used for notification asset creation</span>
-  <span class="na">policydefinitionsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2/policydefinitions}</span> <span class="c1"># EDC management API "policydefinitions" path - used for notification policy definition creation</span>
-  <span class="na">contractdefinitionsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2/contractdefinitions}</span> <span class="c1"># EDC management API "contractdefinitions" path - used for notification contract definitions creation</span>
+  <span class="na">policydefinitionsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v3/policydefinitions}</span> <span class="c1"># EDC management API "policydefinitions" path - used for notification policy definition creation</span>
+  <span class="na">contractdefinitionsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v3/contractdefinitions}</span> <span class="c1"># EDC management API "contractdefinitions" path - used for notification contract definitions creation</span>
   <span class="na">irs</span><span class="pi">:</span>
     <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
   <span class="na">discovery</span><span class="pi">:</span>
@@ -1096,12 +1097,12 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>  <span class="c1"># &lt;edc-controlplane-endpoint-data&gt;</span>
-      <span class="na">catalog</span><span class="pi">:</span> <span class="s">/v2/catalog/request</span>  <span class="c1"># EDC consumer controlplane catalog path</span>
+      <span class="na">catalog</span><span class="pi">:</span> <span class="s">/v3/catalog/request</span>  <span class="c1"># EDC consumer controlplane catalog path</span>
       <span class="na">edrManagement</span><span class="pi">:</span> <span class="s">/v2/edrs</span>  <span class="c1"># EDC consumer controlplane EDR management path</span>
-      <span class="na">contractnegotiation</span><span class="pi">:</span> <span class="s">/v2/contractnegotiations</span>  <span class="c1"># EDC consumer controlplane contract negotiation path</span>
-      <span class="na">transferprocess</span><span class="pi">:</span> <span class="s">/v2/transferprocesses</span>  <span class="c1"># EDC consumer controlplane transfer process path</span>
+      <span class="na">contractnegotiation</span><span class="pi">:</span> <span class="s">/v3/contractnegotiations</span>  <span class="c1"># EDC consumer controlplane contract negotiation path</span>
+      <span class="na">transferprocess</span><span class="pi">:</span> <span class="s">/v3/transferprocesses</span>  <span class="c1"># EDC consumer controlplane transfer process path</span>
       <span class="na">statesuffix</span><span class="pi">:</span> <span class="s">/state</span>  <span class="c1"># Path of the state suffix for contract negotiation and transfer process</span>
-      <span class="na">contractAgreements</span><span class="pi">:</span> <span class="s">/v2/contractagreements</span>  <span class="c1"># EDC consumer controlplane contract agreements path</span>
+      <span class="na">contractAgreements</span><span class="pi">:</span> <span class="s">/v3/contractagreements</span>  <span class="c1"># EDC consumer controlplane contract agreements path</span>
     <span class="na">request</span><span class="pi">:</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)</span>
     <span class="na">provider</span><span class="pi">:</span>
@@ -1171,8 +1172,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">mockEdcResult</span><span class="pi">:</span>  <span class="c1"># Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN</span>
   <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span>  <span class="c1"># List of BPNs for which the special, mocked notification asset should be used</span>
   <span class="na">assetsPath</span><span class="pi">:</span> <span class="s">/management/v3/assets</span>  <span class="c1"># EDC management API "assets" path - used for notification asset creation</span>
-  <span class="na">policydefinitionsPath</span><span class="pi">:</span> <span class="s">/management/v2/policydefinitions</span>  <span class="c1"># EDC management API "policydefinitions" path - used for notification policy definition creation</span>
-  <span class="na">contractdefinitionsPath</span><span class="pi">:</span> <span class="s">/management/v2/contractdefinitions</span>  <span class="c1"># EDC management API "contractdefinitions" path - used for notification contract definitions creation</span>
+  <span class="na">policydefinitionsPath</span><span class="pi">:</span> <span class="s">/management/v3/policydefinitions</span>  <span class="c1"># EDC management API "policydefinitions" path - used for notification policy definition creation</span>
+  <span class="na">contractdefinitionsPath</span><span class="pi">:</span> <span class="s">/management/v3/contractdefinitions</span>  <span class="c1"># EDC management API "contractdefinitions" path - used for notification contract definitions creation</span>
 
 <span class="na">config</span><span class="pi">:</span>
   <span class="c1"># If true, the config provided below will completely replace the configmap.</span>
@@ -1635,7 +1636,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-14 10:22:08 UTC
+Last updated 2025-02-20 09:36:14 UTC
 </div>
 </div>
 </body>

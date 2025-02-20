@@ -205,10 +205,10 @@ irs-edc-client:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
       data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
-      catalog: ${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request} # EDC consumer controlplane catalog path
+      catalog: ${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v3/catalog/request} # EDC consumer controlplane catalog path
       edr-management: ${EDC_CONTROLPLANE_ENDPOINT_EDRS:/v2/edrs} # EDC consumer controlplane EDR management path
-      contract-negotiation: ${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations} # EDC consumer controlplane contract negotiation path
-      transfer-process: ${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses} # EDC consumer controlplane transfer process path
+      contract-negotiation: ${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v3/contractnegotiations} # EDC consumer controlplane contract negotiation path
+      transfer-process: ${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v3/transferprocesses} # EDC consumer controlplane transfer process path
       state-suffix: ${EDC_CONTROLPLANE_ENDPOINT_DATA:/state} # Path of the state suffix for contract negotiation and transfer process
     provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp} # Suffix to add to data requests to the EDC provider controlplane
     catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000} # Max number of items to fetch from the EDC provider catalog
@@ -256,6 +256,7 @@ digitalTwinRegistry:
   discovery:
     oAuthClientId: discovery # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
     discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
+    type: bpnl # The type of discovery to be searched for
     timeout:
       read: PT90S # HTTP read timeout for the discovery client
       connect: PT90S # HTTP connect timeout for the discovery client
@@ -290,8 +291,8 @@ ess:
   localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
   localEdcEndpoint: ${ESS_EDC_URL:} # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
   assetsPath: ${EDC_MANAGEMENT_PATH:/management/v3/assets} # EDC management API "assets" path - used for notification asset creation
-  policydefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/policydefinitions} # EDC management API "policydefinitions" path - used for notification policy definition creation
-  contractdefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/contractdefinitions} # EDC management API "contractdefinitions" path - used for notification contract definitions creation
+  policydefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v3/policydefinitions} # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v3/contractdefinitions} # EDC management API "contractdefinitions" path - used for notification contract definitions creation
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
@@ -368,12 +369,12 @@ edc:
   controlplane:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
-      catalog: /v2/catalog/request  # EDC consumer controlplane catalog path
+      catalog: /v3/catalog/request  # EDC consumer controlplane catalog path
       edrManagement: /v2/edrs  # EDC consumer controlplane EDR management path
-      contractnegotiation: /v2/contractnegotiations  # EDC consumer controlplane contract negotiation path
-      transferprocess: /v2/transferprocesses  # EDC consumer controlplane transfer process path
+      contractnegotiation: /v3/contractnegotiations  # EDC consumer controlplane contract negotiation path
+      transferprocess: /v3/transferprocesses  # EDC consumer controlplane transfer process path
       statesuffix: /state  # Path of the state suffix for contract negotiation and transfer process
-      contractAgreements: /v2/contractagreements  # EDC consumer controlplane contract agreements path
+      contractAgreements: /v3/contractagreements  # EDC consumer controlplane contract agreements path
     request:
       ttl: PT10M  # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     provider:
@@ -443,8 +444,8 @@ ess:
   mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
   mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
   assetsPath: /management/v3/assets  # EDC management API "assets" path - used for notification asset creation
-  policydefinitionsPath: /management/v2/policydefinitions  # EDC management API "policydefinitions" path - used for notification policy definition creation
-  contractdefinitionsPath: /management/v2/contractdefinitions  # EDC management API "contractdefinitions" path - used for notification contract definitions creation
+  policydefinitionsPath: /management/v3/policydefinitions  # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: /management/v3/contractdefinitions  # EDC management API "contractdefinitions" path - used for notification contract definitions creation
 
 config:
   # If true, the config provided below will completely replace the configmap.
