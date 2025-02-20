@@ -13,6 +13,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 
 - Update IRS version to 6.0.1
+- Update EDC management endpoint paths to /v3/
 
 ## [8.0.0] - 2025-02-13
 
