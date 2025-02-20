@@ -27,8 +27,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -40,11 +38,9 @@ import java.util.stream.Stream;
 import io.github.resilience4j.core.functions.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.ExceptionUtils;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
-import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -133,37 +129,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
-    }
-
-    @Override
-    public Optional<Shell> fetchShell(final PartChainIdentificationKey key) throws RegistryServiceException {
-        if (StringUtils.isBlank(key.getGlobalAssetId())) {
-            final List<String> edcUrls = connectorEndpointsService.fetchConnectorEndpoints(key.getBpn());
-
-            return endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(edcUrls, key.getBpn())
-                                                   .stream()
-                                                   .map(edrFuture -> {
-                                                       try {
-                                                           final EndpointDataReference edr = edrFuture.get();
-                                                           return new Shell(edr.getContractId(),
-                                                                   decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
-                                                                           edr, key.getIdentifier()));
-                                                       } catch (InterruptedException e) {
-                                                           log.info("Unable to find any of the requested shells, reason: {}", e.getMessage());
-                                                           Thread.currentThread().interrupt();
-                                                       } catch (ExecutionException e) {
-                                                           log.info("Unable to find any of the requested shells, reason: {}", e.getMessage());
-                                                       }
-                                                       return null;
-                                                   })
-                                                   .filter(Objects::nonNull)
-                                                   .findFirst();
-        }
-
-        return fetchShells(List.of(new DigitalTwinRegistryKey(key.getGlobalAssetId(), key.getBpn()))).stream()
-                                                                                                     .map(Either::getOrNull)
-                                                                                                     .filter(Objects::nonNull)
-                                                                                                     .findFirst();
     }
 
     private Stream<Either<Exception, Shell>> fetchShellDescriptors(

@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,11 +35,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import io.github.resilience4j.core.functions.Either;
 import org.eclipse.tractusx.irs.SemanticModelNames;
-import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
@@ -101,29 +98,6 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
     }
 
     @Test
-    void shouldReturnSubmodelEndpointsWhenRequestingWithAasId() throws RegistryServiceException {
-        final String aasIdentificator = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
-
-        final Optional<Shell> aasShellDescriptor = digitalTwinRegistryService.fetchShell(
-                PartChainIdentificationKey.builder().bpn("").identifier(aasIdentificator).build());
-
-        final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.stream()
-                                                                          .findFirst()
-                                                                          .get()
-                                                                          .payload()
-                                                                          .getSubmodelDescriptors();
-
-        assertThat(shellEndpoints).isNotNull().isNotEmpty();
-        final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
-
-        assertThat(endpoint.getProtocolInformation().getSubprotocolBody()).contains(aasIdentificator);
-        assertThat(shellEndpoints.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
-                SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
-        assertThat(shellEndpoints.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
-                SemanticModelNames.SERIAL_PART_3_0_0);
-    }
-
-    @Test
     void shouldThrowExceptionWhenRequestError() {
         final String catenaXId = "test";
         final DigitalTwinRegistryKey key = new DigitalTwinRegistryKey(catenaXId, "");
@@ -159,7 +133,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
     }
 
     @Test
-    void verifyExecutionOfRegistryClientMethods_globalAssetIdAsIdentificator() {
+    void verifyExecutionOfRegistryClientMethods() {
         final String catenaXId = "test";
         final AssetAdministrationShellDescriptor shellDescriptor = new AssetAdministrationShellDescriptor();
         shellDescriptor.setSubmodelDescriptors(List.of());
@@ -169,35 +143,6 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                 LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         dtRegistryFacadeWithMock.fetchShells(List.of(new DigitalTwinRegistryKey(catenaXId, "")));
-
-        verify(this.dtRegistryClientMock).getAllAssetAdministrationShellIdsByAssetLink(anyList());
-        verify(this.dtRegistryClientMock).getAssetAdministrationShellDescriptor(catenaXId);
-    }
-
-    @Test
-    void verifyExecutionOfRegistryClientMethods_aasIdentificatorAsIdentificator() {
-        final String aasId = "test";
-        final AssetAdministrationShellDescriptor shellDescriptor = new AssetAdministrationShellDescriptor();
-        shellDescriptor.setSubmodelDescriptors(List.of());
-
-        when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(aasId)).thenReturn(shellDescriptor);
-        dtRegistryFacadeWithMock.fetchShell(PartChainIdentificationKey.builder().bpn("").identifier(aasId).build());
-
-        verify(dtRegistryClientMock, never()).getAllAssetAdministrationShellIdsByAssetLink(anyList());
-        verify(dtRegistryClientMock).getAssetAdministrationShellDescriptor(aasId);
-    }
-
-    @Test
-    void verifyExecutionOfRegistryClientMethods_globalAssetIdAsIdentificator_fetchShell() {
-        final String catenaXId = "test";
-        final AssetAdministrationShellDescriptor shellDescriptor = new AssetAdministrationShellDescriptor();
-        shellDescriptor.setSubmodelDescriptors(List.of());
-
-        when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
-        when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(any())).thenReturn(
-                LookupShellsResponse.builder().result(Collections.emptyList()).build());
-
-        dtRegistryFacadeWithMock.fetchShell(PartChainIdentificationKey.builder().bpn("").globalAssetId(catenaXId).build());
 
         verify(this.dtRegistryClientMock).getAllAssetAdministrationShellIdsByAssetLink(anyList());
         verify(this.dtRegistryClientMock).getAssetAdministrationShellDescriptor(catenaXId);
