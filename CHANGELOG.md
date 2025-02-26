@@ -19,6 +19,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Added missing discovery type config `digitalTwinRegistry.discovery.type`
 
+### Known knowns
+
+- Latest update broke full registry reload on traceability-foss side eclipse-tractusx/traceability-foss/issues/1423
+
 ## [6.0.0] - 2025-02-13
 
 ### Changed
