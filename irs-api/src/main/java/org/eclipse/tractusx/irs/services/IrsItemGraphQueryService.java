@@ -170,8 +170,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
         validateAspectTypeValues(params.getAspects());
 
-        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(),
-                params, batchId);
+        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey(), params, batchId);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {

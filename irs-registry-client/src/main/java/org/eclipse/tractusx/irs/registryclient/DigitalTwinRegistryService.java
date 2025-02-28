@@ -24,8 +24,10 @@
 package org.eclipse.tractusx.irs.registryclient;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import io.github.resilience4j.core.functions.Either;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 
@@ -72,4 +74,12 @@ public interface DigitalTwinRegistryService {
      */
     Collection<Either<Exception, Shell>> fetchShells(Collection<DigitalTwinRegistryKey> identifiers)
             throws RegistryServiceException;
+
+    /**
+     * Retrieves the shell details for the given key.
+     *
+     * @param key part chain entry node
+     * @return the shell descriptors
+     */
+    Optional<Shell> fetchShell(PartChainIdentificationKey key) throws RegistryServiceException;
 }

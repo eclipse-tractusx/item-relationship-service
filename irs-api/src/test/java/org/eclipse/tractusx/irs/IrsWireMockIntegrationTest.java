@@ -806,6 +806,47 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.verifyBatchCallbackCall(allBatches.get(1).getBatchId().toString(), JobState.COMPLETED, 1);
     }
 
+    @Test
+    void shouldStopJobAfterDepthIsReached_aasIdentifierAsKey() {
+        // Arrange
+        final String aasIdLevel1 = WiremockSupport.randomUUIDwithPrefix();
+        final String aasIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+
+        successfulRegistryAndDataRequest(aasIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
+                "integrationtesting/singleLevelBomAsBuilt-1.json", aasIdLevel1);
+        successfulRegistryAndDataRequest(aasIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
+                "integrationtesting/singleLevelBomAsBuilt-2.json", aasIdLevel2);
+
+        final RegisterJob request = RegisterJob.builder()
+                                               .key(PartChainIdentificationKey.builder().bpn(TEST_BPN).identifier(aasIdLevel1).build())
+                                               .depth(1)
+                                               .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
+                                               .collectAspects(true)
+                                               .direction(Direction.DOWNWARD)
+                                               .build();
+
+        // Act
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle.getId());
+
+        Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
+
+        // Assert
+        WiremockSupport.verifyDiscoveryCalls(1);
+        WiremockSupport.verifyNegotiationCalls(2);
+        WiremockSupport.verifyCatalogCalls(3);
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobForJobId.getShells()).hasSize(2);
+        assertThat(jobForJobId.getRelationships()).hasSize(1);
+        assertThat(jobForJobId.getTombstones()).isEmpty();
+    }
+
     private void waitForBatchOrderEventListenerFired() {
         Awaitility.await()
                   .timeout(Duration.ofSeconds(30))
@@ -821,8 +862,13 @@ class IrsWireMockIntegrationTest {
         return BATCH_PREFIX + batchId;
     }
 
-    private void successfulRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
+    private void successfulRegistryAndDataRequest(final String identifier, final String idShort, final String bpn,
             final String batchFileName, final String sbomFileName) {
+        successfulRegistryAndDataRequest(identifier, idShort, bpn, batchFileName, sbomFileName, WiremockSupport.randomUUIDwithPrefix());
+    }
+
+    private void successfulRegistryAndDataRequest(final String identifier, final String idShort, final String bpn,
+            final String batchFileName, final String sbomFileName, final String shellId) {
 
         final String edcAssetId = WiremockSupport.randomUUIDwithPrefix();
         final String batch = WiremockSupport.submodelRequest(edcAssetId, BATCH, BATCH_3_0_0, batchFileName);
@@ -832,13 +878,12 @@ class IrsWireMockIntegrationTest {
 
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);
 
-        final String shellId = WiremockSupport.randomUUIDwithPrefix();
         final String registryEdcAssetId = "registry-asset";
         successfulRegistryNegotiation(registryEdcAssetId);
         stubFor(getLookupShells200(PUBLIC_LOOKUP_SHELLS_PATH, List.of(shellId)).withQueryParam("assetIds",
-                equalTo(encodedAssetIds(globalAssetId))));
+                equalTo(encodedAssetIds(identifier))));
         stubFor(getShellDescriptor200(PUBLIC_SHELL_DESCRIPTORS_PATH + WiremockSupport.encodedId(shellId), bpn,
-                submodelDescriptors, globalAssetId, shellId, idShort));
+                submodelDescriptors, identifier, shellId, idShort));
         successfulNegotiation(edcAssetId);
     }
 

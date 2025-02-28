@@ -90,5 +90,8 @@ public class BatchOrderResponse {
         private ProcessingState batchProcessingState;
 
         private Object error;
+
+        @Schema(implementation = JobProgress.class, description = "Job details.")
+        private List<JobProgress> jobProgressList;
     }
 }

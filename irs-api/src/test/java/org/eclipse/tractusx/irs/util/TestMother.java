@@ -327,4 +327,8 @@ public class TestMother {
         final String characters = faker.lorem().characters();
         return () -> characters;
     }
+
+    public PartChainIdentificationKey partChainIdentificationKey(String globalAssetId) {
+        return PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build();
+    }
 }

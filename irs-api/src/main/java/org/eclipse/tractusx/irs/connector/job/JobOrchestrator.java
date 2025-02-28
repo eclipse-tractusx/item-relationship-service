@@ -38,6 +38,7 @@ import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.springframework.context.ApplicationEventPublisher;
@@ -108,13 +109,13 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * Start a job with Batch
      *
-     * @param globalAssetId root id
+     * @param identificationKey root id
      * @param jobData       additional data for the job to be managed by the {@link JobStore}.
      * @param batchId       batch id
      * @return response.
      */
-    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData, final UUID batchId) {
-        final Job job = createJob(globalAssetId, jobData);
+    public JobInitiateResponse startJob(final PartChainIdentificationKey identificationKey, final JobParameter jobData, final UUID batchId) {
+        final Job job = createJob(identificationKey, jobData);
         final var multiJob = MultiTransferJob.builder().job(job).batchId(Optional.ofNullable(batchId)).build();
         jobStore.create(multiJob);
 
@@ -290,19 +291,21 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return response;
     }
 
-    private Job createJob(final String globalAssetId, final JobParameter jobData) {
-        if (StringUtils.isEmpty(globalAssetId)) {
-            throw new JobException("GlobalAsset Identifier cannot be null or empty string");
+    private Job createJob(final PartChainIdentificationKey identificationKey, final JobParameter jobData) {
+        final Job.JobBuilder jobBuilder = Job.builder()
+                                             .id(UUID.randomUUID())
+                                             .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
+                                             .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
+                                             .state(JobState.UNSAVED)
+                                             .parameter(jobData);
+
+        if (StringUtils.isEmpty(identificationKey.getGlobalAssetId())) {
+            jobBuilder.aasIdentifier(identificationKey.getIdentifier());
+        } else {
+            jobBuilder.globalAssetId(GlobalAssetIdentification.of(identificationKey.getGlobalAssetId()));
         }
 
-        return Job.builder()
-                  .id(UUID.randomUUID())
-                  .globalAssetId(GlobalAssetIdentification.of(globalAssetId))
-                  .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
-                  .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
-                  .state(JobState.UNSAVED)
-                  .parameter(jobData)
-                  .build();
+        return jobBuilder.build();
     }
 
     private ResponseStatus convertMessage(final String message) {
