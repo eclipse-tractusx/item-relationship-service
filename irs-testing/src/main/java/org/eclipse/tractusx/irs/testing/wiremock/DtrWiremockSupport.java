@@ -78,6 +78,7 @@ public final class DtrWiremockSupport {
     public static MappingBuilder getShellDescriptor200(final String urlRegex, final String bpn, final List<String> submodelDescriptors,
             final String identifier, final String shellId, final String idShort) {
         final List<String> specificAssetIds = List.of(specificAssetId("manufacturerId", bpn));
+
         return get(urlPathMatching(urlRegex)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
                 assetAdministrationShellResponse(submodelDescriptors, identifier, idShort, shellId, specificAssetIds)));
     }

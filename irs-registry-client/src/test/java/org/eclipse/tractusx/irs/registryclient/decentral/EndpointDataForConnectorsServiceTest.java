@@ -38,6 +38,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -70,7 +71,7 @@ class EndpointDataForConnectorsServiceTest {
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade = mock(EdcEndpointReferenceRetriever.class);
 
-    private final EndpointDataForConnectorsService sut = new EndpointDataForConnectorsService(edcSubmodelFacade);
+    private final EndpointDataForConnectorsService sut = new EndpointDataForConnectorsService(edcSubmodelFacade, new PreferredConnectorEndpointsCache());
 
     @Test
     void shouldReturnExpectedEndpointDataReference() throws EdcRetrieverException {

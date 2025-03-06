@@ -129,6 +129,7 @@ resilience4j:
         baseConfig: default
 
 irs-edc-client:
+  cacheEdcUrls: true # Flag to enable caching of EDC URLs
   callback:
     mapping: /internal/endpoint-data-reference  # The EDR token callback endpoint mapping
     negotiation-mapping: /internal/negotiation-callback  # The EDR negotiation callback endpoint mapping
