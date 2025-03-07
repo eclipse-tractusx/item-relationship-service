@@ -80,6 +80,7 @@ public class EndpointDataForConnectorsService {
             final List<CompletableFuture<EndpointDataReference>> endpointReferencesForAsset = edcSubmodelFacade.getEndpointReferencesForAsset(
                     edcUrl, bpn);
             preferredConnectorEndpointsCache.store(bpn, edcUrl);
+            log.info("EDC Url: {} cached for BPNL: {}", edcUrl, bpn);
             return endpointReferencesForAsset;
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
