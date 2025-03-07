@@ -38,11 +38,11 @@ public class PreferredConnectorEndpointsCache {
     public Optional<String> findByBpn(final String bpn) {
         return Optional.ofNullable(inMemoryCache.get(bpn));
     }
-
     public void remove(final String bpn) {
-        if (findByBpn(bpn).isPresent()) {
-            inMemoryCache.remove(bpn);
-        }
+        findByBpn(bpn).ifPresent(el -> inMemoryCache.remove(bpn));
+    }
+    public void remove(final String bpn, final String edcUrl) {
+        findByBpn(bpn).filter(edcUrl::equals).ifPresent(el -> inMemoryCache.remove(bpn));
     }
 
 }

@@ -84,7 +84,7 @@ public class EndpointDataForConnectorsService {
             return endpointReferencesForAsset;
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
-            preferredConnectorEndpointsCache.remove(bpn);
+            preferredConnectorEndpointsCache.remove(bpn, edcUrl);
             return List.of(CompletableFuture.failedFuture(
                     new EdcRetrieverException.Builder(e).withBpn(bpn).withEdcUrl(edcUrl).build()));
         } finally {

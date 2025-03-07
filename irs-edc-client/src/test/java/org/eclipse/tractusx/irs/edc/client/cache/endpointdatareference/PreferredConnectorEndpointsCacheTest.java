@@ -48,7 +48,7 @@ class PreferredConnectorEndpointsCacheTest {
         preferredConnectorEndpointsCache.store(bpn, edcUrl);
 
         // when
-        preferredConnectorEndpointsCache.remove(bpn);
+        preferredConnectorEndpointsCache.remove(bpn, edcUrl);
 
         // then
         final String storedEdcUrl = preferredConnectorEndpointsCache.findByBpn(bpn).orElse(null);
