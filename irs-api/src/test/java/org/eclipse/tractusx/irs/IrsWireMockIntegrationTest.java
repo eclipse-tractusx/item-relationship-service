@@ -274,7 +274,9 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.successfulDiscovery(List.of("https://test.edc1.io", "https://test.edc2.io", "https://test.edc3.io"));
 
         successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
-                "integrationtesting/singleLevelBomAsBuilt-1.json", globalAssetIdLevel2);
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
+                "integrationtesting/singleLevelBomAsBuilt-2.json", globalAssetIdLevel2);
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1);
 

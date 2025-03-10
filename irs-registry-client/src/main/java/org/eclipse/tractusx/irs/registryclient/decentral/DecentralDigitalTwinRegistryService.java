@@ -128,8 +128,12 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                    if (ex != null) {
                                                        return Either.<Exception, Shell>left(new Exception(ex instanceof ExecutionException ? ex.getCause() : ex));
                                                    }
-                                                   return Either.<Exception, Shell>right(new Shell(edr.getContractId(),
-                                                           decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(edr, key.shellId())));
+                                                   try {
+                                                       return Either.<Exception, Shell>right(new Shell(edr.getContractId(),
+                                                                   fetchShellDescriptor(edr, key)));
+                                                   } catch (RegistryServiceException e) {
+                                                       return Either.<Exception, Shell>left(e);
+                                                   }
                                                }))
                                                .map(CompletableFuture::join)
                                                .toList();

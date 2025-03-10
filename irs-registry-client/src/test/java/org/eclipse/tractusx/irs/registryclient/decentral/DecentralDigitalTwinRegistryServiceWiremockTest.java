@@ -155,7 +155,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             assertThat(shells.stream().findFirst().get().getOrNull().payload().getSubmodelDescriptors()).hasSize(3);
             verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
             verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
-            verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+            verify(exactly(2), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
             verify(exactly(2), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
         }
 
