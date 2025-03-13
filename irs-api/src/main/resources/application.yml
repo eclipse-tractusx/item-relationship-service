@@ -89,8 +89,8 @@ irs: # Application config
         failed: 0 0 * * * * # every hour
     jobstore:
       ttl: # Determines how long jobs are stored in the respective state. After the TTL has expired, the job will be removed by the cleanup scheduler.
-        failed: P7D # ISO 8601 Duration
-        completed: P7D # ISO 8601 Duration
+        failed: "PT24H"  # ISO 8601 Duration
+        completed: "PT24H" # ISO 8601 Duration
       cron:
         expression: "0 */5 * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
   security:

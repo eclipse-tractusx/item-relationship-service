@@ -40,6 +40,10 @@ data:
           threadCount: {{ .Values.job.scheduled.threadCount }}
         cached:
           threadCount: {{ .Values.job.cached.threadCount }}
+        jobstore:
+          ttl:
+            failed: {{ .Values.job.ttl.failed | default "PT24H"  | quote }}
+            completed: {{ .Values.job.ttl.completed | default "PT24H" | quote  }}
       apiUrl: {{ tpl (.Values.irsUrl | default "http://localhost") . | quote }}
       security:
         api:
