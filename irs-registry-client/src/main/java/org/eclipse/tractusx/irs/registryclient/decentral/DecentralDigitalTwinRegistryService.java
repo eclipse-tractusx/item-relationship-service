@@ -107,9 +107,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                  .flatMap(Collection::stream)
                                                                  .toList();
 
-        return results.isEmpty() || results.stream().anyMatch(Either::isLeft)
-                ? fetchShellsOnCacheMiss(keys)
-                : results;
+        return results.isEmpty() || results.stream().anyMatch(Either::isLeft) ? fetchShellsOnCacheMiss(keys) : results;
     }
 
     private Collection<Either<Exception, Shell>> fetchShellForKey(final DigitalTwinRegistryKey key) {
@@ -121,16 +119,19 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                });
     }
 
-    private Collection<Either<Exception, Shell>> fetchShellFromEdcUrl(final String edcUrl, final DigitalTwinRegistryKey key) {
+    private Collection<Either<Exception, Shell>> fetchShellFromEdcUrl(final String edcUrl,
+            final DigitalTwinRegistryKey key) {
         return endpointDataForConnectorsService.createGetEndpointReferencesForAssetFutures(edcUrl, key.bpn())
                                                .stream()
                                                .map(future -> future.handle((edr, ex) -> {
                                                    if (ex != null) {
-                                                       return Either.<Exception, Shell>left(new Exception(ex instanceof ExecutionException ? ex.getCause() : ex));
+                                                       return Either.<Exception, Shell>left(new Exception(
+                                                               ex instanceof ExecutionException ? ex.getCause() : ex));
                                                    }
                                                    try {
-                                                       return Either.<Exception, Shell>right(new Shell(edr.getContractId(),
-                                                                   fetchShellDescriptor(edr, key)));
+                                                       return Either.<Exception, Shell>right(
+                                                               new Shell(edr.getContractId(),
+                                                                       fetchShellDescriptor(edr, key)));
                                                    } catch (RegistryServiceException e) {
                                                        return Either.<Exception, Shell>left(e);
                                                    }
@@ -196,10 +197,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                    decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
                                                                            edr, key.getIdentifier()));
                                                        } catch (InterruptedException e) {
-                                                           log.info("Unable to find any of the requested shells, reason: {}", e.getMessage());
+                                                           log.info(
+                                                                   "Unable to find any of the requested shells, reason: {}",
+                                                                   e.getMessage());
                                                            Thread.currentThread().interrupt();
                                                        } catch (ExecutionException e) {
-                                                           log.info("Unable to find any of the requested shells, reason: {}", e.getMessage());
+                                                           log.info(
+                                                                   "Unable to find any of the requested shells, reason: {}",
+                                                                   e.getMessage());
                                                        }
                                                        return null;
                                                    })
@@ -285,17 +290,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         log.info(msg);
 
         try {
-            return keys.stream()
-                       .map(key -> {
-                           try {
-                               return Either.<Exception, Shell>right(
-                                       new Shell(endpointDataReference.getContractId(),
-                                               fetchShellDescriptor(endpointDataReference, key)));
-                           } catch (RegistryServiceException e) {
-                               return Either.<Exception, Shell>left(e);
-                           }
-                       })
-                       .toList();
+            return keys.stream().map(key -> {
+                try {
+                    return Either.<Exception, Shell>right(new Shell(endpointDataReference.getContractId(),
+                            fetchShellDescriptor(endpointDataReference, key)));
+                } catch (RegistryServiceException e) {
+                    return Either.<Exception, Shell>left(e);
+                }
+            }).toList();
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
@@ -324,8 +326,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
      *
      * @param endpointDataReference the reference to access the digital twin registry
      * @param globalAssetId         globalAssetId
-     * @throws RegistryServiceException if the mapping does not return any results
      * @return the corresponding asset administration shell ID
+     * @throws RegistryServiceException if the mapping does not return any results
      */
     @NotNull
     private String mapToShellId(final EndpointDataReference endpointDataReference, final String globalAssetId)
@@ -364,40 +366,48 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private Collection<String> lookupShellIds(final String bpn) throws RegistryServiceException {
+    private Collection<String> lookupShellIdsByBpn(final String bpn, final LookupShellsFilter lookupShellsFilter)
+            throws RegistryServiceException {
 
-        log.info("Looking up shell ids for bpn {}", bpn);
+        log.info("Looking up shell ids for bpn {} with lookupShellsFilter {}", bpn, lookupShellsFilter);
 
         try {
-
             final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-            log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, edcUrls);
+            log.info("Looking up shell ids for bpn '{}' with connector endpoints {} and lookupShellsFilter {}", bpn,
+                    edcUrls, lookupShellsFilter);
 
             final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
                     edcUrls, bpn);
 
-            return lookupShellIds(bpn, endpointDataReferenceFutures);
+            return lookupShellIdsByBpnAndEndpointDataReferenceFuture(bpn, endpointDataReferenceFutures,
+                    lookupShellsFilter);
 
         } catch (RuntimeException e) {
             // catching generic exception is intended here,
             // otherwise Jobs stay in state RUNNING forever
             log.error(e.getMessage(), e);
             throw new RegistryServiceException(
-                    "%s occurred while looking up shell ids for bpn '%s'".formatted(e.getClass().getSimpleName(), bpn),
-                    e);
+                    "%s occurred while looking up shell ids for bpn '%s' with lookupShellsFilter %s".formatted(
+                            e.getClass().getSimpleName(), bpn, lookupShellsFilter), e);
         }
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private Collection<String> lookupShellIdsByBpn(final String bpn) throws RegistryServiceException {
+        return lookupShellIdsByBpn(bpn, null); // Delegate to overloaded method without filter
+    }
+
     @NotNull
-    private Collection<String> lookupShellIds(final String bpn,
-            final List<CompletableFuture<EndpointDataReference>> endpointDataReferenceFutures)
-            throws RegistryServiceException {
+    private Collection<String> lookupShellIdsByBpnAndEndpointDataReferenceFuture(final String bpn,
+            final List<CompletableFuture<EndpointDataReference>> endpointDataReferenceFutures,
+            final LookupShellsFilter lookupShellsFilter) throws RegistryServiceException {
 
         try {
             final var futures = endpointDataReferenceFutures.stream()
                                                             .map(edrFuture -> edrFuture.thenCompose(
                                                                     edr -> CompletableFuture.supplyAsync(
-                                                                            () -> lookupShellIds(bpn, edr))))
+                                                                            () -> lookupShellIdsByBpnAndEndpointDataReference(
+                                                                                    bpn, edr, lookupShellsFilter))))
                                                             .toList();
             final var shellIds = resultFinder.getFastestResult(futures)
                                              .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
@@ -419,7 +429,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private Collection<String> lookupShellIds(final String bpn, final EndpointDataReference endpointDataReference) {
+    private Collection<String> lookupShellIdsByBpnAndEndpointDataReference(final String bpn,
+            final EndpointDataReference endpointDataReference, final LookupShellsFilter lookupShellsFilter) {
 
         final var watch = new StopWatch();
         final String msg = "Looking up shell IDs for bpn '%s' with endpointDataReference '%s'".formatted(bpn,
@@ -428,9 +439,16 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         log.info(msg);
 
         try {
-            return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                                                             endpointDataReference, IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())
-                                                     .getResult();
+
+            if (lookupShellsFilter != null) {
+                return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByFilter(
+                        endpointDataReference, lookupShellsFilter).getResult();
+            } else {
+                return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
+                        endpointDataReference,
+                        IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build()).getResult();
+            }
+
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
@@ -439,6 +457,37 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
     @Override
     public Collection<DigitalTwinRegistryKey> lookupShellIdentifiers(final String bpn) throws RegistryServiceException {
-        return lookupShellIds(bpn).stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
+        return lookupShellIdsByBpn(bpn).stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
+    }
+
+    @Override
+    public LookupShellsResponseExtended lookupShellIdentifiers(final String bpn,
+            final LookupShellsFilter lookupShellsFilter) throws RegistryServiceException {
+
+        final List<String> aasIds = lookupShellIdsByBpn(bpn, lookupShellsFilter).stream().toList();
+
+        final String manufacturerId = lookupShellsFilter.getIdentifierKeyValuePairs()
+                                                        .stream()
+                                                        .filter(pair -> "manufacturerId".equalsIgnoreCase(
+                                                                pair.getName()))
+                                                        .map(IdentifierKeyValuePair::getValue)
+                                                        .findFirst()
+                                                        .orElse(null);
+
+        final String digitalTwinType = lookupShellsFilter.getIdentifierKeyValuePairs()
+                                                         .stream()
+                                                         .filter(pair -> "DigitalTwinType".equalsIgnoreCase(
+                                                                 pair.getName()))
+                                                         .map(IdentifierKeyValuePair::getValue)
+                                                         .findFirst()
+                                                         .orElse(null);
+
+        return LookupShellsResponseExtended.builder()
+                                           .limit(lookupShellsFilter.getLimit())
+                                           .cursor(lookupShellsFilter.getCursor())
+                                           .result(aasIds)
+                                           .bpn(manufacturerId)
+                                           .digitalTwinType(digitalTwinType)
+                                           .build();
     }
 }

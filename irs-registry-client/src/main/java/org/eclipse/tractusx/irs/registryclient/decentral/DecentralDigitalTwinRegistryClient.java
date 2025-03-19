@@ -48,6 +48,8 @@ public class DecentralDigitalTwinRegistryClient {
 
     private static final String PLACEHOLDER_AAS_IDENTIFIER = "aasIdentifier";
     private static final String PLACEHOLDER_ASSET_IDS = "assetIds";
+    private static final String PLACEHOLDER_CURSOR = "cursor";
+    private static final String PLACEHOLDER_LIMIT = "limit";
 
     private final RestTemplate edcRestTemplate;
     private final String shellDescriptorTemplate;
@@ -80,6 +82,31 @@ public class DecentralDigitalTwinRegistryClient {
         final String shellLookupEndpoint = endpointDataReference.getEndpoint() + lookupShellsTemplate;
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
         uriBuilder.uriVariables(Map.of(PLACEHOLDER_ASSET_IDS, encodeWithBase64(assetIds)));
+        return edcRestTemplate.exchange(uriBuilder.build().toUri(), HttpMethod.GET,
+                new HttpEntity<>(null, headers(endpointDataReference)), LookupShellsResponse.class).getBody();
+    }
+
+    @Retry(name = "registry")
+    public LookupShellsResponse getAllAssetAdministrationShellIdsByFilter(
+            final EndpointDataReference endpointDataReference, final LookupShellsFilter lookupShellsFilter) {
+        final String shellLookupEndpoint = endpointDataReference.getEndpoint() + lookupShellsTemplate;
+        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
+
+        // Add additional filters if they exist
+        if (lookupShellsFilter != null) {
+            if (lookupShellsFilter.getCursor() != null) {
+                uriBuilder.queryParam(PLACEHOLDER_CURSOR, encodeWithBase64(lookupShellsFilter.getCursor()));
+            }
+            if (lookupShellsFilter.getLimit() != null) {
+                uriBuilder.queryParam(PLACEHOLDER_LIMIT, encodeWithBase64(lookupShellsFilter.getLimit().toString()));
+            }
+            if (lookupShellsFilter.getIdentifierKeyValuePairs() != null) {
+                lookupShellsFilter.getIdentifierKeyValuePairs()
+                                  .forEach(identifier -> uriBuilder.uriVariables(
+                                          Map.of(PLACEHOLDER_ASSET_IDS, encodeWithBase64(identifier.getValue()))));
+            }
+        }
+
         return edcRestTemplate.exchange(uriBuilder.build().toUri(), HttpMethod.GET,
                 new HttpEntity<>(null, headers(endpointDataReference)), LookupShellsResponse.class).getBody();
     }

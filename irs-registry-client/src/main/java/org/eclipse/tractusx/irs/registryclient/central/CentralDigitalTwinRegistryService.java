@@ -38,6 +38,9 @@ import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsFilter;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponseExtended;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 
 /**
  * Central implementation of DigitalTwinRegistryService
@@ -82,6 +85,12 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
                                                       .getResult();
         log.info("Found {} shells in total", shellIds.size());
         return shellIds.stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
+    }
+
+    @Override
+    public LookupShellsResponseExtended lookupShellIdentifiers(final String bpn,
+            final LookupShellsFilter lookupShellsFilter) throws RegistryServiceException {
+        throw new RegistryServiceException("Not implemented yet");
     }
 
     private String getAAShellIdentificationOrGlobalAssetId(final String globalAssetId) {

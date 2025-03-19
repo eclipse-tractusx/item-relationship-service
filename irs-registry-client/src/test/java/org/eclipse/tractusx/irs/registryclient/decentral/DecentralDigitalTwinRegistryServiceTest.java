@@ -252,6 +252,50 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
+        void shouldReturnTheExpectedAASIdByFilter() throws RegistryServiceException {
+            // given
+            final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
+                    "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
+
+            final String expectedBPN = "ABC";
+            final String expectedDigitalTwinType = "partType";
+            final int expectedLimit = 5;
+            final String expectedCursor = null;
+
+            IdentifierKeyValuePair digitalTwinType = IdentifierKeyValuePair.builder().name("DigitalTwinType").value(expectedDigitalTwinType).build();
+            IdentifierKeyValuePair manufacturerId = IdentifierKeyValuePair.builder().name("manufacturerId").value(expectedBPN).build();
+
+            final LookupShellsFilter lookupShellsFilter = LookupShellsFilter.builder()
+                    .cursor(null)
+                    .limit(5)
+                    .identifierKeyValuePairs(List.of(manufacturerId, digitalTwinType))
+                                                                            .build();
+
+            final var dataRefFutures = List.of(
+                    completedFuture(endpointDataReference("contractAgreementId", "url.to.host")));
+            final var lookupShellsResponse = LookupShellsResponse.builder()
+                                                                 .result(List.of(digitalTwinRegistryKey.shellId()))
+                                                                 .build();
+            when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(),
+                    any())).thenReturn(dataRefFutures);
+            when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByFilter(any(),
+                    any(LookupShellsFilter.class))).thenReturn(lookupShellsResponse);
+
+            // when
+            final LookupShellsResponseExtended assetAdministrationShellDescriptors = sut.lookupShellIdentifiers(digitalTwinRegistryKey.bpn(), lookupShellsFilter);
+
+
+            // then
+            assertThat(assetAdministrationShellDescriptors.getBpn()).isEqualTo(expectedBPN);
+            assertThat(assetAdministrationShellDescriptors.getDigitalTwinType()).isEqualTo(expectedDigitalTwinType);
+            assertThat(assetAdministrationShellDescriptors.getLimit()).isEqualTo(expectedLimit);
+            assertThat(assetAdministrationShellDescriptors.getCursor()).isEqualTo(expectedCursor);
+            assertThat(assetAdministrationShellDescriptors.getResult()).isEqualTo(List.of(digitalTwinRegistryKey.shellId()));
+
+        }
+
+        @Test
         void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException, TimeoutException {
             // given
             simulateResultFinderInterrupted();
