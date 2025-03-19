@@ -470,7 +470,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                         .stream()
                                                         .filter(pair -> "manufacturerId".equalsIgnoreCase(
                                                                 pair.getName()))
-                                                        .map(IdentifierKeyValuePair::getValue)
+                                                        .map(IdentifierKeyValuePairLite::getValue)
                                                         .findFirst()
                                                         .orElse(null);
 
@@ -478,7 +478,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                          .stream()
                                                          .filter(pair -> "DigitalTwinType".equalsIgnoreCase(
                                                                  pair.getName()))
-                                                         .map(IdentifierKeyValuePair::getValue)
+                                                         .map(IdentifierKeyValuePairLite::getValue)
                                                          .findFirst()
                                                          .orElse(null);
 

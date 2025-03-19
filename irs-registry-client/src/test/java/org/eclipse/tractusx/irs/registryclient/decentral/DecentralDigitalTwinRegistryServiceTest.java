@@ -262,8 +262,8 @@ class DecentralDigitalTwinRegistryServiceTest {
             final int expectedLimit = 5;
             final String expectedCursor = null;
 
-            IdentifierKeyValuePair digitalTwinType = IdentifierKeyValuePair.builder().name("DigitalTwinType").value(expectedDigitalTwinType).build();
-            IdentifierKeyValuePair manufacturerId = IdentifierKeyValuePair.builder().name("manufacturerId").value(expectedBPN).build();
+            IdentifierKeyValuePairLite digitalTwinType = IdentifierKeyValuePairLite.builder().name("DigitalTwinType").value(expectedDigitalTwinType).build();
+            IdentifierKeyValuePairLite manufacturerId = IdentifierKeyValuePairLite.builder().name("manufacturerId").value(expectedBPN).build();
 
             final LookupShellsFilter lookupShellsFilter = LookupShellsFilter.builder()
                     .cursor(null)

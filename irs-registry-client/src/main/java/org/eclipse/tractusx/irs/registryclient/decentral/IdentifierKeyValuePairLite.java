@@ -23,20 +23,28 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Request Filter to lookup shells in the Digital Twin Registry.
+ * IdentifierKeyValuePair
  */
 @Data
 @Builder
 @Jacksonized
-public class LookupShellsFilter {
-    private final String cursor;
-    private final Integer limit;
-    private final List<IdentifierKeyValuePairLite> identifierKeyValuePairs;
+public class IdentifierKeyValuePairLite {
+    /**
+     * name
+     */
+    @Schema(implementation = String.class, example = "engineserialid")
+    private String name;
+
+    /**
+     * value
+     */
+    @Schema(implementation = String.class, example = "12309481209312")
+    private String value;
+
 }
