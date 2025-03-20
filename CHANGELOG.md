@@ -7,8 +7,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
+
 ### Fixed
 - Bumped version of tj-actions/changed-files to 2f7c5bfce28377bc069a65ba478de0a74aa0ca32
+=======
+
+## [6.0.1] - 2025-02-19
+
+### Changed
+
+- Updated EDC management endpoint paths to /v3/
+- Bump Spring Boot to 3.4.2
+
+### Fixed
+
+- Added missing discovery type config `digitalTwinRegistry.discovery.type`
+
+### Known knowns
+
+- Latest update broke full registry reload on traceability-foss side eclipse-tractusx/traceability-foss/issues/1423
+
+## [6.0.0] - 2025-02-13
+
+### Changed
+
+- Resolve Null pointer exception while registering the company (#888)
+- Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) https://github.com/eclipse-tractusx/sig-release/issues/939
+- Changed orchestration of EDC negotiations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
+- secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
+- Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists (#915)
+- Release documentation for irs-registry-client (#915)
+- #351 Introduced orchestration to EDC negotiation to be able to limit parallel edc calls and reuse already ongoing negotiations.
+- Cccept dates without time and time zone according to standard (#915)
+- Update Spring-Boot version to 3.2.8 to mitigate CVE-2024-38821 (#915)
+- Setup IRS gatling test workflow using containers (#915)
+- Enabled highcharts in load tests. Updated order test (#915)
+- API Change POST /irs/order providing aas identifier as key https://github.com/eclipse-tractusx/sig-release/issues/942
+- remove fallback for resolving shell via globalAssetId (#915)
+- API Change POST /irs/jobs providing aas identifier as key https://github.com/eclipse-tractusx/sig-release/issues/942
+- fixed inefficient blob retrieval for irs orders and batches (#915)
+- fixed ExecutorCompletionServiceFactory to actually limit threads of batches (#915)
+- fixed Batch and Order state calculation to display the correct state during batch processing (#915)
+- Bump wiremock-standalone to 3.10.0 to mitigate CVE-2024-45801, CVE-2024-48910, CVE-2024-47875 (#915)
+- Bump irs-registry-client to 2.1.25 (#915)
+- Exclude unused transient dependencies of edc packages to mitigate CVE-2024-7254 (#915)
+
+### Fixed
+
+- Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position (#915)
+- fixed auto dispatch workflow for auto deployment from main (#915)
+- Lift to newest Spring Boot version to fix vulnerability CVE-2024-50379. Fix and disable some tests
+- Remove version lock on tomcat-embed-core to fix vulnerability CVE-2024-50379
+
+### Added
+
+- Added api key authentication for edc notification requests (#915)
+- Added Github workflow for publishing build artifacts to Github Packages (#915)
+- Added Maven profile for publishing into Github Packages (#915)
+- Added integration tests for /ir/sorders API (#915)
+- Added DigitalTwinType in transform-and-upload-py script (#915)
+- Added get_auth_token function in transform-and-upload-py script for submodel and dtr creation (#915)
+- Added load tests for /jobs and /orders API (#915)
+- Added load test data generation via JUnit tests (#915)
+- Configurable number of threads for parallel processing of batch order jobs (#915)
+- Added GitHub workflow for enabling Sonar scanning (#915)
+- Added flag `--dos` to transform-and-upload-py script to allow to switch between DOS and umbrella upload (#915)
+- Added asset get and update API endpoint (#915)
+- add missing permissions to workflows (#915)
+- Filtering for duplicated connector endpoint addresses for same bpn (#915)
+- Added new section under crosscuting/api-endpoints to arc42 documentation (#915)
+- Added support for EDC EDR management API. This can be enabled using the config entry `irs-edc-client.controlplane.edr-management-enabled` (#575)
+- added jobId to transferProcess to allow quick query in database(#915)
+- Added missing "auditContractNegotiation" flag to Order API (#915)
+- Added api key authentication for edc notification requests (#915)
+- Added integration tests for /irs/orders API https://github.com/eclipse-tractusx/sig-release/issues/933
+
+### Removed
+
+- Removed subjectId from AssetAdministrationShellDescriptor object (#915)
+- removed write lock when creating jobs (#915)
+- removed read lock since s3 already works on atomic level (#915)
+
 ## [5.4.1] - 2024-08-19
 
 ### Fixed
@@ -762,7 +841,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.1...HEAD
+[6.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...6.0.1
+[6.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...6.0.0
 [5.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.0...5.4.1
 [5.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.0...5.4.0
 [5.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.2.0...5.3.0

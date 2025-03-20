@@ -4,7 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+_**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
+
 ## [Unreleased]
+
+## [8.0.1] - 2025-02-19
+
+### Changed
+
+- Update IRS version to 6.0.1
+- Update EDC management endpoint paths to /v3/
+
+## [8.0.0] - 2025-02-13
+
+### Changed
+
+- Update IRS version to 6.0.0
+
+### Added
+
+- Added the discovery type configurable `discovery.type` default value as bpnl.
+- Added configuration property `edc.negotiationCallbackMapping`
+- Added configuration property `edc.negotiationCallbackurl`
+- Added configuration property `edc.controlplane.endpoint.edrManagement`
+- Added configuration property `edc.controlplane.edrManagementEnabled`
+- Added configuration for edc negotiation orchestration threadPoolSize `edc.orchestration.threadPoolSize`
+- Added configuration properties for IRS thread pools 
+  ```
+  job:
+    batch:
+      threadCount: 5
+    scheduled:
+      threadCount: 5
+    cached:
+      threadCount: 5
+  ```
 
 ## [7.4.1] - 2024-08-19
 

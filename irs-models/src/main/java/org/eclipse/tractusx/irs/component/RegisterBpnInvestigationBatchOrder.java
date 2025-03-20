@@ -118,6 +118,10 @@ public class RegisterBpnInvestigationBatchOrder {
     private BatchStrategy batchStrategy;
 
 
+    @Schema(implementation = Boolean.class, example = "true", description = "Flag enables and disables auditing, including provisioning of ContractAgreementId inside submodels and shells objects. Default is true.")
+    private boolean auditContractNegotiation = true;
+
+
     /**
      * Validation constants
      */
@@ -141,6 +145,5 @@ public class RegisterBpnInvestigationBatchOrder {
         /* package */ static final int MIN_JOB_TIMEOUT = 60;
         /* package */ static final int MAX_JOB_TIMEOUT = 7200;
         /* package */ static final int DEFAULT_JOB_TIMEOUT = 3600;
-        /* package */ static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     }
 }

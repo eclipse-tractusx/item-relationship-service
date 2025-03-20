@@ -186,16 +186,6 @@ public class TestMother {
                            .build();
     }
 
-    public static JobParameter jobParameterDownwardAsSpecified() {
-        return JobParameter.builder()
-                           .depth(0)
-                           .bomLifecycle(BomLifecycle.AS_SPECIFIED)
-                           .direction(Direction.DOWNWARD)
-                           .aspects(List.of(SemanticModelNames.PART_AS_SPECIFIED_3_0_0,
-                                   SemanticModelNames.SINGLE_LEVEL_BOM_AS_SPECIFIED_2_0_0))
-                           .build();
-    }
-
     public static JobParameter jobParameterCollectAspects() {
         return JobParameter.builder()
                            .depth(0)

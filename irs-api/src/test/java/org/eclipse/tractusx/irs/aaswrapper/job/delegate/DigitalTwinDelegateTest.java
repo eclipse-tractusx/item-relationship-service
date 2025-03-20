@@ -74,7 +74,6 @@ class DigitalTwinDelegateTest {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
                 List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
-
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(),
                 jobParameterAuditContractNegotiation(), new AASTransferProcess("id", 0), createKey());

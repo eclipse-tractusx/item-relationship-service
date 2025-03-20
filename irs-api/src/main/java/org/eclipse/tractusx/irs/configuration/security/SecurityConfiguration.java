@@ -78,9 +78,8 @@ public class SecurityConfiguration {
                                                 "/api/api-docs/swagger-config",
                                                 "/favicon.ico",
                                                 "/" + ApiConstants.API_PREFIX_INTERNAL + "/endpoint-data-reference",
-                                                "/ess/mock/notification/receive",
-                                                "/ess/notification/receive",
-                                                "/ess/notification/receive-recursive"
+                                                "/" + ApiConstants.API_PREFIX_INTERNAL + "/negotiation-callback",
+                                                "/ess/mock/notification/receive"
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
     private static final String ONLY_SELF_SCRIPT_SRC = "script-src 'self'";

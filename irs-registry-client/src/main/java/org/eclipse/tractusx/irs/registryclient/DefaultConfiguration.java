@@ -24,19 +24,17 @@
 package org.eclipse.tractusx.irs.registryclient;
 
 import java.time.Clock;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import io.github.resilience4j.retry.RetryRegistry;
-import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
-import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
-import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
+import org.eclipse.tractusx.irs.edc.client.EdcOrchestrator;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
@@ -110,8 +108,9 @@ public class DefaultConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
-    public ConnectorEndpointsService connectorEndpointsService(final DiscoveryFinderClient discoveryFinderClient) {
-        return new ConnectorEndpointsService(discoveryFinderClient);
+    public ConnectorEndpointsService connectorEndpointsService(final DiscoveryFinderClient discoveryFinderClient,
+            @Value("${digitalTwinRegistryClient.discovery.type:}") final String discoveryType) {
+        return new ConnectorEndpointsService(discoveryFinderClient, discoveryType);
     }
 
     @Bean
@@ -137,13 +136,9 @@ public class DefaultConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
-            final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
-            final AsyncPollingService pollingService, final RetryRegistry retryRegistry,
-            final EDCCatalogFacade catalogFacade,
-            final EndpointDataReferenceCacheService endpointDataReferenceCacheService) {
+            final EdcDataPlaneClient edcDataPlaneClient, final EdcOrchestrator edcOrchestrator, final RetryRegistry retryRegistry) {
 
-        return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
-                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
+        return new EdcSubmodelClientImpl(edcConfiguration, edcDataPlaneClient, edcOrchestrator, retryRegistry);
     }
 
     @Bean
@@ -165,6 +160,13 @@ public class DefaultConfiguration {
     @ConditionalOnMissingBean(ScheduledExecutorService.class)
     public ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(POOL_SIZE);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ExecutorService.class)
+    public ExecutorService fixedThreadPoolExecutorService(
+            @Value("${irs-edc-client.controlplane.orchestration.thread-pool-size}") final int threadPoolSize) {
+        return Executors.newFixedThreadPool(threadPoolSize);
     }
 
 }

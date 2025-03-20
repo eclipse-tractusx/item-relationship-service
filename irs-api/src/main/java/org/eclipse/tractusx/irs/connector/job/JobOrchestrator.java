@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -82,6 +82,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      */
     private final JobTTL jobTTL;
 
+    private final Object jobCompletionSyncObject = new Object();
+
     /**
      * Create a new instance of {@link JobOrchestrator}.
      *
@@ -140,7 +142,17 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
         // If no transfers are requested, job is already complete
         if (transferCount == 0) {
-            callCompleteHandlerIfFinished(multiJob.getJobIdString());
+            try {
+                callCompleteHandlerIfFinished(multiJob.getJobIdString());
+            } catch (JobException e) {
+                markJobInError(multiJob, e, "Error while completing Job.");
+                meterService.incrementJobFailed();
+                return JobInitiateResponse.builder()
+                                          .jobId(multiJob.getJobIdString())
+                                          .status(ResponseStatus.FATAL_ERROR)
+                                          .error(e.getMessage())
+                                          .build();
+            }
         }
 
         return JobInitiateResponse.builder().jobId(multiJob.getJobIdString()).status(ResponseStatus.OK).build();
@@ -214,23 +226,19 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
-        return jobs.stream()
-                   .map(job -> deleteJobsAndDecreaseJobsInJobStoreMetrics(job.getJobIdString()))
-                   .flatMap(Optional::stream)
-                   .toList();
-    }
-
-    private Optional<MultiTransferJob> deleteJobsAndDecreaseJobsInJobStoreMetrics(final String jobId) {
-        final Optional<MultiTransferJob> optJob = jobStore.deleteJob(jobId);
-        if (optJob.isPresent()) {
-            meterService.setNumberOfJobsInJobStore((long) jobStore.findAll().size());
-        }
-        return optJob;
+        final List<MultiTransferJob> deletedJobs = jobs.stream()
+                                                       .map(job -> jobStore.deleteJob(job.getJobIdString()))
+                                                       .flatMap(Optional::stream)
+                                                       .toList();
+        meterService.setNumberOfJobsInJobStore((long) jobStore.findAll().size());
+        return deletedJobs;
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {
-        jobStore.completeJob(jobId, this::completeJob);
-        publishJobProcessingFinishedEventIfFinished(jobId);
+        synchronized (jobCompletionSyncObject) {
+            jobStore.completeJob(jobId, this::completeJob);
+            publishJobProcessingFinishedEventIfFinished(jobId);
+        }
     }
 
     private void completeJob(final MultiTransferJob job) {
@@ -270,10 +278,10 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
             final T dataRequest)  /* throws JobErrorDetails */ {
         final JobParameter jobData = job.getJobParameter();
-
+        final String jobId = job.getJobIdString();
         final var response = processManager.initiateRequest(dataRequest,
                 transferId -> jobStore.addTransferProcess(job.getJobIdString(), transferId),
-                this::transferProcessCompleted, jobData);
+                this::transferProcessCompleted, jobData, jobId);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw new JobException(response.getStatus().toString());

@@ -33,6 +33,13 @@ data:
       trustedPort: {{ .Values.service.trustedPort }}
 
     irs:
+      job:
+        batch:
+          threadCount: {{ .Values.job.batch.threadCount }}
+        scheduled:
+          threadCount: {{ .Values.job.scheduled.threadCount }}
+        cached:
+          threadCount: {{ .Values.job.cached.threadCount }}
       apiUrl: {{ tpl (.Values.irsUrl | default "http://localhost") . | quote }}
       security:
         api:
@@ -80,6 +87,7 @@ data:
       discovery:
         oAuthClientId: {{ .Values.discovery.oAuthClientId | default "discovery" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
         discoveryFinderUrl: {{ tpl (.Values.discovery.discoveryFinderUrl | default "") . | quote }} # The endpoint to discover EDC endpoints to a particular BPN.
+        type: {{ .Values.discovery.type | default "bpnl" }} # Type to discover EDC of type "bpnl".
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
@@ -94,20 +102,24 @@ data:
     irs-edc-client:
       callback:
         mapping: {{ .Values.edc.callbackMapping | default "/internal/endpoint-data-reference" | quote }}
+        negotiation-mapping: {{ .Values.edc.negotiationCallbackMapping | default "/internal/negotiation-callback" | quote }}
       callback-url: {{ tpl (.Values.edc.callbackurl | default (printf "http://%s%s" .Release.Name "-item-relationship-service:8181/internal/endpoint-data-reference")) . | quote }}
+      negotiation-callback-url: {{ tpl (.Values.edc.negotiationCallbackurl | default (printf "http://%s%s" .Release.Name "-item-relationship-service:8181/internal/negotiation-callback")) . | quote }}
       asyncTimeout: {{ tpl .Values.edc.asyncTimeout . | default "PT10M" | quote }}
       controlplane:
         request-ttl: {{ .Values.edc.controlplane.request.ttl | default "PT10M" | quote }}
         endpoint:
           data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-tractusx-connector-controlplane:8081/management")) . | quote }}
-          catalog: {{ .Values.edc.controlplane.endpoint.catalog | default "/v2/catalog/request" | quote }}
-          contract-negotiation: {{ .Values.edc.controlplane.endpoint.contractnegotiation | default "/v2/contractnegotiations" | quote }}
-          transfer-process: {{ .Values.edc.controlplane.endpoint.transferprocess | default "/v2/transferprocesses" | quote }}
+          catalog: {{ .Values.edc.controlplane.endpoint.catalog | default "/v3/catalog/request" | quote }}
+          edr-management: {{ .Values.edc.controlplane.endpoint.edrManagement | default "/v2/edrs" | quote }}
+          contract-negotiation: {{ .Values.edc.controlplane.endpoint.contractnegotiation | default "/v3/contractnegotiations" | quote }}
+          transfer-process: {{ .Values.edc.controlplane.endpoint.transferprocess | default "/v3/transferprocesses" | quote }}
           state-suffix: {{ .Values.edc.controlplane.endpoint.statesuffix | default "/state" | quote }}
-          contract-agreements: {{ .Values.edc.controlplane.endpoint.contractAgreements | default "/v2/contractagreements" | quote }}
+          contract-agreements: {{ .Values.edc.controlplane.endpoint.contractAgreements | default "/v3/contractagreements" | quote }}
         provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
         catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
         catalog-page-size: {{ .Values.edc.controlplane.catalog.pagesize }}
+        edr-management-enabled: {{ .Values.edc.controlplane.edrManagementEnabled | quote }}
         api-key:
           header: {{ tpl (.Values.edc.controlplane.apikey.header | default "") . | quote }}
           secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV
@@ -123,12 +135,14 @@ data:
         cacheTTL: {{ .Values.edc.discoveryFinderClient.cacheTTL | quote }}
       connectorEndpointService:
         cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | quote }}
+      orchestration:
+        thread-pool-size: {{ .Values.edc.orchestration.threadPoolSize | quote }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.ess.edc.host | default "") . | quote }}
       assetsPath: {{ tpl (.Values.ess.assetsPath | default "/management/v3/assets") . | quote }}
-      policydefinitionsPath: {{ tpl (.Values.ess.policydefinitionsPath | default "/management/v2/policydefinitions") . | quote }}
-      contractdefinitionsPath: {{ tpl (.Values.ess.contractdefinitionsPath | default "/management/v2/contractdefinitions") . | quote }}
+      policydefinitionsPath: {{ tpl (.Values.ess.policydefinitionsPath | default "/management/v3/policydefinitions") . | quote }}
+      contractdefinitionsPath: {{ tpl (.Values.ess.contractdefinitionsPath | default "/management/v3/contractdefinitions") . | quote }}
       irs:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:

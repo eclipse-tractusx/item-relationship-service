@@ -1,0 +1,36 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+autonumber "<b>[00]"
+
+actor IrsApiConsumer
+
+
+box "IRS" #LightGrey
+
+IrsApiConsumer -> IrsController : POST /irs/jobs
+rnote right IrsApiConsumer
+    id instead of globalAssetId
+end rnote
+IrsApiConsumer <- IrsController : job id
+
+participant "blackbox IRS processing" as irs_process
+
+IrsController -> irs_process
+irs_process -> DTR: get twin by id
+rnote right irs_process
+1 call instead of 2
+end rnote
+irs_process <- DTR: twin
+
+irs_process -> irs_process: globalAssetId of twin is saved in job response
+rnote right irs_process
+   As is: the id with which the Job was started is saved as globalAssetId in the job
+   To be: Job contains the globalAssetId instead of the id
+end rnote
+
+IrsApiConsumer -> IrsController : GET /irs/jobs/<id>
+IrsApiConsumer <- IrsController : job
+
+@enduml

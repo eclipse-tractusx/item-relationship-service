@@ -1,0 +1,34 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+autonumber "<b>[00]"
+
+actor IrsApiConsumer
+
+
+box "IRS" #LightGrey
+
+IrsApiConsumer -> BatchController : POST /irs/orders
+rnote left
+    200k digital twin ids
+end note
+IrsApiConsumer <- BatchController : order id
+
+BatchController --> CreationBatchService: create batches
+CreationBatchService -> CreationBatchService: split into parallel executable working packages
+
+rnote right
+    As is: parallel processes are not limited
+    To be: limit of e.g. 5 jobs in parallel
+end note
+
+loop
+    rnote right CreationBatchService
+        sequentially
+    end note
+    CreationBatchService -> JobEventLinkedQueueListener: execute working packages
+    JobEventLinkedQueueListener --> IrsApiConsumer: callback on completed batch
+end
+
+@enduml

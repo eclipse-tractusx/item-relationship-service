@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.util;
 
+import java.time.ZonedDateTime;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,9 +62,12 @@ public class JsonUtil {
         final SimpleModule simpleModule = new SimpleModule().addAbstractTypeMapping(TransferProcess.class,
                 AASTransferProcess.class);
 
+        final JavaTimeModule timeModule = new JavaTimeModule();
+        timeModule.addDeserializer(ZonedDateTime.class, new ZonedDateTimeDeserializer());
+
         MAPPER.registerModule(simpleModule);
         MAPPER.registerModule(new Jdk8Module());
-        MAPPER.registerModule(new JavaTimeModule());
+        MAPPER.registerModule(timeModule);
         MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }

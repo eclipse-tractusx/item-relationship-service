@@ -61,7 +61,6 @@ public class Job {
     @JsonAlias("jobId")
     private UUID id;
 
-    @NotNull
     @Schema(implementation = String.class, description = "Part global unique id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
             minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     @JsonUnwrapped

@@ -1,0 +1,63 @@
+{
+  "aspects": [
+    "urn:samm:io.catenax.batch:3.0.0#Batch",
+    "urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
+    "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
+    "urn:samm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
+    "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+    "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt",
+    "urn:samm:io.catenax.traction_battery_code:2.0.0#TractionBatteryCode",
+    "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+    "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned"
+  ],
+  "batchSize": 20,
+  "batchStrategy": "PRESERVE_BATCH_JOB_ORDER",
+  "bomLifecycle": "asBuilt",
+  "collectAspects": true,
+  "depth": 100,
+  "direction": "downward",
+  "jobTimeout": 3600,
+  "keys": [
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4da01"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:4a5e9ff6-2d5c-4510-a90e-d55af3ba502f"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:6b2296cc-26c0-4f38-8a22-092338c31000"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e43842"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:6ec3f1db-2798-454b-a73f-0d21a8966c74"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:d8030bbf-a874-49fb-b2e1-7610f0ccad12"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:7c7d5aec-b15d-491c-8fbd-c61c6c02c69a"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:bcfae197-40fa-4be0-821d-5c1873a1b7c2"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:aba71b24-0af9-482c-8d4b-2048113c55e9"
+    },
+    {
+      "bpn": "BPNL000000002BR4",
+      "globalAssetId": "urn:uuid:4e390dab-707f-446e-bfbe-653f6f5b1f37"
+    }
+  ],
+  "timeout": 43200
+}

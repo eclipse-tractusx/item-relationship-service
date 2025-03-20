@@ -93,7 +93,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
         final var discoveryFinderClient = new DiscoveryFinderClientImpl(DISCOVERY_FINDER_URL, restTemplate);
-        final var connectorEndpointsService = new ConnectorEndpointsService(discoveryFinderClient);
+        final var connectorEndpointsService = new ConnectorEndpointsService(discoveryFinderClient, "bpnl");
         final var endpointDataForConnectorsService = new EndpointDataForConnectorsService(
                 edcEndpointReferenceRetrieverMock);
         final var decentralDigitalTwinRegistryClient = new DecentralDigitalTwinRegistryClient(restTemplate,
@@ -219,7 +219,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
             verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
             verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
-            verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+            verify(exactly(0), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
         }
     }
 
@@ -259,8 +259,9 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
                 throws RegistryServiceException, EdcRetrieverException {
             // Arrange
             givenThat(postDiscoveryFinder200());
-            final String edc1Url = "https://test.edc1.io";
-            final String edc2Url = "https://test.edc2.io";
+            final String dspPath = "/api/v1/dsp";
+            final String edc1Url = "https://test.edc1.io" + dspPath;
+            final String edc2Url = "https://test.edc2.io" + dspPath;
             final List<String> edcUrls = List.of(edc1Url, edc2Url);
             givenThat(postEdcDiscovery200(TEST_BPN, edcUrls));
             givenThat(getLookupShells200());

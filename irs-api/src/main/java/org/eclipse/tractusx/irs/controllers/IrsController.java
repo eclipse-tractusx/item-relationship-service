@@ -42,7 +42,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
@@ -176,8 +175,8 @@ public class IrsController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public ResponseEntity<Jobs> getJobById(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
-                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID id,
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0")
+            @Valid @PathVariable final UUID id,
             @Parameter(
                     description = "\\<true\\> Return job with current processed item graph. \\<false\\> Return job with item graph if job is in state COMPLETED, otherwise job.") @Schema(
                     implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
@@ -228,8 +227,8 @@ public class IrsController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public Job cancelJobByJobId(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
-                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID id) {
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0")
+            @Valid @PathVariable final UUID id) {
 
         return this.itemJobService.cancelJobById(id);
     }

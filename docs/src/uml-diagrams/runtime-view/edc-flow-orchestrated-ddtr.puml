@@ -1,0 +1,25 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+
+autonumber "<b>[000]"
+
+participant "EdcSubmodelClient" as ESC
+participant "NegotiationOrchestrator" as NO
+participant "EDCCatalogFacade" as ECF
+
+ESC -> NO: get ContractOffers for type DTR
+NO -> ECF: get ContractOffers for type DTR
+NO <-- ECF: List<ContractOffer>
+ESC <-- NO: List<ContractOffer>
+
+loop for each ContractOffer
+ESC -> NO: negotiate EndpointDataReference(ContractOffer)
+ESC <-- NO: Future<EndpointDataReference>
+end loop
+
+ESC -> ESC: wait for completion of Futures
+
+@enduml

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,8 +25,12 @@ package org.eclipse.tractusx.irs.configuration;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
@@ -48,16 +52,13 @@ import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
 import org.eclipse.tractusx.irs.data.CxTestDataContainer;
-import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
-import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
-import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
+import org.eclipse.tractusx.irs.edc.client.EdcOrchestrator;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientLocalStub;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientLocalStub;
@@ -82,7 +83,6 @@ import org.springframework.context.annotation.Profile;
 })
 public class JobConfiguration {
     public static final String JOB_BLOB_PERSISTENCE = "JobPersistence";
-    public static final int EXECUTOR_CORE_POOL_SIZE = 5;
     private static final Integer EXPIRE_AFTER_DAYS = 7;
 
     @Bean
@@ -94,12 +94,16 @@ public class JobConfiguration {
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinDelegate digitalTwinDelegate,
-            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JobStore jobStore,
-            final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
+            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
+            final JobStore jobStore,
+            final MeterRegistryService meterService,
+            final ApplicationEventPublisher applicationEventPublisher,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
-            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs, final JsonUtil jsonUtil) {
+            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs,
+            final JsonUtil jsonUtil,
+            @Value("${irs.job.cached.threadCount}") final int threadCount) {
 
-        final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(),
+        final var manager = new AASTransferProcessManager(digitalTwinDelegate, cachedExecutorService(threadCount),
                 blobStore, jsonUtil);
         final var logic = new TreeRecursiveLogic(blobStore, jsonUtil, new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
@@ -109,8 +113,24 @@ public class JobConfiguration {
     }
 
     @Bean
-    public ScheduledExecutorService scheduledExecutorService() {
-        return Executors.newScheduledThreadPool(EXECUTOR_CORE_POOL_SIZE);
+    public ExecutorService cachedExecutorService(@Value("${irs.job.cached.threadCount}") final int threadCount) {
+        final long keepAliveTime = 60L;
+
+        return new ThreadPoolExecutor(
+                threadCount,
+                threadCount,
+                keepAliveTime, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>());
+    }
+
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService(@Value("${irs.job.scheduled.threadCount}") final int threadCount) {
+        return Executors.newScheduledThreadPool(threadCount);
+    }
+
+    @Bean
+    public ExecutorService fixedThreadPoolExecutorService(@Value("${irs-edc-client.controlplane.orchestration.thread-pool-size:}")  final int threadPoolSize) {
+        return Executors.newFixedThreadPool(threadPoolSize);
     }
 
     @Bean
@@ -174,12 +194,8 @@ public class JobConfiguration {
 
     @Profile({ "!local && !stubtest" })
     @Bean
-    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
-            final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
-            final AsyncPollingService pollingService, final RetryRegistry retryRegistry,
-            final EDCCatalogFacade catalogFacade,
-            final EndpointDataReferenceCacheService endpointDataReferenceCacheService) {
-        return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
-                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
+    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration, final EdcDataPlaneClient edcDataPlaneClient,
+            final EdcOrchestrator edcOrchestrator, final RetryRegistry retryRegistry) {
+        return new EdcSubmodelClientImpl(edcConfiguration, edcDataPlaneClient, edcOrchestrator, retryRegistry);
     }
 }

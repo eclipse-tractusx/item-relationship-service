@@ -28,6 +28,13 @@ resources:
 # IRS Configuration #
 #####################
 irsUrl: http://irs-item-relationship-service:8080
+job:
+  batch:
+    threadCount: 5
+  scheduled:
+    threadCount: 5
+  cached:
+    threadCount: 5
 bpn: BPNL00000003AZQP
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
@@ -108,11 +115,16 @@ edc:
       data: http://umbrella-dataconsumer-1-edc-controlplane:8081/management
     apikey:
       secret: "TEST1"
+    edrManagementEnabled: true
+  asyncTimeout: PT30S
+  submodel:
+    request:
+      ttl: PT30S
 
 minio:
   resources:
     requests:
-      cpu: 0.25
+      cpu: 150m
       memory: 1Gi
   rootUser: "minio"  # <minio-username>
   rootPassword: "minioPass"  # <minio-password>

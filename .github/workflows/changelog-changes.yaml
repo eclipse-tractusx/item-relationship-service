@@ -7,15 +7,18 @@ on:
       - '**/*.md'
       - '**/*.txt'
       - '.config/**'
-      - '.github/**'
       - 'docs/**'
       - 'local/**'
 
+env:
+  # Specific CHANGELOG file which is used for releasing the product. Default <CHANGELOG.md>.
+  CHANGELOG_PATH: 'CHANGELOG.md'
 jobs:
   analyze:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      contents: read
 
     name: changelog-check
     steps:
@@ -26,7 +29,7 @@ jobs:
         uses: tj-actions/changed-files@2f7c5bfce28377bc069a65ba478de0a74aa0ca32
         with:
           files: |
-            CHANGELOG.md
+            ${{ env.CHANGELOG_PATH }}
 
       - name: Echo result if CHANGELOG file was changed
         if: steps.changelog-changed.outputs.any_changed == 'true'

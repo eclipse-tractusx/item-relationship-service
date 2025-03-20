@@ -1,0 +1,36 @@
+{
+  "traceability-core": {
+    "@context": {
+      "odrl": "http://www.w3.org/ns/odrl/2/",
+      "cx-policy": "https://w3id.org/catenax/policy/"
+    },
+    "@type": "PolicyDefinitionRequestDto",
+    "@id": "traceability-core",
+    "policy": {
+      "@type": "odrl:Set",
+      "odrl:permission": [
+        {
+          "odrl:action": "use",
+          "odrl:constraint": {
+            "odrl:and": [
+              {
+                "odrl:leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                "odrl:operator": {
+                  "@id": "odrl:eq"
+                },
+                "odrl:rightOperand": "traceability:1.0"
+              },
+              {
+                "odrl:leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                "odrl:operator": {
+                  "@id": "odrl:eq"
+                },
+                "odrl:rightOperand": "cx.core.industrycore:1"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

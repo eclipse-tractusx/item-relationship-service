@@ -23,6 +23,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.moreThanOrExactly;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -40,12 +41,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.data.StringMapper;
@@ -61,6 +66,7 @@ public class WiremockSupport {
 
     public static final String SUBMODEL_SUFFIX = "/\\$value";
     public static final String CALLBACK_URL = "http://localhost/callback?id={id}&state={state}";
+    public static final String CALLBACK_BATCH_URL = "http://localhost/callback?batchId={batchId}&batchState={batchState}";
     public static final String CALLBACK_PATH = "/callback";
 
     public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
@@ -111,6 +117,36 @@ public class WiremockSupport {
                           .build();
     }
 
+    static RegisterBatchOrder batchOrderRequest(Set<PartChainIdentificationKey> keys, final int depth,
+            final String callbackUrl) {
+        return RegisterBatchOrder.builder()
+                                 .keys(keys)
+                                 .depth(depth)
+                                 .callbackUrl(callbackUrl)
+                                 .batchStrategy(BatchStrategy.PRESERVE_BATCH_ORDER)
+                                 .direction(Direction.DOWNWARD)
+                                 .collectAspects(true)
+                                 .batchSize(5)
+                                 .timeout(100)
+                                 .auditContractNegotiation(true)
+                                 .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
+                                 .build();
+    }
+
+    static RegisterBpnInvestigationBatchOrder bpnInvestigationBatchOrderRequest(Set<PartChainIdentificationKey> keys,
+            final String callbackUrl) {
+        return RegisterBpnInvestigationBatchOrder.builder()
+                                                 .keys(keys)
+                                                 .incidentBPNSs(List.of())
+                                                 .callbackUrl(callbackUrl)
+                                                 .batchStrategy(BatchStrategy.PRESERVE_BATCH_ORDER)
+                                                 .batchSize(1)
+                                                 .timeout(100)
+                                                 .jobTimeout(100)
+                                                 .auditContractNegotiation(true)
+                                                 .build();
+    }
+
     static void successfulDiscovery() {
         stubFor(DiscoveryServiceWiremockSupport.postDiscoveryFinder200());
         stubFor(DiscoveryServiceWiremockSupport.postEdcDiscovery200());
@@ -138,14 +174,14 @@ public class WiremockSupport {
         return Base64.getEncoder().encodeToString(new SerializationHelper().serialize(globalAssetId));
     }
 
+    // can't verify exact number of call, since parallel computing often causes cache miss for first couple of threads
     static void verifyDiscoveryCalls(final int times) {
-        verify(times, postRequestedFor(urlPathEqualTo(DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH)));
-        verify(times, postRequestedFor(urlPathEqualTo(DiscoveryServiceWiremockSupport.EDC_DISCOVERY_PATH)));
+        verify(moreThanOrExactly(times), postRequestedFor(urlPathEqualTo(DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH)));
+        verify(moreThanOrExactly(times), postRequestedFor(urlPathEqualTo(DiscoveryServiceWiremockSupport.EDC_DISCOVERY_PATH)));
     }
 
     static void verifyNegotiationCalls(final int times) {
         verify(times, postRequestedFor(urlPathEqualTo(SubmodelFacadeWiremockSupport.PATH_NEGOTIATE)));
-        verify(times, postRequestedFor(urlPathEqualTo(SubmodelFacadeWiremockSupport.PATH_CATALOG)));
         verify(times * 2, getRequestedFor(urlPathMatching(SubmodelFacadeWiremockSupport.PATH_NEGOTIATE + "/.*")));
         verify(times, getRequestedFor(urlPathMatching(
                 SubmodelFacadeWiremockSupport.PATH_NEGOTIATE + "/.*" + SubmodelFacadeWiremockSupport.PATH_STATE)));
@@ -153,6 +189,14 @@ public class WiremockSupport {
         verify(times * 2, getRequestedFor(urlPathMatching(SubmodelFacadeWiremockSupport.PATH_TRANSFER + "/.*")));
         verify(times, getRequestedFor(urlPathMatching(
                 SubmodelFacadeWiremockSupport.PATH_TRANSFER + "/.*" + SubmodelFacadeWiremockSupport.PATH_STATE)));
+    }
+
+    static void verifyEdrNegotiationCalls(final int times) {
+        verify(times, postRequestedFor(urlPathEqualTo(SubmodelFacadeWiremockSupport.PATH_EDR_NEGOTIATE)));
+    }
+
+    static void verifyCatalogCalls(final int times) {
+        verify(times, postRequestedFor(urlPathEqualTo(SubmodelFacadeWiremockSupport.PATH_CATALOG)));
     }
 
     static void successfulDataRequests(final String assetId, final String fileName) {
@@ -167,9 +211,22 @@ public class WiremockSupport {
                                                   .willReturn(responseWithStatus(200)));
     }
 
+    static void successfulBatchCallbackRequest() {
+        stubFor(get(urlPathEqualTo(CALLBACK_PATH)).withQueryParam("batchId", matching(".*"))
+                                                  .withQueryParam("batchState", matching(".*"))
+                                                  .willReturn(responseWithStatus(200)));
+    }
+
     static void verifyCallbackCall(final String jobId, final JobState state, final int times) {
         verify(times, getRequestedFor(urlPathEqualTo(CALLBACK_PATH)).withQueryParam("id", equalTo(jobId))
-                                                                    .withQueryParam("state", equalTo(state.toString())));
+                                                                    .withQueryParam("state",
+                                                                            equalTo(state.toString())));
+    }
+
+    static void verifyBatchCallbackCall(final String jobId, final JobState state, final int times) {
+        verify(times, getRequestedFor(urlPathEqualTo(CALLBACK_PATH)).withQueryParam("batchId", equalTo(jobId))
+                                                                    .withQueryParam("batchState",
+                                                                            equalTo(state.toString())));
     }
 
     static void successfulSemanticHubRequests() {

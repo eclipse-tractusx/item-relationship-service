@@ -41,10 +41,7 @@ public class IdentifierKeyValuePair {
      */
     @Schema(implementation = String.class, example = "engineserialid")
     private String name;
-    /**
-     * subjectId
-     */
-    private Reference subjectId;
+
     /**
      * externalSubjectId
      */

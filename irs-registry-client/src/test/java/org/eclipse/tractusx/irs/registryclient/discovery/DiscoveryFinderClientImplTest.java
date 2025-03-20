@@ -61,7 +61,7 @@ class DiscoveryFinderClientImplTest {
             final DiscoveryResponse mockResponse = new DiscoveryResponse(
                     List.of(new DiscoveryEndpoint("test-endpoint", "desc", "test-endpoint-addr", "docs", "resId")));
 
-            final var request = new DiscoveryFinderRequest(List.of("bpn"));
+            final var request = new DiscoveryFinderRequest(List.of("bpnl"));
             when(restTemplate.postForObject(DISCOVERY_FINDER_URL, request, DiscoveryResponse.class)).thenReturn(
                     mockResponse);
 

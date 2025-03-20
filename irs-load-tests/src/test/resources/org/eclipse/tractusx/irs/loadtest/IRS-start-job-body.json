@@ -1,14 +1,14 @@
 {
-	"key":
-	{
-		"globalAssetId": "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e",
-		"bpn": "BPNL00000003AVTH"
-	},
-	"bomLifecycle": "asBuilt",
-	"aspects": [
-		"SingleLevelBomAsBuilt"
-	],
-	"depth": 10,
-	"direction": "downward",
-	"collectAspects": true
+  "key":
+  {
+    "globalAssetId": "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e",
+    "bpn": "BPNL00000003AVTH"
+  },
+  "bomLifecycle": "asBuilt",
+  "aspects": [
+    "SingleLevelBomAsBuilt"
+  ],
+  "depth": 10,
+  "direction": "downward",
+  "collectAspects": true
 }

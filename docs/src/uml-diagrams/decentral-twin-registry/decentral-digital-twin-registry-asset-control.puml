@@ -1,0 +1,32 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+
+autonumber "<b>[00]"
+
+participant DecentralDigitalTwinRegistryService as dtrService
+participant RememberedConnectorEndpointsCache as cache
+participant ConnectorEndpointsService as discovery
+participant EndpointDataForConnectorsService as edc
+
+
+alt EDC is available for BPN
+    dtrService -> cache: get preferred EDC for BPN
+    dtrService <- cache: preferred EDC
+    dtrService -> edc: get DTR contract offer
+    opt no contract offer found
+        dtrService -> cache: remove preferred EDC
+    end
+
+else no preferred EDC for BPN or no DTR contract offer in preferred EDC
+    dtrService -> discovery: get EDCs for BPN
+    dtrService <- discovery: EDC URLs
+    dtrService -> edc: get DTR contract offer
+    opt DTR contract offer found
+         dtrService -> cache: add preferred EDC
+    end
+end
+
+@enduml

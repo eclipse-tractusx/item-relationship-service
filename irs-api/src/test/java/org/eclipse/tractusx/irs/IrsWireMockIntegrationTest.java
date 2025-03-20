@@ -32,6 +32,7 @@ import static org.eclipse.tractusx.irs.WiremockSupport.encodedAssetIds;
 import static org.eclipse.tractusx.irs.WiremockSupport.randomUUID;
 import static org.eclipse.tractusx.irs.component.enums.AspectType.AspectTypesConstants.BATCH;
 import static org.eclipse.tractusx.irs.component.enums.AspectType.AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT;
+import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_URL;
@@ -47,25 +48,44 @@ import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.SHELL
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.getLookupShells200;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.getShellDescriptor200;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_CATALOG;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_EDR_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_STATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_TRANSFER;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.awaitility.Awaitility;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Tombstone;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.connector.batch.Batch;
+import org.eclipse.tractusx.irs.connector.batch.PersistentBatchStore;
+import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
+import org.eclipse.tractusx.irs.edc.client.EdcCallbackController;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.OngoingNegotiationStorage;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport;
+import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
@@ -74,9 +94,14 @@ import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -94,6 +119,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("integrationtest")
 class IrsWireMockIntegrationTest {
 
+    private static final String BATCH_PREFIX = "batch:";
+    private static final String DSP_PATH = "/api/v1/dsp";
     public static final String SEMANTIC_HUB_URL = "http://semantic.hub/models";
     public static final String EDC_URL = "http://edc.test";
 
@@ -106,6 +133,9 @@ class IrsWireMockIntegrationTest {
     private IrsItemGraphQueryService irsService;
 
     @Autowired
+    private CreationBatchService batchService;
+
+    @Autowired
     private SemanticHubService semanticHubService;
 
     @Autowired
@@ -113,6 +143,25 @@ class IrsWireMockIntegrationTest {
 
     @Autowired
     private CacheManager cacheManager;
+
+    @Autowired
+    private PersistentBatchStore persistentBatchStore;
+
+    @Autowired
+    @Qualifier(JOB_BLOB_PERSISTENCE)
+    private BlobPersistence blobStore;
+
+    @SpyBean
+    private OngoingNegotiationStorage ongoingNegotiationStorage;
+
+    @SpyBean
+    private ContractNegotiationService contractNegotiationService;
+
+    @Autowired
+    private EdcCallbackController edcCallbackController;
+
+    @Autowired
+    private EdcConfiguration edcConfiguration;
 
     @BeforeAll
     static void startContainer() {
@@ -134,20 +183,31 @@ class IrsWireMockIntegrationTest {
         registry.add("semanticshub.url", () -> SEMANTIC_HUB_URL);
         registry.add("semanticshub.modelJsonSchemaEndpoint", () -> SemanticHubWireMockSupport.SEMANTIC_HUB_SCHEMA_URL);
         registry.add("semanticshub.defaultUrns", () -> "");
+        registry.add("semanticshub.pageSize", () -> 101);
         registry.add("irs-edc-client.controlplane.endpoint.data", () -> EDC_URL);
         registry.add("irs-edc-client.controlplane.endpoint.catalog", () -> PATH_CATALOG);
         registry.add("irs-edc-client.controlplane.endpoint.contract-negotiation", () -> PATH_NEGOTIATE);
+        registry.add("irs-edc-client.controlplane.edr-management-enabled", () -> false);
+        registry.add("irs-edc-client.controlplane.endpoint.edr-management", () -> PATH_EDR_NEGOTIATE);
         registry.add("irs-edc-client.controlplane.endpoint.transfer-process", () -> PATH_TRANSFER);
         registry.add("irs-edc-client.controlplane.endpoint.state-suffix", () -> PATH_STATE);
         registry.add("irs-edc-client.controlplane.api-key.header", () -> "X-Api-Key");
         registry.add("irs-edc-client.controlplane.api-key.secret", () -> "test");
+        registry.add("irs-edc-client.controlplane.orchestration.thread-pool-size", () -> "2");
         registry.add("resilience4j.retry.configs.default.waitDuration", () -> "1s");
     }
 
+    @BeforeEach
+    void setUp() {
+        edcConfiguration.getControlplane().setEdrManagementEnabled(false);
+    }
+
     @AfterEach
-    void tearDown() {
+    void tearDown(WireMockRuntimeInfo wmRuntimeInfo) {
         cacheManager.getCacheNames()
                     .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
+        wmRuntimeInfo.getWireMock().resetMappings();
+        endpointDataReferenceStorage.clear();
     }
 
     @Test
@@ -159,7 +219,7 @@ class IrsWireMockIntegrationTest {
         final AspectModels allAspectModels = semanticHubService.getAllAspectModels();
 
         // Assert
-        assertThat(allAspectModels.models()).hasSize(99);
+        assertThat(allAspectModels.models()).hasSize(101);
     }
 
     @Test
@@ -182,13 +242,50 @@ class IrsWireMockIntegrationTest {
         // Act
         final JobHandle jobHandle = irsService.registerItemJob(request);
         assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle);
+        waitForCompletion(jobHandle.getId());
 
         Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
 
         // Assert
         WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(3);
+        WiremockSupport.verifyNegotiationCalls(2);
+        WiremockSupport.verifyCatalogCalls(3);
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobForJobId.getShells()).hasSize(2);
+        assertThat(jobForJobId.getRelationships()).hasSize(1);
+        assertThat(jobForJobId.getTombstones()).isEmpty();
+    }
+
+    @Test
+    void shouldStopJobAfterDepthIsReachedWithEdr() {
+        // Arrange
+        final String globalAssetIdLevel1 = "globalAssetId";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+        edcConfiguration.getControlplane().setEdrManagementEnabled(true);
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+
+        successfulEdrRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulEdrRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN,
+                "integrationtesting/batch-2.json", "integrationtesting/singleLevelBomAsBuilt-2.json");
+
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1);
+
+        // Act
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle.getId());
+
+        Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
+
+        // Assert
+        WiremockSupport.verifyDiscoveryCalls(1);
+        WiremockSupport.verifyEdrNegotiationCalls(2);
+        WiremockSupport.verifyCatalogCalls(3);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(jobForJobId.getShells()).hasSize(2);
@@ -212,7 +309,8 @@ class IrsWireMockIntegrationTest {
         successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
                 "integrationtesting/singleLevelBomAsBuilt-2.json");
 
-        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1, WiremockSupport.CALLBACK_URL);
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1,
+                WiremockSupport.CALLBACK_URL);
 
         // Act
         final List<JobHandle> startedJobs = new ArrayList<>();
@@ -226,7 +324,7 @@ class IrsWireMockIntegrationTest {
 
         for (JobHandle jobHandle : startedJobs) {
             assertThat(jobHandle.getId()).isNotNull();
-            waitForCompletion(jobHandle);
+            waitForCompletion(jobHandle.getId());
         }
 
         // Assert
@@ -248,7 +346,7 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle);
+        waitForCompletion(jobHandle.getId());
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
 
         verify(1, postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -280,7 +378,7 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle);
+        waitForCompletion(jobHandle.getId());
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
 
         WiremockSupport.verifyDiscoveryCalls(1);
@@ -322,7 +420,7 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle);
+        waitForCompletion(jobHandle.getId());
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
@@ -332,7 +430,60 @@ class IrsWireMockIntegrationTest {
         assertThat(jobForJobId.getSubmodels()).hasSize(6);
 
         WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(6);
+        // expected 4 negotiations. 3 different submodel assets, 1 dtr
+        WiremockSupport.verifyNegotiationCalls(4);
+        // expected 6 catalog requests. 3 different submodel assets, 3 times dtr
+        WiremockSupport.verifyCatalogCalls(6);
+    }
+
+    @Test
+    @Disabled("Flaky test")
+    void shouldLimitParallelEdcNegotiationsForMultipleJobs() throws EdcClientException {
+        // Arrange
+        final String globalAssetIdLevel1 = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+        final String globalAssetIdLevel3 = "urn:uuid:a314ad6b-77ea-417e-ae2d-193b3e249e99";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+
+        successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel3, "GenericChemical", TEST_BPN,
+                "integrationtesting/batch-3.json", "integrationtesting/singleLevelBomAsBuilt-3.json");
+
+        final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 4);
+
+        // Act
+        final ArrayList<JobHandle> jobHandles = new ArrayList<>();
+        jobHandles.add(irsService.registerItemJob(request));
+        jobHandles.add(irsService.registerItemJob(request));
+        jobHandles.add(irsService.registerItemJob(request));
+        jobHandles.add(irsService.registerItemJob(request));
+
+        // Assert
+        for (JobHandle jobHandle : jobHandles) {
+
+            assertThat(jobHandle.getId()).isNotNull();
+            waitForCompletion(jobHandle.getId());
+            final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
+
+            assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+            assertThat(jobForJobId.getShells()).hasSize(3);
+            assertThat(jobForJobId.getRelationships()).hasSize(2);
+            assertThat(jobForJobId.getTombstones()).isEmpty();
+            assertThat(jobForJobId.getSubmodels()).hasSize(6);
+        }
+
+        // expected 4 negotiations. 3 different submodel assets, 1 dtr
+        Mockito.verify(contractNegotiationService, times(4)).negotiate(any(), any(), any(), any());
+        assertThat(ongoingNegotiationStorage.getOngoingNegotiations()).isEmpty();
+        WiremockSupport.verifyNegotiationCalls(4);
+        // 3 requests for the submodel assets, 12 for registry assets
+        WiremockSupport.verifyCatalogCalls(15);
     }
 
     @Test
@@ -344,7 +495,7 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.successfulSemanticHubRequests();
         WiremockSupport.successfulDiscovery();
 
-        failedRegistryRequestMissmatchPolicy();
+        failedRegistryRequestMismatchPolicy();
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetId, TEST_BPN, 4);
 
@@ -353,7 +504,7 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle);
+        waitForCompletion(jobHandle.getId());
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
@@ -366,7 +517,7 @@ class IrsWireMockIntegrationTest {
 
         final Tombstone actualTombstone = jobForJobId.getTombstones().get(0);
         assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
-        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL);
+        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL + DSP_PATH);
 
         final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
         assertThat(rootCauses).hasSize(1);
@@ -393,7 +544,7 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle);
+        waitForCompletion(jobHandle.getId());
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
@@ -407,7 +558,7 @@ class IrsWireMockIntegrationTest {
 
         final Tombstone actualTombstone = tombstones.get(0);
         assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
-        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL);
+        assertThat(actualTombstone.getEndpointURL()).isEqualTo(CONTROLPLANE_PUBLIC_URL + DSP_PATH);
 
         final List<String> rootCauses = actualTombstone.getProcessingError().getRootCauses();
         assertThat(rootCauses).hasSize(1);
@@ -419,7 +570,8 @@ class IrsWireMockIntegrationTest {
         // Arrange
         final String globalAssetId = "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc";
         final List<String> edcUrls = List.of("https://test.edc1.io", "https://test.edc2.io");
-
+        final List<String> expectedEdcUrls = List.of("https://test.edc1.io" + DSP_PATH,
+                "https://test.edc2.io" + DSP_PATH);
         WiremockSupport.successfulSemanticModelRequest();
         WiremockSupport.successfulSemanticHubRequests();
         WiremockSupport.successfulDiscovery(edcUrls);
@@ -430,7 +582,7 @@ class IrsWireMockIntegrationTest {
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetId, TEST_BPN, 4);
         final JobHandle jobHandle = irsService.registerItemJob(request);
         assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle);
+        waitForCompletion(jobHandle.getId());
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         // Assert
@@ -446,9 +598,9 @@ class IrsWireMockIntegrationTest {
 
         final Tombstone actualTombstone = tombstones.get(0);
         assertThat(actualTombstone.getBusinessPartnerNumber()).isEqualTo(TEST_BPN);
-        assertThat(actualTombstone.getEndpointURL()).describedAs("Tombstone should contain all EDC URLs")
-                                                    .isEqualTo(String.join("; ", edcUrls));
-
+        final List<String> actualEndpointUrlsInTombstone = List.of(
+                actualTombstone.getEndpointURL().replace(" ", "").split(";"));
+        actualEndpointUrlsInTombstone.forEach(s -> assertThat(expectedEdcUrls.contains(s)).describedAs("Tombstone should contain all EDC URLs").isTrue());
     }
 
     @Test
@@ -469,7 +621,7 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         assertThat(jobHandle.getId()).isNotNull();
-        waitForCompletion(jobHandle);
+        waitForCompletion(jobHandle.getId());
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
@@ -490,6 +642,185 @@ class IrsWireMockIntegrationTest {
         assertThat(rootCauses.get(0)).contains("No EDC Endpoints could be discovered for BPN '%s'".formatted(TEST_BPN));
     }
 
+    @Test
+    void shouldDoABatchRequestAndFinishAllJobs_regularJob() {
+        // Arrange
+        final String globalAssetIdLevel1 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf4";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+        final String globalAssetIdLevel3 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf6";
+        final String globalAssetIdLevel4 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf7";
+        final String globalAssetIdLevel5 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf8";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+
+        successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
+
+        Set<PartChainIdentificationKey> keys = Set.of(
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel1).build(),
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel2).build(),
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel3).build(),
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel4).build(),
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel5).build());
+
+        // Act
+        final UUID batchOrderId = batchService.create(
+                WiremockSupport.batchOrderRequest(keys, 1, WiremockSupport.CALLBACK_URL));
+
+        assertThat(batchOrderId).isNotNull();
+
+        waitForBatchOrderEventListenerFired();
+
+        List<Batch> allBatches = persistentBatchStore.findAll();
+
+        allBatches.stream()
+                  .map(Batch::getJobProgressList)
+                  .flatMap(List::stream)
+                  .forEach(jobProgress -> waitForCompletion(jobProgress.getJobId()));
+
+        // Assert
+        WiremockSupport.verifyDiscoveryCalls(1);
+        WiremockSupport.verifyNegotiationCalls(3);
+
+        List<UUID> jobIds = allBatches.stream()
+                                      .flatMap(batch -> batch.getJobProgressList().stream())
+                                      .map(JobProgress::getJobId)
+                                      .toList();
+
+        assertThat(jobIds).hasSize(5);
+
+        List<Jobs> jobs = jobIds.stream().map(jobId -> irsService.getJobForJobId(jobId, true)).toList();
+
+        Jobs job1 = jobs.stream()
+                        .filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel1))
+                        .findFirst()
+                        .get();
+
+        assertThat(job1.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(job1.getShells()).hasSize(2);
+        assertThat(job1.getRelationships()).hasSize(1);
+        assertThat(job1.getTombstones()).isEmpty();
+        assertThat(job1.getSubmodels()).hasSize(2);
+
+        WiremockSupport.verifyCallbackCall(job1.getJob().getId().toString(), JobState.COMPLETED, 1);
+
+        Jobs job2 = jobs.stream()
+                        .filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel2))
+                        .findFirst()
+                        .get();
+
+        assertThat(job2.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(job2.getShells()).hasSize(1);
+        assertThat(job2.getRelationships()).hasSize(1);
+        assertThat(job2.getTombstones()).hasSize(1);
+        assertThat(job2.getSubmodels()).hasSize(2);
+
+        WiremockSupport.verifyCallbackCall(job2.getJob().getId().toString(), JobState.COMPLETED, 1);
+
+        //cleanup
+        allBatches.forEach(batch -> {
+            try {
+                blobStore.delete(toBlobId(batch.getBatchId().toString()), new ArrayList<>());
+            } catch (BlobPersistenceException e) {
+                // ignoring
+            }
+        });
+    }
+
+    @Test
+    void shouldDoABatchRequestAndFinishAllJobs_essJob() {
+        // Arrange
+        final String globalAssetIdLevel1 = "globalAssetId";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
+
+        WiremockSupport.successfulSemanticModelRequest();
+        WiremockSupport.successfulSemanticHubRequests();
+        WiremockSupport.successfulDiscovery();
+        WiremockSupport.successfulBatchCallbackRequest();
+
+        successfulRegistryAndDataRequest(globalAssetIdLevel1, "Cathode", TEST_BPN, "integrationtesting/batch-1.json",
+                "integrationtesting/singleLevelBomAsBuilt-1.json");
+        successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
+                "integrationtesting/singleLevelBomAsBuilt-2.json");
+
+        Set<PartChainIdentificationKey> keys = Set.of(
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel1).build(),
+                PartChainIdentificationKey.builder().bpn(TEST_BPN).globalAssetId(globalAssetIdLevel2).build());
+
+        // Act
+        final UUID batchOrderId = batchService.create(
+                WiremockSupport.bpnInvestigationBatchOrderRequest(keys, WiremockSupport.CALLBACK_BATCH_URL));
+
+        assertThat(batchOrderId).isNotNull();
+
+        waitForBatchOrderEventListenerFired();
+
+        List<Batch> allBatches = persistentBatchStore.findAll();
+
+        allBatches.stream()
+                  .map(Batch::getJobProgressList)
+                  .flatMap(List::stream)
+                  .forEach(jobProgress -> waitForCompletion(jobProgress.getJobId()));
+
+        // Assert
+        WiremockSupport.verifyDiscoveryCalls(1);
+        // since there are no submodels related to asPlanned lifecycle, only the registry asset is negotiated
+        WiremockSupport.verifyNegotiationCalls(1);
+
+        List<UUID> jobIds = allBatches.stream()
+                                      .flatMap(batch -> batch.getJobProgressList().stream())
+                                      .map(JobProgress::getJobId)
+                                      .toList();
+
+        assertThat(jobIds).hasSize(2);
+
+        List<Jobs> jobs = jobIds.stream().map(jobId -> irsService.getJobForJobId(jobId, true)).toList();
+
+        Jobs job1 = jobs.stream()
+                        .filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel1))
+                        .findFirst()
+                        .get();
+
+        assertThat(job1.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(job1.getShells()).hasSize(1);
+        assertThat(job1.getRelationships()).hasSize(0);
+        assertThat(job1.getTombstones()).isEmpty();
+        assertThat(job1.getSubmodels()).hasSize(0);
+
+        Jobs job2 = jobs.stream()
+                        .filter(job -> job.getJob().getGlobalAssetId().getGlobalAssetId().equals(globalAssetIdLevel2))
+                        .findFirst()
+                        .get();
+
+        assertThat(job2.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(job2.getShells()).hasSize(1);
+        assertThat(job2.getRelationships()).hasSize(0);
+        assertThat(job2.getTombstones()).hasSize(0);
+        assertThat(job2.getSubmodels()).hasSize(0);
+
+        WiremockSupport.verifyBatchCallbackCall(allBatches.get(0).getBatchId().toString(), JobState.COMPLETED, 1);
+        WiremockSupport.verifyBatchCallbackCall(allBatches.get(1).getBatchId().toString(), JobState.COMPLETED, 1);
+    }
+
+    private void waitForBatchOrderEventListenerFired() {
+        Awaitility.await()
+                  .timeout(Duration.ofSeconds(30))
+                  .pollInterval(Duration.ofMillis(500))
+                  .until(() -> persistentBatchStore.findAll()
+                                                   .stream()
+                                                   .map(Batch::getJobProgressList)
+                                                   .flatMap(List::stream)
+                                                   .allMatch(jobProgress -> jobProgress.getJobId() != null));
+    }
+
+    protected String toBlobId(final String batchId) {
+        return BATCH_PREFIX + batchId;
+    }
+
     private void successfulRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
             final String batchFileName, final String sbomFileName) {
 
@@ -503,7 +834,7 @@ class IrsWireMockIntegrationTest {
 
         final String shellId = WiremockSupport.randomUUIDwithPrefix();
         final String registryEdcAssetId = "registry-asset";
-        successfulNegotiation(registryEdcAssetId);
+        successfulRegistryNegotiation(registryEdcAssetId);
         stubFor(getLookupShells200(PUBLIC_LOOKUP_SHELLS_PATH, List.of(shellId)).withQueryParam("assetIds",
                 equalTo(encodedAssetIds(globalAssetId))));
         stubFor(getShellDescriptor200(PUBLIC_SHELL_DESCRIPTORS_PATH + WiremockSupport.encodedId(shellId), bpn,
@@ -520,16 +851,66 @@ class IrsWireMockIntegrationTest {
         endpointDataReferenceStorage.put(contractAgreementId, createEndpointDataReference(contractAgreementId));
     }
 
-    private void failedRegistryRequestMissmatchPolicy() {
+    private void successfulRegistryNegotiation(final String edcAssetId) {
+        final String negotiationId = randomUUID();
+        final String transferProcessId = randomUUID();
+        final String contractAgreementId = "%s:%s:%s".formatted(randomUUID(), edcAssetId, randomUUID());
+        SubmodelFacadeWiremockSupport.prepareRegistryNegotiation(negotiationId, transferProcessId, contractAgreementId,
+                edcAssetId);
+        endpointDataReferenceStorage.put(contractAgreementId, createEndpointDataReference(contractAgreementId));
+    }
+
+    private void successfulEdrRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,
+            final String batchFileName, final String sbomFileName) {
+
+        final String edcAssetId = WiremockSupport.randomUUIDwithPrefix();
+        final String batch = WiremockSupport.submodelRequest(edcAssetId, BATCH, BATCH_3_0_0, batchFileName);
+
+        final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, SINGLE_LEVEL_BOM_AS_BUILT,
+                SINGLE_LEVEL_BOM_AS_BUILT_3_0_0, sbomFileName);
+
+        final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);
+
+        final String shellId = WiremockSupport.randomUUIDwithPrefix();
         final String registryEdcAssetId = "registry-asset";
-        failedPolicyMissmatchNegotiation(registryEdcAssetId);
+        successfulEdrRegistryNegotiation(registryEdcAssetId);
+        stubFor(getLookupShells200(PUBLIC_LOOKUP_SHELLS_PATH, List.of(shellId)).withQueryParam("assetIds",
+                equalTo(encodedAssetIds(globalAssetId))));
+        stubFor(getShellDescriptor200(PUBLIC_SHELL_DESCRIPTORS_PATH + WiremockSupport.encodedId(shellId), bpn,
+                submodelDescriptors, globalAssetId, shellId, idShort));
+        successfulEdrNegotiation(edcAssetId);
+    }
+
+    private void successfulEdrNegotiation(final String edcAssetId) {
+        final String negotiationId = randomUUID();
+        final String contractAgreementId = "%s:%s:%s".formatted(randomUUID(), edcAssetId, randomUUID());
+        SubmodelFacadeWiremockSupport.prepareEdrNegotiation(negotiationId, contractAgreementId, edcAssetId);
+
+        edcCallbackController.receiveNegotiationsCallback(mockNegotiationCallback(negotiationId, contractAgreementId));
+        edcCallbackController.receiveEdcCallback(mockCallback(contractAgreementId, edcAssetId,
+                createEndpointDataReference(contractAgreementId).getAuthCode()));
+    }
+
+    private void successfulEdrRegistryNegotiation(final String edcAssetId) {
+        final String negotiationId = randomUUID();
+        final String contractAgreementId = "%s:%s:%s".formatted(randomUUID(), edcAssetId, randomUUID());
+        SubmodelFacadeWiremockSupport.prepareEdrRegistryNegotiation(negotiationId, contractAgreementId, edcAssetId);
+
+        edcCallbackController.receiveNegotiationsCallback(mockNegotiationCallback(negotiationId, contractAgreementId));
+        edcCallbackController.receiveEdcCallback(mockCallback(contractAgreementId, edcAssetId,
+                createEndpointDataReference(contractAgreementId).getAuthCode()));
+    }
+
+    private void failedRegistryRequestMismatchPolicy() {
+        final String registryEdcAssetId = "registry-asset-policy-missmatch";
+        failedPolicyMismatchNegotiation(registryEdcAssetId);
     }
 
     private void failedRegistryRequestEdcError() {
         failedNegotiation();
     }
 
-    private void failedPolicyMissmatchNegotiation(final String edcAssetId) {
+    private void failedPolicyMismatchNegotiation(final String edcAssetId) {
         final String contractAgreementId = "%s:%s:%s".formatted(randomUUID(), edcAssetId, randomUUID());
         SubmodelFacadeWiremockSupport.prepareMissmatchPolicyCatalog(edcAssetId, contractAgreementId);
     }
@@ -542,11 +923,12 @@ class IrsWireMockIntegrationTest {
         SubmodelFacadeWiremockSupport.prepareEmptyCatalog(bpn, edcUrl);
     }
 
-    private void waitForCompletion(final JobHandle jobHandle) {
+    private void waitForCompletion(final UUID jobHandleId) {
         Awaitility.await()
+                  .pollDelay(Duration.ZERO)
                   .timeout(Duration.ofSeconds(35))
-                  .pollInterval(Duration.ofMillis(500))
-                  .until(() -> irsService.getJobForJobId(jobHandle.getId(), false)
+                  .pollInterval(Duration.ofMillis(1000))
+                  .until(() -> irsService.getJobForJobId(jobHandleId, false)
                                          .getJob()
                                          .getState()
                                          .equals(JobState.COMPLETED));
@@ -565,6 +947,257 @@ class IrsWireMockIntegrationTest {
                     "policystore.persistence.secretKey=" + SECRET_KEY,
                     "policystore.persistence.bucketName=policy-test");
         }
+    }
+
+    private String mockCallback(final String contractAgreementId, final String edcAssetId, final String authCode) {
+        final String dataplaneEndpoint =
+                SubmodelFacadeWiremockSupport.DATAPLANE_HOST + SubmodelFacadeWiremockSupport.PATH_DATAPLANE_PUBLIC;
+        return """
+                {
+                  "id": "bc916834-61b8-4754-b3e2-1eb041d253c2",
+                  "at": 1714645750814,
+                  "payload": {
+                    "assetId": "%s",
+                    "contractId": "%s",
+                    "dataAddress": {
+                      "properties": {
+                        "process_id": "%s",
+                        "https://w3id.org/edc/v0.0.1/ns/endpoint": "%s",
+                        "asset_id": "%s",
+                        "agreement_id": "%s",
+                        "https://w3id.org/edc/v0.0.1/ns/authorization": "%s"
+                      }
+                    }
+                  }
+                }
+                """.formatted(edcAssetId, contractAgreementId, UUID.randomUUID().toString(), dataplaneEndpoint,
+                edcAssetId, contractAgreementId, authCode);
+
+    }
+
+    private String mockNegotiationCallback(String contractNegotiationId, String contractAgreementId) {
+        return """
+                {
+                  "id": "c87cbd8a-363a-41eb-a9f5-214da3a08bdc",
+                  "at": 1732284831946,
+                  "payload": {
+                    "contractNegotiationId": "%s",
+                    "counterPartyAddress": "https://tracexb-provider-edc-edc.enablement.integration.cofinity-x.com/api/v1/dsp",
+                    "counterPartyId": "BPNL000000002CS4",
+                    "callbackAddresses": [
+                      {
+                        "uri": "https://irs.callback/edr",
+                        "events": [
+                          "transfer.process.started"
+                        ],
+                        "transactional": false,
+                        "authKey": null,
+                        "authCodeId": null
+                      },
+                      {
+                        "uri": "https://irs.callback/negotiation",
+                        "events": [
+                          "contract.negotiation.finalized"
+                        ],
+                        "transactional": false,
+                        "authKey": null,
+                        "authCodeId": null
+                      },
+                      {
+                        "uri": "local://adapter",
+                        "events": [
+                          "contract.negotiation",
+                          "transfer.process"
+                        ],
+                        "transactional": true,
+                        "authKey": null,
+                        "authCodeId": null
+                      }
+                    ],
+                    "contractOffers": [
+                      {
+                        "id": "ZmNiZTVmMDgtOTUzNi00OWM2LTgyYzMtODYwYzcxNGE0M2Ex:dXJuOnV1aWQ6YjA4ZjU0ZTAtOTJjYS00Y2E1LTkxMTUtNzUzMWMzYTQ3YmJj:OTcxNmVkYmQtZDc2OS00Nzc5LTgwZGItMTFkODRlNmEzYTJh",
+                        "policy": {
+                          "permissions": [
+                            {
+                              "edctype": "dataspaceconnector:permission",
+                              "action": {
+                                "type": "use",
+                                "includedIn": null,
+                                "constraint": null
+                              },
+                              "constraints": [
+                                {
+                                  "edctype": "AndConstraint",
+                                  "constraints": [
+                                    {
+                                      "edctype": "AtomicConstraint",
+                                      "leftExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                      },
+                                      "rightExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "traceability:1.0"
+                                      },
+                                      "operator": "EQ"
+                                    },
+                                    {
+                                      "edctype": "AtomicConstraint",
+                                      "leftExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                      },
+                                      "rightExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "cx.core.industrycore:1"
+                                      },
+                                      "operator": "EQ"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "duties": []
+                            }
+                          ],
+                          "prohibitions": [],
+                          "obligations": [],
+                          "extensibleProperties": {},
+                          "inheritsFrom": null,
+                          "assigner": "BPNL000000002CS4",
+                          "assignee": null,
+                          "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                          "@type": {
+                            "@policytype": "offer"
+                          }
+                        },
+                        "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc"
+                      }
+                    ],
+                    "protocol": "dataspace-protocol-http",
+                    "contractAgreement": {
+                      "id": "%s",
+                      "providerId": "BPNL000000002CS4",
+                      "consumerId": "BPNL000000002BR4",
+                      "contractSigningDate": 1732284827,
+                      "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                      "policy": {
+                        "permissions": [
+                          {
+                            "edctype": "dataspaceconnector:permission",
+                            "action": {
+                              "type": "use",
+                              "includedIn": null,
+                              "constraint": null
+                            },
+                            "constraints": [
+                              {
+                                "edctype": "AndConstraint",
+                                "constraints": [
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "traceability:1.0"
+                                    },
+                                    "operator": "EQ"
+                                  },
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "cx.core.industrycore:1"
+                                    },
+                                    "operator": "EQ"
+                                  }
+                                ]
+                              }
+                            ],
+                            "duties": []
+                          }
+                        ],
+                        "prohibitions": [],
+                        "obligations": [],
+                        "extensibleProperties": {},
+                        "inheritsFrom": null,
+                        "assigner": "BPNL000000002CS4",
+                        "assignee": "BPNL000000002BR4",
+                        "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                        "@type": {
+                          "@policytype": "contract"
+                        }
+                      }
+                    },
+                    "lastContractOffer": {
+                      "id": "ZmNiZTVmMDgtOTUzNi00OWM2LTgyYzMtODYwYzcxNGE0M2Ex:dXJuOnV1aWQ6YjA4ZjU0ZTAtOTJjYS00Y2E1LTkxMTUtNzUzMWMzYTQ3YmJj:OTcxNmVkYmQtZDc2OS00Nzc5LTgwZGItMTFkODRlNmEzYTJh",
+                      "policy": {
+                        "permissions": [
+                          {
+                            "edctype": "dataspaceconnector:permission",
+                            "action": {
+                              "type": "use",
+                              "includedIn": null,
+                              "constraint": null
+                            },
+                            "constraints": [
+                              {
+                                "edctype": "AndConstraint",
+                                "constraints": [
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "traceability:1.0"
+                                    },
+                                    "operator": "EQ"
+                                  },
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "cx.core.industrycore:1"
+                                    },
+                                    "operator": "EQ"
+                                  }
+                                ]
+                              }
+                            ],
+                            "duties": []
+                          }
+                        ],
+                        "prohibitions": [],
+                        "obligations": [],
+                        "extensibleProperties": {},
+                        "inheritsFrom": null,
+                        "assigner": "BPNL000000002CS4",
+                        "assignee": null,
+                        "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                        "@type": {
+                          "@policytype": "offer"
+                        }
+                      },
+                      "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc"
+                    }
+                  },
+                  "type": "ContractNegotiationFinalized"
+                }
+                """.formatted(contractNegotiationId, contractAgreementId);
     }
 
 }

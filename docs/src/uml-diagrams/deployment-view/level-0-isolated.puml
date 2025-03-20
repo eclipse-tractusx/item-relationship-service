@@ -41,7 +41,7 @@ node "Kubernetes Cluster" as k8s {
     provider -- dtr
 
     OAuth2 ---> ds
-    OAuth2 ---> IRS
+    OAuth2 <--- IRS
     OAuth2 ---> semHub
 
     IRS -> semHub

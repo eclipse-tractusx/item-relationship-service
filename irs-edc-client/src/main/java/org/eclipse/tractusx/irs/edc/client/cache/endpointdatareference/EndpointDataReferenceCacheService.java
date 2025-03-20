@@ -29,7 +29,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.jetbrains.annotations.NotNull;
@@ -48,14 +48,15 @@ public class EndpointDataReferenceCacheService {
 
     /**
      * Returns {@link org.eclipse.edc.spi.types.domain.edr.EndpointDataReference}
-     * for assetId from {@link org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage}
+     * for assetId from {@link EndpointDataReferenceStorage}
      *
      * @param assetId key for
-     *                {@link org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage}
+     *                {@link EndpointDataReferenceStorage}
      * @return {@link org.eclipse.edc.spi.types.domain.edr.EndpointDataReference}
      * and {@link EndpointDataReferenceStatus.TokenStatus}
      * describing token status
      */
+
     public EndpointDataReferenceStatus getEndpointDataReference(final String assetId) {
 
         log.info("Retrieving dataReference from storage for assetId {}", assetId);

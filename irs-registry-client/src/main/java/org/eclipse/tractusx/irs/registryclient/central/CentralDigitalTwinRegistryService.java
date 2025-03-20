@@ -26,7 +26,6 @@ package org.eclipse.tractusx.irs.registryclient.central;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import io.github.resilience4j.core.functions.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

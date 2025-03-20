@@ -34,17 +34,6 @@
         </developer>
     </developers>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <modules>
         <module>irs-testing</module>
         <module>irs-common</module>
@@ -75,10 +64,11 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>2.1.13</irs-registry-client.version>
+        <irs-registry-client.version>2.1.27</irs-registry-client.version>
+
 
         <!-- Dependencies -->
-        <springboot.version>3.1.12</springboot.version>
+        <springboot.version>3.4.2</springboot.version>
         <springdoc.version>2.2.0</springdoc.version>
         <micrometer.version>1.11.4</micrometer.version>
         <datafaker.version>1.9.0</datafaker.version>
@@ -91,21 +81,19 @@
         <jsonassert.version>1.5.1</jsonassert.version>
         <junit-bom.version>5.10.2</junit-bom.version>
         <cucumber-bom.version>7.18.0</cucumber-bom.version>
-        <snakeyaml.version>2.0</snakeyaml.version>
         <commons-validator.version>1.8.0</commons-validator.version>
         <swagger-annotations.version>2.2.18</swagger-annotations.version>
         <edc.version>0.6.0</edc.version>
         <okio-jvm.version>3.5.0</okio-jvm.version>
         <bc-jdk18on.version>1.78</bc-jdk18on.version>
-        <wiremock-standalone.version>3.5.2</wiremock-standalone.version>
+        <wiremock-standalone.version>3.10.0</wiremock-standalone.version>
         <jsoup.version>1.17.2</jsoup.version>
         <json-schema-validator.version>1.4.0</json-schema-validator.version>
         <commons-io.version>2.16.1</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <okhttp.version>4.12.0</okhttp.version>
         <jackson-databind.version>2.15.1</jackson-databind.version>
-        <junit-jupiter-engine.version>5.9.2</junit-jupiter-engine.version>
-        <json-smart.version>2.5.1</json-smart.version>
+        <junit-jupiter-engine.version>5.11.4</junit-jupiter-engine.version>
         <testcontainers-bom.version>1.19.7</testcontainers-bom.version>
 
         <!-- Plugins -->
@@ -178,6 +166,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${compiler-plugin.version}</version>
+                    <configuration>
+                        <parameters>true</parameters>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -356,6 +347,7 @@
                         <artifactId>dependency-check-maven</artifactId>
                         <version>${owasp-plugin.version}</version>
                         <configuration>
+                            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                             <skip>false</skip>
                             <suppressionFile>.config/owasp-suppressions.xml</suppressionFile>
                         </configuration>
@@ -368,6 +360,16 @@
             <properties>
                 <maven.test.skip>true</maven.test.skip>
             </properties>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
             <build>
                 <plugins>
                     <plugin>
@@ -439,6 +441,101 @@
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <sourcepath>${project.build.directory}/generated-sources/delombok</sourcepath>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>release-to-github-packages</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Cofinity-X Apache Maven Packages</name>
+                    <url>https://maven.pkg.github.com/Cofinity-X/item-relationship-service</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>flatten-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <configuration>
+                            <flattenMode>ossrh</flattenMode>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>flatten</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>flatten</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>flatten.clean</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <version>1.18.20.0</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>1.18.30</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                            <outputDirectory>${delombok.output}</outputDirectory>
+                            <addOutputDirectory>false</addOutputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>delombok</goal>
                                 </goals>
                             </execution>
                         </executions>

@@ -26,15 +26,19 @@ package org.eclipse.tractusx.irs.edc.client;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.storage.ContractNegotiationIdStorage;
+import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
 import org.junit.jupiter.api.Test;
 
 class EdcCallbackControllerTest {
 
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
-    private final EdcCallbackController testee = new EdcCallbackController(storage);
+    private final ContractNegotiationIdStorage contractNegotiationIdStorage = new ContractNegotiationIdStorage(Duration.of(1, ChronoUnit.MINUTES));
+    private final EdcCallbackController testee = new EdcCallbackController(storage, contractNegotiationIdStorage);
 
     @Test
     void shouldStoreAgreementId() {
@@ -125,7 +129,7 @@ class EdcCallbackControllerTest {
                         "dataAddress": {
                             "properties": {
                                 "process_id": "ca06c205-71d6-4a0f-97a8-835189fa9856",
-                                "participant_id": "BPNL00000001CRHK",
+                                "participant_id": "BPNL000000012345",
                                 "asset_id": "urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad",
                                 "https://w3id.org/edc/v0.0.1/ns/endpointType": "https://w3id.org/idsa/v4.1/HTTP",
                                 "https://w3id.org/tractusx/auth/refreshEndpoint": "http://dataplane.url/api/public/token",
@@ -154,5 +158,240 @@ class EdcCallbackControllerTest {
         assertThat(actualEdr.get().getAuthCode()).isEqualTo("testJWT");
         assertThat(actualEdr.get().getAuthKey()).isEqualTo("Authorization");
         assertThat(actualEdr.get().getContractId()).isEqualTo("e6a5704f-fdba-4ebd-975e-f650af8a70a8");
+    }
+
+    @Test
+    void shouldStoreNegotiationId() {
+        // arrange
+        final String callbackNegotiation = """
+                {
+                  "id": "c87cbd8a-363a-41eb-a9f5-214da3a08bdc",
+                  "at": 1732284831946,
+                  "payload": {
+                    "contractNegotiationId": "negotiationId",
+                    "counterPartyAddress": "https://tracexb-provider-edc-edc.enablement.integration.cofinity-x.com/api/v1/dsp",
+                    "counterPartyId": "BPNL000000012345",
+                    "callbackAddresses": [
+                      {
+                        "uri": "https://callback.url/edr",
+                        "events": [
+                          "transfer.process.started"
+                        ],
+                        "transactional": false,
+                        "authKey": null,
+                        "authCodeId": null
+                      },
+                      {
+                        "uri": "https://callback.url/negotiation",
+                        "events": [
+                          "contract.negotiation.finalized"
+                        ],
+                        "transactional": false,
+                        "authKey": null,
+                        "authCodeId": null
+                      },
+                      {
+                        "uri": "local://adapter",
+                        "events": [
+                          "contract.negotiation",
+                          "transfer.process"
+                        ],
+                        "transactional": true,
+                        "authKey": null,
+                        "authCodeId": null
+                      }
+                    ],
+                    "contractOffers": [
+                      {
+                        "id": "ZmNiZTVmMDgtOTUzNi00OWM2LTgyYzMtODYwYzcxNGE0M2Ex:dXJuOnV1aWQ6YjA4ZjU0ZTAtOTJjYS00Y2E1LTkxMTUtNzUzMWMzYTQ3YmJj:OTcxNmVkYmQtZDc2OS00Nzc5LTgwZGItMTFkODRlNmEzYTJh",
+                        "policy": {
+                          "permissions": [
+                            {
+                              "edctype": "dataspaceconnector:permission",
+                              "action": {
+                                "type": "use",
+                                "includedIn": null,
+                                "constraint": null
+                              },
+                              "constraints": [
+                                {
+                                  "edctype": "AndConstraint",
+                                  "constraints": [
+                                    {
+                                      "edctype": "AtomicConstraint",
+                                      "leftExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                      },
+                                      "rightExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "traceability:1.0"
+                                      },
+                                      "operator": "EQ"
+                                    },
+                                    {
+                                      "edctype": "AtomicConstraint",
+                                      "leftExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                      },
+                                      "rightExpression": {
+                                        "edctype": "dataspaceconnector:literalexpression",
+                                        "value": "cx.core.industrycore:1"
+                                      },
+                                      "operator": "EQ"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "duties": []
+                            }
+                          ],
+                          "prohibitions": [],
+                          "obligations": [],
+                          "extensibleProperties": {},
+                          "inheritsFrom": null,
+                          "assigner": "BPNL000000012345",
+                          "assignee": null,
+                          "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                          "@type": {
+                            "@policytype": "offer"
+                          }
+                        },
+                        "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc"
+                      }
+                    ],
+                    "protocol": "dataspace-protocol-http",
+                    "contractAgreement": {
+                      "id": "contractAgreementId",
+                      "providerId": "BPNL000000012345",
+                      "consumerId": "BPNL000000067890",
+                      "contractSigningDate": 1732284827,
+                      "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                      "policy": {
+                        "permissions": [
+                          {
+                            "edctype": "dataspaceconnector:permission",
+                            "action": {
+                              "type": "use",
+                              "includedIn": null,
+                              "constraint": null
+                            },
+                            "constraints": [
+                              {
+                                "edctype": "AndConstraint",
+                                "constraints": [
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "traceability:1.0"
+                                    },
+                                    "operator": "EQ"
+                                  },
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "cx.core.industrycore:1"
+                                    },
+                                    "operator": "EQ"
+                                  }
+                                ]
+                              }
+                            ],
+                            "duties": []
+                          }
+                        ],
+                        "prohibitions": [],
+                        "obligations": [],
+                        "extensibleProperties": {},
+                        "inheritsFrom": null,
+                        "assigner": "BPNL000000012345",
+                        "assignee": "BPNL000000067890",
+                        "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                        "@type": {
+                          "@policytype": "contract"
+                        }
+                      }
+                    },
+                    "lastContractOffer": {
+                      "id": "ZmNiZTVmMDgtOTUzNi00OWM2LTgyYzMtODYwYzcxNGE0M2Ex:dXJuOnV1aWQ6YjA4ZjU0ZTAtOTJjYS00Y2E1LTkxMTUtNzUzMWMzYTQ3YmJj:OTcxNmVkYmQtZDc2OS00Nzc5LTgwZGItMTFkODRlNmEzYTJh",
+                      "policy": {
+                        "permissions": [
+                          {
+                            "edctype": "dataspaceconnector:permission",
+                            "action": {
+                              "type": "use",
+                              "includedIn": null,
+                              "constraint": null
+                            },
+                            "constraints": [
+                              {
+                                "edctype": "AndConstraint",
+                                "constraints": [
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/FrameworkAgreement"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "traceability:1.0"
+                                    },
+                                    "operator": "EQ"
+                                  },
+                                  {
+                                    "edctype": "AtomicConstraint",
+                                    "leftExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "https://w3id.org/catenax/policy/UsagePurpose"
+                                    },
+                                    "rightExpression": {
+                                      "edctype": "dataspaceconnector:literalexpression",
+                                      "value": "cx.core.industrycore:1"
+                                    },
+                                    "operator": "EQ"
+                                  }
+                                ]
+                              }
+                            ],
+                            "duties": []
+                          }
+                        ],
+                        "prohibitions": [],
+                        "obligations": [],
+                        "extensibleProperties": {},
+                        "inheritsFrom": null,
+                        "assigner": "BPNL000000012345",
+                        "assignee": null,
+                        "target": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc",
+                        "@type": {
+                          "@policytype": "offer"
+                        }
+                      },
+                      "assetId": "urn:uuid:b08f54e0-92ca-4ca5-9115-7531c3a47bbc"
+                    }
+                  },
+                  "type": "ContractNegotiationFinalized"
+                }
+                """;
+        final Optional<String> expectedContractAgreementId = Optional.of("contractAgreementId");
+
+        // act
+        testee.receiveNegotiationsCallback(callbackNegotiation);
+
+        // assert
+        final var result = contractNegotiationIdStorage.get("negotiationId");
+        assertThat(result).isEqualTo(expectedContractAgreementId);
     }
 }

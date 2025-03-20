@@ -23,9 +23,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.tractusx.irs</groupId>
-            <artifactId>irs-testing</artifactId>
-            <version>${irs-registry-client.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter-engine.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter-engine.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -36,9 +42,6 @@
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
                 <version>${gatling-maven-plugin.version}</version>
-                <configuration>
-                    <noReports>true</noReports>
-                </configuration>
             </plugin>
         </plugins>
     </build>

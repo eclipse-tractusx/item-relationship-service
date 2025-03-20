@@ -28,12 +28,6 @@
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-models</artifactId>
             <version>${irs-registry-client.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -46,10 +40,6 @@
                 <exclusion>
                     <groupId>jakarta.annotation</groupId>
                     <artifactId>jakarta.annotation-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
                 </exclusion>
             </exclusions>
             <scope>provided</scope>
@@ -118,6 +108,12 @@
             <groupId>org.eclipse.edc</groupId>
             <artifactId>policy-engine-lib</artifactId>
             <version>${edc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>*</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.edc</groupId>
@@ -125,16 +121,8 @@
             <version>${edc.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>bcpkix-jdk18on</artifactId>
-                    <groupId>org.bouncycastle</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>policy-engine-lib</artifactId>
-                    <groupId>org.eclipse.edc</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>policy-engine-spi</artifactId>
-                    <groupId>org.eclipse.edc</groupId>
+                    <artifactId>*</artifactId>
+                    <groupId>*</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -160,16 +148,8 @@
             <version>${edc.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>management-api</artifactId>
-                    <groupId>org.eclipse.edc</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>validator-core</artifactId>
-                    <groupId>org.eclipse.edc</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>swagger-jaxrs2-jakarta</artifactId>
-                    <groupId>io.swagger.core.v3</groupId>
+                    <artifactId>*</artifactId>
+                    <groupId>*</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -186,12 +166,6 @@
             <artifactId>irs-testing</artifactId>
             <version>${irs-registry-client.version}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.wiremock</groupId>

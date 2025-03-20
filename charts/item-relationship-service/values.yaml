@@ -38,7 +38,6 @@ podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
 
-# Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 securityContext:
   capabilities:
@@ -59,7 +58,6 @@ service:
 autoscaling:
   enabled: false
 
-# Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits
 resources:
   limits:
@@ -73,7 +71,6 @@ nodeSelector: {}
 
 tolerations: []
 
-# Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
 affinity:
   podAntiAffinity:
@@ -86,7 +83,6 @@ affinity:
                 operator: DoesNotExist
           topologyKey: kubernetes.io/hostname
 
-# Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://github.com/helm/charts/blob/master/stable/nginx-ingress/values.yaml#L210
 livenessProbe:
   failureThreshold: 6
@@ -105,6 +101,13 @@ readinessProbe:
 # IRS Configuration #
 #####################
 irsUrl:  # "https://<irs-url>"
+job:
+  batch:
+    threadCount: 5
+  scheduled:
+    threadCount: 5
+  cached:
+    threadCount: 5
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
@@ -132,6 +135,7 @@ digitalTwinRegistry:
 discovery:
   oAuthClientId: discovery  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   discoveryFinderUrl:  # "https://<discovery-finder-url>
+  type: "bpnl"  # discovery type to find bpnl type in EDC discovery
 
 semanticshub:
   url:  # https://<semantics-hub-url>
@@ -163,11 +167,12 @@ edc:
   controlplane:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
-      catalog: /v2/catalog/request  # EDC consumer controlplane catalog path
-      contractnegotiation: /v2/contractnegotiations  # EDC consumer controlplane contract negotiation path
-      transferprocess: /v2/transferprocesses  # EDC consumer controlplane transfer process path
+      catalog: /v3/catalog/request  # EDC consumer controlplane catalog path
+      edrManagement: /v2/edrs  # EDC consumer controlplane EDR management path
+      contractnegotiation: /v3/contractnegotiations  # EDC consumer controlplane contract negotiation path
+      transferprocess: /v3/transferprocesses  # EDC consumer controlplane transfer process path
       statesuffix: /state  # Path of the state suffix for contract negotiation and transfer process
-      contractAgreements: /v2/contractagreements  # EDC consumer controlplane contract agreements path
+      contractAgreements: /v3/contractagreements  # EDC consumer controlplane contract agreements path
     request:
       ttl: PT10M  # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     provider:
@@ -178,8 +183,11 @@ edc:
     apikey:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
-  callbackMapping:  # The callback endpoint path mapping - used to expose callback endpoint
+    edrManagementEnabled: false  # Flag whether IRS uses classic EDC negotiation or EDR negotiation
+  callbackMapping:  # The EDR token callback endpoint path mapping - used to expose EDR callback endpoint
+  negotiationCallbackMapping:  # The EDR negotiation callback endpoint mapping - used to expose negotiation callback endpoint
   callbackurl:  # The URL where the EDR token callback will be sent to.
+  negotiationCallbackurl:  # The URL where the negotiation callback will be sent to.
   asyncTimeout: PT10M  # Timout for future.get requests as ISO 8601 Duration
   submodel:
     request:
@@ -225,6 +233,8 @@ edc:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
     cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
+  orchestration:
+    threadPoolSize: 5  # Thread pool size for maximum parallel negotiations
 
 ess:
   edc:
@@ -232,8 +242,8 @@ ess:
   mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
   mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
   assetsPath: /management/v3/assets  # EDC management API "assets" path - used for notification asset creation
-  policydefinitionsPath: /management/v2/policydefinitions  # EDC management API "policydefinitions" path - used for notification policy definition creation
-  contractdefinitionsPath: /management/v2/contractdefinitions  # EDC management API "contractdefinitions" path - used for notification contract definitions creation
+  policydefinitionsPath: /management/v3/policydefinitions  # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: /management/v3/contractdefinitions  # EDC management API "contractdefinitions" path - used for notification contract definitions creation
 
 config:
   # If true, the config provided below will completely replace the configmap.

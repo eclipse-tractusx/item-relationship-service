@@ -90,6 +90,5 @@ public class BatchOrderResponse {
         private ProcessingState batchProcessingState;
 
         private Object error;
-
     }
 }

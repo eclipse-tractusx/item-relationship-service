@@ -103,9 +103,9 @@ if __name__ == "__main__":
         delete_shells(registry_url, headers)
 
     for edc_url in edc_urls:
-        controlplane_data_contracts = edc_url + "/management/v2/contractdefinitions"
-        controlplane_data_policies = edc_url + "/management/v2/policydefinitions"
-        controlplane_data_assets = edc_url + "/management/v2/assets"
+        controlplane_data_contracts = edc_url + "/management/v3/contractdefinitions"
+        controlplane_data_policies = edc_url + "/management/v3/policydefinitions"
+        controlplane_data_assets = edc_url + "/management/v3/assets"
 
         delete_contracts(controlplane_data_contracts, headers)
 

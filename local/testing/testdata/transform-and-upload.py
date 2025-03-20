@@ -29,7 +29,29 @@ from copy import copy
 
 import requests
 from requests.adapters import HTTPAdapter, Retry
+from requests.auth import HTTPBasicAuth
 
+def get_auth_token(client_id, client_secret, token_url):
+
+    payload = {
+        'grant_type': 'client_credentials'
+    }
+
+    try:
+        response = requests.post(
+            token_url,
+            data=payload,
+            auth=HTTPBasicAuth(client_id, client_secret)
+        )
+
+        response.raise_for_status()
+
+        access_token = response.json().get('access_token')
+        return access_token
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error while fetching access token: {e}")
+        return None
 
 def create_submodel_payload(json_payload):
     return json.dumps(json_payload)
@@ -279,6 +301,15 @@ def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_uplo
             f"URLS'{submodel_server_urls_}'")
 
 
+def check_partial_variables(token_url=None, client_id=None, client_secret=None):
+    variables = [token_url, client_id, client_secret]
+    # Check if at least one variable is set
+    if any(var is not None for var in variables):
+        # Check if any variable is None
+        if any(var is None for var in variables):
+            raise ArgumentException("When setting one of token_url, client_id, client_secret, all have to be specified.")
+
+
 class ArgumentException(Exception):
     def __init__(self, *args, **kwargs):  # real signature unknown
         pass
@@ -447,6 +478,9 @@ if __name__ == "__main__":
     parser.add_argument("-eu", "--edcupload", type=str, nargs="*", help="EDC provider control plane upload URLs",
                         required=False)
     parser.add_argument("-k", "--apikey", type=str, help="EDC provider api key", required=True)
+    parser.add_argument("--tokenUrl", type=str, help="Auth Token Url", required=False)
+    parser.add_argument("--clientId", type=str, help="Client Id", required=False)
+    parser.add_argument("--clientSecret", type=str, help="Client Secret", required=False)
     parser.add_argument("-e", "--esr", type=str, help="ESR URL", required=False)
     parser.add_argument("--ess", help="Enable ESS data creation with invalid EDC URL", action='store_true',
                         required=False)
@@ -461,6 +495,7 @@ if __name__ == "__main__":
     parser.add_argument("--allowedBPNs", type=str, nargs="*",
                         help="The allowed BPNs for digital twin registration in the registry.", required=False)
     parser.add_argument("--essURL", type=str, help="The base URL of the ESS Service API", required=False)
+    parser.add_argument("--dos", help="Create AAS assets and submodels for DOS", action='store_true', required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -474,6 +509,9 @@ if __name__ == "__main__":
     edc_bpns = config.get("edcBPN")
     edc_upload_urls = config.get("edcupload")
     edc_api_key = config.get("apikey")
+    token_url = config.get("tokenUrl")
+    client_id = config.get("clientId")
+    client_secret = config.get("clientSecret")
     esr_url = config.get("esr")
     is_ess = config.get("ess")
     ess_base_url = config.get("essURL")
@@ -483,6 +521,7 @@ if __name__ == "__main__":
     is_aas3 = config.get("aas3")
     dataplane_urls = config.get("dataplane")
     allowedBPNs = config.get("allowedBPNs")
+    is_dos = config.get("dos")
 
     if is_aas3 and dataplane_urls is None:
         raise ArgumentException("Dataplane URLs have to be specified with -d or --dataplane if --aas flag is set!")
@@ -511,9 +550,9 @@ if __name__ == "__main__":
                    edc_bpns)
 
     edc_asset_path = "/management/v3/assets"
-    edc_policy_path = "/management/v2/policydefinitions"
-    edc_contract_definition_path = "/management/v2/contractdefinitions"
-    edc_catalog_path = "/management/v2/catalog/request"
+    edc_policy_path = "/management/v3/policydefinitions"
+    edc_contract_definition_path = "/management/v3/contractdefinitions"
+    edc_catalog_path = "/management/v3/catalog/request"
     dataplane_public_path = "/api/public"
     controlplane_public_path = "/api/v1/dsp"
 
@@ -527,6 +566,12 @@ if __name__ == "__main__":
         'X-Api-Key': edc_api_key,
         'Content-Type': 'application/json'
     }
+
+    check_partial_variables(token_url, client_id, client_secret)
+    headers_with_authorization = copy(headers)
+    if token_url and client_id and client_secret:
+        auth_token = get_auth_token(client_id, client_secret, token_url)
+        headers_with_authorization['Authorization'] = f"Bearer {auth_token}"
 
     default_policy_definition = {
         "default": {
@@ -590,11 +635,16 @@ if __name__ == "__main__":
             name_at_manufacturer = ""
             specific_asset_ids_temp = []
             for tmp_key in tmp_keys:
-                if "Batch" in tmp_key or "SerialPart" in tmp_key:
+                print(tmp_key)
+                if "Batch" in tmp_key or "SerialPart" in tmp_key or "JustInSequencePart" in tmp_key:
                     specific_asset_ids_temp = copy(tmp_data[tmp_key][0]["localIdentifiers"])
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
+                    specific_asset_ids_temp.append({
+                        "key": "digitalTwinType",
+                        "value": "PartInstance"
+                    })
                 if "PartAsPlanned" in tmp_key:
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
@@ -602,6 +652,10 @@ if __name__ == "__main__":
                     specific_asset_ids_temp.append({
                         "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
                         "key": "manufacturerPartId"
+                    })
+                    specific_asset_ids_temp.append({
+                        "key": "digitalTwinType",
+                        "value": "PartType"
                     })
             print(name_at_manufacturer)
             name_at_manufacturer = name_at_manufacturer + "-" + uuid.uuid4().hex
@@ -688,9 +742,13 @@ if __name__ == "__main__":
                     print("Create submodel on submodel server")
                     if tmp_data[tmp_key] != "":
                         payload = create_submodel_payload(tmp_data[tmp_key][0])
+                        if is_dos:
+                            create_submodel_url = f"{submodel_upload_url}"
+                        else:
+                            create_submodel_url = f"{submodel_upload_url}/{submodel_identification}"
                         response = session.request(method="POST",
-                                                   url=f"{submodel_upload_url}/{submodel_identification}",
-                                                   headers=headers, data=payload)
+                                                   url=create_submodel_url,
+                                                   headers=headers_with_authorization, data=payload)
                         print_response(response)
 
                     asset_path = edc_upload_url + edc_asset_path
@@ -722,7 +780,7 @@ if __name__ == "__main__":
                     payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
                                                submodel_descriptors)
                 response = session.request(method="POST", url=f"{aas_upload_url}{registry_path}",
-                                           headers=headers,
+                                           headers=headers_with_authorization,
                                            data=payload)
                 print_response(response)
 

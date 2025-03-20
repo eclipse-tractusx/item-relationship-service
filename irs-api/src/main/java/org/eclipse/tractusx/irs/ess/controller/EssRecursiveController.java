@@ -27,10 +27,12 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.eclipse.tractusx.irs.ess.service.EssRecursiveService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,6 +55,7 @@ public class EssRecursiveController {
 
     @PostMapping("/receive-recursive")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public void registerRecursiveBPNInvestigation(
             final @Valid @RequestBody EdcNotification<InvestigationNotificationContent> notification) {
         log.info("Received recursive notification, starting investigation.");

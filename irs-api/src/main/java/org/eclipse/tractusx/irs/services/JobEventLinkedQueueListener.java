@@ -34,13 +34,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
+import org.eclipse.tractusx.irs.component.JobProgress;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
-import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -81,11 +81,12 @@ public class JobEventLinkedQueueListener {
             log.info("BatchId: {} reached size to update status and check state.", batchId);
             batchStore.find(batchId).ifPresent(batch -> {
                 final List<JobProgress> progressList = updateProgressOfJobsInBatch(queue, batch);
-                final ProcessingState batchProcessingState = calculateProcessingState(progressList);
+                final List<JobState> jobStates = progressList.stream().map(JobProgress::getJobState).toList();
+                final ProcessingState batchProcessingState = calculateProcessingState(jobStates);
                 log.info("BatchId: {} reached {} state.", batchId, batchProcessingState);
                 saveUpdatedBatch(batch, progressList, batchProcessingState);
                 queueMap.remove(batchId);
-                if (isCompleted(batchProcessingState)) {
+                if (isFinished(batchProcessingState)) {
                     publishFinishProcessingEvent(batch, batchProcessingState);
                 }
             });
@@ -108,14 +109,15 @@ public class JobEventLinkedQueueListener {
             final ProcessingState processingState) {
         batch.setBatchState(processingState);
         batch.setJobProgressList(progressList);
-        if (isCompleted(processingState)) {
+        if (isFinished(processingState)) {
             batch.setCompletedOn(ZonedDateTime.now());
         }
         batchStore.save(batch.getBatchId(), batch);
     }
 
-    private static boolean isCompleted(final ProcessingState processingState) {
-        return ProcessingState.COMPLETED.equals(processingState) || ProcessingState.ERROR.equals(processingState);
+    private static boolean isFinished(final ProcessingState processingState) {
+        return ProcessingState.COMPLETED.equals(processingState) || ProcessingState.ERROR.equals(processingState)
+                || ProcessingState.PARTIAL.equals(processingState);
     }
 
     private void publishFinishProcessingEvent(final Batch batch, final ProcessingState processingState) {
@@ -129,16 +131,17 @@ public class JobEventLinkedQueueListener {
                         processingState, batch.getBatchNumber(), callbackUrl));
     }
 
-    private ProcessingState calculateProcessingState(final List<JobProgress> progressList) {
-        if (progressList.stream().anyMatch(jobProgress -> JobState.RUNNING.equals(jobProgress.getJobState()))) {
-            return ProcessingState.PROCESSING;
-        } else if (progressList.stream().anyMatch(jobProgress -> JobState.ERROR.equals(jobProgress.getJobState()))) {
-            return ProcessingState.PARTIAL;
-        } else if (progressList.stream()
-                               .allMatch(jobProgress -> JobState.COMPLETED.equals(jobProgress.getJobState()))) {
+    protected ProcessingState calculateProcessingState(final List<JobState> jobStates) {
+        if (jobStates.stream().allMatch(JobState.COMPLETED::equals)) {
             return ProcessingState.COMPLETED;
-        } else {
+        } else if (jobStates.stream()
+                            .allMatch(jobState ->
+                                       JobState.ERROR.equals(jobState)
+                                    || JobState.COMPLETED.equals(jobState)
+                                    || JobState.CANCELED.equals(jobState))) {
             return ProcessingState.PARTIAL;
+        } else {
+            return ProcessingState.PROCESSING;
         }
     }
 

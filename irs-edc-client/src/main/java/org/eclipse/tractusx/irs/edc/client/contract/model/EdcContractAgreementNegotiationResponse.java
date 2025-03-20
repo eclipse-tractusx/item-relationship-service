@@ -25,7 +25,7 @@ import lombok.Builder;
 
 /**
  * EdcContractAgreementNegotiationResponse used for representing the response of
- * /management/v2/contractagreements/{contragtAgreementId}/negotiation
+ * /management/v3/contractagreements/{contragtAgreementId}/negotiation
  */
 
 @Builder

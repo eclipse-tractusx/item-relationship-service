@@ -24,7 +24,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * EdcContractAgreementRequest represents the request to management/v2/contractagreements/request
+ * EdcContractAgreementRequest represents the request to management/v3/contractagreements/request
  */
 public record EdcContractAgreementRequest(@JsonProperty(
         "https://w3id.org/edc/v0.0.1/ns/filterExpression") EdcContractAgreementFilterExpression edcContractAgreementFilterExpressions) {

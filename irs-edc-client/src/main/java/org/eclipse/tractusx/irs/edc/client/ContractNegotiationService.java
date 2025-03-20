@@ -59,17 +59,19 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service("irsEdcClientContractNegotiationService")
+@SuppressWarnings("PMD.ExcessiveImports")
 @RequiredArgsConstructor
 public class ContractNegotiationService {
 
     public static final String EDC_PROTOCOL = "dataspace-protocol-http";
     public static final String EVENT_TRANSFER_PROCESS_STARTED = "transfer.process.started";
+    public static final String EVENT_CONTRACT_NEGOTIATION_FINALIZED = "contract.negotiation.finalized";
     public static final String HTTP_DATA_PULL = "HttpData-PULL";
     private final EdcControlPlaneClient edcControlPlaneClient;
     private final PolicyCheckerService policyCheckerService;
     private final EdcConfiguration config;
 
-    public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
+    public TransferProcessResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
             final EndpointDataReferenceStatus endpointDataReferenceStatus, final String bpn)
             throws ContractNegotiationException, UsagePolicyPermissionException, TransferProcessException,
             UsagePolicyExpiredException {
@@ -85,7 +87,7 @@ public class ContractNegotiationService {
             resultEndpointDataReferenceStatus = endpointDataReferenceStatus;
         }
 
-        NegotiationResponse negotiationResponse = null;
+        NegotiationResponse negotiationResponse;
         String contractAgreementId;
 
         switch (resultEndpointDataReferenceStatus.tokenStatus()) {
@@ -117,7 +119,7 @@ public class ContractNegotiationService {
                 getTransferProcessResponse(transferProcessFuture));
         log.info("Transfer process completed for transferProcessId: {}", transferProcessResponse.getResponseId());
 
-        return negotiationResponse;
+        return transferProcessResponse;
     }
 
     private CompletableFuture<NegotiationResponse> startNewNegotiation(final String providerConnectorUrl,
@@ -125,18 +127,7 @@ public class ContractNegotiationService {
             throws UsagePolicyPermissionException, UsagePolicyExpiredException {
         log.info("Staring new contract negotiation.");
 
-        if (!policyCheckerService.isValid(catalogItem.getPolicy(), bpn)) {
-            log.warn("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyPermissionException(policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()), catalogItem.getPolicy(),
-                    catalogItem.getConnectorId());
-        }
-
-        if (policyCheckerService.isExpired(catalogItem.getPolicy(), bpn)) {
-            log.warn("Policy is expired, canceling negotiation.");
-            throw new UsagePolicyExpiredException(policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()),
-                    catalogItem.getPolicy(),
-                    catalogItem.getConnectorId());
-        }
+        validatePolicy(catalogItem, bpn);
 
         final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
                 catalogItem);
@@ -211,5 +202,58 @@ public class ContractNegotiationService {
         }
         return null;
     }
+
+    public String negotiateWithEdrManagement(final String providerConnectorUrl, final CatalogItem catalogItem,
+            final String bpn)
+            throws ContractNegotiationException, UsagePolicyPermissionException, UsagePolicyExpiredException {
+
+        validatePolicy(catalogItem, bpn);
+
+        final NegotiationRequest request = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
+                catalogItem);
+
+        log.debug("Setting EDR token callback to {}", config.getCallbackUrl());
+        final CallbackAddress transferCallbackAddress = CallbackAddress.Builder.newInstance()
+                                                                       .uri(config.getCallbackUrl())
+                                                                       .events(Set.of(
+                                                                               EVENT_TRANSFER_PROCESS_STARTED))
+                                                                       .build();
+
+        log.debug("Setting EDR negotiation callback to {}", config.getNegotiationCallbackUrl());
+        final CallbackAddress negotiationCallbackAddress = CallbackAddress.Builder.newInstance()
+                                                                       .uri(config.getNegotiationCallbackUrl())
+                                                                       .events(Set.of(
+                                                                               EVENT_CONTRACT_NEGOTIATION_FINALIZED))
+                                                                       .build();
+
+        final NegotiationRequest negotiationRequest = request.toBuilder()
+                                                         .callbackAddresses(List.of(transferCallbackAddress, negotiationCallbackAddress))
+                                                         .build();
+
+        final Response negotiationId = edcControlPlaneClient.startEdrNegotiations(negotiationRequest);
+
+        log.info("Fetch negotiation id: {}", negotiationId.getResponseId());
+
+        return Objects.requireNonNull(negotiationId.getResponseId());
+    }
+
+    private void validatePolicy(final CatalogItem catalogItem, final String bpn)
+            throws UsagePolicyPermissionException, UsagePolicyExpiredException {
+
+        if (!policyCheckerService.isValid(catalogItem.getPolicy(), bpn)) {
+            log.warn("Policy was not allowed, canceling negotiation.");
+            throw new UsagePolicyPermissionException(
+                    policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()), catalogItem.getPolicy(),
+                    catalogItem.getConnectorId());
+        }
+
+        if (policyCheckerService.isExpired(catalogItem.getPolicy(), bpn)) {
+            log.warn("Policy is expired, canceling negotiation.");
+            throw new UsagePolicyExpiredException(
+                    policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()), catalogItem.getPolicy(),
+                    catalogItem.getConnectorId());
+        }
+    }
+
 }
 

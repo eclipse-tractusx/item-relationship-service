@@ -2,7 +2,7 @@
   "tombstones": [
     {
       "catenaXId": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-      "endpointURL": "http://umbrella-dataprovider-edc-controlplane:8084",
+      "endpointURL": "http://umbrella-dataprovider-edc-controlplane:8084/api/v1/dsp",
       "businessPartnerNumber": "BPNL00000003AYRE",
       "processingError": {
         "processStep": "DigitalTwinRequest",
