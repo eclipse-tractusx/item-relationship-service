@@ -449,26 +449,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_job_orchestration_flow">Job orchestration flow</a></li>
 <li><a href="#_policy_store_flow">Policy store flow</a></li>
 <li><a href="#_policy_check_procedure">Policy check procedure</a></li>
-</ul>
-</li>
-<li><a href="#_scenario_1_create_job">Scenario 1: Create job</a>
-<ul class="sectlevel2">
-<li><a href="#_overview">Overview</a></li>
-</ul>
-</li>
-<li><a href="#_scenario_2_job_execution">Scenario 2: Job execution</a>
-<ul class="sectlevel2">
-<li><a href="#_overview_2">Overview</a></li>
-</ul>
-</li>
-<li><a href="#_scenario_3_request_for_jobresponse">Scenario 3: Request for JobResponse</a>
-<ul class="sectlevel2">
-<li><a href="#_overview_3">Overview</a></li>
-</ul>
-</li>
-<li><a href="#_scenario_4_cancel_job_execution">Scenario 4: Cancel job execution</a>
-<ul class="sectlevel2">
-<li><a href="#_overview_4">Overview</a></li>
+<li><a href="#_scenario_1_create_job">Scenario 1: Create job</a></li>
+<li><a href="#_scenario_2_job_execution">Scenario 2: Job execution</a></li>
+<li><a href="#_scenario_3_request_for_jobresponse">Scenario 3: Request for JobResponse</a></li>
+<li><a href="#_scenario_4_cancel_job_execution">Scenario 4: Cancel job execution</a></li>
 </ul>
 </li>
 <li><a href="#_irs_recursive">IRS Recursive</a></li>
@@ -478,16 +462,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_overall_flow">Overall flow</a></li>
 <li><a href="#_flow_on_company_level">Flow on company level</a></li>
 <li><a href="#_application_functionality_overview">Application Functionality Overview</a></li>
-</ul>
-</li>
-<li><a href="#_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</a>
-<ul class="sectlevel2">
-<li><a href="#_register_an_ess_investigation_order_2">Register an Ess-Investigation-Order</a></li>
-</ul>
-</li>
-<li><a href="#_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</a>
-<ul class="sectlevel2">
-<li><a href="#_register_an_ess_investigation_job">Register an Ess-Investigation Job</a></li>
+<li><a href="#_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</a></li>
+<li><a href="#_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</a></li>
 </ul>
 </li>
 </ul>
@@ -499,6 +475,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section describes the iterative flow, the main processes of the IRS, and explains how data is transferred and processed when a job is executed.</p>
+</div>
+<div class="paragraph">
+<p>IRS Iterative is the main IRS mode for retrieving data chains throughout the Catena-X network. The core functionality can be summed up in three steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start the process with a provided globalAssetId and BPN combination, and required submodels to request.</p>
+</li>
+<li>
+<p>Retrieve the EDC endpoint for the BPN, search the catalog for the Digital Twin Registry contract Offer and search the DTR for the provided BPN.</p>
+</li>
+<li>
+<p>Retrieve the relationship submodel for the requested lifecycle and direction and repeat step 1 with the globalAssetIds and BPNs from the relationship submodel linked data until the desired depth is reached or no more relationships could be found.</p>
+</li>
+</ol>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -549,11 +541,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_scenario_1_create_job">Scenario 1: Create job</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_scenario_1_create_job">Scenario 1: Create job</h3>
 <div class="paragraph">
 <p>This section describes what happens when user creates a new job.</p>
 </div>
@@ -562,8 +551,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <img src="create-job.svg" alt="create job" width="1768" height="665">
 </div>
 </div>
-<div class="sect2">
-<h3 id="_overview">Overview</h3>
+<div class="sect3">
+<h4 id="_overview">Overview</h4>
 <div class="paragraph">
 <p>If a job is registered via the IRS API, it will be persisted (with its parameters) in the JobStore, where it can be retrieved by further calls and processes.
 Then, the starting item ID is extracted, and a new transfer process is handed to the ExecutorService, which will process it asynchronously (see Scenario 2: Job Execution).</p>
@@ -575,10 +564,8 @@ The input provided by the caller determines how the job will operate (starting p
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_scenario_2_job_execution">Scenario 2: Job execution</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_scenario_2_job_execution">Scenario 2: Job execution</h3>
 <div class="paragraph">
 <p>This section describes how a job is asynchronously executed inside the IRS.</p>
 </div>
@@ -587,8 +574,8 @@ The input provided by the caller determines how the job will operate (starting p
 <img src="execute-job.svg" alt="execute job" width="1408" height="656">
 </div>
 </div>
-<div class="sect2">
-<h3 id="_overview_2">Overview</h3>
+<div class="sect3">
+<h4 id="_overview_2">Overview</h4>
 <div class="paragraph">
 <p>After a job has been created (see Scenario 1: Create Job), the first transfer containing the root item ID is passed to the ExecutorService. The transfer is then started asynchronously and retrieves the necessary information from the Catena-X network, first by fetching the AAS information from the DigitalTwin registry and then calling the SubmodelProviders for the submodel payload.</p>
 </div>
@@ -604,17 +591,15 @@ The result of each transfer is stored in the BlobStore.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_scenario_3_request_for_jobresponse">Scenario 3: Request for JobResponse</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_scenario_3_request_for_jobresponse">Scenario 3: Request for JobResponse</h3>
 <div class="imageblock">
 <div class="content">
 <img src="request-job.svg" alt="request job" width="951" height="684">
 </div>
 </div>
-<div class="sect2">
-<h3 id="_overview_3">Overview</h3>
+<div class="sect3">
+<h4 id="_overview_3">Overview</h4>
 <div class="paragraph">
 <p>When a user requests job details, the IRS looks up the jobId in the persistent job store. If the job exists, it will proceed to fetch the job details and prepare a response object.
 Only if the job is in state "COMPLETED" or if the caller has set the parameter "includePartialResults" to true, the IRS will fetch the payload data for the job (relationships, AAS shells and submodels, if applicable) and attach it to the response object.</p>
@@ -624,22 +609,21 @@ Only if the job is in state "COMPLETED" or if the caller has set the parameter "
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_scenario_4_cancel_job_execution">Scenario 4: Cancel job execution</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_scenario_4_cancel_job_execution">Scenario 4: Cancel job execution</h3>
 <div class="imageblock">
 <div class="content">
 <img src="cancel-job.svg" alt="cancel job" width="1068" height="637">
 </div>
 </div>
-<div class="sect2">
-<h3 id="_overview_4">Overview</h3>
+<div class="sect3">
+<h4 id="_overview_4">Overview</h4>
 <div class="paragraph">
 <p>When a user wants to cancel a job execution, the IRS will lookup that job in the persistent job store and transition it to the CANCELED state, if it exists. If a job is canceled, no further requests to the Catena-X network will be performed.</p>
 </div>
 <div class="paragraph">
 <p>Afterwards, the IRS will return the updated job details of the canceled job to the user.</p>
+</div>
 </div>
 </div>
 </div>
@@ -650,6 +634,15 @@ Only if the job is in state "COMPLETED" or if the caller has set the parameter "
 <div class="paragraph">
 <p>This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.</p>
+</div>
+<div class="paragraph">
+<p>The IRS recursive approach is a decentral approach of retrieving and aggregating data throughout the Catena-X network.</p>
+</div>
+<div class="paragraph">
+<p>The core functionality is based on notifications which are exchanged between multiple IRS instances. The notifications trigger an investigation on the next level down the supply chain and return aggregated data containing, e.g. simple information about whether a certain BPN is part of the supply chain or not.</p>
+</div>
+<div class="paragraph">
+<p>Investigations triggered on the next level down the supply chain can trigger further investigations themselves, hence the name <em>IRS recursive</em>.</p>
 </div>
 </div>
 </div>
@@ -1039,16 +1032,13 @@ The response of each direct supplier may contain the following results;</p>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</h3>
 <div class="paragraph">
 <p>This section describes what happens when user creates an ess order.</p>
 </div>
-<div class="sect2">
-<h3 id="_register_an_ess_investigation_order_2">Register an Ess-Investigation-Order</h3>
+<div class="sect3">
+<h4 id="_register_an_ess_investigation_order_2">Register an Ess-Investigation-Order</h4>
 <div class="imageblock">
 <div class="content">
 <img src="ess-topdown-order.svg" alt="ess topdown order" width="1962" height="734">
@@ -1134,15 +1124,13 @@ The response of each direct supplier may contain the following results;</p>
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</h3>
 <div class="paragraph">
 <p>This section describes what happens when user creates an ess job.</p>
 </div>
-<div class="sect2">
-<h3 id="_register_an_ess_investigation_job">Register an Ess-Investigation Job</h3>
+<div class="sect3">
+<h4 id="_register_an_ess_investigation_job">Register an Ess-Investigation Job</h4>
 <div class="imageblock">
 <div class="content">
 <img src="ess-topdown-order-job.svg" alt="ess topdown order job" width="2978" height="1414">
@@ -1278,9 +1266,10 @@ The response of each direct supplier may contain the following results;</p>
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-20 16:09:38 UTC
+Last updated 2025-03-20 14:34:28 UTC
 </div>
 </div>
 </body>

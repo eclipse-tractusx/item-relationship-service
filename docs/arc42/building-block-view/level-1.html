@@ -530,11 +530,12 @@ A job is processed in this order:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>BlobStore</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The BlobStore is the database where the relationships and tombstones are stored for a requested item.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The BlobStore is the database where the intermediate relationships and tombstones are stored as BLOBs during job processing. When complete, the job will take these intermediate BLOBs and consolidate them in the job response.
+The BLOBs are single-use only and will not be re-used for future jobs.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>JobStore</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The JobStore is the database where the jobs with the information about the requested item are stored.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The JobStore is the database where the jobs with the information about the requested item are stored. Completed and failed jobs will be deleted from the JobStore after their configured time-to-live is reached.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Digital Twin Client</strong></p></td>
@@ -563,7 +564,7 @@ A job is processed in this order:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-20 16:09:38 UTC
+Last updated 2025-03-20 14:34:28 UTC
 </div>
 </div>
 </body>

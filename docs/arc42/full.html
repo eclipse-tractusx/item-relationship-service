@@ -481,14 +481,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_runtime_view">Runtime view</a>
 <ul class="sectlevel2">
 <li><a href="#_irs_iterative">IRS Iterative</a></li>
-<li><a href="#_scenario_1_create_job">Scenario 1: Create job</a></li>
-<li><a href="#_scenario_2_job_execution">Scenario 2: Job execution</a></li>
-<li><a href="#_scenario_3_request_for_jobresponse">Scenario 3: Request for JobResponse</a></li>
-<li><a href="#_scenario_4_cancel_job_execution">Scenario 4: Cancel job execution</a></li>
 <li><a href="#_irs_recursive">IRS Recursive</a></li>
 <li><a href="#_use_case_ess_environmental_and_social_standards_top_down_approach">Use Case: ESS (Environmental and Social Standards) Top-Down Approach</a></li>
-<li><a href="#_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</a></li>
-<li><a href="#_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</a></li>
 </ul>
 </li>
 <li><a href="#_deployment_view">Deployment view</a>
@@ -894,6 +888,15 @@ The following table entries define overall IRS quality goals. The order of the t
 <p>As of now, the IRS uses its own IAM credentials to gather the required data. This might be changed to use the consumer credentials in the future.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_submodels">Submodels</h4>
+<div class="paragraph">
+<p>A Semantic Aspect Meta Model (SAMM) (see <a href="https://docs.bosch-semantic-stack.com/oss/samm-specification.html">samm-specification</a>), also known as semantic model ,aspect model or submodel, is a standardized specification to describe certain attributes of a physical part. Notable aspect models for the IRS use-case are BOMs (which parts are directly built into a part) and usages (in which parts is a part built into).</p>
+</div>
+<div class="paragraph">
+<p>Available aspect models in the catena-x context can be found in the <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main">sldt-semantic-models repository</a>.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_technical_context">Technical context</h3>
@@ -916,7 +919,7 @@ The following table entries define overall IRS quality goals. The order of the t
 <div class="sect4">
 <h5 id="_registry_api">Registry API</h5>
 <div class="paragraph">
-<p>The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a>, <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part">SerialPart</a> etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
+<p>The IRS acts as a consumer of the component Asset Administration Shell (AAS) Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a>, <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part">SerialPart</a> etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
 </div>
 <div class="sect5">
 <h6 id="_discovery_service">Discovery Service</h6>
@@ -1479,11 +1482,12 @@ A job is processed in this order:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>BlobStore</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The BlobStore is the database where the relationships and tombstones are stored for a requested item.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The BlobStore is the database where the intermediate relationships and tombstones are stored as BLOBs during job processing. When complete, the job will take these intermediate BLOBs and consolidate them in the job response.
+The BLOBs are single-use only and will not be re-used for future jobs.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>JobStore</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The JobStore is the database where the jobs with the information about the requested item are stored.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The JobStore is the database where the jobs with the information about the requested item are stored. Completed and failed jobs will be deleted from the JobStore after their configured time-to-live is reached.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Digital Twin Client</strong></p></td>
@@ -1622,7 +1626,7 @@ A job is processed in this order:</p>
 <h5 id="_component_diagram_5">Component diagram</h5>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/level-2-transfer-process-management.svg" alt="level 2 transfer process management" width="1506" height="1017">
+<img src="architecture-constraints/level-2-transfer-process-management.svg" alt="level 2 transfer process management" width="1408" height="1017">
 </div>
 </div>
 </div>
@@ -1797,6 +1801,22 @@ The result is stored in "relationships" of the job response.</p></td>
 <div class="paragraph">
 <p>This section describes the iterative flow, the main processes of the IRS, and explains how data is transferred and processed when a job is executed.</p>
 </div>
+<div class="paragraph">
+<p>IRS Iterative is the main IRS mode for retrieving data chains throughout the Catena-X network. The core functionality can be summed up in three steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start the process with a provided globalAssetId and BPN combination, and required submodels to request.</p>
+</li>
+<li>
+<p>Retrieve the EDC endpoint for the BPN, search the catalog for the Digital Twin Registry contract Offer and search the DTR for the provided BPN.</p>
+</li>
+<li>
+<p>Retrieve the relationship submodel for the requested lifecycle and direction and repeat step 1 with the globalAssetIds and BPNs from the relationship submodel linked data until the desired depth is reached or no more relationships could be found.</p>
+</li>
+</ol>
+</div>
 <div class="imageblock">
 <div class="content">
 <img src="architecture-constraints/overall.svg" alt="overall" width="1347" height="1005">
@@ -1846,9 +1866,8 @@ The result is stored in "relationships" of the job response.</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_scenario_1_create_job">Scenario 1: Create job</h3>
+<div class="sect3">
+<h4 id="_scenario_1_create_job">Scenario 1: Create job</h4>
 <div class="paragraph">
 <p>This section describes what happens when user creates a new job.</p>
 </div>
@@ -1857,8 +1876,8 @@ The result is stored in "relationships" of the job response.</p></td>
 <img src="architecture-constraints/create-job.svg" alt="create job" width="1768" height="665">
 </div>
 </div>
-<div class="sect3">
-<h4 id="_overview">Overview</h4>
+<div class="sect4">
+<h5 id="_overview">Overview</h5>
 <div class="paragraph">
 <p>If a job is registered via the IRS API, it will be persisted (with its parameters) in the JobStore, where it can be retrieved by further calls and processes.
 Then, the starting item ID is extracted, and a new transfer process is handed to the ExecutorService, which will process it asynchronously (see Scenario 2: Job Execution).</p>
@@ -1870,8 +1889,8 @@ The input provided by the caller determines how the job will operate (starting p
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_scenario_2_job_execution">Scenario 2: Job execution</h3>
+<div class="sect3">
+<h4 id="_scenario_2_job_execution">Scenario 2: Job execution</h4>
 <div class="paragraph">
 <p>This section describes how a job is asynchronously executed inside the IRS.</p>
 </div>
@@ -1880,8 +1899,8 @@ The input provided by the caller determines how the job will operate (starting p
 <img src="architecture-constraints/execute-job.svg" alt="execute job" width="1408" height="656">
 </div>
 </div>
-<div class="sect3">
-<h4 id="_overview_2">Overview</h4>
+<div class="sect4">
+<h5 id="_overview_2">Overview</h5>
 <div class="paragraph">
 <p>After a job has been created (see Scenario 1: Create Job), the first transfer containing the root item ID is passed to the ExecutorService. The transfer is then started asynchronously and retrieves the necessary information from the Catena-X network, first by fetching the AAS information from the DigitalTwin registry and then calling the SubmodelProviders for the submodel payload.</p>
 </div>
@@ -1897,15 +1916,15 @@ The result of each transfer is stored in the BlobStore.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_scenario_3_request_for_jobresponse">Scenario 3: Request for JobResponse</h3>
+<div class="sect3">
+<h4 id="_scenario_3_request_for_jobresponse">Scenario 3: Request for JobResponse</h4>
 <div class="imageblock">
 <div class="content">
 <img src="architecture-constraints/request-job.svg" alt="request job" width="951" height="684">
 </div>
 </div>
-<div class="sect3">
-<h4 id="_overview_3">Overview</h4>
+<div class="sect4">
+<h5 id="_overview_3">Overview</h5>
 <div class="paragraph">
 <p>When a user requests job details, the IRS looks up the jobId in the persistent job store. If the job exists, it will proceed to fetch the job details and prepare a response object.
 Only if the job is in state "COMPLETED" or if the caller has set the parameter "includePartialResults" to true, the IRS will fetch the payload data for the job (relationships, AAS shells and submodels, if applicable) and attach it to the response object.</p>
@@ -1915,15 +1934,15 @@ Only if the job is in state "COMPLETED" or if the caller has set the parameter "
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_scenario_4_cancel_job_execution">Scenario 4: Cancel job execution</h3>
+<div class="sect3">
+<h4 id="_scenario_4_cancel_job_execution">Scenario 4: Cancel job execution</h4>
 <div class="imageblock">
 <div class="content">
 <img src="architecture-constraints/cancel-job.svg" alt="cancel job" width="1068" height="637">
 </div>
 </div>
-<div class="sect3">
-<h4 id="_overview_4">Overview</h4>
+<div class="sect4">
+<h5 id="_overview_4">Overview</h5>
 <div class="paragraph">
 <p>When a user wants to cancel a job execution, the IRS will lookup that job in the persistent job store and transition it to the CANCELED state, if it exists. If a job is canceled, no further requests to the Catena-X network will be performed.</p>
 </div>
@@ -1932,11 +1951,21 @@ Only if the job is in state "COMPLETED" or if the caller has set the parameter "
 </div>
 </div>
 </div>
+</div>
 <div class="sect2">
 <h3 id="_irs_recursive">IRS Recursive</h3>
 <div class="paragraph">
 <p>This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.</p>
+</div>
+<div class="paragraph">
+<p>The IRS recursive approach is a decentral approach of retrieving and aggregating data throughout the Catena-X network.</p>
+</div>
+<div class="paragraph">
+<p>The core functionality is based on notifications which are exchanged between multiple IRS instances. The notifications trigger an investigation on the next level down the supply chain and return aggregated data containing, e.g. simple information about whether a certain BPN is part of the supply chain or not.</p>
+</div>
+<div class="paragraph">
+<p>Investigations triggered on the next level down the supply chain can trigger further investigations themselves, hence the name <em>IRS recursive</em>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2324,14 +2353,13 @@ The response of each direct supplier may contain the following results;</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</h3>
+<div class="sect3">
+<h4 id="_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</h4>
 <div class="paragraph">
 <p>This section describes what happens when user creates an ess order.</p>
 </div>
-<div class="sect3">
-<h4 id="_register_an_ess_investigation_order_2">Register an Ess-Investigation-Order</h4>
+<div class="sect4">
+<h5 id="_register_an_ess_investigation_order_2">Register an Ess-Investigation-Order</h5>
 <div class="imageblock">
 <div class="content">
 <img src="architecture-constraints/ess-topdown-order.svg" alt="ess topdown order" width="1962" height="734">
@@ -2417,13 +2445,13 @@ The response of each direct supplier may contain the following results;</p>
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</h3>
+<div class="sect3">
+<h4 id="_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</h4>
 <div class="paragraph">
 <p>This section describes what happens when user creates an ess job.</p>
 </div>
-<div class="sect3">
-<h4 id="_register_an_ess_investigation_job">Register an Ess-Investigation Job</h4>
+<div class="sect4">
+<h5 id="_register_an_ess_investigation_job">Register an Ess-Investigation Job</h5>
 <div class="imageblock">
 <div class="content">
 <img src="architecture-constraints/ess-topdown-order-job.svg" alt="ess topdown order job" width="2978" height="1414">
@@ -2559,6 +2587,7 @@ The response of each direct supplier may contain the following results;</p>
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
 <h2 id="_deployment_view">Deployment view</h2>
 <div class="sectionbody">
@@ -2647,7 +2676,7 @@ The IRS Helm charts can be found here: <a href="https://github.com/eclipse-tract
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/development.svg" alt="development" width="725" height="323">
+<img src="architecture-constraints/development.svg" alt="development" width="565" height="323">
 </div>
 </div>
 </div>
@@ -3560,6 +3589,26 @@ A number of Grafana dashboards are deployed automatically, to display data about
 <div class="sect2">
 <h3 id="_testing_concepts">Testing concepts</h3>
 <div class="sect3">
+<h4 id="_how_to_test_a_feature">How to test a feature</h4>
+<div class="paragraph">
+<p>Features in IRS are tested by unit, integration and end-to-end tests.
+We maintain a unit and integration tests coverage of at lease 80% which has to be kept up for new features.</p>
+</div>
+<div class="paragraph">
+<p>To test integration with the whole IRS flow, we provide <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/irs-api/src/test/java/org/eclipse/tractusx/irs/IrsWireMockIntegrationTest.java">Wiremock integration tests</a> where all third-party services are mocked.
+This test can be extended with your desired configuration to maintain full coverage.</p>
+</div>
+<div class="paragraph">
+<p>End-to-end tests are conducted via <a href="https://taverntesting.github.io/">Tavern</a> and <a href="https://cucumber.io/">Cucumber</a>.</p>
+</div>
+<div class="paragraph">
+<p>Cucumber feature files are located in <a href="https://github.com/eclipse-tractusx/item-relationship-service/tree/main/irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features">irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features</a> and executed with a GitHub workflow <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/cucumber-integration-test-UMBRELLA.yaml">cucumber-integration-test-UMBRELLA.yaml</a>.</p>
+</div>
+<div class="paragraph">
+<p>Tavern Tests are located in <a href="https://github.com/eclipse-tractusx/item-relationship-service/tree/main/local/testing/api-tests">local/testing/api-tests</a> and executed with a GitHub workflow <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml">tavern-UMBRELLA.yml</a>.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_umbrella">Umbrella</h4>
 <div class="paragraph">
 <p>The <a href="https://github.com/eclipse-tractusx/tractus-x-umbrella">umbrella chart</a> provides a pre-configured catena-x network which includes all necessary components for the IRS to work.</p>
@@ -3640,6 +3689,9 @@ Test results are automatically added to the workflow summary and in case of the 
 <p>Due to limitations in the IATP mock, the only way of using multiple BPNs in the test data is to spin up multiple EDC provider instances.
 However, the chart is used inside GitHub Workflows, so compute resources are limited.
 For this reason, the IRS test data was changed to include only data pointing to a single BPN.</p>
+</div>
+<div class="paragraph">
+<p>For instructions on how to use the Umbrella Chart locally, see <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/INSTALL.md#local-installation-with-umbrella">INSTALL.md</a></p>
 </div>
 </div>
 </div>
@@ -4392,6 +4444,11 @@ For this reason, the IRS test data was changed to include only data pointing to 
 <td class="tableblock halign-left valign-top"><p class="tableblock">see "Digital Twin"</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Asset Administration Shell Registry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AAS Registry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">see "Digital Twin Registry"</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Aspect Servers (Submodel Endpoints)</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X.</p></td>
@@ -4444,7 +4501,7 @@ For this reason, the IRS test data was changed to include only data pointing to 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin Registry</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">DTR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints). For further information, see <a href="https://eclipse-tractusx.github.io/docs-kits/kits/Digital%20Twin%20Kit/Adoption%20View%20Digital%20Twin%20Kit">Digital Twin Kit</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse Dataspace Connector</p></td>
@@ -4552,7 +4609,7 @@ For more information see:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-20 16:09:38 UTC
+Last updated 2025-03-20 14:34:28 UTC
 </div>
 </div>
 </body>

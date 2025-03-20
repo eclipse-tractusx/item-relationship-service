@@ -443,11 +443,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#_how_to_test_a_feature">How to test a feature</a></li>
 <li><a href="#_umbrella">Umbrella</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_how_to_test_a_feature">How to test a feature</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Features in IRS are tested by unit, integration and end-to-end tests.
+We maintain a unit and integration tests coverage of at lease 80% which has to be kept up for new features.</p>
+</div>
+<div class="paragraph">
+<p>To test integration with the whole IRS flow, we provide <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/irs-api/src/test/java/org/eclipse/tractusx/irs/IrsWireMockIntegrationTest.java">Wiremock integration tests</a> where all third-party services are mocked.
+This test can be extended with your desired configuration to maintain full coverage.</p>
+</div>
+<div class="paragraph">
+<p>End-to-end tests are conducted via <a href="https://taverntesting.github.io/">Tavern</a> and <a href="https://cucumber.io/">Cucumber</a>.</p>
+</div>
+<div class="paragraph">
+<p>Cucumber feature files are located in <a href="https://github.com/eclipse-tractusx/item-relationship-service/tree/main/irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features">irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features</a> and executed with a GitHub workflow <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/cucumber-integration-test-UMBRELLA.yaml">cucumber-integration-test-UMBRELLA.yaml</a>.</p>
+</div>
+<div class="paragraph">
+<p>Tavern Tests are located in <a href="https://github.com/eclipse-tractusx/item-relationship-service/tree/main/local/testing/api-tests">local/testing/api-tests</a> and executed with a GitHub workflow <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml">tavern-UMBRELLA.yml</a>.</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_umbrella">Umbrella</h2>
 <div class="sectionbody">
@@ -531,12 +554,15 @@ Test results are automatically added to the workflow summary and in case of the 
 However, the chart is used inside GitHub Workflows, so compute resources are limited.
 For this reason, the IRS test data was changed to include only data pointing to a single BPN.</p>
 </div>
+<div class="paragraph">
+<p>For instructions on how to use the Umbrella Chart locally, see <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/INSTALL.md#local-installation-with-umbrella">INSTALL.md</a></p>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-20 16:09:38 UTC
+Last updated 2025-03-20 14:34:28 UTC
 </div>
 </div>
 </body>

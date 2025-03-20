@@ -447,6 +447,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_consumer">Consumer</a></li>
 <li><a href="#_catena_x_network">Catena-X network</a></li>
+<li><a href="#_submodels">Submodels</a></li>
 </ul>
 </li>
 <li><a href="#_technical_context">Technical context</a>
@@ -489,6 +490,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>As of now, the IRS uses its own IAM credentials to gather the required data. This might be changed to use the consumer credentials in the future.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_submodels">Submodels</h3>
+<div class="paragraph">
+<p>A Semantic Aspect Meta Model (SAMM) (see <a href="https://docs.bosch-semantic-stack.com/oss/samm-specification.html">samm-specification</a>), also known as semantic model ,aspect model or submodel, is a standardized specification to describe certain attributes of a physical part. Notable aspect models for the IRS use-case are BOMs (which parts are directly built into a part) and usages (in which parts is a part built into).</p>
+</div>
+<div class="paragraph">
+<p>Available aspect models in the catena-x context can be found in the <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main">sldt-semantic-models repository</a>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -513,7 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="_registry_api">Registry API</h4>
 <div class="paragraph">
-<p>The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a>, <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part">SerialPart</a> etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
+<p>The IRS acts as a consumer of the component Asset Administration Shell (AAS) Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a>, <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part">SerialPart</a> etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
 </div>
 <div class="sect4">
 <h5 id="_discovery_service">Discovery Service</h5>
@@ -711,7 +721,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-20 16:09:38 UTC
+Last updated 2025-03-20 14:34:28 UTC
 </div>
 </div>
 </body>

@@ -111,6 +111,12 @@ The IRS retrieves data from the Catena-X network (using the necessary infrastruc
 
 As of now, the IRS uses its own IAM credentials to gather the required data. This might be changed to use the consumer credentials in the future.
 
+### Submodels
+
+A Semantic Aspect Meta Model (SAMM) (see [samm-specification](https://docs.bosch-semantic-stack.com/oss/samm-specification.html)), also known as semantic model ,aspect model or submodel, is a standardized specification to describe certain attributes of a physical part. Notable aspect models for the IRS use-case are BOMs (which parts are directly built into a part) and usages (in which parts is a part built into).
+
+Available aspect models in the catena-x context can be found in the [sldt-semantic-models repository](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main).
+
 ## Technical context
 
 ![arc42_001](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_001.png)
@@ -125,7 +131,7 @@ In order to consume the Restful application IRS, the security aspect should be t
 
 #### Registry API
 
-The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built), [SerialPart](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part) etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.
+The IRS acts as a consumer of the component Asset Administration Shell (AAS) Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built), [SerialPart](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part) etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.
 
 ##### Discovery Service
 
@@ -292,8 +298,8 @@ The interfaces show how the components interact with each other and which interf
 | **JobOrchestrator** | The **JobOrchestrator** is a component which manages (start, end, cancel, resume) the jobs which execute the item graph retrieval process. |
 | **RecursiveJobHandler** | The **RecursiveJobHandler** handles the job execution recursively until a given abort criteria is reached or the complete item graph is build. |
 | **TransferProcessManager** | The TransferProcessManager handles the outgoing requests to the various data services. A job is processed in this order: 1. Initiation of the job and preparation of the stream of **DataRequests** 2. **RecursiveJobHandler** requesting for AAS via the Digital Twin registry. 3. Analyzing the structure of the AAS response by collecting the traversal aspect. 4. Requesting submodel data for given items of next level. 5. Recursively iteration over step 2-4 until an abort criterion is reached. 6. Assembles the complete item graph. |
-| **BlobStore** | The BlobStore is the database where the relationships and tombstones are stored for a requested item. |
-| **JobStore** | The JobStore is the database where the jobs with the information about the requested item are stored. |
+| **BlobStore** | The BlobStore is the database where the intermediate relationships and tombstones are stored as BLOBs during job processing. When complete, the job will take these intermediate BLOBs and consolidate them in the job response. The BLOBs are single-use only and will not be re-used for future jobs. |
+| **JobStore** | The JobStore is the database where the jobs with the information about the requested item are stored. Completed and failed jobs will be deleted from the JobStore after their configured time-to-live is reached. |
 | **Digital Twin Client** | The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells. |
 | **Decentralized Digital Twin Client** | In a decentralized network, the Digital Twin Client connects to the EDC which then proxies the requests to the digital twin registry on provider side. |
 | **EDC Client** | The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data. |
@@ -412,6 +418,12 @@ Since we cannot rely on synchronous responses regarding the requests of submodel
 
 This section describes the iterative flow, the main processes of the IRS, and explains how data is transferred and processed when a job is executed.
 
+IRS Iterative is the main IRS mode for retrieving data chains throughout the Catena-X network. The core functionality can be summed up in three steps:
+
+1. Start the process with a provided globalAssetId and BPN combination, and required submodels to request.
+2. Retrieve the EDC endpoint for the BPN, search the catalog for the Digital Twin Registry contract Offer and search the DTR for the provided BPN.
+3. Retrieve the relationship submodel for the requested lifecycle and direction and repeat step 1 with the globalAssetIds and BPNs from the relationship submodel linked data until the desired depth is reached or no more relationships could be found.
+
 ![arc42_010](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_010.png)
 
 ### Submodel
@@ -495,6 +507,12 @@ Afterwards, the IRS will return the updated job details of the canceled job to t
 
 This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.
+
+The IRS recursive approach is a decentral approach of retrieving and aggregating data throughout the Catena-X network.
+
+The core functionality is based on notifications which are exchanged between multiple IRS instances. The notifications trigger an investigation on the next level down the supply chain and return aggregated data containing, e.g. simple information about whether a certain BPN is part of the supply chain or not.
+
+Investigations triggered on the next level down the supply chain can trigger further investigations themselves, hence the name _IRS recursive_.
 
 ## Use Case: ESS (Environmental and Social Standards) Top-Down Approach
 
@@ -1347,6 +1365,20 @@ A number of Grafana dashboards are deployed automatically, to display data about
 
 ## Testing concepts
 
+### How to test a feature
+
+Features in IRS are tested by unit, integration and end-to-end tests.
+We maintain a unit and integration tests coverage of at lease 80% which has to be kept up for new features.
+
+To test integration with the whole IRS flow, we provide [Wiremock integration tests](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/irs-api/src/test/java/org/eclipse/tractusx/irs/IrsWireMockIntegrationTest.java) where all third-party services are mocked.
+This test can be extended with your desired configuration to maintain full coverage.
+
+End-to-end tests are conducted via [Tavern](https://taverntesting.github.io/) and [Cucumber](https://cucumber.io/).
+
+Cucumber feature files are located in [irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features](https://github.com/eclipse-tractusx/item-relationship-service/tree/main/irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features) and executed with a GitHub workflow [cucumber-integration-test-UMBRELLA.yaml](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/cucumber-integration-test-UMBRELLA.yaml).
+
+Tavern Tests are located in [local/testing/api-tests](https://github.com/eclipse-tractusx/item-relationship-service/tree/main/local/testing/api-tests) and executed with a GitHub workflow [tavern-UMBRELLA.yml](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml).
+
 ### Umbrella
 
 The [umbrella chart](https://github.com/eclipse-tractusx/tractus-x-umbrella) provides a pre-configured catena-x network which includes all necessary components for the IRS to work.
@@ -1382,6 +1414,8 @@ Test results are automatically added to the workflow summary and in case of the 
 Due to limitations in the IATP mock, the only way of using multiple BPNs in the test data is to spin up multiple EDC provider instances.
 However, the chart is used inside GitHub Workflows, so compute resources are limited.
 For this reason, the IRS test data was changed to include only data pointing to a single BPN.
+
+For instructions on how to use the Umbrella Chart locally, see [INSTALL.md](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/INSTALL.md#local-installation-with-umbrella)
 
 ## API Documentation
 
@@ -1657,6 +1691,7 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | Term | Abrv. | Description |
 | --- | --- | --- |
 | Asset Administration Shell | AAS | see "Digital Twin" |
+| Asset Administration Shell Registry | AAS Registry | see "Digital Twin Registry" |
 | Aspect Servers (Submodel Endpoints) |  | Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X. |
 | Bill of Materials | BoM | A Bill of Materials is a comprehensive list of materials, components, sub-assemblies, and the quantities of each needed to manufacture or build a product. It serves as a structured document that provides information about the raw materials, parts, and components required for the production process. |
 | Business Partner Number | BPN | A BPN is the unique identifier of a partner within Catena-X |
@@ -1667,7 +1702,7 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | Contract Offer |  | A "Contract Offer" is a synonym for "CatalogItem" from EDC. |
 | Data Space |  | Data Spaces are the key concept for a large-scale, cross-border data economy. This is also the vision of the Gaia-X initiative for a data infrastructure in Europe. The International Data Space Association (IDSA) contributes significantly to this with the architectural model, interfaces, and standards. |
 | Digital Twin | DT | The Digital Twin is the key technology of Industry 4.0 and connects the physical world with the digital world and acts as an enabler of the Catena-X network. It is based on a standardized programming interface of the Industrial [Digital Twin Association (IDTA)](https://industrialdigitaltwin.org/) and its Asset Administration Shell. |
-| Digital Twin Registry | DTR | The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints). |
+| Digital Twin Registry | DTR | The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints). For further information, see [Digital Twin Kit](https://eclipse-tractusx.github.io/docs-kits/kits/Digital%20Twin%20Kit/Adoption%20View%20Digital%20Twin%20Kit) |
 | Eclipse Dataspace Connector | EDC | The Eclipse Data Space Connector (EDC) is a standard and policy-compliant connector that can be used within the scope of Catena-X, but also more generally as a connector for Data Spaces. It is split up into Control-Plane and Data-Plane, whereas the Control-Plane functions as administration layer and has responsibility of resource management, contract negotiation and administer data transfer. The Data-Plane does the heavy lifting of transferring and receiving data streams. For more information see: [EDC Connector](https://github.com/eclipse-edc/Connector) , [Tractus-X EDC (Eclipse Dataspace Connector)](https://github.com/eclipse-tractusx/tractusx-edc) |
 | Edge |  | see Traversal Aspect |
 | Item Relationship Service | IRS |  |

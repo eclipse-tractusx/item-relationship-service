@@ -450,6 +450,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
+<div class="paragraph">
+<p>IRS Iterative is the main IRS mode for retrieving data chains throughout the Catena-X network. The core functionality can be summed up in three steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start the process with a provided globalAssetId and BPN combination, and required submodels to request.</p>
+</li>
+<li>
+<p>Retrieve the EDC endpoint for the BPN, search the catalog for the Digital Twin Registry contract Offer and search the DTR for the provided BPN.</p>
+</li>
+<li>
+<p>Retrieve the relationship submodel for the requested lifecycle and direction and repeat step 1 with the globalAssetIds and BPNs from the relationship submodel linked data until the desired depth is reached or no more relationships could be found.</p>
+</li>
+</ol>
+</div>
 <div class="imageblock">
 <div class="content">
 <img src="overall.svg" alt="overall" width="1347" height="1005">
@@ -510,7 +526,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-20 16:09:38 UTC
+Last updated 2025-03-20 14:34:28 UTC
 </div>
 </div>
 </body>

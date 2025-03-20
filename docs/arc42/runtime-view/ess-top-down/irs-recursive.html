@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Technical context</title>
+<title>Untitled</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,249 +437,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article toc2 toc-left">
+<body class="article">
 <div id="header">
-<h1>Technical context</h1>
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_component_overview">Component overview</a>
-<ul class="sectlevel2">
-<li><a href="#_irs_api">IRS-API</a></li>
-<li><a href="#_registry_api">Registry API</a></li>
-<li><a href="#_edc_api">EDC API</a></li>
-</ul>
-</li>
-<li><a href="#_semantic_models">Semantic Models</a>
-<ul class="sectlevel2">
-<li><a href="#_overview_asbuilt">Overview asBuilt</a></li>
-<li><a href="#_overview_asplanned">Overview asPlanned</a></li>
-<li><a href="#_overview_asspecified">Overview asSpecified</a></li>
-</ul>
-</li>
-</ul>
-</div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="integrated-overview.svg" alt="integrated overview" width="1241" height="452">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_component_overview">Component overview</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_irs_api">IRS-API</h3>
 <div class="paragraph">
-<p>We provide a REST API that can be consumed by any system registered in the Catena-X OAuth2 protocol provider, e.g. the Dismantler Dashboard. The development of such a consumer service is not part of the IRS application. Each system that acts as a client to the Restful application IRS can be used instead, if it supports any REST call of the designed REST endpoints in the REST Controller of the IRS application. For communication, the transport protocol HTTP(S) should be established.</p>
+<p>The IRS recursive approach is a decentral approach of retrieving and aggregating data throughout the Catena-X network.</p>
 </div>
 <div class="paragraph">
-<p>In order to consume the Restful application IRS, the security aspect should be taken in consideration. IRS is a Spring Boot based application and is secured with the OpenID connector provider with OAuth2 protocol. This means for the consumers (users) that they need to authenticate themselves in order to be authorized to get access to the IRS. They generate a bearer token that they get from OAuth2 provider and attach it to the HTTP header parameter Authorization.</p>
+<p>The core functionality is based on notifications which are exchanged between multiple IRS instances. The notifications trigger an investigation on the next level down the supply chain and return aggregated data containing, e.g. simple information about whether a certain BPN is part of the supply chain or not.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_registry_api">Registry API</h3>
 <div class="paragraph">
-<p>The IRS acts as a consumer of the component Asset Administration Shell (AAS) Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a>, <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part">SerialPart</a> etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
-</div>
-<div class="sect3">
-<h4 id="_discovery_service">Discovery Service</h4>
-<div class="paragraph">
-<p>In a decentralized system, the digital twin registry is moved behind an EDC. To access the registry of a data provider, a new set of central services was introduces. These discovery services consist of BPN Discovery, Discovery Finder and EDC Discovery.
-IRS uses the Discovery Finder and EDC Discovery.
-Discovery Finder is used to find the correct EDC Discovery URL for the type BPN. EDC Discovery returns the EDC connector URLs for a specific BPN.
-With these EDC connector URLs, IRS searches the provider catalog for a asset of type <code>data.core.digitalTwinRegistry</code>. This asset should be part of every provider EDC catalog. With this asset, IRS can access the decentralized registry and after this step, the flow stays the same as in the paragraph above.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_edc_api">EDC API</h3>
-<div class="paragraph">
-<p>The integrated EDC client in the IRS is responsible for creating restful requests to the component EDC. The IRS application builds from the retrieved AAS Descriptor (see previous section) the corresponding submodel endpoint URLs, negotiates an EDC contract and sends via the submodel REST client requests to the EDC. The EDC responds with the corresponding submodel data.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_semantic_models">Semantic Models</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_overview_asbuilt">Overview asBuilt</h3>
-<div class="sect3">
-<h4 id="_traversal_aspect">Traversal Aspect</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelBomAsBuilt</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as-built lifecycle themselves, unless parts can only be tracked by an part ID. If it&#8217;s unclear which item has been built-in into the parent item, all potential parts must be listed. This is the case when, e.g. the same item is supplied by two suppliers and the item is only tracked by a customer part ID during assembly, these items can not be differentiated from each other.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[2.0.0, 3.0.0]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelUsageAsBuilt</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_semantic_model">Semantic Model</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Version range</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SerialPart</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A serialized part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a serial numbers or a similar identifier (e.g. VAN) or a combination of multiple identifiers (e.g. combination of manufacturer, date and number)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0,0, 1.1.0]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Batch</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A batch is a quantity of (semi-) finished products or (raw) material product that have been produced under the same circumstances (e.g. same production location), as specified groups or amounts, within a certain time frame. Every batch can differ in the number or amount of products. Different batches can have varied specifications, e.g., different colors. A batch is identified via a Batch ID.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0, 2.0.0]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JustInSequencePart</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A just-in-sequence part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a combination of several IDs related to a just-in-sequence process</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">TractionBatteryCode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The traction battery code is an identification code for any automotive traction battery, ultracapacitor and other reachargeble energy storage device. It allows to carry information as required by the National Standard of the People&#8217;s Republic of China according to GB/T 34014-2017 published by the Standardization Administration of China (SAC).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_overview_asplanned">Overview asPlanned</h3>
-<div class="sect3">
-<h4 id="_traversal_aspect_2">Traversal Aspect</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelBomAsPlanned</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[2.0.0, 3.0.0]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelUsageAsPlanned</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_semantic_model_2">Semantic Model</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PartAsPlanned</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0, 1.0.1]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PartSiteInformationAsPlanned</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides site related information for a given as planned item (i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In the \"as planned\" lifecycle context all potentially related sites are listed including all sites where e.g. production of this part (type) is planned.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_overview_asspecified">Overview asSpecified</h3>
-<div class="sect3">
-<h4 id="_traversal_aspect_3">Traversal Aspect</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelBomAsSpecified</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the marketplace.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_semantic_model_3">Semantic Model</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PartAsSpecified</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect model PartAsSpecified belongs to the Part Catalogue. A PartAsSpecified represents a certain OEM catalog part on part number level. Providing a digital representation of the part as specified by the OEM. The link to the serialized part is done via the partId, this can only be done if the respective DT was provided by the supplier within the value chain.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0, 1.0.1, 2.0.0]</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
+<p>Investigations triggered on the next level down the supply chain can trigger further investigations themselves, hence the name <em>IRS recursive</em>.</p>
 </div>
 </div>
 <div id="footer">
