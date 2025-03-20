@@ -27,7 +27,7 @@ maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.18.2
 maven/mavencentral/com.fasterxml.jackson.module/jackson-module-parameter-names/2.18.2, Apache-2.0, approved, #17542
 maven/mavencentral/com.fasterxml/classmate/1.5.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.fasterxml/classmate/1.7.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/com.github.ben-manes.caffeine/caffeine/3.1.8, Apache-2.0, approved, clearlydefined
+maven/mavencentral/com.github.ben-manes.caffeine/caffeine/3.1.8, Apache-2.0 AND (Apache-2.0 AND CC0-1.0), approved, #19704
 maven/mavencentral/com.github.docker-java/docker-java-api/3.3.6, Apache-2.0, approved, #10346
 maven/mavencentral/com.github.docker-java/docker-java-api/3.4.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.github.docker-java/docker-java-transport-zerodep/3.3.6, Apache-2.0 AND (Apache-2.0 AND BSD-3-Clause), approved, #15251
@@ -47,7 +47,7 @@ maven/mavencentral/com.google.guava/guava/33.3.1-jre, Apache-2.0 AND CC0-1.0 AND
 maven/mavencentral/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava, Apache-2.0, approved, CQ22657
 maven/mavencentral/com.google.j2objc/j2objc-annotations/2.8, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.google.j2objc/j2objc-annotations/3.0.0, Apache-2.0, approved, #13676
-maven/mavencentral/com.jayway.jsonpath/json-path/2.9.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/com.jayway.jsonpath/json-path/2.9.0, Apache-2.0, approved, #20009
 maven/mavencentral/com.networknt/json-schema-validator/1.4.0, Apache-2.0 AND Unicode-TOU, approved, #13812
 maven/mavencentral/com.nimbusds/content-type/2.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.nimbusds/lang-tag/1.7, Apache-2.0, approved, clearlydefined
@@ -61,8 +61,8 @@ maven/mavencentral/com.sun.activation/jakarta.activation/2.0.0, EPL-2.0 OR BSD-3
 maven/mavencentral/com.tdunning/t-digest/3.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.typesafe.akka/akka-actor_2.13/2.6.20, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.typesafe.akka/akka-slf4j_2.13/2.6.20, Apache-2.0, approved, clearlydefined
-maven/mavencentral/com.typesafe.scala-logging/scala-logging_2.13/3.9.5, Apache-2.0, approved, clearlydefined
-maven/mavencentral/com.typesafe/config/1.4.2, Apache-2.0, approved, clearlydefined
+maven/mavencentral/com.typesafe.scala-logging/scala-logging_2.13/3.9.5, Apache-2.0, approved, #20020
+maven/mavencentral/com.typesafe/config/1.4.2, Apache-2.0, approved, #19703
 maven/mavencentral/com.vaadin.external.google/android-json/0.0.20131108.vaadin1, Apache-2.0, approved, CQ21310
 maven/mavencentral/com.vdurmont/semver4j/3.1.0, MIT, approved, clearlydefined
 maven/mavencentral/commons-beanutils/commons-beanutils/1.9.4, Apache-2.0, approved, CQ12654
@@ -166,18 +166,18 @@ maven/mavencentral/io.opentelemetry/opentelemetry-api/1.43.0, Apache-2.0, approv
 maven/mavencentral/io.opentelemetry/opentelemetry-context/1.32.0, Apache-2.0, approved, #11683
 maven/mavencentral/io.opentelemetry/opentelemetry-context/1.43.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.pebbletemplates/pebble/3.2.1, BSD-3-Clause, approved, clearlydefined
-maven/mavencentral/io.prometheus/simpleclient/0.16.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.prometheus/simpleclient_common/0.16.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.prometheus/simpleclient_tracer_common/0.16.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.prometheus/simpleclient_tracer_otel/0.16.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.prometheus/simpleclient_tracer_otel_agent/0.16.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.prometheus/simpleclient/0.16.0, Apache-2.0 AND CC0-1.0, approved, #19721
+maven/mavencentral/io.prometheus/simpleclient_common/0.16.0, Apache-2.0, approved, #19730
+maven/mavencentral/io.prometheus/simpleclient_tracer_common/0.16.0, Apache-2.0, approved, #19716
+maven/mavencentral/io.prometheus/simpleclient_tracer_otel/0.16.0, Apache-2.0, approved, #20002
+maven/mavencentral/io.prometheus/simpleclient_tracer_otel_agent/0.16.0, Apache-2.0, approved, #19706
 maven/mavencentral/io.rest-assured/json-path/5.4.0, Apache-2.0, approved, #12042
-maven/mavencentral/io.rest-assured/json-path/5.5.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.rest-assured/json-path/5.5.0, Apache-2.0, approved, #19524
 maven/mavencentral/io.rest-assured/rest-assured-common/5.4.0, Apache-2.0, approved, #12039
-maven/mavencentral/io.rest-assured/rest-assured-common/5.5.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.rest-assured/rest-assured-common/5.5.0, Apache-2.0, approved, #19522
 maven/mavencentral/io.rest-assured/rest-assured/5.4.0, Apache-2.0, approved, #15190
 maven/mavencentral/io.rest-assured/xml-path/5.4.0, Apache-2.0, approved, #12038
-maven/mavencentral/io.rest-assured/xml-path/5.5.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.rest-assured/xml-path/5.5.0, Apache-2.0, approved, #19523
 maven/mavencentral/io.suzaku/boopickle_2.13/1.3.3, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.swagger.core.v3/swagger-annotations-jakarta/2.2.20, Apache-2.0, approved, #5947
 maven/mavencentral/io.swagger.core.v3/swagger-annotations/2.2.18, Apache-2.0, approved, #11362
@@ -201,7 +201,7 @@ maven/mavencentral/net.java.dev.jna/jna/5.13.0, Apache-2.0 AND LGPL-2.1-or-later
 maven/mavencentral/net.javacrumbs.json-unit/json-unit-assertj/3.2.7, Apache-2.0, approved, clearlydefined
 maven/mavencentral/net.javacrumbs.json-unit/json-unit-core/3.2.7, Apache-2.0, approved, clearlydefined
 maven/mavencentral/net.javacrumbs.json-unit/json-unit-json-path/3.2.7, Apache-2.0, approved, clearlydefined
-maven/mavencentral/net.jodah/typetools/0.6.3, Apache-2.0, approved, clearlydefined
+maven/mavencentral/net.jodah/typetools/0.6.3, Apache-2.0, approved, #19666
 maven/mavencentral/net.minidev/accessors-smart/2.5.1, Apache-2.0, approved, #19432
 maven/mavencentral/net.minidev/json-smart/2.5.1, Apache-2.0, approved, #19431
 maven/mavencentral/net.sf.saxon/Saxon-HE/10.6, MPL-2.0 AND W3C, approved, #7945
@@ -317,7 +317,7 @@ maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.9.25, Apache-2.0, a
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib/1.8.21, Apache-2.0, approved, #8865
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib/1.9.25, Apache-2.0, approved, #11827
 maven/mavencentral/org.jetbrains/annotations/13.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.jetbrains/annotations/17.0.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.jetbrains/annotations/17.0.0, Apache-2.0, approved, #19678
 maven/mavencentral/org.jetbrains/annotations/24.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jodd/jodd-lagarto/6.0.6, BSD-2-Clause, approved, clearlydefined
 maven/mavencentral/org.jodd/jodd-util/6.1.0, BSD-2-Clause, approved, clearlydefined
@@ -342,7 +342,7 @@ maven/mavencentral/org.junit.platform/junit-platform-suite/1.10.2, EPL-2.0, appr
 maven/mavencentral/org.latencyutils/LatencyUtils/2.0.3, CC0-1.0, approved, #15280
 maven/mavencentral/org.mockito/mockito-core/5.14.2, MIT AND (Apache-2.0 AND MIT) AND Apache-2.0, approved, #16375
 maven/mavencentral/org.mockito/mockito-junit-jupiter/5.14.2, MIT, approved, #16376
-maven/mavencentral/org.objenesis/objenesis/3.3, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.objenesis/objenesis/3.3, Apache-2.0, approved, #19727
 maven/mavencentral/org.opentest4j/opentest4j/1.3.0, Apache-2.0, approved, #9713
 maven/mavencentral/org.ow2.asm/asm/9.6, BSD-3-Clause, approved, #10776
 maven/mavencentral/org.projectlombok/lombok/1.18.36, MIT, approved, #15192
