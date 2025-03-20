@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
-
+### Fixed
+- Bumped version of tj-actions/changed-files to 2f7c5bfce28377bc069a65ba478de0a74aa0ca32
 ## [5.4.1] - 2024-08-19
 
 ### Fixed
