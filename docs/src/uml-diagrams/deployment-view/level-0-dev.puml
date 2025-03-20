@@ -5,8 +5,6 @@ skinparam nodesep 100
 skinparam ranksep 20
 skinparam defaultFontName "Architects daughter"
 
-cloud OAuth2
-
 node "Kubernetes Cluster" as k8s {
 
     component IRS
@@ -27,7 +25,5 @@ node "Kubernetes Cluster" as k8s {
     provider --- dtr
 
 }
-
-IRS --> OAuth2
 
 @enduml

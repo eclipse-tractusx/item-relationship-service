@@ -10,9 +10,7 @@ skinparam defaultFontName "Architects daughter"
 component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement {
     component [**AASTransferProcessManager**] <<Component>> as TransferProcessManager
     component [**DecentralDigitalTwinRegistryService**] <<Component>> as DTRService {
-        component [**DecentralDigitalTwinRegistryClient**] <<Component>> as DTRClient {
-            component [**EndpointDataForConnectorsService**] <<Component>> as EndpointDataForConnectorsService
-        }
+        component [**DecentralDigitalTwinRegistryClient**] <<Component>> as DTRClient
     }
     component [**EdcSubmodelFacade**] <<Component>> as SubmodelFacade {
         component [**EdcSubmodelClient**] <<Component>> as SubmodelClient {
@@ -51,7 +49,6 @@ SubmodelClient ----( SMSAPI
 interface "PolicyStoreAPI" as PolicyStoreAPI
 PolicyCheckerService --(  PolicyStoreAPI
 PolicyStoreAPI -- PolicyStoreService
-EndpointDataForConnectorsService -> SubmodelFacade
 
 database BlobStore
 TransferProcessManager -left-( BlobStoreInterface
