@@ -76,6 +76,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
     private final EdcConfiguration config;
     private final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache;
+    private static final String MANUFACTURER_ID_KEY = "manufacturerId";
+    private static final String DIGITAL_TWIN_TYPE_KEY = "digitalTwinType";
 
     private ResultFinder resultFinder = new ResultFinder();
 
@@ -446,7 +448,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             } else {
                 return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                         endpointDataReference,
-                        IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build()).getResult();
+                        IdentifierKeyValuePair.builder().name(MANUFACTURER_ID_KEY).value(bpn).build()).getResult();
             }
 
         } finally {
@@ -468,7 +470,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         final String manufacturerId = lookupShellsFilter.getIdentifierKeyValuePairs()
                                                         .stream()
-                                                        .filter(pair -> "manufacturerId".equalsIgnoreCase(
+                                                        .filter(pair -> MANUFACTURER_ID_KEY.equalsIgnoreCase(
                                                                 pair.getName()))
                                                         .map(IdentifierKeyValuePairLite::getValue)
                                                         .findFirst()
@@ -476,7 +478,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         final String digitalTwinType = lookupShellsFilter.getIdentifierKeyValuePairs()
                                                          .stream()
-                                                         .filter(pair -> "DigitalTwinType".equalsIgnoreCase(
+                                                         .filter(pair -> DIGITAL_TWIN_TYPE_KEY.equalsIgnoreCase(
                                                                  pair.getName()))
                                                          .map(IdentifierKeyValuePairLite::getValue)
                                                          .findFirst()
