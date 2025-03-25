@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
@@ -65,6 +66,42 @@ class DecentralDigitalTwinRegistryClientTest {
 
         // when
         client.getAllAssetAdministrationShellIdsByAssetLink(endpointDataReference, IdentifierKeyValuePair.builder().build());
+
+        // then
+        verify(restTemplate).exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class));
+    }
+
+    @Test
+    void shouldCallForAllAssetAdministrationShellFilterBy() {
+        // given
+        final EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
+                                                                                         .endpoint("url.to.host")
+                                                                                         .contractId("contractId")
+                                                                                         .id("test1")
+                                                                                         .authKey("Authorization")
+                                                                                         .authCode("authCode")
+                                                                                         .build();
+        when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class))).thenReturn(
+                ResponseEntity.of(Optional.of(LookupShellsResponse.builder().result(Collections.emptyList()).build())));
+
+
+        IdentifierKeyValuePairLite digitalTwinTypeKeyValue = IdentifierKeyValuePairLite.builder()
+                                                                                       .name("digitalTwinType")
+                                                                                       .value(("PartInstance"))
+                                                                                       .build();
+
+        IdentifierKeyValuePairLite bpnKeyValue = IdentifierKeyValuePairLite.builder()
+                                                                           .name("manufacturerId")
+                                                                           .value(("ABC"))
+                                                                           .build();
+
+        LookupShellsFilter lookupShellsFilter = LookupShellsFilter.builder()
+                                                                  .cursor("cursor")
+                                                                  .limit(10)
+                                                                  .identifierKeyValuePairs(List.of(digitalTwinTypeKeyValue, bpnKeyValue))
+                                                                  .build();
+        // when
+        client.getAllAssetAdministrationShellIdsByFilter(endpointDataReference, lookupShellsFilter);
 
         // then
         verify(restTemplate).exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class));

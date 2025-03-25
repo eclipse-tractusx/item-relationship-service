@@ -95,15 +95,16 @@ public class DecentralDigitalTwinRegistryClient {
         // Add additional filters if they exist
         if (lookupShellsFilter != null) {
             if (lookupShellsFilter.getCursor() != null) {
-                uriBuilder.uriVariables(Map.of(PLACEHOLDER_CURSOR, encodeWithBase64(lookupShellsFilter.getCursor())));
+                uriBuilder.queryParam(PLACEHOLDER_CURSOR, encodeWithBase64(lookupShellsFilter.getCursor()));
             }
             if (lookupShellsFilter.getLimit() != null) {
-                uriBuilder.uriVariables(Map.of(PLACEHOLDER_LIMIT, encodeWithBase64(lookupShellsFilter.getLimit().toString())));
+                uriBuilder.queryParam(PLACEHOLDER_LIMIT, lookupShellsFilter.getLimit().toString());
             }
             if (lookupShellsFilter.getIdentifierKeyValuePairs() != null) {
+
                 lookupShellsFilter.getIdentifierKeyValuePairs()
-                                  .forEach(identifier -> uriBuilder.uriVariables(
-                                          Map.of(PLACEHOLDER_ASSET_IDS, encodeWithBase64(identifier.getValue()))));
+                                  .forEach(identifier -> uriBuilder.queryParam(PLACEHOLDER_ASSET_IDS,
+                                          encodeWithBase64(identifier.getValue())));
             }
         }
 
