@@ -92,12 +92,12 @@ class DecentralDigitalTwinRegistryClientTest {
 
         IdentifierKeyValuePairLite bpnKeyValue = IdentifierKeyValuePairLite.builder()
                                                                            .name("manufacturerId")
-                                                                           .value(("ABC"))
+                                                                           .value(("BPNL000000002BR4"))
                                                                            .build();
 
         LookupShellsFilter lookupShellsFilter = LookupShellsFilter.builder()
-                                                                  .cursor("cursor")
-                                                                  .limit(10)
+                                                                  .cursor("urn:uuid:2f0a0618-ede7-4725-87b7-368121845fb5")
+                                                                  .limit(1)
                                                                   .identifierKeyValuePairs(List.of(digitalTwinTypeKeyValue, bpnKeyValue))
                                                                   .build();
         // when

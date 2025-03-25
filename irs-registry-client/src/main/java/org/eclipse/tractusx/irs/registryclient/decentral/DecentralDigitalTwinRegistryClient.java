@@ -101,10 +101,13 @@ public class DecentralDigitalTwinRegistryClient {
                 uriBuilder.queryParam(PLACEHOLDER_LIMIT, lookupShellsFilter.getLimit().toString());
             }
             if (lookupShellsFilter.getIdentifierKeyValuePairs() != null) {
+                lookupShellsFilter.getIdentifierKeyValuePairs().forEach(identifier -> {
+                    final String jsonObject = String.format("{\"name\":\"%s\",\"value\":\"%s\"}", identifier.getName(),
+                            identifier.getValue());
 
-                lookupShellsFilter.getIdentifierKeyValuePairs()
-                                  .forEach(identifier -> uriBuilder.queryParam(PLACEHOLDER_ASSET_IDS,
-                                          encodeWithBase64(identifier.getValue())));
+                    final String encodedValue = encodeWithBase64(jsonObject);
+                    uriBuilder.queryParam(PLACEHOLDER_ASSET_IDS, encodedValue);
+                });
             }
         }
 
