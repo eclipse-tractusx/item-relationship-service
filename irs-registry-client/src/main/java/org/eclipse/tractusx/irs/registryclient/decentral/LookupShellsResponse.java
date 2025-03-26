@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -36,6 +37,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class LookupShellsResponse {
+    @JsonProperty("paging_metadata")
     private Object pagingMetadata;
     private List<String> result;
 }
