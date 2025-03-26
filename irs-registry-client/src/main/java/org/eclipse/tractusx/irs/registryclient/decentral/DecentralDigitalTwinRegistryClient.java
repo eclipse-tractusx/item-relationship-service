@@ -89,7 +89,8 @@ public class DecentralDigitalTwinRegistryClient {
     @Retry(name = "registry")
     public LookupShellsResponse getAllAssetAdministrationShellIdsByFilter(
             final EndpointDataReference endpointDataReference, final LookupShellsFilter lookupShellsFilter) {
-        final String shellLookupEndpoint = endpointDataReference.getEndpoint() + lookupShellsTemplate;
+        final String lookupShellsFilterTemplate = "/lookup/shells";
+        final String shellLookupEndpoint = endpointDataReference.getEndpoint() + lookupShellsFilterTemplate;
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
 
         // Add additional filters if they exist
