@@ -533,13 +533,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
         final List<String> aasIds = lookupShellsResponse.getResult().stream().toList();
 
-        final String manufacturerId = lookupShellsFilter.getIdentifierKeyValuePairs()
-                                                        .stream()
-                                                        .filter(pair -> MANUFACTURER_ID_KEY.equalsIgnoreCase(
-                                                                pair.getName()))
-                                                        .map(IdentifierKeyValuePairLite::getValue)
-                                                        .findFirst()
-                                                        .orElse(null);
 
         final String digitalTwinType = lookupShellsFilter.getIdentifierKeyValuePairs()
                                                          .stream()
@@ -553,7 +546,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                            .limit(lookupShellsFilter.getLimit())
                                            .cursor(cursor)
                                            .result(aasIds)
-                                           .bpn(manufacturerId)
+                                           .bpn(bpn)
                                            .digitalTwinType(digitalTwinType)
                                            .build();
     }

@@ -257,7 +257,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                     "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
 
-            final String expectedBPN = "ABC";
+            final String expectedBPN = "bpn";
             final String expectedDigitalTwinType = "partType";
             final int expectedLimit = 5;
             final String expectedCursor = null;
