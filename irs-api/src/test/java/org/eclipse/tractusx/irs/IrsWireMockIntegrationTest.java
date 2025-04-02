@@ -1029,11 +1029,11 @@ class IrsWireMockIntegrationTest {
         public void initialize(ConfigurableApplicationContext applicationContext) {
             final String hostAddress = minioContainer.getHostAddress();
             TestPropertySourceUtils.addInlinedPropertiesToEnvironment(applicationContext,
-                    "blobstore.endpoint=http://" + hostAddress, "blobstore.accessKey=" + ACCESS_KEY,
-                    "blobstore.secretKey=" + SECRET_KEY, "policystore.persistence.endpoint=http://" + hostAddress,
-                    "policystore.persistence.accessKey=" + ACCESS_KEY,
-                    "policystore.persistence.secretKey=" + SECRET_KEY,
-                    "policystore.persistence.bucketName=policy-test");
+                    "blobstore.persistence.minio.endpoint=http://" + hostAddress,
+                    "blobstore.persistence.minio.accessKey=" + ACCESS_KEY,
+                    "blobstore.persistence.minio.secretKey=" + SECRET_KEY,
+                    "blobstore.jobs.containerName=jobs-test",
+                    "blobstore.policies.containerName=policy-test");
         }
     }
 

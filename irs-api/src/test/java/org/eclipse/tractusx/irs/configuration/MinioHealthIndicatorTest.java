@@ -33,6 +33,8 @@ import java.util.List;
 import io.minio.MinioClient;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.config.BlobStoreConfiguration;
+import org.eclipse.tractusx.irs.common.persistence.config.BlobStoreContainerConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
@@ -43,8 +45,10 @@ class MinioHealthIndicatorTest {
     void shouldReturnStatusUpWhenMinioBlobPersistencePresentAndBucketExists() throws Exception {
         // given
         final MinioClient minioClient = mock(MinioClient.class);
-        final BlobstoreConfiguration blobstoreConfiguration = mock(BlobstoreConfiguration.class);
-        when(blobstoreConfiguration.getBucketName()).thenReturn("bucket-name");
+        final BlobStoreConfiguration blobstoreConfiguration = mock(BlobStoreConfiguration.class);
+        BlobStoreContainerConfiguration containerConfig = new BlobStoreContainerConfiguration();
+        containerConfig.setContainerName("bucket-name");
+        when(blobstoreConfiguration.getJobs()).thenReturn(containerConfig);
         when(minioClient.bucketExists(any())).thenReturn(Boolean.TRUE);
 
         final MinioBlobPersistence blobPersistence = new MinioBlobPersistence("bucket-name", minioClient, 1);
@@ -61,7 +65,7 @@ class MinioHealthIndicatorTest {
     void shouldReturnStatusDownWhenBlobStorageIsNotMinio() {
         // given
         final BlobPersistence blobPersistence = mock(BlobPersistence.class);
-        final BlobstoreConfiguration blobstoreConfiguration = mock(BlobstoreConfiguration.class);
+        final BlobStoreConfiguration blobstoreConfiguration = mock(BlobStoreConfiguration.class);
 
         final MinioHealthIndicator minioHealthIndicator = new MinioHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
 

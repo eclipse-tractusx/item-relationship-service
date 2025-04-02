@@ -38,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.config.BlobStoreConfiguration;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
@@ -51,12 +52,12 @@ import org.springframework.stereotype.Component;
 class MinioHealthIndicator implements HealthIndicator {
 
     private final List<BlobPersistence> blobPersistences;
-    private final BlobstoreConfiguration blobstoreConfiguration;
+    private final BlobStoreConfiguration blobstoreConfiguration;
 
     @Override
     public Health health() {
         if (thereIsMinioConnection()) {
-            return Health.up().withDetail("bucketName", blobstoreConfiguration.getBucketName()).build();
+            return Health.up().withDetail("bucketName", blobstoreConfiguration.getJobs().getContainerName()).build();
         } else {
             return Health.down().build();
         }
@@ -77,15 +78,18 @@ class MinioHealthIndicator implements HealthIndicator {
     private boolean connectionWorks(final BlobPersistence blobPersistence) {
         if (blobPersistence instanceof MinioBlobPersistence minioBlobPersistence) {
             try {
-                minioBlobPersistence.createBucketIfNotExists(blobstoreConfiguration.getBucketName());
+                final String bucketName = blobstoreConfiguration.getJobs().getContainerName();
+                minioBlobPersistence.createBucketIfNotExists(bucketName);
 
-                if (minioBlobPersistence.bucketExists(blobstoreConfiguration.getBucketName())) {
+                if (minioBlobPersistence.bucketExists(bucketName)) {
                     return true;
                 }
             } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException |
                      NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
                      InternalException e) {
-                log.error("Lost connection to Minio", e);
+                if (log.isErrorEnabled()) {
+                    log.error("Lost connection to Minio", e);
+                }
             }
         }
         return false;

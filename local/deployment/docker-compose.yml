@@ -39,6 +39,7 @@ services:
 
 volumes:
   miniodata:
+  azurite_data:
 
 networks:
   irsnetwork:

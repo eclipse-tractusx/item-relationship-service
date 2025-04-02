@@ -77,6 +77,14 @@
             <artifactId>okio-jvm</artifactId>
             <version>${okio-jvm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-storage-blob</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-identity</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>

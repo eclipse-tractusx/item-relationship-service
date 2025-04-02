@@ -1,13 +1,10 @@
 blobstore:
-  endpoint: http://localhost:9000
-  accessKey: minioadmin
-  secretKey: minioadmin
-
-policystore:
   persistence:
-    endpoint: http://localhost:9000
-    accessKey: minioadmin
-    secretKey: minioadmin
+    storeType: MINIO
+    minio:
+      endpoint: http://localhost:9000
+      accessKey: minioadmin
+      secretKey: minioadmin
 
 digitalTwinRegistry:
   type: decentral

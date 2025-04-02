@@ -71,16 +71,6 @@ spec:
               mountPath: /app/semantic-models
             {{- end }}
           env:
-            - name: MINIO_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "irs.secretName" . }}
-                  key: minioUser
-            - name: MINIO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "irs.secretName" . }}
-                  key: minioPassword
             - name: SEMANTICS_OAUTH2_CLIENT_ID
               valueFrom:
                 secretKeyRef:

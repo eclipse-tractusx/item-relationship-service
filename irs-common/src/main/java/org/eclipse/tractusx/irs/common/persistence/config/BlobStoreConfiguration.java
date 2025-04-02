@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.configuration;
+package org.eclipse.tractusx.irs.common.persistence.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,15 +29,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Config values for blobstore
+ * Configuration of blob storage
  */
 @Configuration
 @ConfigurationProperties(prefix = "blobstore")
 @Getter
 @Setter
-public class BlobstoreConfiguration {
-    private String endpoint;
-    private String accessKey;
-    private String secretKey;
-    private String bucketName;
+public class BlobStoreConfiguration {
+    private BlobStoreType storeType;
+    private BlobStorePersistenceConfiguration persistence;
+    private BlobStoreContainerConfiguration jobs;
+    private BlobStoreContainerConfiguration policies;
 }

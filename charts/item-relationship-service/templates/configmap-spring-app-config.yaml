@@ -52,15 +52,28 @@ data:
             regular: {{ tpl (.Values.apiKeyRegular | default "") . | quote }}
 
     blobstore:
-      endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
-      accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
-      secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
-
-    policystore:
       persistence:
-        endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
-        accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
-        secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+        storeType: {{ .Values.blobstore.persistence.storeType | default "MINIO" | quote }}
+        {{- if .Values.blobstore.persistence.minio }}
+        minio:
+          endpoint: {{ tpl .Values.blobstore.persistence.minio.endpoint . | quote }}
+          accessKey: {{ .Values.blobstore.persistence.minio.accessKey | default "minio" | quote }}
+          secretKey: {{ .Values.blobstore.persistence.minio.secretKey | default "minioPass" | quote }}
+        {{- end }}
+        {{- if .Values.blobstore.persistence.azure }}
+        azure:
+          baseUrl: {{ .Values.blobstore.persistence.azure.baseUrl | quote }}
+          clientId: {{ .Values.blobstore.persistence.azure.clientId | quote }}
+          clientSecret: {{ .Values.blobstore.persistence.azure.clientSecret | quote }}
+          tenantId: {{ .Values.blobstore.persistence.azure.tenantId | quote }}
+          useConnectionString: false
+        {{- end }}
+      jobs:
+        containerName: {{ ((.Values.blobstore).jobs).containerName | default "irs-jobs" | quote }}
+        daysToLive: {{ ((.Values.blobstore).jobs).daysToLine | default 7 | quote }}
+      policies:
+        containerName: {{ ((.Values.blobstore).policies).containerName | default "irs-policy" | quote }}
+        daysToLive: {{ ((.Values.blobstore).policies).daysToLine | default -1 | quote }}
 
     spring:
       security:
