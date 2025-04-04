@@ -32,6 +32,10 @@ spring:
         provider:
           common:
             token-uri: https://localhost
+  redis:
+    host: localhost
+    port: 6379
+    password: redispwd
 
 # ESS Module specific properties
 ess:
@@ -40,3 +44,7 @@ ess:
 
 irs-edc-client:
   async-timeout: PT10M
+  controlplane:
+    datareference:
+      storage:
+        useRedis: true

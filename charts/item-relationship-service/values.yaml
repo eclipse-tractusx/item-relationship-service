@@ -26,8 +26,7 @@
 replicaCount: 1
 
 image:
-  repository: irs
-  tag: latest
+  repository: tractusx/irs-api
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -200,6 +199,9 @@ edc:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
     edrManagementEnabled: false  # Flag whether IRS uses classic EDC negotiation or EDR negotiation
+    datareference:
+      storage:
+        useRedis: false
   callbackMapping:  # The EDR token callback endpoint path mapping - used to expose EDR callback endpoint
   negotiationCallbackMapping:  # The EDR negotiation callback endpoint mapping - used to expose negotiation callback endpoint
   callbackurl:  # The URL where the EDR token callback will be sent to.
@@ -274,6 +276,11 @@ env: []  # You can provide your own environment variables for the IRS here.
 #  - name: JAVA_TOOL_OPTIONS
 #    value: -Dhttps.proxyHost=1.2.3.4
 
+redisConfig:
+  enabled: false
+  host: localhost
+  port: 6379
+  password: redispwd
 
 #######################
 # Minio Configuration #
@@ -302,6 +309,14 @@ minio:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator
     MINIO_PROMETHEUS_URL: http://prometheus:9090
 
+#######################
+# Redis configuration #
+#######################
+redis:
+  architecture: standalone
+  auth:
+    enabled: true
+    password: redispwd
 
 ############################
 # Prometheus Configuration #

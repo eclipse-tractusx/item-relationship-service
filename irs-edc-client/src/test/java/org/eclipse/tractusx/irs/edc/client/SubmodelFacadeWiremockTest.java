@@ -144,7 +144,7 @@ class SubmodelFacadeWiremockTest {
 
         final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
 
-        storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
+        storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1), false, null);
         final EndpointDataReferenceCacheService endpointDataReferenceCacheService = new EndpointDataReferenceCacheService(
                 storage);
 

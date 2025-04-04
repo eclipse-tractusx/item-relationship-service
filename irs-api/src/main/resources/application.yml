@@ -22,6 +22,12 @@ spring:
             token-uri: ${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           discovery:
             token-uri: ${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+  cache:
+    type: simple # Use in-memory cache for @Cacheable
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -161,6 +167,7 @@ irs-edc-client:
     datareference:
       storage:
         duration: PT1H # Time after which stored data references will be cleaned up, ISO 8601 Duration
+        useRedis: false # Whether to use a Redis cache or in-memory cache
     orchestration:
       thread-pool-size: 5 # Thread pool size for maximum parallel negotiations
 

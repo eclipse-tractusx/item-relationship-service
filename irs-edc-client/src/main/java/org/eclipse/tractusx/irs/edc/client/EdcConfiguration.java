@@ -122,5 +122,4 @@ public class EdcConfiguration {
         private String urnPrefix;
         private String submodelSuffix;
     }
-
 }

@@ -96,6 +96,13 @@ spec:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: edcApiSecret
+            {{- if .Values.redisConfig.enabled }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: redisPassword
+            {{- end }}
             {{- if .Values.env }}
             {{- include "common.tplvalues.render" (dict "value" .Values.env "context" $) | nindent 12 }}
             {{- end }}

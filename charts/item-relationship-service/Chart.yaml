@@ -57,3 +57,7 @@ dependencies:
     repository: https://grafana.github.io/helm-charts
     version: 6.44.8
     condition: grafana.enabled
+  - name: redis
+    version: 20.11.4
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
