@@ -57,6 +57,51 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Lift to newest Spring Boot version to fix vulnerability CVE-2024-50379. Fix and disable some tests
 - Remove version lock on tomcat-embed-core to fix vulnerability CVE-2024-50379
 
+### Changed
+
+- Updated EDC management endpoint paths to /v3/
+- Bump Spring Boot to 3.4.2
+
+### Fixed
+
+- Added missing discovery type config `digitalTwinRegistry.discovery.type`
+
+### Known knowns
+
+- Latest update broke full registry reload on traceability-foss side eclipse-tractusx/traceability-foss/issues/1423
+
+## [6.0.0] - 2025-02-13
+
+### Changed
+
+- Resolve Null pointer exception while registering the company (#888)
+- Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) https://github.com/eclipse-tractusx/sig-release/issues/939
+- Changed orchestration of EDC negotiations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
+- secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
+- Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists (#915)
+- Release documentation for irs-registry-client (#915)
+- #351 Introduced orchestration to EDC negotiation to be able to limit parallel edc calls and reuse already ongoing negotiations.
+- Cccept dates without time and time zone according to standard (#915)
+- Update Spring-Boot version to 3.2.8 to mitigate CVE-2024-38821 (#915)
+- Setup IRS gatling test workflow using containers (#915)
+- Enabled highcharts in load tests. Updated order test (#915)
+- API Change POST /irs/order providing aas identifier as key https://github.com/eclipse-tractusx/sig-release/issues/942
+- remove fallback for resolving shell via globalAssetId (#915)
+- API Change POST /irs/jobs providing aas identifier as key https://github.com/eclipse-tractusx/sig-release/issues/942
+- fixed inefficient blob retrieval for irs orders and batches (#915)
+- fixed ExecutorCompletionServiceFactory to actually limit threads of batches (#915)
+- fixed Batch and Order state calculation to display the correct state during batch processing (#915)
+- Bump wiremock-standalone to 3.10.0 to mitigate CVE-2024-45801, CVE-2024-48910, CVE-2024-47875 (#915)
+- Bump irs-registry-client to 2.1.25 (#915)
+- Exclude unused transient dependencies of edc packages to mitigate CVE-2024-7254 (#915)
+
+### Fixed
+
+- Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position (#915)
+- fixed auto dispatch workflow for auto deployment from main (#915)
+- Lift to newest Spring Boot version to fix vulnerability CVE-2024-50379. Fix and disable some tests
+- Remove version lock on tomcat-embed-core to fix vulnerability CVE-2024-50379
+
 ### Added
 
 - Added api key authentication for edc notification requests (#915)
@@ -839,7 +884,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...HEAD
+[6.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...6.0.0
 [5.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.0...5.4.1
 [5.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.0...5.4.0
 [5.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.2.0...5.3.0

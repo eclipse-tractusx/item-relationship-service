@@ -67,6 +67,7 @@
         <irs-registry-client.version>2.1.35</irs-registry-client.version>
 
         <!-- Dependencies -->
+
         <springboot.version>3.4.4</springboot.version>
         <springdoc.version>2.2.0</springdoc.version>
         <micrometer.version>1.11.4</micrometer.version>
@@ -80,7 +81,6 @@
         <jsonassert.version>1.5.1</jsonassert.version>
         <junit-bom.version>5.10.2</junit-bom.version>
         <cucumber-bom.version>7.18.0</cucumber-bom.version>
-        <snakeyaml.version>2.0</snakeyaml.version>
         <commons-validator.version>1.8.0</commons-validator.version>
         <swagger-annotations.version>2.2.29</swagger-annotations.version>
         <edc.version>0.6.0</edc.version>
@@ -95,6 +95,7 @@
         <jackson-databind.version>2.15.1</jackson-databind.version>
         <junit-jupiter-engine.version>5.11.4</junit-jupiter-engine.version>
         <json-smart.version>2.5.2</json-smart.version>
+
         <testcontainers-bom.version>1.19.7</testcontainers-bom.version>
         <azure-bom.version>1.2.32</azure-bom.version>
 
@@ -368,6 +369,7 @@
                         <artifactId>dependency-check-maven</artifactId>
                         <version>${owasp-plugin.version}</version>
                         <configuration>
+                            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                             <skip>false</skip>
                             <suppressionFile>.config/owasp-suppressions.xml</suppressionFile>
                         </configuration>
