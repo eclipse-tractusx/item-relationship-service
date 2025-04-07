@@ -64,7 +64,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>2.1.35</irs-registry-client.version>
+        <irs-registry-client.version>2.1.35-SNAPSHOT</irs-registry-client.version>
 
         <!-- Dependencies -->
 
@@ -105,7 +105,7 @@
         <checkstyle.version>10.12.6</checkstyle.version>
         <jacoco.version>0.8.10</jacoco.version>
         <pmd-plugin.version>3.19.0</pmd-plugin.version>
-        <owasp-plugin.version>8.2.1</owasp-plugin.version>
+        <owasp-plugin.version>9.0.9</owasp-plugin.version>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
         <jar-plugin.version>3.3.0</jar-plugin.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
