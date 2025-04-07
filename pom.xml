@@ -67,7 +67,7 @@
         <irs-registry-client.version>2.1.35</irs-registry-client.version>
 
         <!-- Dependencies -->
-        <springboot.version>3.4.2</springboot.version>
+        <springboot.version>3.4.4</springboot.version>
         <springdoc.version>2.2.0</springdoc.version>
         <micrometer.version>1.11.4</micrometer.version>
         <datafaker.version>1.9.0</datafaker.version>
@@ -82,11 +82,11 @@
         <cucumber-bom.version>7.18.0</cucumber-bom.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <commons-validator.version>1.8.0</commons-validator.version>
-        <swagger-annotations.version>2.2.18</swagger-annotations.version>
+        <swagger-annotations.version>2.2.29</swagger-annotations.version>
         <edc.version>0.6.0</edc.version>
         <okio-jvm.version>3.5.0</okio-jvm.version>
         <bc-jdk18on.version>1.78</bc-jdk18on.version>
-        <wiremock-standalone.version>3.10.0</wiremock-standalone.version>
+        <wiremock-standalone.version>3.12.1</wiremock-standalone.version>
         <jsoup.version>1.17.2</jsoup.version>
         <json-schema-validator.version>1.4.0</json-schema-validator.version>
         <commons-io.version>2.16.1</commons-io.version>
@@ -94,7 +94,7 @@
         <okhttp.version>4.12.0</okhttp.version>
         <jackson-databind.version>2.15.1</jackson-databind.version>
         <junit-jupiter-engine.version>5.11.4</junit-jupiter-engine.version>
-        <json-smart.version>2.5.1</json-smart.version>
+        <json-smart.version>2.5.2</json-smart.version>
         <testcontainers-bom.version>1.19.7</testcontainers-bom.version>
         <azure-bom.version>1.2.32</azure-bom.version>
 
@@ -144,6 +144,18 @@
                 <artifactId>xmlunit-core</artifactId>
                 <version>${xmlunit-core.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <!-- CVE in tomcat-embed-core 10.1.39 that comes with spring-boot-starter-web:jar:3.4.4 can be removed after Spring updates their dependency -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>11.0.5</version>
+            </dependency>
+            <!-- CVE in tomcat-embed-el 10.1.39 that comes with spring-boot-starter-web:jar:3.4.4 can be removed after Spring updates their dependency -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-el</artifactId>
+                <version>11.0.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -356,7 +368,6 @@
                         <artifactId>dependency-check-maven</artifactId>
                         <version>${owasp-plugin.version}</version>
                         <configuration>
-                            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                             <skip>false</skip>
                             <suppressionFile>.config/owasp-suppressions.xml</suppressionFile>
                         </configuration>
