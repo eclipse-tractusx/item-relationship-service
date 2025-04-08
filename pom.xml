@@ -190,6 +190,7 @@
                     <version>${compiler-plugin.version}</version>
                     <configuration>
                         <parameters>true</parameters>
+                        <release>${java.version}</release>
                     </configuration>
                 </plugin>
                 <plugin>

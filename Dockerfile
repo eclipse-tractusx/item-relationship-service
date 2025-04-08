@@ -20,7 +20,7 @@
 # * SPDX-License-Identifier: Apache-2.0
 
 # Dependencies
-FROM maven:3-eclipse-temurin-24-alpine AS maven
+FROM maven:3-eclipse-temurin-17-alpine AS maven
 ARG BUILD_TARGET=irs-api
 
 WORKDIR /build
