@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
-class MinioHealthIndicatorTest {
+class BlobStorageHealthIndicatorTest {
 
     @Test
     void shouldReturnStatusUpWhenMinioBlobPersistencePresentAndBucketExists() throws Exception {
@@ -52,7 +52,7 @@ class MinioHealthIndicatorTest {
         when(minioClient.bucketExists(any())).thenReturn(Boolean.TRUE);
 
         final MinioBlobPersistence blobPersistence = new MinioBlobPersistence("bucket-name", minioClient, 1);
-        final MinioHealthIndicator minioHealthIndicator = new MinioHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
+        final BlobStorageHealthIndicator minioHealthIndicator = new BlobStorageHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
 
         // when
         final Health health = minioHealthIndicator.health();
@@ -67,7 +67,7 @@ class MinioHealthIndicatorTest {
         final BlobPersistence blobPersistence = mock(BlobPersistence.class);
         final BlobStoreConfiguration blobstoreConfiguration = mock(BlobStoreConfiguration.class);
 
-        final MinioHealthIndicator minioHealthIndicator = new MinioHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
+        final BlobStorageHealthIndicator minioHealthIndicator = new BlobStorageHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
 
         // when
         final Health health = minioHealthIndicator.health();
