@@ -20,6 +20,8 @@ package org.eclipse.tractusx.irs.edc.client.storage;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.junit.jupiter.api.*;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -32,6 +34,8 @@ import java.time.Duration;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Testcontainers
 class EndpointDataReferenceStorageTest {
@@ -133,5 +137,36 @@ class EndpointDataReferenceStorageTest {
 
         assertThat(storage.get("mem1")).isEmpty();
         assertThat(storage.get("mem2")).isEmpty();
+    }
+
+    @Test
+    void shouldCheckConnectionWhenUsingRedis() {
+        // given
+        StringRedisTemplate mockRedisTemplate = mock(StringRedisTemplate.class);
+        RedisConnectionFactory connectionFactory = mock(RedisConnectionFactory.class);
+        RedisConnection connection = mock(RedisConnection.class);
+        when(mockRedisTemplate.getConnectionFactory()).thenReturn(connectionFactory);
+        when(connectionFactory.getConnection()).thenReturn(connection);
+        when(connection.ping()).thenReturn("PONG");
+
+        final EndpointDataReferenceStorage dataReferenceStorage = new EndpointDataReferenceStorage(null, true, mockRedisTemplate);
+
+        // when
+        final boolean isConnected = dataReferenceStorage.checkRedisConnection();
+
+        // then
+        assertThat(isConnected).isTrue();
+    }
+
+    @Test
+    void shouldCheckConnectionWhenNotUsingRedis() {
+        // given
+        final EndpointDataReferenceStorage dataReferenceStorage = new EndpointDataReferenceStorage(null, false, null);
+
+        // when
+        final boolean isConnected = dataReferenceStorage.checkRedisConnection();
+
+        // then
+        assertThat(isConnected).isFalse();
     }
 }

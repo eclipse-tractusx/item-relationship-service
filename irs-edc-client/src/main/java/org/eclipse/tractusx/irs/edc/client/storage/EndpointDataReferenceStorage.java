@@ -22,10 +22,13 @@ package org.eclipse.tractusx.irs.edc.client.storage;
 import java.time.Duration;
 import java.util.Optional;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,7 @@ import org.springframework.stereotype.Service;
  * Values are held either by assetId or contractAgreementId.
  */
 @Service("irsEdcClientEndpointDataReferenceStorage")
+@Slf4j
 public class EndpointDataReferenceStorage {
 
     @SuppressWarnings({ "PMD.ImmutableField" })
@@ -42,6 +46,7 @@ public class EndpointDataReferenceStorage {
     private final StringRedisTemplate redisTemplate;
 
     private final Duration duration;
+    @Getter
     private final boolean useRedis;
 
     public EndpointDataReferenceStorage(
@@ -89,4 +94,12 @@ public class EndpointDataReferenceStorage {
         }
     }
 
+    public boolean checkRedisConnection() {
+        if (!useRedis || redisTemplate == null) {
+            return false;
+        }
+
+        final RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();
+        return connectionFactory != null && "PONG".equals(connectionFactory.getConnection().ping());
+    }
 }
