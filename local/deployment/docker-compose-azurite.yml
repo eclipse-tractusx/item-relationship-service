@@ -20,6 +20,13 @@ services:
     volumes:
       - azurite_data:/data
     command: "azurite --loose --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0"
+  # kics-scan ignore-block
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--requirepass", "redispwd"]
 
 volumes:
   azurite_data:

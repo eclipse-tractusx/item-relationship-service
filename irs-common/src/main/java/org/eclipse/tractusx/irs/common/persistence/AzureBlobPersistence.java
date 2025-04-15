@@ -136,4 +136,13 @@ public class AzureBlobPersistence implements BlobPersistence {
         }
         return false;
     }
+
+    public boolean checkConnection() {
+        if (containerClient == null) {
+            return false;
+        }
+
+        containerClient.createIfNotExists();
+        return containerClient.exists();
+    }
 }

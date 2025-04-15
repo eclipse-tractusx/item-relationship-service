@@ -36,7 +36,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
 /**
- * Minio health indicator for Spring actuator
+ * Blob storage health indicator for Spring actuator
  */
 @Component
 @Slf4j
@@ -62,9 +62,9 @@ class BlobStorageHealthIndicator implements HealthIndicator {
         if (blobPersistence instanceof MinioBlobPersistence minio) {
             return checkMinioConnection(minio);
         }
-        // https://cofinity-x.atlassian.net/browse/TRACEX-606 (Health check for Azure needs to be implemented)
-        if (blobPersistence instanceof AzureBlobPersistence) {
-            return true;
+
+        if (blobPersistence instanceof AzureBlobPersistence azure) {
+            return azure.checkConnection();
         }
 
         log.warn("Unknown BlobPersistence implementation: {}", blobPersistence.getClass().getSimpleName());

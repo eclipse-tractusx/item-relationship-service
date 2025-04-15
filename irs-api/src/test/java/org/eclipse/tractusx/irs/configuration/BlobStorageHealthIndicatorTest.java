@@ -30,7 +30,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobServiceClient;
 import io.minio.MinioClient;
+import org.eclipse.tractusx.irs.common.persistence.AzureBlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.config.BlobStoreConfiguration;
@@ -62,15 +65,61 @@ class BlobStorageHealthIndicatorTest {
     }
 
     @Test
-    void shouldReturnStatusDownWhenBlobStorageIsNotMinio() {
+    void shouldReturnStatusDownWhenBlobStorageIsUnknown() {
         // given
         final BlobPersistence blobPersistence = mock(BlobPersistence.class);
         final BlobStoreConfiguration blobstoreConfiguration = mock(BlobStoreConfiguration.class);
 
-        final BlobStorageHealthIndicator minioHealthIndicator = new BlobStorageHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
+        final BlobStorageHealthIndicator healthIndicator = new BlobStorageHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
 
         // when
-        final Health health = minioHealthIndicator.health();
+        final Health health = healthIndicator.health();
+
+        // then
+        assertThat(health.getStatus()).isEqualTo(Status.DOWN);
+    }
+
+    @Test
+    void shouldReturnStatusUpWhenAzureBlobPersistencePresentAndBucketExists() {
+        // given
+        final BlobStoreConfiguration blobstoreConfiguration = mock(BlobStoreConfiguration.class);
+        BlobStoreContainerConfiguration containerConfig = new BlobStoreContainerConfiguration();
+        containerConfig.setContainerName("bucket-name");
+        when(blobstoreConfiguration.getJobs()).thenReturn(containerConfig);
+
+        final BlobServiceClient blobServiceClient = mock(BlobServiceClient.class);
+        final BlobContainerClient blobContainerClient = mock(BlobContainerClient.class);
+        when(blobServiceClient.getBlobContainerClient("container-name")).thenReturn(blobContainerClient);
+        when(blobContainerClient.exists()).thenReturn(true);
+
+        final AzureBlobPersistence blobPersistence = new AzureBlobPersistence(blobServiceClient, "container-name");
+        final BlobStorageHealthIndicator healthIndicator = new BlobStorageHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
+
+        // when
+        final Health health = healthIndicator.health();
+
+        // then
+        assertThat(health.getStatus()).isEqualTo(Status.UP);
+    }
+
+    @Test
+    void shouldReturnStatusUpWhenAzureBlobPersistencePresentAndBucketDoesNotExist() {
+        // given
+        final BlobStoreConfiguration blobstoreConfiguration = mock(BlobStoreConfiguration.class);
+        BlobStoreContainerConfiguration containerConfig = new BlobStoreContainerConfiguration();
+        containerConfig.setContainerName("bucket-name");
+        when(blobstoreConfiguration.getJobs()).thenReturn(containerConfig);
+
+        final BlobServiceClient blobServiceClient = mock(BlobServiceClient.class);
+        final BlobContainerClient blobContainerClient = mock(BlobContainerClient.class);
+        when(blobServiceClient.getBlobContainerClient("container-name")).thenReturn(blobContainerClient);
+        when(blobContainerClient.exists()).thenReturn(false);
+
+        final AzureBlobPersistence blobPersistence = new AzureBlobPersistence(blobServiceClient, "container-name");
+        final BlobStorageHealthIndicator healthIndicator = new BlobStorageHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
+
+        // when
+        final Health health = healthIndicator.health();
 
         // then
         assertThat(health.getStatus()).isEqualTo(Status.DOWN);
