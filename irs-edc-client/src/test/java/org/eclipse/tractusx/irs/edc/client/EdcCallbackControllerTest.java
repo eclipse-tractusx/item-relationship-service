@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 class EdcCallbackControllerTest {
 
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1), false, null);
-    private final ContractNegotiationIdStorage contractNegotiationIdStorage = new ContractNegotiationIdStorage(Duration.of(1, ChronoUnit.MINUTES));
+    private final ContractNegotiationIdStorage contractNegotiationIdStorage = new ContractNegotiationIdStorage(Duration.of(1, ChronoUnit.MINUTES), false, null);
     private final EdcCallbackController testee = new EdcCallbackController(storage, contractNegotiationIdStorage);
 
     @Test

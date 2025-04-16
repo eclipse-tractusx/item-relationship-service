@@ -102,7 +102,7 @@ class EdcOrchestratorTest {
         final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(threadPoolThreads);
         endpointDataReferenceStorage = spy(
                 new EndpointDataReferenceCacheService(new EndpointDataReferenceStorage(Duration.ofMinutes(5), false, null)));
-        contractNegotiationIdStorage = spy(new ContractNegotiationIdStorage(Duration.ofMinutes(5)));
+        contractNegotiationIdStorage = spy(new ContractNegotiationIdStorage(Duration.ofMinutes(5), false, null));
         ongoingNegotiationStorage = spy(new OngoingNegotiationStorage());
 
         orchestrator = new EdcOrchestrator(config, contractNegotiationService, pollingService, catalogFacade,

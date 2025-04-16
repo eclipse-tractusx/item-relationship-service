@@ -22,7 +22,9 @@ package org.eclipse.tractusx.irs.edc.client.storage;
 import java.time.Duration;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,18 +32,40 @@ import org.springframework.stereotype.Service;
  */
 @Service("irsEdcClientContractNegotiationIdStorage")
 public class ContractNegotiationIdStorage {
-    private final ExpiringStorage<String> storage;
+
+    @SuppressWarnings({ "PMD.ImmutableField" })
+    private ExpiringStorage<String> localStorage;
+    private final StringRedisTemplate redisTemplate;
+
+    private final Duration duration;
+    private final boolean useRedis;
 
     public ContractNegotiationIdStorage(
-            @Value("${irs-edc-client.controlplane.datareference.storage.duration}") final Duration storageDuration) {
-        storage = new ExpiringStorage<>(storageDuration);
+            @Value("${irs-edc-client.controlplane.datareference.storage.duration}") final Duration duration,
+            @Value("${irs-edc-client.controlplane.datareference.storage.useRedis:false}") final boolean useRedis,
+            @Autowired(required = false) final StringRedisTemplate redisTemplate) {
+        this.duration = duration;
+        this.useRedis = useRedis;
+        this.redisTemplate = redisTemplate;
+
+        if (!useRedis) {
+            this.localStorage = new ExpiringStorage<>(duration);
+        }
     }
 
     public void put(final String contractNegotiationId, final String contractAgreementId) {
-        storage.put(contractNegotiationId, contractAgreementId);
+        if (useRedis) {
+            redisTemplate.opsForValue().set(contractNegotiationId, contractAgreementId, duration);
+        } else {
+            localStorage.put(contractNegotiationId, contractAgreementId);
+        }
     }
 
     public Optional<String> get(final String contractNegotiationId) {
-        return storage.get(contractNegotiationId);
+        if (useRedis) {
+            return Optional.ofNullable(redisTemplate.opsForValue().get(contractNegotiationId));
+        } else {
+            return localStorage.get(contractNegotiationId);
+        }
     }
 }
