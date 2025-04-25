@@ -7,8 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
+### Added
+- TRACEX-410 Add option for using Redis to store endpoint data references
+- TRACEX-XXX Update dependency check plugin
+- TRACEX-606 Health check for Azure Blob Storage
+- TRACEX-610 Add health check for Redis
+- TRACEX-615 Optionally use Redis for caching negotiation ids
+- TRACEX-619 IRS cleanup jobs cause OOME
+- TRACEX-203 Implemented new function to lookupshells by filter
+- TRACEX-376 Add option for using Azure Blob Storage for storing jobs and policies
+
+### Changed
+- TRACEX-586 exclude io.netty:netty-handler 4.1.116.Final and readded with 4.1.118.Final to fix CVE-2025-24970
+- TRACEX-556 updated eclipse-temurin base image from 21 to 24 to fix CVE libexpat CVE-2024-8176
+- TRACEX-606 Minio Health check will now return healthy if azure is used
+- TRACEX-552 Enabled job TTL duration configuration via Helm
+- TRACEX-375 Improve IRS DTR Asset control
+- TRACEX-143 API Change POST /irs/order providing aas identifier as key
+- TRACEX-471 Add workflow for publishing Helm charts on ACR
+- Exclude unused transient dependencies of edc packages to mitigate CVE-2024-7254
+- Bump wiremock-standalone to 3.10.0 to mitigate CVE-2024-45801, CVE-2024-48910, CVE-2024-47875
+- Bump irs-registry-client to 2.1.25
+- TRACEX-479 Update load test scenarios to poll for all valid termination states of jobs and orders
+- TRACEX-418 Add pipeline for CFX Cucumber tests
+
 ### Fixed
-- Bumped version of tj-actions/changed-files to v46
+- TRACEX-375 Fix cache DTR EDC logic
+- TRACEX-417 fixed inefficient blob store interaction when running scheduled job cleanup
+- TRACEX-463 construct callback urls on IRS side
+
 
 ## [6.0.1] - 2025-02-19
 
