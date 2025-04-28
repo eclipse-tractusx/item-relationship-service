@@ -8,81 +8,27 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 ### Added
-- TRACEX-410 Add option for using Redis to store endpoint data references
-- TRACEX-XXX Update dependency check plugin
-- TRACEX-606 Health check for Azure Blob Storage
-- TRACEX-610 Add health check for Redis
-- TRACEX-615 Optionally use Redis for caching negotiation ids
-- TRACEX-619 IRS cleanup jobs cause OOME
-- TRACEX-203 Implemented new function to lookupshells by filter
-- TRACEX-376 Add option for using Azure Blob Storage for storing jobs and policies
+- Add option for using Redis to store endpoint data references eclipse-tractusx/item-relationship-service#953
+- Add option for using Azure Blob Storage for storing jobs and policies eclipse-tractusx/item-relationship-service#952 
+- Implemented new function to lookupshells by filter (digitalTwinType) eclipse-tractusx/item-relationship-service#976
 
 ### Changed
-- TRACEX-586 exclude io.netty:netty-handler 4.1.116.Final and readded with 4.1.118.Final to fix CVE-2025-24970
-- TRACEX-556 updated eclipse-temurin base image from 21 to 24 to fix CVE libexpat CVE-2024-8176
-- TRACEX-606 Minio Health check will now return healthy if azure is used
-- TRACEX-552 Enabled job TTL duration configuration via Helm
-- TRACEX-375 Improve IRS DTR Asset control
-- TRACEX-143 API Change POST /irs/order providing aas identifier as key
-- TRACEX-471 Add workflow for publishing Helm charts on ACR
-- Exclude unused transient dependencies of edc packages to mitigate CVE-2024-7254
-- Bump wiremock-standalone to 3.10.0 to mitigate CVE-2024-45801, CVE-2024-48910, CVE-2024-47875
-- Bump irs-registry-client to 2.1.25
-- TRACEX-479 Update load test scenarios to poll for all valid termination states of jobs and orders
-- TRACEX-418 Add pipeline for CFX Cucumber tests
+
+- Enabled job TTL duration configuration via Helm eclipse-tractusx/item-relationship-service#951
+- Improve IRS DTR Asset control eclipse-tractusx/item-relationship-service#953
+- Update dependency check plugin eclipse-tractusx/item-relationship-service#951
+- API Change POST /irs/order providing aas identifier as key eclipse-tractusx/item-relationship-service#942
 
 ### Fixed
-- TRACEX-375 Fix cache DTR EDC logic
-- TRACEX-417 fixed inefficient blob store interaction when running scheduled job cleanup
-- TRACEX-463 construct callback urls on IRS side
+- IRS cleanup jobs cause OOME eclipse-tractusx/item-relationship-service#956
+- fixed inefficient blob store interaction when running scheduled job cleanup eclipse-tractusx/item-relationship-service#956
+- construct callback urls on IRS side eclipse-tractusx/item-relationship-service#942
+- exclude io.netty:netty-handler 4.1.116.Final and readded with 4.1.118.Final eclipse-tractusx/item-relationship-service#951
+- Exclude unused transient dependencies of edc packages eclipse-tractusx/item-relationship-service#951
+- updated eclipse-temurin base image from 21 to 24 eclipse-tractusx/item-relationship-service#951
 
 
 ## [6.0.1] - 2025-02-19
-
-### Changed
-
-- Updated EDC management endpoint paths to /v3/
-- Bump Spring Boot to 3.4.2
-
-### Fixed
-
-- Added missing discovery type config `digitalTwinRegistry.discovery.type`
-
-### Known knowns
-
-- Latest update broke full registry reload on traceability-foss side eclipse-tractusx/traceability-foss/issues/1423
-
-## [6.0.0] - 2025-02-13
-
-### Changed
-
-- Resolve Null pointer exception while registering the company (#888)
-- Added the discovery type configurable, with a default value of bpnl in (ConnectorEndpointsService) https://github.com/eclipse-tractusx/sig-release/issues/939
-- Changed orchestration of EDC negotiations to be more efficient https://github.com/eclipse-tractusx/sig-release/issues/931
-- secured endpoints /ess/notification/receive-recursive and /ess/notification/receive with api key
-- Prevented NullPointerException in ConstraintCheckerService by adding emptyIfNull for safe handling of null constraint lists (#915)
-- Release documentation for irs-registry-client (#915)
-- #351 Introduced orchestration to EDC negotiation to be able to limit parallel edc calls and reuse already ongoing negotiations.
-- Cccept dates without time and time zone according to standard (#915)
-- Update Spring-Boot version to 3.2.8 to mitigate CVE-2024-38821 (#915)
-- Setup IRS gatling test workflow using containers (#915)
-- Enabled highcharts in load tests. Updated order test (#915)
-- API Change POST /irs/order providing aas identifier as key https://github.com/eclipse-tractusx/sig-release/issues/942
-- remove fallback for resolving shell via globalAssetId (#915)
-- API Change POST /irs/jobs providing aas identifier as key https://github.com/eclipse-tractusx/sig-release/issues/942
-- fixed inefficient blob retrieval for irs orders and batches (#915)
-- fixed ExecutorCompletionServiceFactory to actually limit threads of batches (#915)
-- fixed Batch and Order state calculation to display the correct state during batch processing (#915)
-- Bump wiremock-standalone to 3.10.0 to mitigate CVE-2024-45801, CVE-2024-48910, CVE-2024-47875 (#915)
-- Bump irs-registry-client to 2.1.25 (#915)
-- Exclude unused transient dependencies of edc packages to mitigate CVE-2024-7254 (#915)
-
-### Fixed
-
-- Fixed URI composition of href URL and configurable submodel suffix to append the path at the correct position (#915)
-- fixed auto dispatch workflow for auto deployment from main (#915)
-- Lift to newest Spring Boot version to fix vulnerability CVE-2024-50379. Fix and disable some tests
-- Remove version lock on tomcat-embed-core to fix vulnerability CVE-2024-50379
 
 ### Changed
 
@@ -912,6 +858,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 
 [Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...HEAD
+[6.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...6.0.1
 [6.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...6.0.0
 [5.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.0...5.4.1
 [5.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.0...5.4.0
