@@ -88,6 +88,12 @@ spring:
             token-uri: ${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           discovery:
             token-uri: ${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+  cache:
+    type: simple # Use in-memory cache for @Cacheable
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -155,8 +161,8 @@ irs: # Application config
         failed: 0 0 * * * * # every hour
     jobstore:
       ttl: # Determines how long jobs are stored in the respective state. After the TTL has expired, the job will be removed by the cleanup scheduler.
-        failed: P7D # ISO 8601 Duration
-        completed: P7D # ISO 8601 Duration
+        failed: "PT24H"  # ISO 8601 Duration
+        completed: "PT24H" # ISO 8601 Duration
       cron:
         expression: "0 */5 * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
   security:
@@ -166,18 +172,24 @@ irs: # Application config
         regular: ${API_KEY_REGULAR}  # API Key to access IRS API with view role
 
 blobstore:
-  endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
-  accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
-  secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
-  bucketName: irsbucket # the name of the S3 bucket to be created / used by the IRS
-
-policystore:
   persistence:
-    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
-    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
-    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
-    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
-    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
+    storeType: MINIO
+    minio:
+      endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+      accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+      secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    azure:
+      baseUrl: ${AZURE_BLOB_STORAGE_URL}
+      clientId: ${AZURE_BLOB_STORAGE_CLIENT_ID}
+      clientSecret: ${AZURE_BLOB_STORAGE_CLIENT_SECRET}
+      tenantId: ${AZURE_BLOB_STORAGE_TENANT_ID}
+      useConnectionString: false
+  jobs:
+    containerName: ${BLOB_STORE_JOBS_CONTAINER:irs-jobs} # the name of the S3 bucket or Blob store container for jobs
+    daysToLive: ${BLOB_STORE_JOBS_EXPIRATION:7} # number of days to keep jobs in the store, use -1 to disable cleanup
+  policies:
+    containerName: ${BLOB_STORE_POLICY_CONTAINER:irs-policy-bucket}  # the name of the S3 bucket or Blob store container for policies
+    daysToLive: ${BLOB_STORE_POLICY_EXPIRATION:-1} # number of days to keep policies in the store, use -1 to disable cleanup
 
 resilience4j:
   retry: # REST client retry configuration
@@ -195,6 +207,7 @@ resilience4j:
         baseConfig: default
 
 irs-edc-client:
+  cacheEdcUrls: true # Flag to enable caching of EDC URLs
   callback:
     mapping: /internal/endpoint-data-reference  # The EDR token callback endpoint mapping
     negotiation-mapping: /internal/negotiation-callback  # The EDR negotiation callback endpoint mapping
@@ -220,6 +233,7 @@ irs-edc-client:
     datareference:
       storage:
         duration: PT1H # Time after which stored data references will be cleaned up, ISO 8601 Duration
+        useRedis: false # Whether to use a Redis cache or in-memory cache
     orchestration:
       thread-pool-size: 5 # Thread pool size for maximum parallel negotiations
 
@@ -310,6 +324,9 @@ job:
     threadCount: 5
   cached:
     threadCount: 5
+  ttl:
+    failed: "PT24H"
+    completed: "PT24H"
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
@@ -354,9 +371,21 @@ semanticshub:
 #   Map of Base64 encoded strings of semantic models. The key must be the Base64 encoded full URN of the model.
 #   Example for urn:bamm:io.catenax.serial_part:1.0.0#SerialPart:
 #    dXJuOmJhbW06aW8uY2F0ZW5heC5zZXJpYWxfcGFydDoxLjAuMCNTZXJpYWxQYXJ0: ewoJIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNC9zY2hlbWEiLAoJImRlc2NyaXB0aW9uIjogIkEgc2VyaWFsaXplZCBwYXJ0IGlzIGFuIGluc3RhbnRpYXRpb24gb2YgYSAoZGVzaWduLSkgcGFydCwgd2hlcmUgdGhlIHBhcnRpY3VsYXIgaW5zdGFudGlhdGlvbiBjYW4gYmUgdW5pcXVlbHkgaWRlbnRpZmllZCBieSBtZWFucyBvZiBhIHNlcmlhbCBudW1iZXIgb3IgYSBzaW1pbGFyIGlkZW50aWZpZXIgKGUuZy4gVkFOKSBvciBhIGNvbWJpbmF0aW9uIG9mIG11bHRpcGxlIGlkZW50aWZpZXJzIChlLmcuIGNvbWJpbmF0aW9uIG9mIG1hbnVmYWN0dXJlciwgZGF0ZSBhbmQgbnVtYmVyKSIsCgkidHlwZSI6ICJvYmplY3QiLAoJImNvbXBvbmVudHMiOiB7CgkJInNjaGVtYXMiOiB7CgkJCSJ1cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX0NhdGVuYVhJZFRyYWl0IjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJkZXNjcmlwdGlvbiI6ICJUaGUgcHJvdmlkZWQgcmVndWxhciBleHByZXNzaW9uIGVuc3VyZXMgdGhhdCB0aGUgVVVJRCBpcyBjb21wb3NlZCBvZiBmaXZlIGdyb3VwcyBvZiBjaGFyYWN0ZXJzIHNlcGFyYXRlZCBieSBoeXBoZW5zLCBpbiB0aGUgZm9ybSA4LTQtNC00LTEyIGZvciBhIHRvdGFsIG9mIDM2IGNoYXJhY3RlcnMgKDMyIGhleGFkZWNpbWFsIGNoYXJhY3RlcnMgYW5kIDQgaHlwaGVucyksIG9wdGlvbmFsbHkgcHJlZml4ZWQgYnkgXCJ1cm46dXVpZDpcIiB0byBtYWtlIGl0IGFuIElSSS4iLAoJCQkJInBhdHRlcm4iOiAiKF51cm46dXVpZDpbMC05YS1mQS1GXXs4fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXsxMn0kKSIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfS2V5Q2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkidHlwZSI6ICJzdHJpbmciLAoJCQkJImRlc2NyaXB0aW9uIjogIlRoZSBrZXkgY2hhcmFjdGVyaXN0aWMgb2YgYSBsb2NhbCBpZGVudGlmaWVyLiBBIHNwZWNpZmljIHN1YnNldCBvZiBrZXlzIGlzIHByZWRlZmluZWQsIGJ1dCBhZGRpdGlvbmFsbHkgYW55IG90aGVyIGN1c3RvbSBrZXkgaXMgYWxsb3dlZC4gUHJlZGVmaW5lZCBrZXlzICh0byBiZSB1c2VkIHdoZW4gYXBwbGljYWJsZSk6XG4tIFwibWFudWZhY3R1cmVySWRcIiAtIFRoZSBCdXNpbmVzcyBQYXJ0bmVyIE51bWJlciAoQlBOKSBvZiB0aGUgbWFudWZhY3R1cmVyLiBWYWx1ZTogQlBOLU51bW1lclxuLSBcInBhcnRJbnN0YW5jZUlkXCIgLSBUaGUgaWRlbnRpZmllciBvZiB0aGUgbWFudWZhY3R1cmVyIGZvciB0aGUgc2VyaWFsaXplZCBpbnN0YW5jZSBvZiB0aGUgcGFydCwgZS5nLiB0aGUgc2VyaWFsIG51bWJlclxuLSBcImJhdGNoSWRcIiAtIFRoZSBpZGVudGlmaWVyIG9mIHRoZSBiYXRjaCwgdG8gd2hpY2ggdGhlIHNlcmlhbHplZCBwYXJ0IGJlbG9uZ3Ncbi0gXCJ2YW5cIiAtIFRoZSBhbm9ueW1pemVkIHZlaGljbGUgaWRlbnRpZmljYXRpb24gbnVtYmVyIChWSU4pLiBWYWx1ZTogYW5vbnltaXplZCBWSU4gYWNjb3JkaW5nIHRvIE9FTSBhbm9ueW1pemF0aW9uIHJ1bGVzLiBOb3RlOiBJZiB0aGUga2V5IFwidmFuXCIgaXMgYXZhaWxhYmxlLCBcInBhcnRJbnN0YW5jZUlkXCIgbXVzdCBhbHNvIGJlIGF2YWlsYWJsZSBhbmQgaG9sZCB0aGUgaWRlbnRpY2FsIHZhbHVlLiIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfVmFsdWVDaGFyYWN0ZXJpc3RpYyI6IHsKCQkJCSJ0eXBlIjogInN0cmluZyIsCgkJCQkiZGVzY3JpcHRpb24iOiAiVGhlIHZhbHVlIG9mIGFuIGlkZW50aWZpZXIuIgoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9LZXlWYWx1ZUxpc3QiOiB7CgkJCQkiZGVzY3JpcHRpb24iOiAiQSBsaXN0IG9mIGtleSB2YWx1ZSBwYWlycyBmb3IgbG9jYWwgaWRlbnRpZmllcnMsIHdoaWNoIGFyZSBjb21wb3NlZCBvZiBhIGtleSBhbmQgYSBjb3JyZXNwb25kaW5nIHZhbHVlLiIsCgkJCQkidHlwZSI6ICJvYmplY3QiLAoJCQkJInByb3BlcnRpZXMiOiB7CgkJCQkJImtleSI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIlRoZSBrZXkgb2YgYSBsb2NhbCBpZGVudGlmaWVyLiAiLAoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX0tleUNoYXJhY3RlcmlzdGljIgoJCQkJCX0sCgkJCQkJInZhbHVlIjogewoJCQkJCQkiZGVzY3JpcHRpb24iOiAiVGhlIHZhbHVlIG9mIGFuIGlkZW50aWZpZXIuIiwKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9WYWx1ZUNoYXJhY3RlcmlzdGljIgoJCQkJCX0KCQkJCX0sCgkJCQkicmVxdWlyZWQiOiBbCgkJCQkJImtleSIsCgkJCQkJInZhbHVlIgoJCQkJXQoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9Mb2NhbElkZW50aWZpZXJDaGFyYWN0ZXJpc3RpYyI6IHsKCQkJCSJkZXNjcmlwdGlvbiI6ICJBIHNpbmdsZSBzZXJpYWxpemVkIHBhcnQgbWF5IGhhdmUgbXVsdGlwbGUgYXR0cmlidXRlcywgdGhhdCB1bmlxdWVseSBpZGVudGlmeSBhIHRoYXQgcGFydCBpbiBhIHNwZWNpZmljIGRhdGFzcGFjZSAoZS5nLiB0aGUgbWFudWZhY3R1cmVyYHMgZGF0YXNwYWNlKSIsCgkJCQkidHlwZSI6ICJhcnJheSIsCgkJCQkiaXRlbXMiOiB7CgkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9LZXlWYWx1ZUxpc3QiCgkJCQl9LAoJCQkJInVuaXF1ZUl0ZW1zIjogdHJ1ZQoJCQl9LAoJCQkidXJuX2JhbW1faW8ub3Blbm1hbnVmYWN0dXJpbmdfY2hhcmFjdGVyaXN0aWNfMi4wLjBfVGltZXN0YW1wIjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJwYXR0ZXJuIjogIi0/KFsxLTldWzAtOV17Myx9fDBbMC05XXszfSktKDBbMS05XXwxWzAtMl0pLSgwWzEtOV18WzEyXVswLTldfDNbMDFdKVQoKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV06WzAtNV1bMC05XShcXC5bMC05XSspP3woMjQ6MDA6MDAoXFwuMCspPykpKFp8KFxcK3wtKSgoMFswLTldfDFbMC0zXSk6WzAtNV1bMC05XXwxNDowMCkpPyIsCgkJCQkiZGVzY3JpcHRpb24iOiAiRGVzY3JpYmVzIGEgUHJvcGVydHkgd2hpY2ggY29udGFpbnMgdGhlIGRhdGUgYW5kIHRpbWUgd2l0aCBhbiBvcHRpb25hbCB0aW1lem9uZS4iCgkJCX0sCgkJCSJ1cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX1Byb2R1Y3Rpb25Db3VudHJ5Q29kZVRyYWl0IjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJkZXNjcmlwdGlvbiI6ICJSZWd1bGFyIEV4cHJlc3Npb24gdGhhdCBlbnN1cmVzIGEgdGhyZWUtbGV0dGVyIGNvZGUgIiwKCQkJCSJwYXR0ZXJuIjogIl5bQS1aXVtBLVpdW0EtWl0kIgoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9NYW51ZmFjdHVyaW5nQ2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkiZGVzY3JpcHRpb24iOiAiQ2hhcmFjdGVyaXN0aWMgdG8gZGVzY3JpYmUgbWFudWZhY3R1cmluZyByZWxhdGVkIGRhdGEiLAoJCQkJInR5cGUiOiAib2JqZWN0IiwKCQkJCSJwcm9wZXJ0aWVzIjogewoJCQkJCSJkYXRlIjogewoJCQkJCQkiZGVzY3JpcHRpb24iOiAiVGltZXN0YW1wIG9mIHRoZSBtYW51ZmFjdHVyaW5nIGRhdGUgYXMgdGhlIGZpbmFsIHN0ZXAgaW4gcHJvZHVjdGlvbiBwcm9jZXNzIChlLmcuIGZpbmFsIHF1YWxpdHkgY2hlY2ssIHJlYWR5LWZvci1zaGlwbWVudCBldmVudCkiLAoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5vcGVubWFudWZhY3R1cmluZ19jaGFyYWN0ZXJpc3RpY18yLjAuMF9UaW1lc3RhbXAiCgkJCQkJfSwKCQkJCQkiY291bnRyeSI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIkNvdW50cnkgY29kZSB3aGVyZSB0aGUgcGFydCB3YXMgbWFudWZhY3R1cmVkIiwKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9Qcm9kdWN0aW9uQ291bnRyeUNvZGVUcmFpdCIKCQkJCQl9CgkJCQl9LAoJCQkJInJlcXVpcmVkIjogWwoJCQkJCSJkYXRlIgoJCQkJXQoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0SWRDaGFyYWN0ZXJpc3RpYyI6IHsKCQkJCSJ0eXBlIjogInN0cmluZyIsCgkJCQkiZGVzY3JpcHRpb24iOiAiVGhlIHBhcnQgSUQgaXMgYSBtdWx0aS1jaGFyYWN0ZXIgc3RyaW5nLCB1c3VzYWxseSBhc3NpZ25lZCBieSBhbiBFUlAgc3lzdGVtIgoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0TmFtZUNoYXJhY3RlcmlzdGljIjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJkZXNjcmlwdGlvbiI6ICJQYXJ0IE5hbWUgaW4gc3RyaW5nIGZvcm1hdCBmcm9tIHRoZSByZXNwZWN0aXZlIHN5c3RlbSBpbiB0aGUgdmFsdWUgY2hhaW4iCgkJCX0sCgkJCSJ1cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX0NsYXNzaWZpY2F0aW9uQ2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkidHlwZSI6ICJzdHJpbmciLAoJCQkJImRlc2NyaXB0aW9uIjogIkEgcGFydCB0eXBlIG11c3QgYmUgcGxhY2VkIGludG8gb25lIG9mIHRoZSBmb2xsb3dpbmcgY2xhc3NlczogJ2NvbXBvbmVudCcsICdwcm9kdWN0JywgJ3NvZnR3YXJlJywgJ2Fzc2VtYmx5JywgJ3Rvb2wnLCBvciAncmF3IG1hdGVyaWFsJy4iLAoJCQkJImVudW0iOiBbCgkJCQkJInByb2R1Y3QiLAoJCQkJCSJyYXcgbWF0ZXJpYWwiLAoJCQkJCSJzb2Z0d2FyZSIsCgkJCQkJImFzc2VtYmx5IiwKCQkJCQkidG9vbCIsCgkJCQkJImNvbXBvbmVudCIKCQkJCV0KCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfUGFydFR5cGVJbmZvcm1hdGlvbkNoYXJhY3RlcmlzdGljIjogewoJCQkJImRlc2NyaXB0aW9uIjogIlRoZSBjaGFyYWN0ZXJpc3RpY3Mgb2YgdGhlIHBhcnQgdHlwZSIsCgkJCQkidHlwZSI6ICJvYmplY3QiLAoJCQkJInByb3BlcnRpZXMiOiB7CgkJCQkJIm1hbnVmYWN0dXJlclBhcnRJZCI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIlBhcnQgSUQgYXMgYXNzaWduZWQgYnkgdGhlIG1hbnVmYWN0dXJlciBvZiB0aGUgcGFydC4gVGhlIFBhcnQgSUQgaWRlbnRpZmllcyB0aGUgcGFydCAoYXMgZGVzaWduZWQpIGluIHRoZSBtYW51ZmFjdHVyZXJgcyBkYXRhc3BhY2UuIFRoZSBQYXJ0IElEIGRvZXMgbm90IHJlZmVyZW5jZSBhIHNwZWNpZmljIGluc3RhbmNlIG9mIGEgcGFydCBhbmQgdGh1cyBzaG91bGQgbm90IGJlIGNvbmZ1c2VkIHdpdGggdGhlIHNlcmlhbCBudW1iZXIuIiwKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0SWRDaGFyYWN0ZXJpc3RpYyIKCQkJCQl9LAoJCQkJCSJjdXN0b21lclBhcnRJZCI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIlBhcnQgSUQgYXMgYXNzaWduZWQgYnkgdGhlIG1hbnVmYWN0dXJlciBvZiB0aGUgcGFydC4gVGhlIFBhcnQgSUQgaWRlbnRpZmllcyB0aGUgcGFydCAoYXMgZGVzaWduZWQpIGluIHRoZSBjdXN0b21lcmBzIGRhdGFzcGFjZS4gVGhlIFBhcnQgSUQgZG9lcyBub3QgcmVmZXJlbmNlIGEgc3BlY2lmaWMgaW5zdGFuY2Ugb2YgYSBwYXJ0IGFuZCB0aHVzIHNob3VsZCBub3QgYmUgY29uZnVzZWQgd2l0aCB0aGUgc2VyaWFsIG51bWJlci4iLAoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX1BhcnRJZENoYXJhY3RlcmlzdGljIgoJCQkJCX0sCgkJCQkJIm5hbWVBdE1hbnVmYWN0dXJlciI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIk5hbWUgb2YgdGhlIHBhcnQgYXMgYXNzaWduZWQgYnkgdGhlIG1hbnVmYWN0dXJlciIsCgkJCQkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfUGFydE5hbWVDaGFyYWN0ZXJpc3RpYyIKCQkJCQl9LAoJCQkJCSJuYW1lQXRDdXN0b21lciI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIk5hbWUgb2YgdGhlIHBhcnQgYXMgYXNzaWduZWQgYnkgdGhlIGN1c3RvbWVyIiwKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0TmFtZUNoYXJhY3RlcmlzdGljIgoJCQkJCX0sCgkJCQkJImNsYXNzaWZpY2F0aW9uIjogewoJCQkJCQkiZGVzY3JpcHRpb24iOiAiVGhlIGNsYXNzaWZpY2F0aW9uIG9mIHRoZSBwYXJ0IHR5cGUgYWNjb3JkaW5nIHRvIFNURVAgc3RhbmRhcmQgZGVmaW5pdGlvbiIsCgkJCQkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfQ2xhc3NpZmljYXRpb25DaGFyYWN0ZXJpc3RpYyIKCQkJCQl9CgkJCQl9LAoJCQkJInJlcXVpcmVkIjogWwoJCQkJCSJtYW51ZmFjdHVyZXJQYXJ0SWQiLAoJCQkJCSJuYW1lQXRNYW51ZmFjdHVyZXIiLAoJCQkJCSJjbGFzc2lmaWNhdGlvbiIKCQkJCV0KCQkJfQoJCX0KCX0sCgkicHJvcGVydGllcyI6IHsKCQkiY2F0ZW5hWElkIjogewoJCQkiZGVzY3JpcHRpb24iOiAiVGhlIGZ1bGx5IGFub255bW91cyBDYXRlbmEtWCBJRCBvZiB0aGUgc2VyaWFsaXplZCBwYXJ0LCB2YWxpZCBmb3IgdGhlIENhdGVuYS1YIGRhdGFzcGFjZS4iLAoJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX0NhdGVuYVhJZFRyYWl0IgoJCX0sCgkJImxvY2FsSWRlbnRpZmllcnMiOiB7CgkJCSJkZXNjcmlwdGlvbiI6ICJBIGxvY2FsIGlkZW50aWZpZXIgZW5hYmxlcyBpZGVudGlmaWNhdGlvbiBvZiBhIHBhcnQgaW4gYSBzcGVjaWZpYyBkYXRhc3BhY2UsIGJ1dCBpcyBub3QgdW5pcXVlIGluIENhdGVuYS1YIGRhdGFzcGFjZS4gTXVsdGlwbGUgbG9jYWwgaWRlbnRpZmllcnMgbWF5IGV4aXN0LiIsCgkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfTG9jYWxJZGVudGlmaWVyQ2hhcmFjdGVyaXN0aWMiCgkJfSwKCQkibWFudWZhY3R1cmluZ0luZm9ybWF0aW9uIjogewoJCQkiZGVzY3JpcHRpb24iOiAiSW5mb3JtYXRpb24gZnJvbSBtYW51ZmFjdHVyaW5nIHByb2Nlc3MsIHN1Y2ggYXMgbWFudWZhY3R1cmluZyBkYXRlIGFuZCBtYW51ZmFjdHVyaW5nIGNvdW50cnkiLAoJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX01hbnVmYWN0dXJpbmdDaGFyYWN0ZXJpc3RpYyIKCQl9LAoJCSJwYXJ0VHlwZUluZm9ybWF0aW9uIjogewoJCQkiZGVzY3JpcHRpb24iOiAiVGhlIHBhcnQgdHlwZSBmcm9tIHdoaWNoIHRoZSBzZXJpYWxpemVkIHBhcnQgaGFzIGJlZW4gaW5zdGFudGlhdGVkIiwKCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0VHlwZUluZm9ybWF0aW9uQ2hhcmFjdGVyaXN0aWMiCgkJfQoJfSwKCSJyZXF1aXJlZCI6IFsKCQkiY2F0ZW5hWElkIiwKCQkibG9jYWxJZGVudGlmaWVycyIsCgkJIm1hbnVmYWN0dXJpbmdJbmZvcm1hdGlvbiIsCgkJInBhcnRUeXBlSW5mb3JtYXRpb24iCgldCn0=
-minioUser: "minio"  # <minio-username>
-minioPassword:  # <minio-password>
-minioUrl: "http://{{ .Release.Name }}-minio:9000"
+
+blobstore:
+  persistence:
+    storeType: MINIO
+    minio:
+      endpoint: "http://{{ .Release.Name }}-minio:9000"
+      accessKey: minio
+      secretKey:
+  jobs:
+    containerName: irs-jobs
+    daysToLive: 7
+  policies:
+    containerName: irs-policy-bucket
+    daysToLive: -1
+
 oauth2:
   clientTokenUri:  # <oauth2-token-uri>
   semantics:
@@ -386,6 +415,9 @@ edc:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
     edrManagementEnabled: false  # Flag whether IRS uses classic EDC negotiation or EDR negotiation
+    datareference:
+      storage:
+        useRedis: false
   callbackMapping:  # The EDR token callback endpoint path mapping - used to expose EDR callback endpoint
   negotiationCallbackMapping:  # The EDR negotiation callback endpoint mapping - used to expose negotiation callback endpoint
   callbackurl:  # The URL where the EDR token callback will be sent to.
@@ -460,6 +492,11 @@ env: []  # You can provide your own environment variables for the IRS here.
 #  - name: JAVA_TOOL_OPTIONS
 #    value: -Dhttps.proxyHost=1.2.3.4
 
+redisConfig:
+  enabled: false
+  host: localhost
+  port: 6379
+  password: redispwd
 
 #######################
 # Minio Configuration #
@@ -488,6 +525,14 @@ minio:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator
     MINIO_PROMETHEUS_URL: http://prometheus:9090
 
+#######################
+# Redis configuration #
+#######################
+redis:
+  architecture: standalone
+  auth:
+    enabled: true
+    password: redispwd
 
 ############################
 # Prometheus Configuration #
@@ -507,37 +552,6 @@ prometheus:
   configmapReload:
     prometheus:
       enabled: false
-
-  extraScrapeConfigs: |
-    - job_name: 'spring-actuator'
-      metrics_path: '/actuator/prometheus'
-      scrape_interval: 5s
-      static_configs:
-        - targets: [ '{{ .Release.Name }}-item-relationship-service:4004' ]
-
-    - job_name: 'minio-actuator'
-      metrics_path: /minio/v2/metrics/cluster
-      static_configs:
-        - targets: [ '{{ .Release.Name }}-minio:9000' ]
-
-
-#########################
-# Grafana Configuration #
-#########################
-grafana:
-  enabled: false  # ①
-  rbac:
-    create: false
-  persistence:
-    enabled: false
-
-  user:  # <grafana-username>
-  password:  # <grafana-password>
-
-  admin:
-    existingSecret: "{{ .Release.Name }}-item-relationship-service"
-    userKey: grafanaUser
-    passwordKey: grafanaPassword
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -640,13 +654,22 @@ The IRS is exposing REST API to store Policies definitions.
 Storage details can be configured in `application.yml` file with below fields:
 
 ```yaml
-policystore:
+blobstore:
   persistence:
-    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
-    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
-    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
-    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
-    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
+    storeType: MINIO # MINIO or AZURE
+    minio:
+      endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+      accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+      secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    azure:
+      baseUrl: ${AZURE_BLOB_STORAGE_URL}
+      clientId: ${AZURE_BLOB_STORAGE_CLIENT_ID}
+      clientSecret: ${AZURE_BLOB_STORAGE_CLIENT_SECRET}
+      tenantId: ${AZURE_BLOB_STORAGE_TENANT_ID}
+      useConnectionString: false
+  policies:
+    containerName: ${BLOB_STORE_POLICY_CONTAINER:irs-policy-bucket}  # the name of the S3 bucket or Blob store container for policies
+    daysToLive: ${BLOB_STORE_POLICY_EXPIRATION:-1} # number of days to keep policies in the store, use -1 to disable cleanup
 ```
 
 If no custom policies are registered via REST API, IRS will use the default one configured with `irs-edc-client.catalog.acceptedPolicies` property. IRS will only negotiate contracts for offers with policies found in Policy Store.

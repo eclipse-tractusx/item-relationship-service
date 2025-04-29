@@ -686,6 +686,12 @@ pre.rouge {
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
           <span class="na">discovery</span><span class="pi">:</span>
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
+  <span class="na">redis</span><span class="pi">:</span>
+    <span class="na">host</span><span class="pi">:</span> <span class="s">${REDIS_HOST:localhost}</span>
+    <span class="na">port</span><span class="pi">:</span> <span class="s">${REDIS_PORT:6379}</span>
+    <span class="na">password</span><span class="pi">:</span> <span class="s">${REDIS_PASSWORD:}</span>
+  <span class="na">cache</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">simple</span> <span class="c1"># Use in-memory cache for @Cacheable</span>
 
 <span class="na">management</span><span class="pi">:</span> <span class="c1"># Spring management API config, see https://spring.io/guides/gs/centralized-configuration/</span>
   <span class="na">endpoints</span><span class="pi">:</span>
@@ -753,8 +759,8 @@ pre.rouge {
         <span class="na">failed</span><span class="pi">:</span> <span class="s">0 0 * * * *</span> <span class="c1"># every hour</span>
     <span class="na">jobstore</span><span class="pi">:</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="c1"># Determines how long jobs are stored in the respective state. After the TTL has expired, the job will be removed by the cleanup scheduler.</span>
-        <span class="na">failed</span><span class="pi">:</span> <span class="s">P7D</span> <span class="c1"># ISO 8601 Duration</span>
-        <span class="na">completed</span><span class="pi">:</span> <span class="s">P7D</span> <span class="c1"># ISO 8601 Duration</span>
+        <span class="na">failed</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PT24H"</span>  <span class="c1"># ISO 8601 Duration</span>
+        <span class="na">completed</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PT24H"</span> <span class="c1"># ISO 8601 Duration</span>
       <span class="na">cron</span><span class="pi">:</span>
         <span class="na">expression</span><span class="pi">:</span> <span class="s2">"</span><span class="s">0</span><span class="nv"> </span><span class="s">*/5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">?"</span> <span class="c1"># Determines how often the number of stored jobs is updated in the metrics API.</span>
   <span class="na">security</span><span class="pi">:</span>
@@ -764,18 +770,24 @@ pre.rouge {
         <span class="na">regular</span><span class="pi">:</span> <span class="s">${API_KEY_REGULAR}</span>  <span class="c1"># API Key to access IRS API with view role</span>
 
 <span class="na">blobstore</span><span class="pi">:</span>
-  <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_URL}"</span> <span class="c1"># S3 compatible API endpoint (e.g. Minio)</span>
-  <span class="na">accessKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_ACCESS_KEY}"</span> <span class="c1"># S3 access key</span>
-  <span class="na">secretKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_SECRET_KEY}"</span> <span class="c1"># S3 secret key</span>
-  <span class="na">bucketName</span><span class="pi">:</span> <span class="s">irsbucket</span> <span class="c1"># the name of the S3 bucket to be created / used by the IRS</span>
-
-<span class="na">policystore</span><span class="pi">:</span>
   <span class="na">persistence</span><span class="pi">:</span>
-    <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_URL}"</span> <span class="c1"># S3 compatible API endpoint (e.g. Minio)</span>
-    <span class="na">accessKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_ACCESS_KEY}"</span> <span class="c1"># S3 access key</span>
-    <span class="na">secretKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_SECRET_KEY}"</span> <span class="c1"># S3 secret key</span>
-    <span class="na">bucketName</span><span class="pi">:</span> <span class="s">irs-policy-bucket</span> <span class="c1"># the name of the S3 bucket to be created / used by the policy store</span>
-    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">-1</span> <span class="c1"># number of days to keep policies in the store, use -1 to disable cleanup</span>
+    <span class="na">storeType</span><span class="pi">:</span> <span class="s">MINIO</span>
+    <span class="na">minio</span><span class="pi">:</span>
+      <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_URL}"</span> <span class="c1"># S3 compatible API endpoint (e.g. Minio)</span>
+      <span class="na">accessKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_ACCESS_KEY}"</span> <span class="c1"># S3 access key</span>
+      <span class="na">secretKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_SECRET_KEY}"</span> <span class="c1"># S3 secret key</span>
+    <span class="na">azure</span><span class="pi">:</span>
+      <span class="na">baseUrl</span><span class="pi">:</span> <span class="s">${AZURE_BLOB_STORAGE_URL}</span>
+      <span class="na">clientId</span><span class="pi">:</span> <span class="s">${AZURE_BLOB_STORAGE_CLIENT_ID}</span>
+      <span class="na">clientSecret</span><span class="pi">:</span> <span class="s">${AZURE_BLOB_STORAGE_CLIENT_SECRET}</span>
+      <span class="na">tenantId</span><span class="pi">:</span> <span class="s">${AZURE_BLOB_STORAGE_TENANT_ID}</span>
+      <span class="na">useConnectionString</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">jobs</span><span class="pi">:</span>
+    <span class="na">containerName</span><span class="pi">:</span> <span class="s">${BLOB_STORE_JOBS_CONTAINER:irs-jobs}</span> <span class="c1"># the name of the S3 bucket or Blob store container for jobs</span>
+    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">${BLOB_STORE_JOBS_EXPIRATION:7}</span> <span class="c1"># number of days to keep jobs in the store, use -1 to disable cleanup</span>
+  <span class="na">policies</span><span class="pi">:</span>
+    <span class="na">containerName</span><span class="pi">:</span> <span class="s">${BLOB_STORE_POLICY_CONTAINER:irs-policy-bucket}</span>  <span class="c1"># the name of the S3 bucket or Blob store container for policies</span>
+    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">${BLOB_STORE_POLICY_EXPIRATION:-1}</span> <span class="c1"># number of days to keep policies in the store, use -1 to disable cleanup</span>
 
 <span class="na">resilience4j</span><span class="pi">:</span>
   <span class="na">retry</span><span class="pi">:</span> <span class="c1"># REST client retry configuration</span>
@@ -793,6 +805,7 @@ pre.rouge {
         <span class="na">baseConfig</span><span class="pi">:</span> <span class="s">default</span>
 
 <span class="na">irs-edc-client</span><span class="pi">:</span>
+  <span class="na">cacheEdcUrls</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># Flag to enable caching of EDC URLs</span>
   <span class="na">callback</span><span class="pi">:</span>
     <span class="na">mapping</span><span class="pi">:</span> <span class="s">/internal/endpoint-data-reference</span>  <span class="c1"># The EDR token callback endpoint mapping</span>
     <span class="na">negotiation-mapping</span><span class="pi">:</span> <span class="s">/internal/negotiation-callback</span>  <span class="c1"># The EDR negotiation callback endpoint mapping</span>
@@ -818,6 +831,7 @@ pre.rouge {
     <span class="na">datareference</span><span class="pi">:</span>
       <span class="na">storage</span><span class="pi">:</span>
         <span class="na">duration</span><span class="pi">:</span> <span class="s">PT1H</span> <span class="c1"># Time after which stored data references will be cleaned up, ISO 8601 Duration</span>
+        <span class="na">useRedis</span><span class="pi">:</span> <span class="no">false</span> <span class="c1"># Whether to use a Redis cache or in-memory cache</span>
     <span class="na">orchestration</span><span class="pi">:</span>
       <span class="na">thread-pool-size</span><span class="pi">:</span> <span class="m">5</span> <span class="c1"># Thread pool size for maximum parallel negotiations</span>
 
@@ -901,7 +915,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-20 14:34:28 UTC
+Last updated 2025-04-29 10:22:30 UTC
 </div>
 </div>
 </body>
