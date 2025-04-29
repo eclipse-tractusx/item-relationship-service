@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
-## [Unreleased]
+## [Unreleased] - 2025-03-24
+
+- Update to new chart structure for blob storage and add Azure as an option eclipse-tractusx/item-relationship-service#952
 
 ## [8.0.1] - 2025-02-19
 

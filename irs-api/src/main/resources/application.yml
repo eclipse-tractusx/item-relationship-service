@@ -22,6 +22,12 @@ spring:
             token-uri: ${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           discovery:
             token-uri: ${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+  cache:
+    type: simple # Use in-memory cache for @Cacheable
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -89,8 +95,8 @@ irs: # Application config
         failed: 0 0 * * * * # every hour
     jobstore:
       ttl: # Determines how long jobs are stored in the respective state. After the TTL has expired, the job will be removed by the cleanup scheduler.
-        failed: P7D # ISO 8601 Duration
-        completed: P7D # ISO 8601 Duration
+        failed: "PT24H"  # ISO 8601 Duration
+        completed: "PT24H" # ISO 8601 Duration
       cron:
         expression: "0 */5 * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
   security:
@@ -100,18 +106,24 @@ irs: # Application config
         regular: ${API_KEY_REGULAR}  # API Key to access IRS API with view role
 
 blobstore:
-  endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
-  accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
-  secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
-  bucketName: irsbucket # the name of the S3 bucket to be created / used by the IRS
-
-policystore:
   persistence:
-    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
-    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
-    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
-    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
-    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
+    storeType: MINIO
+    minio:
+      endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+      accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+      secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    azure:
+      baseUrl: ${AZURE_BLOB_STORAGE_URL}
+      clientId: ${AZURE_BLOB_STORAGE_CLIENT_ID}
+      clientSecret: ${AZURE_BLOB_STORAGE_CLIENT_SECRET}
+      tenantId: ${AZURE_BLOB_STORAGE_TENANT_ID}
+      useConnectionString: false
+  jobs:
+    containerName: ${BLOB_STORE_JOBS_CONTAINER:irs-jobs} # the name of the S3 bucket or Blob store container for jobs
+    daysToLive: ${BLOB_STORE_JOBS_EXPIRATION:7} # number of days to keep jobs in the store, use -1 to disable cleanup
+  policies:
+    containerName: ${BLOB_STORE_POLICY_CONTAINER:irs-policy-bucket}  # the name of the S3 bucket or Blob store container for policies
+    daysToLive: ${BLOB_STORE_POLICY_EXPIRATION:-1} # number of days to keep policies in the store, use -1 to disable cleanup
 
 resilience4j:
   retry: # REST client retry configuration
@@ -129,6 +141,7 @@ resilience4j:
         baseConfig: default
 
 irs-edc-client:
+  cacheEdcUrls: true # Flag to enable caching of EDC URLs
   callback:
     mapping: /internal/endpoint-data-reference  # The EDR token callback endpoint mapping
     negotiation-mapping: /internal/negotiation-callback  # The EDR negotiation callback endpoint mapping
@@ -154,6 +167,7 @@ irs-edc-client:
     datareference:
       storage:
         duration: PT1H # Time after which stored data references will be cleaned up, ISO 8601 Duration
+        useRedis: false # Whether to use a Redis cache or in-memory cache
     orchestration:
       thread-pool-size: 5 # Thread pool size for maximum parallel negotiations
 

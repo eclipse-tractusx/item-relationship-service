@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,6 +34,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.github.resilience4j.core.functions.Either;
 import io.github.resilience4j.retry.RetryRegistry;
@@ -55,8 +56,8 @@ class DigitalTwinDelegateTest {
     @Test
     void shouldFillItemContainerWithShell() throws RegistryServiceException {
         // given
-        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
+        when(digitalTwinRegistryService.fetchShell(any())).thenReturn(
+                Optional.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
@@ -72,8 +73,8 @@ class DigitalTwinDelegateTest {
     @Test
     void shouldFillItemContainerWithShellAndContractAgreementIdWhenAuditFlag() throws RegistryServiceException {
         // given
-        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
+        when(digitalTwinRegistryService.fetchShell(any())).thenReturn(
+                Optional.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(),
                 jobParameterAuditContractNegotiation(), new AASTransferProcess("id", 0), createKey());
@@ -89,8 +90,8 @@ class DigitalTwinDelegateTest {
     void shouldFillItemContainerWithShellAndSubmodelDescriptorsWhenDepthReached()
             throws RegistryServiceException {
         // given
-        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
+        when(digitalTwinRegistryService.fetchShell(any())).thenReturn(
+                Optional.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
         final JobParameter jobParameter = JobParameter.builder().depth(1).aspects(List.of()).build();
 
         // when

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -101,8 +101,8 @@ class EdcOrchestratorTest {
         pollingService = new AsyncPollingService(Clock.systemUTC(), scheduler);
         final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(threadPoolThreads);
         endpointDataReferenceStorage = spy(
-                new EndpointDataReferenceCacheService(new EndpointDataReferenceStorage(Duration.ofMinutes(5))));
-        contractNegotiationIdStorage = spy(new ContractNegotiationIdStorage(Duration.ofMinutes(5)));
+                new EndpointDataReferenceCacheService(new EndpointDataReferenceStorage(Duration.ofMinutes(5), false, null)));
+        contractNegotiationIdStorage = spy(new ContractNegotiationIdStorage(Duration.ofMinutes(5), false, null));
         ongoingNegotiationStorage = spy(new OngoingNegotiationStorage());
 
         orchestrator = new EdcOrchestrator(config, contractNegotiationService, pollingService, catalogFacade,

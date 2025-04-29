@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,6 +35,7 @@ import org.eclipse.tractusx.irs.edc.client.EdcOrchestrator;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
@@ -93,9 +94,10 @@ public class DefaultConfiguration {
             final ConnectorEndpointsService connectorEndpointsService,
             final EndpointDataForConnectorsService endpointDataForConnectorsService,
             final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient,
-            final EdcConfiguration edcConfiguration) {
+            final EdcConfiguration edcConfiguration,
+            final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache) {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService, endpointDataForConnectorsService,
-                decentralDigitalTwinRegistryClient, edcConfiguration);
+                decentralDigitalTwinRegistryClient, edcConfiguration, preferredConnectorEndpointsCache);
     }
 
     @Bean
@@ -115,7 +117,9 @@ public class DefaultConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
-    public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
+    public EndpointDataForConnectorsService endpointDataForConnectorsService(
+            final EdcSubmodelFacade facade,
+            final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache) {
 
         final EdcEndpointReferenceRetriever edcEndpointReferenceRetriever = (edcConnectorEndpoint, bpn) -> {
             try {
@@ -125,7 +129,7 @@ public class DefaultConfiguration {
             }
         };
 
-        return new EndpointDataForConnectorsService(edcEndpointReferenceRetriever);
+        return new EndpointDataForConnectorsService(edcEndpointReferenceRetriever, preferredConnectorEndpointsCache);
     }
 
     @Bean

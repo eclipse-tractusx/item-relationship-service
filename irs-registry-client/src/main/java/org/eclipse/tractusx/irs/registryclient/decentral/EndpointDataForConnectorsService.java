@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.springframework.util.StopWatch;
 
 /**
@@ -43,6 +44,8 @@ public class EndpointDataForConnectorsService {
     private static final String TOOK_MS = "{} took {} ms";
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
+
+    private final PreferredConnectorEndpointsCache preferredConnectorEndpointsCache;
 
     public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
             final List<String> edcUrls, final String bpn) {
@@ -65,7 +68,7 @@ public class EndpointDataForConnectorsService {
         }
     }
 
-    private List<CompletableFuture<EndpointDataReference>> createGetEndpointReferencesForAssetFutures(
+    public List<CompletableFuture<EndpointDataReference>> createGetEndpointReferencesForAssetFutures(
             final String edcUrl, final String bpn) {
 
         final var watch = new StopWatch();
@@ -74,9 +77,14 @@ public class EndpointDataForConnectorsService {
         log.info(msg);
 
         try {
-            return edcSubmodelFacade.getEndpointReferencesForAsset(edcUrl, bpn);
+            final List<CompletableFuture<EndpointDataReference>> endpointReferencesForAsset = edcSubmodelFacade.getEndpointReferencesForAsset(
+                    edcUrl, bpn);
+            preferredConnectorEndpointsCache.store(bpn, edcUrl);
+            log.info("EDC Url: {} cached for BPNL: {}", edcUrl, bpn);
+            return endpointReferencesForAsset;
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
+            preferredConnectorEndpointsCache.remove(bpn, edcUrl);
             return List.of(CompletableFuture.failedFuture(
                     new EdcRetrieverException.Builder(e).withBpn(bpn).withEdcUrl(edcUrl).build()));
         } finally {

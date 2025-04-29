@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,21 +23,33 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.edc.client.storage.EndpointDataReferenceStorage;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.stereotype.Component;
 
 /**
- * Config values for blobstore
+ * Redis health indicator for Spring actuator
  */
-@Configuration
-@ConfigurationProperties(prefix = "blobstore")
-@Getter
-@Setter
-public class BlobstoreConfiguration {
-    private String endpoint;
-    private String accessKey;
-    private String secretKey;
-    private String bucketName;
+@Component
+@Slf4j
+@RequiredArgsConstructor
+class RedisHealthIndicator implements HealthIndicator {
+
+    private final EndpointDataReferenceStorage dataReferenceStorage;
+
+    @Override
+    public Health health() {
+        if (!dataReferenceStorage.isUseRedis()) {
+            return Health.up().withDetail("status", "not in use").build();
+        }
+
+        if (dataReferenceStorage.checkRedisConnection()) {
+            return Health.up().build();
+        } else {
+            return Health.down().build();
+        }
+    }
 }

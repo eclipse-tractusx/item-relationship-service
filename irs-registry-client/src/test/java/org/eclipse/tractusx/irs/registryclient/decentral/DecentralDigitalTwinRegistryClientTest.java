@@ -1,3 +1,21 @@
+/********************************************************************************
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import static org.eclipse.tractusx.irs.registryclient.TestMother.endpointDataReference;
@@ -9,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
@@ -65,6 +84,42 @@ class DecentralDigitalTwinRegistryClientTest {
 
         // when
         client.getAllAssetAdministrationShellIdsByAssetLink(endpointDataReference, IdentifierKeyValuePair.builder().build());
+
+        // then
+        verify(restTemplate).exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class));
+    }
+
+    @Test
+    void shouldCallForAllAssetAdministrationShellFilterBy() {
+        // given
+        final EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
+                                                                                         .endpoint("url.to.host")
+                                                                                         .contractId("contractId")
+                                                                                         .id("test1")
+                                                                                         .authKey("Authorization")
+                                                                                         .authCode("authCode")
+                                                                                         .build();
+        when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class))).thenReturn(
+                ResponseEntity.of(Optional.of(LookupShellsResponse.builder().result(Collections.emptyList()).build())));
+
+
+        IdentifierKeyValuePairLite digitalTwinTypeKeyValue = IdentifierKeyValuePairLite.builder()
+                                                                                       .name("digitalTwinType")
+                                                                                       .value(("PartInstance"))
+                                                                                       .build();
+
+        IdentifierKeyValuePairLite bpnKeyValue = IdentifierKeyValuePairLite.builder()
+                                                                           .name("manufacturerId")
+                                                                           .value(("BPNL000000002BR4"))
+                                                                           .build();
+
+        LookupShellsFilter lookupShellsFilter = LookupShellsFilter.builder()
+                                                                  .cursor("urn:uuid:2f0a0618-ede7-4725-87b7-368121845fb5")
+                                                                  .limit(1)
+                                                                  .identifierKeyValuePairs(List.of(digitalTwinTypeKeyValue, bpnKeyValue))
+                                                                  .build();
+        // when
+        client.getAllAssetAdministrationShellIdsByFilter(endpointDataReference, lookupShellsFilter);
 
         // then
         verify(restTemplate).exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class));

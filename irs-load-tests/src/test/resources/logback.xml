@@ -8,7 +8,7 @@
     </appender>
 
     <!-- Set TRACE level for Gatling classes -->
-    <logger name="io.gatling" level="TRACE"/>
+    <logger name="io.gatling" level="INFO"/>
 
     <!-- Root logger (optional) -->
     <root level="INFO">

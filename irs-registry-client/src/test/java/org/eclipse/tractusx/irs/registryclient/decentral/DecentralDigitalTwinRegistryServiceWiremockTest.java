@@ -1,6 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -64,6 +64,7 @@ import io.github.resilience4j.core.functions.Either;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -87,19 +88,21 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
     private final EdcEndpointReferenceRetriever edcEndpointReferenceRetrieverMock = mock(
             EdcEndpointReferenceRetriever.class);
     private DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService;
+    private PreferredConnectorEndpointsCache preferredConnectorEndpointsCache;
 
     @BeforeEach
     void setUp(WireMockRuntimeInfo wireMockRuntimeInfo) {
         final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
+        preferredConnectorEndpointsCache = new PreferredConnectorEndpointsCache();
         final var discoveryFinderClient = new DiscoveryFinderClientImpl(DISCOVERY_FINDER_URL, restTemplate);
         final var connectorEndpointsService = new ConnectorEndpointsService(discoveryFinderClient, "bpnl");
         final var endpointDataForConnectorsService = new EndpointDataForConnectorsService(
-                edcEndpointReferenceRetrieverMock);
+                edcEndpointReferenceRetrieverMock, preferredConnectorEndpointsCache);
         final var decentralDigitalTwinRegistryClient = new DecentralDigitalTwinRegistryClient(restTemplate,
                 SHELL_DESCRIPTORS_TEMPLATE, LOOKUP_SHELLS_TEMPLATE);
         decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(connectorEndpointsService,
-                endpointDataForConnectorsService, decentralDigitalTwinRegistryClient, new EdcConfiguration());
+                endpointDataForConnectorsService, decentralDigitalTwinRegistryClient, new EdcConfiguration(), preferredConnectorEndpointsCache);
     }
 
     @Nested
@@ -127,6 +130,68 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
             verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
             verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+        }
+
+        @Test
+        void shouldDiscoverEDCAndRequestRegistry_cacheEdcUrl() throws RegistryServiceException, EdcRetrieverException {
+            // Arrange
+            givenThat(postDiscoveryFinder200());
+            givenThat(postEdcDiscovery200());
+            givenThat(getLookupShells200());
+            givenThat(getShellDescriptor200());
+
+            final var endpointDataReference = endpointDataReference("assetId");
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any())).thenReturn(
+                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+
+            // Act
+            decentralDigitalTwinRegistryService.fetchShells(List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
+
+            final Collection<Either<Exception, Shell>> shells = decentralDigitalTwinRegistryService.fetchShells(
+                    List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
+
+            // Assert
+            assertThat(shells).hasSize(1);
+            assertThat(shells.stream().findFirst().get().getOrNull().payload().getSubmodelDescriptors()).hasSize(3);
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+            verify(exactly(2), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+            verify(exactly(2), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+        }
+
+        @Test
+        void shouldDiscoverEDCAndRequestRegistry_shouldRemoveEdcUrlFromCacheIfNotValidAnymore() throws RegistryServiceException, EdcRetrieverException {
+            // Arrange
+            givenThat(postDiscoveryFinder200());
+            givenThat(postEdcDiscovery200());
+            givenThat(getLookupShells200());
+            givenThat(getShellDescriptor200());
+
+            final var endpointDataReference = endpointDataReference("assetId");
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any())).thenReturn(
+                                                                                                       List.of(CompletableFuture.completedFuture(endpointDataReference)))
+                                                                                               .thenReturn(
+                                                                                                       List.of(CompletableFuture.failedFuture(
+                                                                                                               new EdcRetrieverException.Builder(
+                                                                                                                       new RuntimeException(
+                                                                                                                               "No contract offers")).build())))
+                                                                                               .thenReturn(
+                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+
+            // Act
+            decentralDigitalTwinRegistryService.fetchShells(List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
+
+            final Collection<Either<Exception, Shell>> shells = decentralDigitalTwinRegistryService.fetchShells(
+                    List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
+
+            // Assert
+            assertThat(shells).hasSize(1);
+            assertThat(shells.stream().findFirst().get().getOrNull().payload().getSubmodelDescriptors()).hasSize(3);
+            verify(exactly(2), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(2), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+            verify(exactly(2), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+            verify(exactly(2), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+            assertThat(preferredConnectorEndpointsCache.findByBpn(TEST_BPN)).isNotEmpty(); // cached again
         }
 
         @Test

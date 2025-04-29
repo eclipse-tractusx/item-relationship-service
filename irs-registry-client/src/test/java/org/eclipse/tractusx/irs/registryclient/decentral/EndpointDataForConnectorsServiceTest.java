@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,6 +38,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -70,7 +71,7 @@ class EndpointDataForConnectorsServiceTest {
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade = mock(EdcEndpointReferenceRetriever.class);
 
-    private final EndpointDataForConnectorsService sut = new EndpointDataForConnectorsService(edcSubmodelFacade);
+    private final EndpointDataForConnectorsService sut = new EndpointDataForConnectorsService(edcSubmodelFacade, new PreferredConnectorEndpointsCache());
 
     @Test
     void shouldReturnExpectedEndpointDataReference() throws EdcRetrieverException {

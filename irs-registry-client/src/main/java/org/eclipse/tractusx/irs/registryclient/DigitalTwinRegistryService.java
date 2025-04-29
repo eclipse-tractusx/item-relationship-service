@@ -24,9 +24,13 @@
 package org.eclipse.tractusx.irs.registryclient;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import io.github.resilience4j.core.functions.Either;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsFilter;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponseExtended;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 
 /**
@@ -65,6 +69,17 @@ public interface DigitalTwinRegistryService {
     Collection<DigitalTwinRegistryKey> lookupShellIdentifiers(String bpn) throws RegistryServiceException;
 
     /**
+     * Retrieves all registered shell identifiers for a given BPN, with an optional filter for lookup parameters.
+     *
+     * @param bpn                the business partner number (BPN) to retrieve the shell identifiers for
+     * @param lookupShellsFilter the filter criteria to refine the lookup process
+     * @return a collection of digital twin registry keys that match the specified BPN and filter criteria
+     * @throws RegistryServiceException if an error occurs while retrieving the shell identifiers
+     */
+    LookupShellsResponseExtended lookupShellIdentifiers(String bpn, LookupShellsFilter lookupShellsFilter)
+            throws RegistryServiceException;
+
+    /**
      * Retrieves the shell details for the given identifiers.
      *
      * @param identifiers the shell identifiers
@@ -72,4 +87,13 @@ public interface DigitalTwinRegistryService {
      */
     Collection<Either<Exception, Shell>> fetchShells(Collection<DigitalTwinRegistryKey> identifiers)
             throws RegistryServiceException;
+
+    /**
+     * Retrieves the shell details for the given key.
+     *
+     * @param key part chain entry node
+     * @return the shell descriptors
+     */
+    Optional<Shell> fetchShell(PartChainIdentificationKey key) throws RegistryServiceException;
+
 }

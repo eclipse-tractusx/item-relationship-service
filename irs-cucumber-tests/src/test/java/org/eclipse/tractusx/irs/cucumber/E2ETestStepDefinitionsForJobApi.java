@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -102,7 +102,7 @@ public class E2ETestStepDefinitionsForJobApi {
 
     @DataTableType
     public PartChainIdentificationKey definePartChainIdentificationKey(Map<String, String> entry) {
-        return new PartChainIdentificationKey(entry.get("globalAssetId"), entry.get("bpn"));
+        return new PartChainIdentificationKey(entry.get("globalAssetId"), entry.get("bpn"), null);
     }
 
     @Given("the IRS URL {string}")

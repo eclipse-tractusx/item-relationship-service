@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -147,11 +147,11 @@ class IrsFunctionalTest {
         public void initialize(ConfigurableApplicationContext applicationContext) {
             final String hostAddress = minioContainer.getHostAddress();
             TestPropertySourceUtils.addInlinedPropertiesToEnvironment(applicationContext,
-                    "blobstore.endpoint=http://" + hostAddress, "blobstore.accessKey=" + ACCESS_KEY,
-                    "blobstore.secretKey=" + SECRET_KEY, "policystore.persistence.endpoint=http://" + hostAddress,
-                    "policystore.persistence.accessKey=" + ACCESS_KEY,
-                    "policystore.persistence.secretKey=" + SECRET_KEY,
-                    "policystore.persistence.bucketName=policy-test");
+                    "blobstore.persistence.minio.endpoint=http://" + hostAddress,
+                    "blobstore.persistence.minio.accessKey=" + ACCESS_KEY,
+                    "blobstore.persistence.minio.secretKey=" + SECRET_KEY,
+                    "blobstore.jobs.containerName=jobs-test",
+                    "blobstore.policies.containerName=policy-test");
         }
     }
 

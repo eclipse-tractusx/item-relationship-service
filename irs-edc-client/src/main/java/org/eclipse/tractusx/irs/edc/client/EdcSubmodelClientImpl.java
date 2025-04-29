@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -156,7 +156,6 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         final String dspEndpointAddress = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
 
-        // CatalogItem = contract offer
         final List<CatalogItem> contractOffers = new ArrayList<>(execute(dspEndpointAddress,
                 () -> edcOrchestrator.getCatalogItems(dspEndpointAddress, DT_DCAT_TYPE_ID, DT_TAXONOMY_REGISTRY, bpn)));
 

@@ -45,6 +45,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
+import org.eclipse.tractusx.irs.common.persistence.AzureBlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
@@ -59,6 +60,10 @@ import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientLocalStub;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.common.persistence.config.AzureBlobstoreConfiguration;
+import org.eclipse.tractusx.irs.common.persistence.config.BlobStoreConfiguration;
+import org.eclipse.tractusx.irs.common.persistence.config.BlobStoreContainerConfiguration;
+import org.eclipse.tractusx.irs.common.persistence.config.MinioBlobstoreConfiguration;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientLocalStub;
@@ -69,6 +74,7 @@ import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -82,8 +88,7 @@ import org.springframework.context.annotation.Profile;
                     "PMD.TooManyMethods"
 })
 public class JobConfiguration {
-    public static final String JOB_BLOB_PERSISTENCE = "JobPersistence";
-    private static final Integer EXPIRE_AFTER_DAYS = 7;
+    public static final String JOB_BLOB_PERSISTENCE = "jobPersistence";
 
     @Bean
     public OutboundMeterRegistryService outboundMeterRegistryService(final MeterRegistry meterRegistry,
@@ -140,9 +145,36 @@ public class JobConfiguration {
 
     @Profile("!test")
     @Bean(JOB_BLOB_PERSISTENCE)
-    public BlobPersistence blobStore(final BlobstoreConfiguration config) throws BlobPersistenceException {
-        return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(),
-                config.getBucketName(), EXPIRE_AFTER_DAYS);
+    @ConditionalOnProperty(name = "blobstore.persistence.storeType", havingValue = "MINIO")
+    public BlobPersistence minioBlobStore(final BlobStoreConfiguration config) throws BlobPersistenceException {
+        final MinioBlobstoreConfiguration minioConfig = config.getPersistence().getMinio();
+        final BlobStoreContainerConfiguration jobsConfig = config.getJobs();
+
+        if (minioConfig == null || jobsConfig == null) {
+            throw new IllegalArgumentException("Missing blob storage configuration");
+        }
+
+        return new MinioBlobPersistence(minioConfig.getEndpoint(), minioConfig.getAccessKey(), minioConfig.getSecretKey(),
+                jobsConfig.getContainerName(), jobsConfig.getDaysToLive());
+    }
+
+    @Profile("!test")
+    @Bean(JOB_BLOB_PERSISTENCE)
+    @ConditionalOnProperty(name = "blobstore.persistence.storeType", havingValue = "AZURE")
+    public BlobPersistence azureBlobStore(final BlobStoreConfiguration config) {
+        final AzureBlobstoreConfiguration azureConfig = config.getPersistence().getAzure();
+        final BlobStoreContainerConfiguration jobsConfig = config.getJobs();
+
+        if (azureConfig == null || jobsConfig == null) {
+            throw new IllegalArgumentException("Missing blob storage configuration");
+        }
+
+        if (azureConfig.isUseConnectionString()) {
+            return new AzureBlobPersistence(azureConfig.getConnectionString(), jobsConfig.getContainerName());
+        } else {
+            return new AzureBlobPersistence(azureConfig.getBaseUrl(), azureConfig.getClientId(), azureConfig.getClientSecret(),
+                    azureConfig.getTenantId(), jobsConfig.getContainerName());
+        }
     }
 
     @Bean

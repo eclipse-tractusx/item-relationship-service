@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,24 +21,21 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.policystore.config;
+package org.eclipse.tractusx.irs.common.persistence.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
- * Config values for blobstore
+ * Configuration of Azure blob storage
  */
-@Configuration
-@ConfigurationProperties(prefix = "policystore.persistence")
 @Getter
 @Setter
-public class PolicyBlobstoreConfiguration {
-    private String endpoint;
-    private String accessKey;
-    private String secretKey;
-    private String bucketName;
-    private int daysToLive;
+public class AzureBlobstoreConfiguration {
+    private boolean useConnectionString;
+    private String baseUrl;
+    private String clientId;
+    private String clientSecret;
+    private String tenantId;
+    private String connectionString;
 }

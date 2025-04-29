@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -43,11 +43,13 @@ import java.util.concurrent.TimeoutException;
 import io.github.resilience4j.core.functions.Either;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.PreferredConnectorEndpointsCache;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
@@ -70,7 +72,7 @@ class DecentralDigitalTwinRegistryServiceTest {
 
     private final DecentralDigitalTwinRegistryService sut = new DecentralDigitalTwinRegistryService(
             connectorEndpointsService, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient,
-            new EdcConfiguration());
+            new EdcConfiguration(), new PreferredConnectorEndpointsCache());
 
     public static AssetAdministrationShellDescriptor shellDescriptor(
             final List<SubmodelDescriptor> submodelDescriptors) {
@@ -250,6 +252,50 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
+        void shouldReturnTheExpectedAASIdByFilter() throws RegistryServiceException {
+            // given
+            final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
+                    "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
+
+            final String expectedBPN = "bpn";
+            final String expectedDigitalTwinType = "partType";
+            final int expectedLimit = 5;
+            final String expectedCursor = null;
+
+            IdentifierKeyValuePairLite digitalTwinType = IdentifierKeyValuePairLite.builder().name("DigitalTwinType").value(expectedDigitalTwinType).build();
+            IdentifierKeyValuePairLite manufacturerId = IdentifierKeyValuePairLite.builder().name("manufacturerId").value(expectedBPN).build();
+
+            final LookupShellsFilter lookupShellsFilter = LookupShellsFilter.builder()
+                    .cursor(null)
+                    .limit(5)
+                    .identifierKeyValuePairs(List.of(manufacturerId, digitalTwinType))
+                                                                            .build();
+
+            final var dataRefFutures = List.of(
+                    completedFuture(endpointDataReference("contractAgreementId", "url.to.host")));
+            final var lookupShellsResponse = LookupShellsResponse.builder()
+                                                                 .result(List.of(digitalTwinRegistryKey.shellId()))
+                                                                 .build();
+            when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(),
+                    any())).thenReturn(dataRefFutures);
+            when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByFilter(any(),
+                    any(LookupShellsFilter.class))).thenReturn(lookupShellsResponse);
+
+            // when
+            final LookupShellsResponseExtended assetAdministrationShellDescriptors = sut.lookupShellIdentifiers(digitalTwinRegistryKey.bpn(), lookupShellsFilter);
+
+
+            // then
+            assertThat(assetAdministrationShellDescriptors.getBpn()).isEqualTo(expectedBPN);
+            assertThat(assetAdministrationShellDescriptors.getDigitalTwinType()).isEqualTo(expectedDigitalTwinType);
+            assertThat(assetAdministrationShellDescriptors.getLimit()).isEqualTo(expectedLimit);
+            assertThat(assetAdministrationShellDescriptors.getCursor()).isEqualTo(expectedCursor);
+            assertThat(assetAdministrationShellDescriptors.getResult()).isEqualTo(List.of(digitalTwinRegistryKey.shellId()));
+
+        }
+
+        @Test
         void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException, TimeoutException {
             // given
             simulateResultFinderInterrupted();
@@ -279,4 +325,92 @@ class DecentralDigitalTwinRegistryServiceTest {
                                     .hasMessageContaining("'" + bpn + "'");
         }
     }
+
+    @Nested
+    @DisplayName("lookupAasIdentificator")
+    class LookupAasIdentificatorTests {
+
+        @Test
+        void shouldReturnExpectedGlobalAssetId() throws RegistryServiceException {
+            // given
+            final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
+                    "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
+
+            final var expectedGlobalAssetId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-aaaaaaaaaaaa";
+            final var expectedShell = shellDescriptor(emptyList()).toBuilder()
+                                                                  .globalAssetId(expectedGlobalAssetId)
+                                                                  .build();
+            final var dataRefFutures = List.of(
+                    completedFuture(endpointDataReference("contractAgreementId", "url.to.host")));
+            final var lookupShellsResponse = LookupShellsResponse.builder()
+                                                                 .result(List.of(digitalTwinRegistryKey.shellId()))
+                                                                 .build();
+
+            when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(),
+                    any())).thenReturn(dataRefFutures);
+            when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
+                    any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
+            when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
+                    expectedShell);
+
+            PartChainIdentificationKey partChainIdentificationKey = PartChainIdentificationKey.builder()
+                                                                                              .identifier("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b")
+                                                                                              .bpn("bpn")
+                                                                                              .build();
+
+            // when
+            final var assetAdministrationShellDescriptors = sut.fetchShell(partChainIdentificationKey);
+
+            String actualGlobalAssetId = assetAdministrationShellDescriptors
+                    .map(Shell::payload)
+                    .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
+                    .get();
+
+            // then
+            assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
+        }
+
+        @Test
+        void shouldReturnExpectedGlobalAssetId_noAasIdPassed() throws RegistryServiceException {
+            // given
+            final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
+                    "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
+
+            final var expectedGlobalAssetId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-aaaaaaaaaaaa";
+            final var expectedShell = shellDescriptor(emptyList()).toBuilder()
+                                                                  .globalAssetId(expectedGlobalAssetId)
+                                                                  .build();
+            final var dataRefFutures = List.of(
+                    completedFuture(endpointDataReference("contractAgreementId", "url.to.host")));
+            final var lookupShellsResponse = LookupShellsResponse.builder()
+                                                                 .result(List.of(digitalTwinRegistryKey.shellId()))
+                                                                 .build();
+
+            when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(),
+                    any())).thenReturn(dataRefFutures);
+            when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
+                    any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
+            when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
+                    expectedShell);
+
+            PartChainIdentificationKey partChainIdentificationKey = PartChainIdentificationKey.builder()
+                                                                                              .globalAssetId("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b")
+                                                                                              .bpn("bpn")
+                                                                                              .build();
+
+            // when
+            final var assetAdministrationShellDescriptors = sut.fetchShell(partChainIdentificationKey);
+
+            String actualGlobalAssetId = assetAdministrationShellDescriptors
+                    .map(Shell::payload)
+                    .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
+                    .get();
+
+            // then
+            assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
+        }
+    }
+
 }

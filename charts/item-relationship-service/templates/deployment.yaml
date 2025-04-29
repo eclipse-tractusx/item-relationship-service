@@ -71,16 +71,6 @@ spec:
               mountPath: /app/semantic-models
             {{- end }}
           env:
-            - name: MINIO_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "irs.secretName" . }}
-                  key: minioUser
-            - name: MINIO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "irs.secretName" . }}
-                  key: minioPassword
             - name: SEMANTICS_OAUTH2_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -106,6 +96,13 @@ spec:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: edcApiSecret
+            {{- if .Values.redisConfig.enabled }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: redisPassword
+            {{- end }}
             {{- if .Values.env }}
             {{- include "common.tplvalues.render" (dict "value" .Values.env "context" $) | nindent 12 }}
             {{- end }}

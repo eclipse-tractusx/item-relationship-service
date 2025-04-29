@@ -1,15 +1,18 @@
 blobstore:
-  endpoint: http://localhost:9000
-  accessKey: minioadmin
-  secretKey: minioadmin
-
-policystore:
   persistence:
-    endpoint: http://localhost:9000
-    accessKey: minioadmin
-    secretKey: minioadmin
+    storeType: MINIO
+    minio:
+      endpoint: http://localhost:9000
+      accessKey: minioadmin
+      secretKey: minioadmin
+# Alternative for testing with Azure Blob Storage. Uncomment this and use docker-compose-azurite.yml
+#    storeType: AZURE
+#    azure:
+#      useConnectionString: true
+#      connectionString: 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;'
 
-digitalTwinRegistry.type: central
+digitalTwinRegistry:
+  type: decentral
 
 irs:
   job:
@@ -27,8 +30,6 @@ irs:
         admin: 01234567890123456789
         regular: 09876543210987654321
 
-
-
 spring:
   security:
     oauth2:
@@ -36,6 +37,10 @@ spring:
         provider:
           common:
             token-uri: https://localhost
+  redis:
+    host: localhost
+    port: 6379
+    password: redispwd
 
 # ESS Module specific properties
 ess:
@@ -44,3 +49,7 @@ ess:
 
 irs-edc-client:
   async-timeout: PT10M
+  controlplane:
+    datareference:
+      storage:
+        useRedis: true

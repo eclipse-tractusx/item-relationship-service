@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,8 +36,8 @@ import org.junit.jupiter.api.Test;
 
 class EdcCallbackControllerTest {
 
-    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
-    private final ContractNegotiationIdStorage contractNegotiationIdStorage = new ContractNegotiationIdStorage(Duration.of(1, ChronoUnit.MINUTES));
+    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1), false, null);
+    private final ContractNegotiationIdStorage contractNegotiationIdStorage = new ContractNegotiationIdStorage(Duration.of(1, ChronoUnit.MINUTES), false, null);
     private final EdcCallbackController testee = new EdcCallbackController(storage, contractNegotiationIdStorage);
 
     @Test

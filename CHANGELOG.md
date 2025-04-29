@@ -7,8 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
+### Added
+- Add option for using Redis to store endpoint data references eclipse-tractusx/item-relationship-service#953
+- Add option for using Azure Blob Storage for storing jobs and policies eclipse-tractusx/item-relationship-service#952 
+- Implemented new function to lookupshells by filter (digitalTwinType) eclipse-tractusx/item-relationship-service#976
+
+### Changed
+
+- Enabled job TTL duration configuration via Helm eclipse-tractusx/item-relationship-service#951
+- Improve IRS DTR Asset control eclipse-tractusx/item-relationship-service#953
+- Update dependency check plugin eclipse-tractusx/item-relationship-service#951
+- API Change POST /irs/order providing aas identifier as key eclipse-tractusx/item-relationship-service#942
+
 ### Fixed
-- Bumped version of tj-actions/changed-files to v46
+- IRS cleanup jobs cause OOME eclipse-tractusx/item-relationship-service#956
+- fixed inefficient blob store interaction when running scheduled job cleanup eclipse-tractusx/item-relationship-service#956
+- construct callback urls on IRS side eclipse-tractusx/item-relationship-service#942
+- exclude io.netty:netty-handler 4.1.116.Final and readded with 4.1.118.Final eclipse-tractusx/item-relationship-service#951
+- Exclude unused transient dependencies of edc packages eclipse-tractusx/item-relationship-service#951
+- updated eclipse-temurin base image from 21 to 24 eclipse-tractusx/item-relationship-service#951
+
 
 ## [6.0.1] - 2025-02-19
 
@@ -839,7 +857,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...HEAD
+[6.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...6.0.1
+[6.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...6.0.0
 [5.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.0...5.4.1
 [5.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.0...5.4.0
 [5.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.2.0...5.3.0

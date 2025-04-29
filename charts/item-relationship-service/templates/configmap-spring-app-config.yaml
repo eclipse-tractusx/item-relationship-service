@@ -40,6 +40,10 @@ data:
           threadCount: {{ .Values.job.scheduled.threadCount }}
         cached:
           threadCount: {{ .Values.job.cached.threadCount }}
+        jobstore:
+          ttl:
+            failed: {{ .Values.job.ttl.failed | default "PT24H"  | quote }}
+            completed: {{ .Values.job.ttl.completed | default "PT24H" | quote  }}
       apiUrl: {{ tpl (.Values.irsUrl | default "http://localhost") . | quote }}
       security:
         api:
@@ -48,15 +52,28 @@ data:
             regular: {{ tpl (.Values.apiKeyRegular | default "") . | quote }}
 
     blobstore:
-      endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
-      accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
-      secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
-
-    policystore:
       persistence:
-        endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
-        accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
-        secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+        storeType: {{ .Values.blobstore.persistence.storeType | default "MINIO" | quote }}
+        {{- if .Values.blobstore.persistence.minio }}
+        minio:
+          endpoint: {{ tpl .Values.blobstore.persistence.minio.endpoint . | quote }}
+          accessKey: {{ .Values.blobstore.persistence.minio.accessKey | default "minio" | quote }}
+          secretKey: {{ .Values.blobstore.persistence.minio.secretKey | default "minioPass" | quote }}
+        {{- end }}
+        {{- if .Values.blobstore.persistence.azure }}
+        azure:
+          baseUrl: {{ .Values.blobstore.persistence.azure.baseUrl | quote }}
+          clientId: {{ .Values.blobstore.persistence.azure.clientId | quote }}
+          clientSecret: {{ .Values.blobstore.persistence.azure.clientSecret | quote }}
+          tenantId: {{ .Values.blobstore.persistence.azure.tenantId | quote }}
+          useConnectionString: false
+        {{- end }}
+      jobs:
+        containerName: {{ ((.Values.blobstore).jobs).containerName | default "irs-jobs" | quote }}
+        daysToLive: {{ ((.Values.blobstore).jobs).daysToLine | default 7 | quote }}
+      policies:
+        containerName: {{ ((.Values.blobstore).policies).containerName | default "irs-policy" | quote }}
+        daysToLive: {{ ((.Values.blobstore).policies).daysToLine | default -1 | quote }}
 
     spring:
       security:
@@ -76,6 +93,14 @@ data:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
               discovery:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
+      {{- if .Values.redisConfig.enabled }}
+      redis:
+        host: {{ .Values.redisConfig.host }}
+        port: {{ .Values.redisConfig.port }}
+        password: ${REDIS_PASSWORD} # Use value from secret
+      {{- end }}
+      cache:
+        type: simple # Use in-memory cache for @Cacheable
 
     digitalTwinRegistry:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
@@ -123,11 +148,14 @@ data:
         api-key:
           header: {{ tpl (.Values.edc.controlplane.apikey.header | default "") . | quote }}
           secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV
+        datareference:
+          storage:
+            useRedis: {{ .Values.edc.controlplane.datareference.storage.useRedis }}
 
       submodel:
         request-ttl: {{ tpl .Values.edc.submodel.request.ttl . | default "PT10M" | quote }}
         urn-prefix: {{ tpl (.Values.edc.submodel.urnprefix | default "/urn") . | quote }}
-        submodel-suffix: {{ tpl (.Values.edc.submodel.suffix | default "/$value") . | quote }}
+        submodel-suffix: {{ tpl (.Values.edc.submodel.suffix) . | quote }}
 
       catalog:
         acceptedPolicies: {{ .Values.edc.catalog.acceptedPolicies | trim | b64enc | quote }}

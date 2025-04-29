@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,13 +26,21 @@ package org.eclipse.tractusx.irs.registryclient.central;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import io.github.resilience4j.core.functions.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsFilter;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponseExtended;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 
 /**
  * Central implementation of DigitalTwinRegistryService
@@ -49,9 +57,25 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
             final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.shellId());
             log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.shellId());
 
-            return Either.<Exception, Shell>right(new Shell("",
-                    digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification)));
+            return Either.<Exception, Shell>right(fetchShell(aaShellIdentification));
         }).toList();
+    }
+
+    @Override
+    public Optional<Shell> fetchShell(final PartChainIdentificationKey key) {
+        if (!StringUtils.isBlank(key.getIdentifier())) {
+            return Optional.of(fetchShell(key.getIdentifier()));
+        }
+
+        return fetchShells(List.of(new DigitalTwinRegistryKey(key.getGlobalAssetId(), key.getBpn()))).stream()
+                                                                                                     .map(Either::getOrNull)
+                                                                                                     .filter(Objects::nonNull)
+                                                                                                     .findFirst();
+    }
+
+    private Shell fetchShell(final String aaShellIdentification) {
+        return new Shell("",
+                digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification));
     }
 
     @Override
@@ -61,6 +85,12 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
                                                       .getResult();
         log.info("Found {} shells in total", shellIds.size());
         return shellIds.stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
+    }
+
+    @Override
+    public LookupShellsResponseExtended lookupShellIdentifiers(final String bpn,
+            final LookupShellsFilter lookupShellsFilter) throws RegistryServiceException {
+        throw new RegistryServiceException("Not implemented yet");
     }
 
     private String getAAShellIdentificationOrGlobalAssetId(final String globalAssetId) {
