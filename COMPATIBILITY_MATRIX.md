@@ -4,7 +4,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 
 ## [Unreleased]
 
-## [6.0.1](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/6.0.1)- 2025-02-14
+## [6.0.1](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/6.0.1)- 2025-02-14 - [7.0.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/7.0.0)- 2025-05-09
 
 | Dependency                                                                                                                               | Version                      | Helm  | Comments        |
 |------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
