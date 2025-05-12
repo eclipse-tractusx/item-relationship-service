@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
-## [Unreleased]
+## [7.0.1] - 2025-05-13
+### Fixed
+- adjusted dependencies in actions and poms to prevent vulnerabilities
+
+## [7.0.0] - 2025-05-09
 ### Added
 - Add option for using Redis to store endpoint data references eclipse-tractusx/item-relationship-service#953
 - Add option for using Azure Blob Storage for storing jobs and policies eclipse-tractusx/item-relationship-service#952 
