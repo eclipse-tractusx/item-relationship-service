@@ -72,7 +72,7 @@ runs:
           mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
 
       - name: Publish Cucumber Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        uses: EnricoMi/publish-unit-test-result-action@v2.19.0
         if: always()
         with:
           files: |
