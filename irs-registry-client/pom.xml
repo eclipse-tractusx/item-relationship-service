@@ -63,7 +63,7 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-websocket</artifactId>
-            <version>11.0.6</version>
+            <version>${tomcat.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
