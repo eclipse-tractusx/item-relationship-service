@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
+## [Unreleased] - 2025-XX-XX
+### Fixed
+- adjusted dependencies in actions and poms to prevent vulnerabilities
 
-## [Unreleased]
+## [7.0.0] - 2025-05-09
 ### Added
 - Add option for using Redis to store endpoint data references eclipse-tractusx/item-relationship-service#953
 - Add option for using Azure Blob Storage for storing jobs and policies eclipse-tractusx/item-relationship-service#952 

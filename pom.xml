@@ -64,12 +64,13 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>3.0.0</irs-registry-client.version>
+        <irs-registry-client.version>3.0.1</irs-registry-client.version>
 
         <!-- Dependencies -->
 
         <springboot.version>3.4.4</springboot.version>
         <springdoc.version>2.2.0</springdoc.version>
+        <tomcat.version>11.0.6</tomcat.version>
         <micrometer.version>1.11.4</micrometer.version>
         <datafaker.version>1.9.0</datafaker.version>
         <json-unit-assertj.version>3.2.7</json-unit-assertj.version>
@@ -150,13 +151,18 @@
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
-                <version>11.0.5</version>
+                <version>11.0.6</version>
             </dependency>
             <!-- CVE in tomcat-embed-el 10.1.39 that comes with spring-boot-starter-web:jar:3.4.4 can be removed after Spring updates their dependency -->
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-el</artifactId>
-                <version>11.0.5</version>
+                <version>11.0.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
+                <version>11.0.6</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
