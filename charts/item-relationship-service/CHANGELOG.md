@@ -11,6 +11,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Breaking update to new chart structure for blob storage and add Azure as an option eclipse-tractusx/item-relationship-service#952
 
 ## [8.0.1] - 2025-02-19
+- Update to new chart structure for blob storage and add Azure as an option eclipse-tractusx/item-relationship-service#952
 
 ### Changed
 
