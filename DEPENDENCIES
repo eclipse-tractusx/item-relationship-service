@@ -263,9 +263,11 @@ maven/mavencentral/org.apache.logging.log4j/log4j-core/2.24.3, Apache-2.0 AND (A
 maven/mavencentral/org.apache.logging.log4j/log4j-jul/2.24.3, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.apache.logging.log4j/log4j-slf4j2-impl/2.24.3, Apache-2.0 AND MIT, approved, clearlydefined
 maven/mavencentral/org.apache.logging.log4j/log4j-to-slf4j/2.24.3, Apache-2.0, approved, #16094
-maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-core/11.0.5, Apache-2.0 AND (EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0) AND (CDDL-1.0 OR GPL-2.0-or-later), approved, #19217
-maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-el/11.0.5, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-websocket/10.1.39, Apache-2.0, approved, #7920
+maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-core/11.0.6, Apache-2.0 AND (EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0) AND (CDDL-1.0 OR GPL-2.0-or-later), approved, #19217
+maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-el/11.0.6, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-websocket/11.0.6, Apache-2.0, approved, #21065
+maven/mavencentral/org.apache.tomcat/tomcat-annotations-api/10.1.39, Apache-2.0, approved, #8196
+maven/mavencentral/org.apache.tomcat/tomcat-annotations-api/11.0.6, Apache-2.0, approved, #21067
 maven/mavencentral/org.apiguardian/apiguardian-api/1.1.2, Apache-2.0, approved, #17641
 maven/mavencentral/org.aspectj/aspectjweaver/1.9.23, EPL-1.0, approved, tools.aspectj
 maven/mavencentral/org.assertj/assertj-core/3.26.3, Apache-2.0, approved, #14886
@@ -334,12 +336,12 @@ maven/mavencentral/org.eclipse.edc/web-spi/0.6.0, Apache-2.0, approved, technolo
 maven/mavencentral/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/5.0.2, EPL-2.0 OR Apache-2.0, approved, rt.jetty
 maven/mavencentral/org.eclipse.tractusx.edc/edr-api/0.6.0, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-api/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-common/3.0.0, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/3.0.0, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-models/3.0.0, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-common/3.0.2, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/3.0.2, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-models/3.0.2, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-policy-store/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/3.0.0, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-testing/3.0.0, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/3.0.2, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-testing/3.0.2, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.glassfish/jakarta.json/2.0.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jsonp
 maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/org.hamcrest/hamcrest/2.2, BSD-3-Clause, approved, #17677
