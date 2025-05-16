@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased] - 2025-05-13
+
+## [9.0.0] - 2025-05-16
 ### Changed
+
+- Update IRS version to 7.0.1
 - Breaking update to new chart structure for blob storage and add Azure as an option eclipse-tractusx/item-relationship-service#952
 
 ## [8.0.1] - 2025-02-19
