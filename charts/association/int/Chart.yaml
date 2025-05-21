@@ -19,10 +19,10 @@ version: 1.0.4
 dependencies:
   - name: item-relationship-service
     repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 8.0.1
+    version: 9.0.0
   - name: tractusx-connector
     repository: https://eclipse-tractusx.github.io/tractusx-edc
-    version: 0.9.0-rc2
+    version: 0.10.0-rc2
   - condition: postgresql.enabled
     alias: edc-postgresql
     name: postgresql

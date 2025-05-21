@@ -116,6 +116,9 @@ item-relationship-service:
         secret: <path:item-relationship-service/data/int/controlplane#apiKey>
       edrManagementEnabled: true
     catalog:
+      cache:
+        execution:
+          enabled: false
       acceptedPolicies: >
         [{
             "policyId": "default-policy",
@@ -153,7 +156,9 @@ item-relationship-service:
     requests:
       cpu: 200m
       memory: 1.5Gi
-
+  dcp:
+    v08:
+      forced: true
 
   #######################
   # Minio Configuration #
