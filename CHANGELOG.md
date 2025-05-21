@@ -8,6 +8,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [Unreleased] - 2025-XX-XX
 
 ## [7.0.1] - 2025-05-13
+
 ### Fixed
 - adjusted dependencies in actions and poms to prevent vulnerabilities
 

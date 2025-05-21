@@ -9,6 +9,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [Unreleased] - 2025-05-13
 
 ## [9.0.0] - 2025-05-13
+
 ### Changed
 
 - Update IRS version to 7.0.1
