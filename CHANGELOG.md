@@ -11,6 +11,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Fixed
 - adjusted dependencies in actions and poms to prevent vulnerabilities
 
+### Known knowns
+- https://github.com/eclipse-tractusx/traceability-foss/issues/1459
+
 ## [7.0.0] - 2025-05-09
 ### Added
 - Add option for using Redis to store endpoint data references eclipse-tractusx/item-relationship-service#953
@@ -32,6 +35,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Exclude unused transient dependencies of edc packages eclipse-tractusx/item-relationship-service#951
 - updated eclipse-temurin base image from 21 to 24 eclipse-tractusx/item-relationship-service#951
 
+### Known knowns
+- https://github.com/eclipse-tractusx/traceability-foss/issues/1459
 
 ## [6.0.1] - 2025-02-19
 
