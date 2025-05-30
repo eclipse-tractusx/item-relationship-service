@@ -64,10 +64,9 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>3.1.0</irs-registry-client.version>
+        <irs-registry-client.version>3.1.1</irs-registry-client.version>
 
         <!-- Dependencies -->
-
         <springboot.version>3.4.4</springboot.version>
         <springdoc.version>2.2.0</springdoc.version>
         <tomcat.version>11.0.6</tomcat.version>
@@ -82,7 +81,7 @@
         <jsonassert.version>1.5.1</jsonassert.version>
         <junit-bom.version>5.10.2</junit-bom.version>
         <cucumber-bom.version>7.18.0</cucumber-bom.version>
-        <commons-validator.version>1.8.0</commons-validator.version>
+        <commons-validator.version>1.9.0</commons-validator.version>
         <swagger-annotations.version>2.2.29</swagger-annotations.version>
         <edc.version>0.6.0</edc.version>
         <okio-jvm.version>3.5.0</okio-jvm.version>
@@ -96,6 +95,7 @@
         <jackson-databind.version>2.15.1</jackson-databind.version>
         <junit-jupiter-engine.version>5.11.4</junit-jupiter-engine.version>
         <json-smart.version>2.5.2</json-smart.version>
+        <common-beanutils.version>1.11.0</common-beanutils.version>
 
         <testcontainers-bom.version>1.19.7</testcontainers-bom.version>
         <azure-bom.version>1.2.32</azure-bom.version>
