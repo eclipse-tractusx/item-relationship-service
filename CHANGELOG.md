@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 ## [Unreleased] - 2025-XX-XX
+### Changed
+- #1063 commons-beanutils:commons-beanutils 1.9.4 to 1.11.0 to fix CVE-2025-48734
 
 ## [7.0.1] - 2025-05-16
 ### Fixed
