@@ -3,3 +3,6 @@ leadingRepository: "https://github.com/eclipse-tractusx/item-relationship-servic
 repositories: []
 openApiSpecs:
 - "https://raw.githubusercontent.com/eclipse-tractusx/item-relationship-service/main/docs/src/api/irs-api.yaml"
+- "https://raw.githubusercontent.com/eclipse-tractusx/item-relationship-service/refs/tags/7.0.1/docs/src/api/irs-api.yaml"
+- "https://raw.githubusercontent.com/eclipse-tractusx/item-relationship-service/refs/tags/6.0.1/docs/src/api/irs-api.yaml"
+- "https://raw.githubusercontent.com/eclipse-tractusx/item-relationship-service/refs/tags/5.4.0/docs/src/api/irs-api.yaml"
