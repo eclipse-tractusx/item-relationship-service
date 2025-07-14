@@ -264,7 +264,7 @@ maven/mavencentral/org.apache.logging.log4j/log4j-jul/2.24.3, Apache-2.0, approv
 maven/mavencentral/org.apache.logging.log4j/log4j-slf4j2-impl/2.24.3, Apache-2.0 AND MIT, approved, clearlydefined
 maven/mavencentral/org.apache.logging.log4j/log4j-to-slf4j/2.24.3, Apache-2.0, approved, #16094
 maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-core/11.0.6, Apache-2.0 AND (EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0) AND (CDDL-1.0 OR GPL-2.0-or-later), approved, #19217
-maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-el/11.0.6, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-el/11.0.6, Apache-2.0, approved, #22421
 maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-websocket/11.0.6, Apache-2.0, approved, #21065
 maven/mavencentral/org.apache.tomcat/tomcat-annotations-api/10.1.39, Apache-2.0, approved, #8196
 maven/mavencentral/org.apache.tomcat/tomcat-annotations-api/11.0.6, Apache-2.0, approved, #21067
