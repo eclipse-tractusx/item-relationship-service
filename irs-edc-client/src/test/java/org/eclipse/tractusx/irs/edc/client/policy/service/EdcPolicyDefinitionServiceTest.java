@@ -95,7 +95,7 @@ class EdcPolicyDefinitionServiceTest {
                         		"@type": "Policy",
                         		"odrl:permission": [
                         			{
-                        				"odrl:action": "use",
+                        				"odrl:action": "USE",
                         				"odrl:constraint": {
                         					"@type": "AtomicConstraint",
                         					"odrl:or": [],

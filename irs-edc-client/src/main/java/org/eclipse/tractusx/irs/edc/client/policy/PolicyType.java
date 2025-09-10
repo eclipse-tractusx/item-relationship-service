@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.edc.client.policy;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * A PolicyType object use in Permission
@@ -33,9 +34,19 @@ import com.fasterxml.jackson.annotation.JsonValue;
 @Getter
 @RequiredArgsConstructor
 public enum PolicyType {
-    ACCESS("access"),
-    USE("use");
+    ACCESS("ACCESS"),
+    USE("USE");
 
     @JsonValue
     private final String value;
+
+    @JsonCreator
+    public static PolicyType fromValue(String value) {
+        for (PolicyType type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown PolicyType: " + value);
+    }
 }
