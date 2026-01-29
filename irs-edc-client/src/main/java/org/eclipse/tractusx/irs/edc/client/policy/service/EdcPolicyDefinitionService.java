@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.asset.model.Context;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcOperand;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcOperator;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
@@ -131,7 +132,7 @@ public class EdcPolicyDefinitionService {
     public EdcCreatePolicyDefinitionRequest createPolicyDefinition(final String policyName,
             final String accessPolicyId) {
         final var constraint = EdcPolicyPermissionConstraintExpression.builder()
-                                                                      .leftOperand("PURPOSE")
+                                                                      .leftOperand(new EdcOperand("PURPOSE"))
                                                                       .rightOperand(policyName)
                                                                       .operator(new EdcOperator(OPERATOR_PREFIX + "eq"))
                                                                       .type(CONSTRAINT)

@@ -43,7 +43,7 @@ public enum PolicyType {
     @JsonCreator
     public static PolicyType fromValue(String value) {
         for (PolicyType type : values()) {
-            if (type.value.equalsIgnoreCase(value)) {
+            if (type.value.equalsIgnoreCase(value) || type.value.equalsIgnoreCase("odrl:" + value)) {
                 return type;
             }
         }

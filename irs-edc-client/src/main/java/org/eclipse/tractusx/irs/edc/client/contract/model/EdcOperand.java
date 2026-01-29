@@ -1,6 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,34 +16,22 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.policy.model;
+package org.eclipse.tractusx.irs.edc.client.contract.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.ToString;
-import org.eclipse.tractusx.irs.edc.client.contract.model.EdcOperand;
-import org.eclipse.tractusx.irs.edc.client.contract.model.EdcOperator;
 
 /**
- * EdcPolicyPermissionConstraintExpression used for policy create request
+ * EdcOperand
  */
 
 @ToString
-@Getter
 @Builder
-public class EdcPolicyPermissionConstraintExpression {
+@AllArgsConstructor
+public class EdcOperand {
 
-    @JsonProperty("@type")
-    private final String type;
-
-    @JsonProperty("odrl:leftOperand")
-    private final EdcOperand leftOperand;
-
-    @JsonProperty("odrl:rightOperand")
-    private final String rightOperand;
-
-    @JsonProperty("odrl:operator")
-    private final EdcOperator operator;
-
+    @JsonProperty("@id")
+    private String operandId;
 }

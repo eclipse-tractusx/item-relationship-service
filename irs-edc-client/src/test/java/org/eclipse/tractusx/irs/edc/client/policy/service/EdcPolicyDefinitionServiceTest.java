@@ -102,7 +102,9 @@ class EdcPolicyDefinitionServiceTest {
                         					"odrl:and": [
                         						{
                         							"@type": "Constraint",
-                        							"odrl:leftOperand": "PURPOSE",
+                        							"odrl:leftOperand": {
+                        							    "@id": "PURPOSE"
+                        							},
                         							"odrl:rightOperand": "ID 3.1 Trace",
                         							"odrl:operator": {
                         								"@id": "odrl:eq"
