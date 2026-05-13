@@ -1,4 +1,4 @@
-name: Tavern IRS API tests on INT
+name: Tavern IRS API test on DEV
 
 on:
   workflow_dispatch: # Trigger manually
@@ -6,7 +6,7 @@ on:
       irs-host:
         type: string
         description: IRS environment to test.
-        default: 'https://irs.int.demo.catena-x.net'
+        default: 'https://irs.dev.demo.catena-x.net'
         required: true
       irs-ess-host:
         type: string
@@ -26,13 +26,31 @@ on:
       global-asset-id-asBuilt:
         type: string
         description: Global-asset-id to use for the asBuilt tests.
-        default: 'urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb'
+        default: 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c'
         required: true
       bpn-asBuilt:
         type: string
         description: BPN to use for the asBuilt global-asset-id.
-        default: 'BPNL00000003AYRE'
+        default: 'BPNL00000003AVTH'
         required: true
+      global-asset-id-ess-asBuilt:
+        type: string
+        description: Global-asset-id to use for the asBuilt tests.
+        default: 'urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7'
+        required: true
+      bpn-ess-asBuilt:
+        type: string
+        description: BPN to use for the asBuilt global-asset-id.
+        default: 'BPNL00000003CRHK'
+        required: true
+      bpn-ess-incident:
+        type: string
+        description: Incident BPN to search for which violates against environmental and social standards.
+        default: 'BPNS00000003B6LU'
+        required: true
+
+  schedule:
+    - cron: '0 1 * * 1-5' # At 01:00 on every day-of-week from Monday through Friday.
 
 jobs:
   test:
@@ -54,14 +72,19 @@ jobs:
 
       - name: Run tests
         env:
-          IRS_HOST: ${{ 'https://irs.int.demo.catena-x.net' }}
+          IRS_HOST: ${{ 'https://irs.dev.demo.catena-x.net' }}
           IRS_ESS_HOST: ${{ github.event.inputs.irs-ess-host || 'https://irs-ess.int.demo.catena-x.net' }}
-          REGULAR_USER_API_KEY: ${{ secrets.INT_REGULAR_USER_API_KEY }}
-          ADMIN_USER_API_KEY: ${{ secrets.INT_ADMIN_USER_API_KEY }}
+          REGULAR_USER_API_KEY: ${{ secrets.DEV_REGULAR_USER_API_KEY }}
+          ADMIN_USER_API_KEY: ${{ secrets.DEV_ADMIN_USER_API_KEY }}
+          REGULAR_USER_API_KEY_ESS: ${{ secrets.INT_REGULAR_USER_API_KEY }}
+          ADMIN_USER_API_KEY_ESS: ${{ secrets.INT_ADMIN_USER_API_KEY }}
           GLOBAL_ASSET_ID_AS_PLANNED: ${{ github.event.inputs.global-asset-id-asPlanned || 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e' }}
+          GLOBAL_ASSET_ID_ESS_AS_BUILT: ${{ github.event.inputs.global-asset-id-ess-asBuilt || 'urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7' }}
+          BPN_ESS_AS_BUILT: ${{ github.event.inputs.bpn-ess-asBuilt || 'BPNL00000003CRHK' }}
+          BPN_ESS_INCIDENT: ${{ github.event.inputs.bpn-ess-incident || 'BPNS00000003B6LU' }}
           BPN_AS_PLANNED: ${{ github.event.inputs.bpn-asPlanned || 'BPNL00000003AYRE' }}
-          GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb' }}
-          BPN_AS_BUILT: ${{ github.event.inputs.bpn-asBuilt || 'BPNL00000003AYRE' }}
+          GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c' }}
+          BPN_AS_BUILT: ${{ github.event.inputs.bpn-asBuilt || 'BPNL00000003AVTH' }}
         run: |
           python -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
 
@@ -80,14 +103,19 @@ jobs:
       - name: Run ESS tests
         if: always()
         env:
-          IRS_HOST: ${{ 'https://irs.int.demo.catena-x.net' }}
+          IRS_HOST: ${{ 'https://irs.dev.demo.catena-x.net' }}
           IRS_ESS_HOST: ${{ github.event.inputs.irs-ess-host || 'https://irs-ess.int.demo.catena-x.net' }}
-          REGULAR_USER_API_KEY: ${{ secrets.INT_REGULAR_USER_API_KEY }}
-          ADMIN_USER_API_KEY: ${{ secrets.INT_ADMIN_USER_API_KEY }}
+          REGULAR_USER_API_KEY: ${{ secrets.DEV_REGULAR_USER_API_KEY }}
+          ADMIN_USER_API_KEY: ${{ secrets.DEV_ADMIN_USER_API_KEY }}
+          REGULAR_USER_API_KEY_ESS: ${{ secrets.INT_REGULAR_USER_API_KEY }}
+          ADMIN_USER_API_KEY_ESS: ${{ secrets.INT_ADMIN_USER_API_KEY }}
           GLOBAL_ASSET_ID_AS_PLANNED: ${{ github.event.inputs.global-asset-id-asPlanned || 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e' }}
+          GLOBAL_ASSET_ID_ESS_AS_BUILT: ${{ github.event.inputs.global-asset-id-ess-asBuilt || 'urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7' }}
+          BPN_ESS_AS_BUILT: ${{ github.event.inputs.bpn-ess-asBuilt || 'BPNL00000003CRHK' }}
+          BPN_ESS_INCIDENT: ${{ github.event.inputs.bpn-ess-incident || 'BPNS00000003B6LU' }}
           BPN_AS_PLANNED: ${{ github.event.inputs.bpn-asPlanned || 'BPNL00000003AYRE' }}
-          GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb' }}
-          BPN_AS_BUILT: ${{ github.event.inputs.bpn-asBuilt || 'BPNL00000003AYRE' }}
+          GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c' }}
+          BPN_AS_BUILT: ${{ github.event.inputs.bpn-asBuilt || 'BPNL00000003AVTH' }}
         run: |
           python -m pytest local/testing/api-tests/irs-ess-api-tests.tavern.yaml --junitxml=tavern-ess-results.xml
 
@@ -102,4 +130,3 @@ jobs:
         with:
           files: |
             ess-result.xml
-
