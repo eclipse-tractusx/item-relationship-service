@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
 
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
 
@@ -59,7 +59,7 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4
         with:
           version: v3.9.3
 
@@ -80,14 +80,14 @@ jobs:
           currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^item-relationship-service-//" )
           echo currentVersionNumber=$currentVersionNumber
           
-          sed -n -e '/## \['"${currentVersionNumber}"'\]/,/## \[/ p' ${{ env.CHANGELOG_PATH }} | head -n -1 | tail -n +2 >> CHANGELOG-temp.md
+          sed -n -e '/## \['"{$currentVersionNumber}"'\]/,/## \[/ p' ${{ env.CHANGELOG_PATH }} | head -n -1 | tail -n +2 >> CHANGELOG-temp.md
           echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ needs.get-helm-charts-versions-irs.outputs.latest_version }}...${{ needs.get-helm-charts-versions-irs.outputs.current_version }} >> CHANGELOG-temp.md
           
           echo "cat CHANGELOG-temp.md"
           cat CHANGELOG-temp.md
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 # v1.6.0
         with:
           config: ./.github/configs/cr-config.yml
         env:

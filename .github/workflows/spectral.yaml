@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Check out the repository
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       # Run Spectral
-      - uses: stoplightio/spectral-action@latest
+      - uses: stoplightio/spectral-action@6416fd018ae38e60136775066eb3e98172143141 # v0.8.13
         with:
           file_glob: 'docs/src/api/*.yaml'
           spectral_ruleset: '.config/spectral/restCompleteSet.yml'
