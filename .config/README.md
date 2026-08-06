@@ -15,4 +15,10 @@ This folder contains configuration, rules and suppression files for code quality
 | owasp-suppressions.xml      | [OWASP dependendy check](https://owasp.org/www-project-dependency-check/) suppressions.   | [OWASP suppressions documentation](https://jeremylong.github.io/DependencyCheck/general/suppression.html)              |
 | pmd-rules.xml               | [PMD Source Code Analyzer](https://pmd.github.io/) rules.                                 | [PMD rules documentation](https://pmd.github.io/pmd/pmd_userdocs_making_rulesets.html)                                 |
 
- 
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

@@ -25,3 +25,11 @@ the script [build-docs-locally.sh](build-docs-locally.sh) can be used.
 | src/post-processing        | Some post-processing used by the [GitHub workflow](../.github/workflows/publish-documentation.yaml).                                                                                                                                             |
 | src/uml-diagrams           | UML diagrams for the documentation                                                                                                                                                                                                               |
 | target                     | The output directory for the documentation build.                                                                                                                                                                                                |
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

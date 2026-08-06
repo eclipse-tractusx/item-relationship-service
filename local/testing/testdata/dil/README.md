@@ -45,3 +45,11 @@ includes 4 vehicles.
 - Vehicle D
   - `urn:uuid:5672e8ff-8a73-425e-b2a5-5561b5b21d7a`
   - IntegrityAspect for part `urn:uuid:ef3865b8-6811-4659-a1b5-e186f8e42258` is missing
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2023 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

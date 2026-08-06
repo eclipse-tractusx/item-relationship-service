@@ -129,3 +129,11 @@ Expected result is that both jobs complete and both had their full set of negoti
 Verify that the Cache has been used for the registry negotiation.
 
 Verify that the submodel negotiations are done for each submodel.****
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

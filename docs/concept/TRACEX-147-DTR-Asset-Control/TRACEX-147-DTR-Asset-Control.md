@@ -61,3 +61,11 @@ The chosen in-memory approach balances simplicity and performance. If requiremen
 To reduce load on the EDC Catalog even further, Catalog responses can be cached to be reused in the future.
 
 This is especially useful for recurring requests, like the DTR contract offer. In combination with the EdcOrchestrator, load to the EDC can be minimized.
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

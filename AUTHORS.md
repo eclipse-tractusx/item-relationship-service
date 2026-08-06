@@ -22,3 +22,11 @@ The following people have contributed to this repository:
 - Maximilian Wesener, doubleSlash Net-Business GmbH, https://github.com/ds-mwesener
 - Kama Gassner, doubleSlash Net-Business GmbH, https://github.com/ds-kgassner
 - Philipp Weick, doubleSlash Net-Business GmbH, https://github.com/ds-pweick
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2023 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

@@ -68,3 +68,11 @@ curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept:
 
 Besides the examples above, you can find more examples in the [REST request collection for Insomnia](local/testing/request-collection/IRS_Request_Collection.json).
 Please see the [corresponding README](local/testing/request-collection/README.md) for more information.
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

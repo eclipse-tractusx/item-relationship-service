@@ -85,3 +85,10 @@ For more information regarding IRS authentication, see: [Safety and security con
 | --batchsize    | 10                                                       | The batch size for a ESS investigation. Must be mod 10. Default 10 |
 | --debug        |                                                          | debug logging (optional)                                           |
 
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2023 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

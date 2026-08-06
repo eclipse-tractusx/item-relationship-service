@@ -136,3 +136,11 @@ Actually, usage policies are not validated according to the policy specification
 ## References
 * [Swagger Policy Hub](https://policy-hub.dev.demo.catena-x.net/api/policy-hub/swagger/index.html)
 * [API Endpoint usage](https://github.com/eclipse-tractusx/policy-hub/tree/release/v0.1.0-rc.4/docs/developer/Technical-Documentation/requests/example-requests.md)
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

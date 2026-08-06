@@ -46,3 +46,11 @@ ISSUE_FILTER: {desired issue filter}
 ````
 
 Now you should be able to use IntelliJ to run Cucumber tests by just clicking run on the desired test.
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service
