@@ -37,6 +37,86 @@ include::../../../uml-diagrams/building-block-view/level-2-int.puml[]
 |===
 
 
+== Recursive PURIS path
+
+The recursive PURIS path provides grant-controlled partner-to-partner traversal.
+It starts from one root asset, resolves the supported `SingleLevelBomAsPlanned` relationship, filters direct children by the local chain opening grant and aggregates anonymized PURIS payloads into a material tree.
+
+=== Component diagram
+
+[plantuml, target=level-2-recursive-puris, format=svg]
+....
+include::../../../uml-diagrams/building-block-view/level-2-int-recursive-puris.puml[]
+....
+
+=== Component description
+
+|===
+|Components |Description
+
+|RecursiveJobController
+|REST controller for starting, listing and retrieving recursive jobs.
+
+|RecursiveChainOpeningGrantController
+|Administrative REST controller for managing chain opening grants.
+
+|RecursiveNotificationController
+|REST controller for receiving recursive REQUEST and RESPONSE notifications from partner IRS instances.
+
+|RecursiveJobService
+|Coordinates the recursive job lifecycle, grant validation, BOM traversal, child notifications, timeout handling and result aggregation.
+
+|RecursiveJobRepository
+|Serializes read-modify-write updates for one recursive job and prevents updates after a job is terminal.
+
+|RecursiveTraversalService
+|Uses the Digital Twin Registry and the submodel interface to resolve the local shell, select the supported BOM descriptor and read direct BOM children.
+
+|RecursiveSubmodelCollector
+|Collects material metadata from PartTypeInformation and the requested anonymized PURIS submodel payloads for one material node.
+
+|RecursiveNotificationContractValidator
+|Reads routing fields from the raw notification JSON, strictly decodes the notification and validates the REQUEST or RESPONSE contract.
+
+|RecursiveResponseMapper
+|Maps local job state and received child data to the external recursive job response model.
+
+|RecursiveResultTreeSanitizer
+|Normalizes the result tree before it is returned or forwarded and removes malformed child nodes, duplicate aspect entries and invalid quantities.
+
+|RecursiveTombstones
+|Creates and sanitizes recursive tombstones so that upstream responses do not expose hidden partner or connector details.
+
+|EdcRecursiveNotificationSender
+|Discovers the recursive notification API asset through the EDC catalog and sends recursive REQUEST and RESPONSE notifications through EDC.
+
+|RecursiveJobExpiry
+|Finds overdue recursive jobs and terminalizes them with timeout tombstones.
+
+|RecursiveStartupRecovery
+|Resumes open recursive jobs after application startup.
+
+|RecursiveJobStateStore
+|Store interface for recursive job state and message correlation entries.
+
+|RecursiveChainOpeningGrantStore
+|Store interface for chain opening grants.
+
+|BlobRecursiveJobStateStore
+|Blob-store implementation of `RecursiveJobStateStore`.
+
+|BlobRecursiveChainOpeningGrantStore
+|Blob-store implementation of `RecursiveChainOpeningGrantStore`.
+
+|RecursiveResultAggregator
+|Builds the final material tree from local node data, child responses and sanitized tombstones.
+|===
+
+The recursive result must not expose hidden partner identities.
+Partner filtering is local to the current hop.
+Failures that are returned upstream are represented as sanitized tombstones.
+
+
 == RecursiveJobHandler
 
 The *RecursiveJobHandler* component provide the logic to build jobs recursively to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.

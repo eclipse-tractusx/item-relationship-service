@@ -1,0 +1,63 @@
+@startuml
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam linetype ortho
+skinparam defaultFontName "Architects daughter"
+
+component [**RecursivePurisPath**] <<System>> as RecursivePuris {
+    component [**RecursiveJobController**] <<Component>> as JobController
+    component [**RecursiveChainOpeningGrantController**] <<Component>> as GrantController
+    component [**RecursiveNotificationController**] <<Component>> as NotificationController
+    component [**RecursiveJobService**] <<Component>> as JobService
+    component [**RecursiveJobRepository**] <<Component>> as Repository
+    component [**RecursiveTraversalService**] <<Component>> as Traversal
+    component [**RecursiveSubmodelCollector**] <<Component>> as Collector
+    component [**RecursiveNotificationContractValidator**] <<Component>> as Validator
+    component [**RecursiveResultAggregator**] <<Component>> as Aggregator
+    component [**RecursiveResponseMapper**] <<Component>> as ResponseMapper
+    component [**RecursiveResultTreeSanitizer**] <<Component>> as Sanitizer
+    component [**RecursiveTombstones**] <<Component>> as Tombstones
+    component [**EdcRecursiveNotificationSender**] <<Component>> as NotificationSender
+    component [**RecursiveJobExpiry**] <<Component>> as Expiry
+    component [**RecursiveStartupRecovery**] <<Component>> as Recovery
+    interface RecursiveJobStateStore
+    interface RecursiveChainOpeningGrantStore
+}
+
+actor "Root caller" as RootCaller
+actor "Partner IRS" as PartnerIrs
+database "Digital Twin Registry" as DTR
+component [**EDC**] as EDC
+database "Blob store" as BlobStore
+
+RootCaller --> JobController
+PartnerIrs --> NotificationController
+JobController --> JobService
+NotificationController --> Validator
+NotificationController --> JobService
+GrantController --> RecursiveChainOpeningGrantStore
+JobService --> Repository
+JobService --> Traversal
+JobService --> Collector
+JobService --> Aggregator
+JobService --> NotificationSender
+JobService --> ResponseMapper
+JobService --> Tombstones
+Aggregator --> Sanitizer
+Aggregator --> Tombstones
+ResponseMapper --> Sanitizer
+ResponseMapper --> Tombstones
+Expiry --> Repository
+Expiry --> Tombstones
+Recovery --> JobService
+Repository --> RecursiveJobStateStore
+RecursiveJobStateStore --> BlobStore
+RecursiveChainOpeningGrantStore --> BlobStore
+Traversal --> DTR
+Traversal --> EDC
+Collector --> DTR
+Collector --> EDC
+NotificationSender --> EDC
+
+@enduml

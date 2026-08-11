@@ -111,6 +111,9 @@ blobstore:
   policies:
     containerName: irs-policy-bucket
     daysToLive: -1
+  chainOpeningGrants:
+    containerName: irs-chain-opening-grants
+    daysToLive: -1
 
 oauth2:
   clientTokenUri: http://umbrella-centralidp:80/auth/realms/CX-Central/protocol/openid-connect/token

@@ -1,0 +1,20 @@
+@startuml
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+[*] --> GRANT_CHECKED : request and grant accepted
+GRANT_CHECKED --> AWAITING_CHILDREN : child requests sent
+GRANT_CHECKED --> COMPLETED : leaf or no allowed children
+GRANT_CHECKED --> FAILED : traversal or local validation failed
+GRANT_CHECKED --> FAILED : hard job deadline reached
+
+AWAITING_CHILDREN --> COMPLETED : all child responses received
+AWAITING_CHILDREN --> COMPLETED : child response deadline reached
+AWAITING_CHILDREN --> FAILED : hard job deadline reached
+
+COMPLETED --> [*]
+FAILED --> [*]
+
+@enduml

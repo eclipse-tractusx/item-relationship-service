@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022 BOSCH AG
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @Slf4j
 @SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.CommentSize",
                     "PMD.PreserveStackTrace",
                     "PMD.TooManyMethods"
 })
@@ -212,6 +214,40 @@ public class MinioBlobPersistence implements BlobPersistence {
                             .map(Item::objectName)
                             .flatMap(this::getBlobIfPresent)
                             .toList();
+    }
+
+    /**
+     * Finds blobs by prefix without suppressing listing or loading failures.
+     *
+     * @param prefix object name prefix
+     * @return matching blob contents
+     * @throws BlobPersistenceException when the result list or a matching blob cannot be read
+     */
+    public Collection<byte[]> findBlobByPrefixOrThrow(final String prefix) throws BlobPersistenceException {
+        final Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder().prefix(prefix).bucket(bucketName).build());
+        final List<byte[]> blobs = new ArrayList<>();
+
+        for (final Result<Item> result : results) {
+            final Item item;
+            try {
+                item = result.get();
+            } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException
+                     | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException
+                     | InternalException e) {
+                throw createLoadFailedException(e);
+            }
+            final Optional<byte[]> blob = getBlob(item.objectName());
+            if (blob.isEmpty()) {
+                throw createMissingListedBlobException();
+            }
+            blobs.add(blob.get());
+        }
+        return blobs;
+    }
+
+    private BlobPersistenceException createMissingListedBlobException() {
+        return createLoadFailedException(new IllegalStateException("Listed blob is unavailable"));
     }
 
     @Override

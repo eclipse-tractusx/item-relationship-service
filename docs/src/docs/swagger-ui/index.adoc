@@ -10,4 +10,5 @@ This work is licensed under the https://www.apache.org/licenses/LICENSE-2.0[Apac
 - SPDX-FileCopyrightText: 2021, 2022 ZF Friedrichshafen AG
 - SPDX-FileCopyrightText: 2022  ISTOS GmbH
 - SPDX-FileCopyrightText: 2021, 2024 Contributors to the Eclipse Foundation
+- SPDX-FileCopyrightText: 2026 Volkswagen AG
 - Source URL: https://github.com/eclipse-tractusx/item-relationship-service

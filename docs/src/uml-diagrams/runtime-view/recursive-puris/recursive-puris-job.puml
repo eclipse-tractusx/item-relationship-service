@@ -1,0 +1,58 @@
+@startuml
+autonumber
+
+participant "Root caller" as Caller
+participant "Root IRS" as Root
+participant "Root EDC" as RootEdc
+participant "Child EDC" as ChildEdc
+participant "Child IRS" as Child
+participant "Digital Twin Registry" as DTR
+participant "Submodel provider" as Submodel
+
+Caller -> Root: POST /irs/recursive/jobs
+Root -> Root: validate request and chain opening grant
+Root --> Caller: 201 Created (jobId)
+Root -> Root: process root job asynchronously
+Root -> DTR: lookup shell by globalAssetId
+DTR --> Root: shell descriptor
+Root -> RootEdc: request SingleLevelBomAsPlanned submodel
+RootEdc -> Submodel: EDC data transfer
+Submodel --> RootEdc: BOM payload
+RootEdc --> Root: BOM children
+Root -> Root: filter direct children by grant
+
+Root -> RootEdc: send recursive REQUEST notification
+RootEdc -> ChildEdc: EDC transfer
+ChildEdc -> Child: POST /irs/recursive/notifications
+
+Child -> Child: validate header, payload and chain opening grant
+Child --> ChildEdc: notification accepted
+Child -> Child: process child job asynchronously
+Child -> DTR: lookup shell and submodel descriptors
+DTR --> Child: shell descriptor
+Child -> ChildEdc: request BOM submodel
+ChildEdc -> Submodel: EDC data transfer
+Submodel --> ChildEdc: BOM payload
+ChildEdc --> Child: BOM children
+Child -> ChildEdc: request anonymized PURIS submodels
+ChildEdc -> Submodel: EDC data transfer
+Submodel --> ChildEdc: anonymized payloads
+ChildEdc --> Child: local items
+
+alt granted child branches exist
+    Child -> ChildEdc: send recursive REQUEST notifications
+    Child -> Child: wait for child responses or timeout
+else leaf branch
+    Child -> Child: no child requests
+end
+
+Child -> Child: aggregate childItems, items and tombstones
+
+Child -> ChildEdc: send recursive RESPONSE notification
+ChildEdc -> RootEdc: EDC transfer
+RootEdc -> Root: POST /irs/recursive/notifications
+Root -> Root: correlate response and aggregate result
+Caller -> Root: GET /irs/recursive/jobs/{jobId}
+Root --> Caller: job envelope and recursive result
+
+@enduml

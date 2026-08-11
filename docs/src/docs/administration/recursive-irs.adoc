@@ -1,0 +1,243 @@
+= Recursive IRS
+
+The recursive IRS path provides a partner-to-partner traversal for PURIS data.
+It supports the `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` use case with `asPlanned` BOM traversal and anonymized PURIS aspect models.
+
+== Supported use case
+
+[cols="1,3"]
+|===
+| Field | Value
+
+| Use case
+| `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE`
+
+| BOM lifecycle
+| `asPlanned`
+
+| BOM model
+| `urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned`
+
+| Payload aspects
+| `urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized`, `urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized`, `urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized`
+|===
+
+The recursive IRS does not anonymize the PURIS payload itself.
+The submodel provider must provide anonymized aspect payloads.
+The IRS only validates, forwards and aggregates the received payloads.
+
+For BOM traversal, the absence of a `SingleLevelBomAsPlanned` descriptor means that the material is treated as a leaf.
+If a `SingleLevelBomAsPlanned` descriptor is present but does not use the supported `3.0.0` semantic ID, or if the supported descriptor is ambiguous or has no usable endpoint, the branch is completed with a sanitized tombstone.
+For a root job, the same condition fails the root job itself because there is no parent branch.
+
+== API overview
+
+The recursive path exposes three API groups.
+The complete request and response schemas are documented in the OpenAPI specification.
+
+[cols="2,3"]
+|===
+| Endpoint | Purpose
+
+| `POST /irs/recursive/jobs`
+| Starts a root recursive job.
+
+| `GET /irs/recursive/jobs/{jobId}`
+| Returns the local recursive job state and the aggregated result if available.
+
+| `GET /irs/recursive/jobs`
+| Lists locally persisted recursive jobs.
+
+| `/irs/recursive/chain-openings/grants`
+| Admin endpoints for creating, replacing, deleting and listing chain opening grants.
+
+| `POST /irs/recursive/notifications`
+| Partner-to-partner endpoint used by EDC notifications. This endpoint receives recursive REQUEST and RESPONSE messages.
+|===
+
+== Authorization
+
+The recursive endpoints use the existing IRS API key security setup.
+Recursive chain opening grant administration is restricted by roles in the controller layer.
+
+[cols="2,3"]
+|===
+| Operation | Required access
+
+| Start, read and list recursive jobs
+| Authenticated IRS API access.
+
+| Create, replace or delete recursive chain opening grants
+| `ADMIN_IRS`
+
+| List recursive chain opening grants
+| `ADMIN_IRS` or `VIEW_IRS`
+
+| Receive recursive notifications
+| EDC transport call with the `edc-bpn` header. IRS validates this transport identity against the sender BPNL from the notification header.
+|===
+
+== Chain opening grants
+
+A recursive traversal is only allowed when the local IRS instance has a valid chain opening grant.
+The root job validates the grant before the traversal starts.
+Every following tier validates the same opening before it processes an incoming recursive REQUEST.
+
+A grant is scoped by:
+
+* `openingId`
+* `globalAssetId`
+* `requesterBpn`
+* `useCase`
+
+The grant contains the allowed direct child partners for this hop in `allowedBpnlSet`.
+Partners that are not part of the grant are filtered locally and are not exposed to the caller as missing partners, errors or tombstones.
+
+== Recursive notification asset
+
+Each participant must publish one EDC notification asset for the recursive IRS notification endpoint.
+The receiving endpoint is:
+
+[source]
+----
+POST /irs/recursive/notifications
+----
+
+The asset must be discoverable by the recursive IRS notification API metadata and not by a fixed asset id.
+The `dct` prefix resolves to `http://purl.org/dc/terms/`; `cx-common` resolves to `https://w3id.org/catenax/ontology/common#`.
+The catalog request looks for:
+
+[cols="1,2"]
+|===
+| Asset property | Expected value
+
+| `dct:type`
+| `https://w3id.org/catenax/taxonomy#RecursiveIrsNotificationApi`
+
+| `cx-common:version`
+| `1.0`
+|===
+
+The notification message uses the CX-0151 message header context:
+
+[source]
+----
+IndustryCore-RecursiveIrsNotificationApi-Receive:1.0.0
+----
+
+The data plane must pass the sender identity to IRS with the `edc-bpn` header.
+IRS compares this transport identity with `header.senderBpn` from the incoming notification.
+
+== Required configuration
+
+Each IRS instance must configure its own BPNL for the recursive path.
+In Helm values, configure:
+
+[source,yaml]
+----
+recursive:
+  localBpnl: BPNL000000000000
+  timeout:
+    defaultJobTtl: PT30M
+    maxJobTtl: PT2H
+    childResponseSafetyBuffer: PT60S
+    timeoutCheckInterval: PT30S
+----
+
+The corresponding Spring property is `irs.recursive.localBpnl`.
+It can also be set through the `IRS_RECURSIVE_LOCAL_BPNL` environment variable.
+
+`recursive.localBpnl` in Helm values, respectively `irs.recursive.localBpnl` in Spring configuration, is mandatory.
+It identifies the local IRS instance when it sends recursive partner notifications.
+
+`recursive.timeout.defaultJobTtl` defines the runtime of a root job when the start request does not provide an explicit TTL.
+For stable productive usage the default of `PT30M` gives slow partners enough time to answer.
+For short-lived test or demo scenarios `PT5M` can be used if the involved submodel providers and EDC negotiations are expected to answer quickly.
+
+`recursive.timeout.maxJobTtl` caps requested TTL values.
+`recursive.timeout.childResponseSafetyBuffer` is subtracted from the overall job deadline before waiting for child responses stops.
+This gives a child tier enough time to aggregate its result and send the parent response before the parent's final deadline is reached.
+
+== Persistence and cleanup
+
+Recursive job state is persisted in the regular job blob store.
+With the default MinIO configuration this is the `irs-jobs` bucket.
+The recursive path stores job state and message correlation entries with dedicated prefixes in that bucket.
+The blob prefixes are `recursive-job:`, `recursive-msg-in:` and `recursive-msg-out:`.
+
+Recursive jobs are intentionally persisted so that a restarted IRS instance can continue or finish known recursive jobs.
+The recursive API does not provide a job delete endpoint.
+Therefore the blob store retention must be configured by the operator.
+The retention setting applies to the configured jobs bucket, not only to one individual recursive job.
+When IRS creates a missing MinIO bucket, it configures bucket lifecycle expiration from:
+
+[source,yaml]
+----
+blobstore:
+  jobs:
+    containerName: irs-jobs
+    daysToLive: 7
+----
+
+`daysToLive` is day-based in the MinIO persistence implementation and is separate from the recursive job runtime TTL.
+Use a short retention such as `1` day for test or demo environments.
+For productive environments, choose a value that fits operational debugging, audit and storage requirements.
+The default is `7` days.
+
+The MinIO lifecycle rule is only applied when IRS creates a missing bucket.
+If the bucket already exists, changing `daysToLive` does not update the bucket lifecycle automatically.
+Update the lifecycle rule in MinIO directly, for example:
+
+[source,bash]
+----
+mc ilm rule add --expire-days 7 myminio/irs-jobs
+----
+
+Adjust the MinIO alias, bucket name and retention value to the target environment.
+Values of `0` or below disable expiration entirely.
+Do not use such values for recursive jobs unless another cleanup mechanism is in place.
+Without a retention policy, recursive job blobs and message correlation blobs remain in MinIO.
+
+Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default.
+They can be managed through the grant API.
+Their blob retention should match the intended grant administration process.
+
+== Result model
+
+The recursive result separates technical job execution from the business result.
+
+[cols="1,3"]
+|===
+| Field | Meaning
+
+| `job.state`
+| Technical state of the local job. A job can be technically `COMPLETED` even if the business result is `FAILED`.
+
+| `result.resultStatus`
+| Business outcome of the recursive aggregation. Possible values are `COMPLETE`, `PARTIAL` and `FAILED`.
+
+| `result.childItems`
+| Aggregated material tree. Each node represents a BOM child and can contain material metadata, BOM quantity, local aspect payloads, tombstones and further child nodes.
+
+| `items`
+| Aspect payloads collected for one material node.
+
+| `tombstones`
+| Sanitized failure information. Tombstones must not expose hidden partner identities or connector details.
+|===
+
+Root jobs return the material tree below the requested root asset.
+For the supported PURIS use case, the root asset's own PURIS payload is not collected.
+
+`COMPLETE` means that the aggregation finished without tombstones.
+The tree can still be empty if the requested root asset has no BOM children and root payload collection is not part of the supported PURIS use case.
+`PARTIAL` means that at least one tombstone is present and the material tree still contains usable data.
+`FAILED` means that no usable material tree could be produced, or that validation or deadline handling failed the job.
+
+== Known limitations
+
+The recursive path currently has the following operational limitations:
+
+* The recursive job store does not provide an API delete operation. Use MinIO lifecycle rules or an equivalent operator-managed cleanup process.
+* The recursive job repository uses local in-memory locks around persisted job blobs. Run one IRS replica for the recursive path unless the deployment provides external serialized job updates.
+* There is no recursive tree-size or payload-size limit in the recursive aggregation itself. There is also no recursive request-size limit on the notification endpoint. Large chains can create large persisted results and large API responses; large incoming notifications should be limited by the surrounding runtime or ingress setup.

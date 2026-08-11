@@ -17,16 +17,16 @@ page at http://checkstyle.sourceforge.net/config.html -->
     </module>
 
     <module name="SuppressionFilter">
-        <property name="file" value=".config/checkstyle-suppressions.xml"/>
+        <property name="file" value="${checkstyle.suppressions.file}"/>
         <property name="optional" value="true"/>
     </module>
 
     <!-- Checks that the license header is present. -->
     <module name="RegexpHeader">
         <property name="fileExtensions" value="java"/>
-        <property name="headerFile" value=".config/irs.header"/>
+        <property name="headerFile" value="${checkstyle.header.file}"/>
         <!-- optional lines -->
-        <property name="multiLines" value="2, 3, 4, 5, 6, 7"/>
+        <property name="multiLines" value="3"/>
     </module>
 
     <!-- Checks that there are no tab characters in the file. -->

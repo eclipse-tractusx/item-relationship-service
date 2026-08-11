@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022 BOSCH AG
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.configuration.JobConfiguration;
 import org.eclipse.tractusx.irs.policystore.config.PolicyConfiguration;
+import org.eclipse.tractusx.irs.recursive.config.RecursiveChainOpeningGrantConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -41,6 +42,11 @@ public class TestConfig {
 
     @Bean(PolicyConfiguration.POLICY_BLOB_PERSISTENCE)
     public BlobPersistence inMemoryBlobStore2() {
+        return new InMemoryBlobStore();
+    }
+
+    @Bean(RecursiveChainOpeningGrantConfiguration.CHAIN_OPENING_GRANT_BLOB_PERSISTENCE)
+    public BlobPersistence inMemoryRecursiveChainOpeningGrantBlobStore() {
         return new InMemoryBlobStore();
     }
 }

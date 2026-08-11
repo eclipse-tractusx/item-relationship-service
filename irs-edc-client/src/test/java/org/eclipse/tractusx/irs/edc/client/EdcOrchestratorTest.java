@@ -1,5 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -46,7 +47,10 @@ import java.util.stream.Stream;
 
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.core.data.Percentage;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.spi.query.Criterion;
+import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
@@ -65,6 +69,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -165,6 +170,27 @@ class EdcOrchestratorTest {
         assertThatThrownBy(
                 () -> orchestrator.getCatalogItems(ENDPOINT_ADDRESS, "filterKey", "filterValue", BPN)).isInstanceOf(
                 EdcClientException.class).hasMessageContaining("Error retrieving catalog items.");
+    }
+
+    @Test
+    void shouldRequestCatalogWithQuerySpec() throws EdcClientException {
+        final QuerySpec querySpec = QuerySpec.Builder.newInstance()
+                                                    .filter(new Criterion("type", "=", "notification-api"))
+                                                    .filter(new Criterion("version", "=", "1.0"))
+                                                    .build();
+        final CatalogItem expectedCatalogItem = createCatalogItem("notification-asset", BPN);
+        final ArgumentCaptor<CatalogRequest> catalogRequestCaptor = ArgumentCaptor.forClass(CatalogRequest.class);
+        when(catalogFacade.fetchCatalogItems(any(CatalogRequest.class))).thenReturn(List.of(expectedCatalogItem));
+
+        final List<CatalogItem> catalogItems = orchestrator.getCatalogItems(ENDPOINT_ADDRESS, querySpec, BPN);
+
+        assertThat(catalogItems).containsExactly(expectedCatalogItem);
+        verify(catalogFacade).fetchCatalogItems(catalogRequestCaptor.capture());
+        final CatalogRequest catalogRequest = catalogRequestCaptor.getValue();
+        assertThat(catalogRequest.getCounterPartyAddress()).isEqualTo(ENDPOINT_ADDRESS);
+        assertThat(catalogRequest.getCounterPartyId()).isEqualTo(BPN);
+        assertThat(catalogRequest.getProtocol()).isEqualTo(EdcControlPlaneClient.DATASPACE_PROTOCOL_HTTP);
+        assertThat(catalogRequest.getQuerySpec()).isSameAs(querySpec);
     }
 
     @Test

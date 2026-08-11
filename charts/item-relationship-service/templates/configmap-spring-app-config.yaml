@@ -1,8 +1,9 @@
-# Copyright (c) 2022,2024
+# Copyright (c) 2022,2026
 #       2022: ZF Friedrichshafen AG
 #       2022: ISTOS GmbH
 #       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
 #       2022,2023: BOSCH AG
+#       2026: Volkswagen AG
 # Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
@@ -33,6 +34,13 @@ data:
       trustedPort: {{ .Values.service.trustedPort }}
 
     irs:
+      recursive:
+        localBpnl: {{ tpl (.Values.recursive.localBpnl | default "") . | quote }}
+        timeout:
+          defaultJobTtl: {{ .Values.recursive.timeout.defaultJobTtl | default "PT30M" | quote }}
+          maxJobTtl: {{ .Values.recursive.timeout.maxJobTtl | default "PT2H" | quote }}
+          childResponseSafetyBuffer: {{ .Values.recursive.timeout.childResponseSafetyBuffer | default "PT60S" | quote }}
+          timeoutCheckInterval: {{ .Values.recursive.timeout.timeoutCheckInterval | default "PT30S" | quote }}
       job:
         batch:
           threadCount: {{ .Values.job.batch.threadCount }}
@@ -74,6 +82,9 @@ data:
       policies:
         containerName: {{ ((.Values.blobstore).policies).containerName | default "irs-policy" | quote }}
         daysToLive: {{ ((.Values.blobstore).policies).daysToLine | default -1 | quote }}
+      chainOpeningGrants:
+        containerName: {{ ((.Values.blobstore).chainOpeningGrants).containerName | default "irs-chain-opening-grants" | quote }}
+        daysToLive: {{ ((.Values.blobstore).chainOpeningGrants).daysToLive | default -1 | quote }}
 
     spring:
       security:

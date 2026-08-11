@@ -68,7 +68,7 @@
 
         <!-- Dependencies -->
         <springboot.version>3.4.4</springboot.version>
-        <springdoc.version>2.2.0</springdoc.version>
+        <springdoc.version>2.7.0</springdoc.version>
         <tomcat.version>11.0.6</tomcat.version>
         <micrometer.version>1.11.4</micrometer.version>
         <datafaker.version>1.9.0</datafaker.version>
@@ -96,8 +96,10 @@
         <junit-jupiter-engine.version>5.11.4</junit-jupiter-engine.version>
         <json-smart.version>2.5.2</json-smart.version>
         <common-beanutils.version>1.11.0</common-beanutils.version>
+        <lombok.version>1.18.38</lombok.version>
 
-        <testcontainers-bom.version>1.19.7</testcontainers-bom.version>
+        <testcontainers.version>1.21.4</testcontainers.version>
+        <testcontainers-bom.version>1.21.4</testcontainers-bom.version>
         <azure-bom.version>1.2.32</azure-bom.version>
 
         <!-- Plugins -->
@@ -197,6 +199,13 @@
                     <configuration>
                         <parameters>true</parameters>
                         <release>${java.version}</release>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -275,7 +284,9 @@
                 </dependencies>
                 <configuration>
                     <configLocation>.config/checkstyle.xml</configLocation>
+                    <headerLocation>.config/irs.header</headerLocation>
                     <suppressionsLocation>.config/checkstyle-suppressions.xml</suppressionsLocation>
+                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <failOnViolation>true</failOnViolation>

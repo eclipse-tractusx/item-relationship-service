@@ -1,5 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,8 +27,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
+import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
@@ -91,31 +95,57 @@ public class EdcOrchestrator {
      * @return A list of {@link CatalogItem} objects that match the specified filter criteria.
      * @throws EdcClientException If an error occurs while retrieving the catalog items.
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException") // catching a generic exception is intended here
     public List<CatalogItem> getCatalogItems(final String dspEndpointAddress, final String filterKey,
             final String filterValue, final String bpn) throws EdcClientException {
+        return retrieveCatalogItems(
+                () -> catalogFacade.fetchCatalogByFilter(dspEndpointAddress, filterKey, filterValue, bpn));
+    }
+
+    /**
+     * Retrieves catalog items using all criteria from the provided query specification.
+     *
+     * @param dspEndpointAddress The address of the endpoint from which to retrieve catalog items.
+     * @param querySpec          The query specification sent to the EDC catalog.
+     * @param bpn                The business partner number associated with the catalog items.
+     * @return A list of {@link CatalogItem} objects that match the query specification.
+     * @throws EdcClientException If an error occurs while retrieving the catalog items.
+     */
+    public List<CatalogItem> getCatalogItems(final String dspEndpointAddress, final QuerySpec querySpec,
+            final String bpn) throws EdcClientException {
+        final CatalogRequest catalogRequest = CatalogRequest.Builder.newInstance()
+                                                                    .counterPartyAddress(dspEndpointAddress)
+                                                                    .counterPartyId(bpn)
+                                                                    .protocol(
+                                                                            EdcControlPlaneClient.DATASPACE_PROTOCOL_HTTP)
+                                                                    .querySpec(querySpec)
+                                                                    .build();
+        return retrieveCatalogItems(() -> catalogFacade.fetchCatalogItems(catalogRequest));
+    }
+
+    @SuppressWarnings("PMD.AvoidCatchingGenericException") // catching a generic exception is intended here
+    private List<CatalogItem> retrieveCatalogItems(final Supplier<List<CatalogItem>> catalogLookup)
+            throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get Catalog Items");
 
-        CompletableFuture<List<CatalogItem>> objectCompletableFuture;
+        CompletableFuture<List<CatalogItem>> catalogItemsFuture;
         try {
-            objectCompletableFuture = CompletableFuture.supplyAsync(() -> {
-                final List<CatalogItem> contractOffers = catalogFacade.fetchCatalogByFilter(dspEndpointAddress,
-                        filterKey, filterValue, bpn);
+            catalogItemsFuture = CompletableFuture.supplyAsync(() -> {
+                final List<CatalogItem> contractOffers = catalogLookup.get();
 
                 log.debug("Retrieved catalog items: '{}'", StringMapper.mapToString(contractOffers));
                 stopWatchOnEdcTask(stopWatch);
                 return contractOffers;
 
             }, executorService);
-        } catch (Exception e) {
-            objectCompletableFuture = CompletableFuture.failedFuture(
-                    new EdcClientException("Error retrieving catalog items.", e));
+        } catch (final Exception exception) {
+            catalogItemsFuture = CompletableFuture.failedFuture(
+                    new EdcClientException("Error retrieving catalog items.", exception));
         }
         try {
-            return objectCompletableFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new EdcClientException("Error retrieving catalog items.", e);
+            return catalogItemsFuture.get();
+        } catch (final InterruptedException | ExecutionException exception) {
+            throw new EdcClientException("Error retrieving catalog items.", exception);
         }
     }
 

@@ -112,6 +112,18 @@ job:
     failed: "PT24H"
     completed: "PT24H"
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
+recursive:
+  # -- BPNL of this IRS instance for recursive requests and responses. The value is mandatory when the recursive IRS path is enabled.
+  localBpnl:
+  timeout:
+    # -- Default lifetime of a recursive job when a request does not provide an explicit deadline. ISO-8601 duration.
+    defaultJobTtl: PT30M
+    # -- Maximum accepted lifetime of a recursive job. Longer requested deadlines are capped to this value. ISO-8601 duration.
+    maxJobTtl: PT2H
+    # -- Safety buffer subtracted from the job deadline before waiting for child responses stops. ISO-8601 duration.
+    childResponseSafetyBuffer: PT60S
+    # -- Interval used by the recursive timeout monitor to check for expired jobs and child response deadlines. ISO-8601 duration.
+    timeoutCheckInterval: PT30S
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
 ingress:
@@ -168,6 +180,9 @@ blobstore:
     daysToLive: 7
   policies:
     containerName: irs-policy-bucket
+    daysToLive: -1
+  chainOpeningGrants:
+    containerName: irs-chain-opening-grants
     daysToLive: -1
 
 oauth2:
