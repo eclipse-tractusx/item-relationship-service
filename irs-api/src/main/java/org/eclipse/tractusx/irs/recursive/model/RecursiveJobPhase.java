@@ -21,11 +21,9 @@ package org.eclipse.tractusx.irs.recursive.model;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
- * Recursive-specific job phases that map onto the existing {@link JobState}.
+ * Internal lifecycle phases of a recursive job.
  *
- * <p>We do NOT replace the existing JobState enum. Instead, this phase
- * captures the recursive-specific lifecycle and maps to the standard
- * JobState for API compatibility.</p>
+ * <p>Each phase maps to the generic IRS {@link JobState} exposed by the job status API.</p>
  */
 public enum RecursiveJobPhase {
 
@@ -42,9 +40,9 @@ public enum RecursiveJobPhase {
     FAILED;
 
     /**
-     * Maps to the standard IRS JobState for external API compatibility.
+     * Maps this recursive phase to the generic IRS job state exposed by the API.
      *
-     * @return the matching generic IRS job state
+     * @return the corresponding generic IRS job state
      */
     public JobState toJobState() {
         return switch (this) {

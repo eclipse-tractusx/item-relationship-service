@@ -29,8 +29,7 @@ import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
 /**
- * How the recursive job was started, bundled in one place (mirrors the iterative {@code job.parameter}).
- * Replaces the previously duplicated top-level fields on the status response.
+ * Parameters used to start and process a recursive job.
  */
 @Value
 @Builder

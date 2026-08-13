@@ -1191,8 +1191,8 @@ class RecursiveJobServiceTest {
     }
 
     @Test
-    void shouldFailRecoveredJobWithoutUseCasePolicy() {
-        jobs.put("legacy-job", seededState("legacy-job", RecursiveJobPhase.GRANT_CHECKED)
+    void shouldFailRecoveredJobWithInvalidUseCasePolicy() {
+        jobs.put("invalid-job", seededState("invalid-job", RecursiveJobPhase.GRANT_CHECKED)
                 .useCase(null)
                 .aspects(List.of())
                 .build());
@@ -1200,8 +1200,8 @@ class RecursiveJobServiceTest {
         final int resumed = jobService.recoverOpenJobs();
 
         assertThat(resumed).isEqualTo(1);
-        assertThat(jobs.get("legacy-job").getState()).isEqualTo(RecursiveJobPhase.FAILED);
-        assertThat(jobService.getJobStatus("legacy-job").getResult().getResultStatus())
+        assertThat(jobs.get("invalid-job").getState()).isEqualTo(RecursiveJobPhase.FAILED);
+        assertThat(jobService.getJobStatus("invalid-job").getResult().getResultStatus())
                 .isEqualTo(RecursiveResultStatus.FAILED);
     }
 
