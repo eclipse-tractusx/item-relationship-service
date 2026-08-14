@@ -16,6 +16,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   - switch to specter in open api validation due to unreliability of swagger editor ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
 - chore:
   - add missing `repoCategory` to `.tractusx` file and add missing notice section for non-included (ascii) documentation for TRG 7.07 compliance ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
+- fix: change bitnami legacy images in chart ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
+  - `bitnami/redis` image to `bitnamilegacy/redis`
+  - `bitnami/minio` image to `quay.io/minio/minio`
 
 ## [7.0.1] - 2025-05-16
 ### Fixed
