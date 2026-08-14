@@ -120,7 +120,7 @@ public class RecursiveJobService {
      * @param request the root recursive job request
      * @return the created or reused job ID
      */
-    public String startJob(final RecursiveJobRequest request) {
+    public UUID startJob(final RecursiveJobRequest request) {
         return createJob(request, true, null, null);
     }
 
@@ -130,7 +130,7 @@ public class RecursiveJobService {
      * @param jobId the job identifier
      * @return the current job status snapshot
      */
-    public RecursiveJobStatusResponse getJobStatus(final String jobId) {
+    public RecursiveJobStatusResponse getJobStatus(final UUID jobId) {
         return repository.findById(jobId)
                          .map(RecursiveResponseMapper::toStatusResponse)
                          .orElseThrow(() -> new RecursiveJobNotFoundException("Job not found: " + jobId));
@@ -212,7 +212,7 @@ public class RecursiveJobService {
                 }
             } catch (final RuntimeException e) {
                 log.warn("Could not resume recursive job {} after restart: causeType={}",
-                        RecursiveLogValue.of(state.getJobId()), e.getClass().getName());
+                        RecursiveLogValue.of(state.getJobId().toString()), e.getClass().getName());
             }
         }
         return resumed;
@@ -244,11 +244,12 @@ public class RecursiveJobService {
                     state.getRequesterBpnl(), state.getGlobalAssetId());
         } catch (final RecursiveChainOpeningGrantInactiveException e) {
             log.warn("Grant no longer valid while resuming recursive job {}",
-                    RecursiveLogValue.of(state.getJobId()));
+                    RecursiveLogValue.of(state.getJobId().toString()));
             markAcceptedJobFailed(state, e);
             return true;
         }
-        log.info("Resuming recursive job {} in phase {} after restart", RecursiveLogValue.of(state.getJobId()),
+        log.info("Resuming recursive job {} in phase {} after restart",
+                RecursiveLogValue.of(state.getJobId().toString()),
                 state.getState());
         recursiveJobExecutor.execute(() -> processAcceptedJob(grant, state));
         return true;
@@ -267,12 +268,12 @@ public class RecursiveJobService {
             return false;
         }
         log.info("Resuming recursive job {} after restart: re-sending {} unanswered child request(s)",
-                RecursiveLogValue.of(state.getJobId()), unanswered.size());
+                RecursiveLogValue.of(state.getJobId().toString()), unanswered.size());
         recursiveJobExecutor.execute(() -> sendChildRequests(state, unanswered));
         return true;
     }
 
-    private String createJob(final RecursiveJobRequest request, final boolean isRootJob,
+    private UUID createJob(final RecursiveJobRequest request, final boolean isRootJob,
             final ZonedDateTime inheritedDeadline, final String inheritedMessageId) {
         final PreparedRecursiveJob prepared = requestFactory.prepare(request, isRootJob, inheritedDeadline,
                 inheritedMessageId);
@@ -281,12 +282,12 @@ public class RecursiveJobService {
                 RecursiveLogValue.of(prepared.useCase().name()), RecursiveLogValue.of(prepared.globalAssetId()),
                 prepared.bomLifecycle(), RecursiveLogValue.of(prepared.aspects().toString()));
 
-        final Optional<String> existing = isRootJob
+        final Optional<UUID> existing = isRootJob
                 ? Optional.empty()
                 : repository.findJobIdByIncomingRequestMessageId(prepared.messageId());
         if (existing.isPresent()) {
             log.warn("Duplicate messageId={} -> returning existing jobId={}",
-                    RecursiveLogValue.of(prepared.messageId()), RecursiveLogValue.of(existing.get()));
+                    RecursiveLogValue.of(prepared.messageId()), RecursiveLogValue.of(existing.get().toString()));
             // Duplicate REQUEST on a finished job -> resend the terminal response, the parent may have restarted.
             repository.findById(existing.get())
                       .filter(state -> !isRootJob && RecursiveJobRepository.isTerminal(state))
@@ -297,14 +298,14 @@ public class RecursiveJobService {
         final RecursiveChainOpeningGrant grant = grantService.getActiveGrant(
                 prepared.openingId(), prepared.useCase(), prepared.requesterBpnl(), prepared.globalAssetId());
 
-        final String jobId = UUID.randomUUID().toString();
+        final UUID jobId = UUID.randomUUID();
         final RecursiveJobState state = prepared.toState(jobId);
         repository.saveNew(state);
         if (!isRootJob) {
             repository.registerIncomingRequestMessageId(prepared.messageId(), jobId);
         }
 
-        log.info("Job accepted: jobId={}, phase={}", RecursiveLogValue.of(jobId), state.getState());
+        log.info("Job accepted: jobId={}, phase={}", RecursiveLogValue.of(jobId.toString()), state.getState());
         try {
             recursiveJobExecutor.execute(() -> processAcceptedJob(grant, state));
         } catch (final RuntimeException e) {
@@ -349,12 +350,12 @@ public class RecursiveJobService {
                     acceptedState.getJobId(), acceptedState, current -> targetState);
             if (saved.isEmpty()) {
                 log.warn("Recursive job {} reached a terminal state during traversal - keeping it",
-                        RecursiveLogValue.of(acceptedState.getJobId()));
+                        RecursiveLogValue.of(acceptedState.getJobId().toString()));
                 return;
             }
 
             log.info("Job processing started: jobId={}, phase={}, grantedChildPartners={}",
-                    RecursiveLogValue.of(targetState.getJobId()), phase,
+                    RecursiveLogValue.of(targetState.getJobId().toString()), phase,
                     RecursiveLogValue.of(grantedChildPartners.toString()));
 
             if (!sendableChildBranches.isEmpty()) {
@@ -445,12 +446,13 @@ public class RecursiveJobService {
         if (updated.isEmpty()) {
             log.warn("Response from {} for jobId={} not applied (terminal or unexpected)",
                     RecursiveLogValue.of(hdr.getSenderBpnl()),
-                    RecursiveLogValue.of(correlatedState.getJobId()));
+                    RecursiveLogValue.of(correlatedState.getJobId().toString()));
             return false;
         }
 
         final RecursiveJobState state = updated.get();
-        log.info("Job {} -> {} ({}/{} responses)", RecursiveLogValue.of(state.getJobId()), state.getState(),
+        log.info("Job {} -> {} ({}/{} responses)", RecursiveLogValue.of(state.getJobId().toString()),
+                state.getState(),
                 answeredChildBranches(state), state.expectedChildResponseCount());
 
         if (RecursiveJobRepository.isTerminal(state)) {
@@ -467,7 +469,7 @@ public class RecursiveJobService {
                         invalidChildResponseResult(current)));
 
         log.warn("Rejected invalid recursive response for jobId={}, childRequest={}",
-                RecursiveLogValue.of(state.getJobId()), RecursiveLogValue.of(childRequestMessageId));
+                RecursiveLogValue.of(state.getJobId().toString()), RecursiveLogValue.of(childRequestMessageId));
         updated.filter(RecursiveJobRepository::isTerminal).ifPresent(this::sendParentResponseQuietly);
     }
 
@@ -598,7 +600,7 @@ public class RecursiveJobService {
             } catch (final RuntimeException e) {
                 deliveryFailuresByChildRequestMessageId.put(childBranch.getMessageId(), e);
                 log.warn("Could not send recursive child request for jobId={}, childRequest={}: causeType={}",
-                        RecursiveLogValue.of(state.getJobId()),
+                        RecursiveLogValue.of(state.getJobId().toString()),
                         RecursiveLogValue.of(childBranch.getMessageId()),
                         e.getClass().getName());
             }
@@ -619,7 +621,7 @@ public class RecursiveJobService {
                 state, localBpnl(), status, externalResult, responseAspects, now());
 
         log.info("= PARENT_RESPONSE ({}) to {} for jobId={}", status,
-                RecursiveLogValue.of(state.getRequesterBpnl()), RecursiveLogValue.of(state.getJobId()));
+                RecursiveLogValue.of(state.getRequesterBpnl()), RecursiveLogValue.of(state.getJobId().toString()));
         notificationSender.sendResponse(state.getRequesterBpnl(), full);
     }
 
@@ -632,7 +634,7 @@ public class RecursiveJobService {
             sendParentResponse(state);
         } catch (final RuntimeException e) {
             log.warn("Could not send recursive response to parent for job {}: causeType={}",
-                    RecursiveLogValue.of(state.getJobId()), e.getClass().getName());
+                    RecursiveLogValue.of(state.getJobId().toString()), e.getClass().getName());
         }
     }
 
@@ -647,7 +649,7 @@ public class RecursiveJobService {
     private void markAcceptedJobFailed(final RecursiveJobState acceptedState, final Exception exception) {
         final RecursiveTombstoneReason reason = RecursiveFailureReasonMapper.failureReason(exception);
         log.warn("Recursive job {} failed after acceptance: reason={} causeType={}",
-                RecursiveLogValue.of(acceptedState.getJobId()), RecursiveLogValue.of(reason.name()),
+                RecursiveLogValue.of(acceptedState.getJobId().toString()), RecursiveLogValue.of(reason.name()),
                 exception.getClass().getName());
         final String detail = RecursiveFailureDetails.anonymizedDetail(exception);
         final RecursiveTombstone failureTombstone = RecursiveTombstones.chain(

@@ -21,6 +21,8 @@ package org.eclipse.tractusx.irs.recursive.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -69,6 +71,7 @@ public class RecursiveTombstone {
     private Boolean retryable;
 
     @NotBlank
+    @Schema(minLength = 1)
     @Pattern(regexp = RecursivePatternStore.SAFE_SINGLE_LINE_STRING,
              message = "detail must not contain control or line separator characters")
     private String detail;
@@ -86,6 +89,7 @@ public class RecursiveTombstone {
      * diagnostics in the logs of the node that produced it.
      */
     @NotEmpty
+    @ArraySchema(minItems = 1)
     private List<@Pattern(regexp = RecursivePatternStore.UUID_STRING,
             message = "errorRefs must contain UUIDs") String> errorRefs;
 }

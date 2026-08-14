@@ -46,6 +46,7 @@ import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.RelationshipSubmodel;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.relationships.RelationshipAspect;
+import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveBomChild;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveQuantity;
 import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
@@ -169,6 +170,13 @@ public class RecursiveTraversalService {
 
     private static List<Endpoint> relationshipEndpoints(final AssetAdministrationShellDescriptor shellDescriptor,
             final BomLifecycle bomLifecycle) {
+        return supportedBomDescriptor(shellDescriptor, bomLifecycle)
+                .map(RecursiveTraversalService::descriptorEndpoints)
+                .orElseGet(List::of);
+    }
+
+    private static Optional<SubmodelDescriptor> supportedBomDescriptor(
+            final AssetAdministrationShellDescriptor shellDescriptor, final BomLifecycle bomLifecycle) {
         final String supportedSemanticId = supportedBomSemanticId(bomLifecycle);
         final List<SubmodelDescriptor> bomDescriptors = Optional.ofNullable(shellDescriptor.getSubmodelDescriptors())
                 .orElse(List.of())
@@ -177,7 +185,7 @@ public class RecursiveTraversalService {
                 .filter(RecursiveTraversalService::isSingleLevelBomAsPlannedDescriptor)
                 .toList();
         if (bomDescriptors.isEmpty()) {
-            return List.of();
+            return Optional.empty();
         }
 
         final List<SubmodelDescriptor> matchingDescriptors = bomDescriptors.stream()
@@ -191,7 +199,11 @@ public class RecursiveTraversalService {
             throw new RecursiveExternalCallException("BOM_SUBMODEL_NOT_SUPPORTED",
                     "Multiple supported BOM relationship submodels are available.", null);
         }
-        final List<Endpoint> endpoints = Optional.ofNullable(matchingDescriptors.get(0).getEndpoints())
+        return Optional.of(matchingDescriptors.get(0));
+    }
+
+    private static List<Endpoint> descriptorEndpoints(final SubmodelDescriptor descriptor) {
+        final List<Endpoint> endpoints = Optional.ofNullable(descriptor.getEndpoints())
                 .orElse(List.of())
                 .stream()
                 .filter(Objects::nonNull)
@@ -236,13 +248,13 @@ public class RecursiveTraversalService {
             return null;
         }
         final Quantity quantity = relationship.getLinkedItem().getQuantity();
-        final String unit = quantity.getMeasurementUnit() == null
+        final ItemUnitEnumeration unit = quantity.getMeasurementUnit() == null
                 ? null
-                : quantity.getMeasurementUnit().getLexicalValue();
-        return RecursiveQuantity.builder()
-                                .value(quantity.getQuantityNumber())
-                                .unit(unit)
-                                .build();
+                : ItemUnitEnumeration.findByValue(quantity.getMeasurementUnit().getLexicalValue()).orElse(null);
+        return RecursiveResultTreeSanitizer.sanitizeQuantity(RecursiveQuantity.builder()
+                .value(quantity.getQuantityNumber())
+                .unit(unit)
+                .build());
     }
 
     private static String requestSubmodelPayload(

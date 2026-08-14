@@ -63,7 +63,7 @@ public final class RecursiveIntegrationTestClient {
         final String target = instance.baseUrl() + "/irs/recursive/jobs";
         final ResponseEntity<RecursiveJobStartResponse> response = restTemplate.postForEntity(target,
                 new HttpEntity<>(request, apiHeaders()), RecursiveJobStartResponse.class);
-        return response.getBody().getJobId();
+        return response.getBody().getJobId().toString();
     }
 
     public RecursiveJobStatusResponse waitForTerminalJob(final RecursiveIrsInstance instance,

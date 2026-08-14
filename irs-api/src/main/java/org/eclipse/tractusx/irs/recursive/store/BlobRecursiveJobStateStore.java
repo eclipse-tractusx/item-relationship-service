@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
@@ -74,14 +75,14 @@ public class BlobRecursiveJobStateStore implements RecursiveJobStateStore {
             blobPersistence.putBlob(JOB_PREFIX + state.getJobId(),
                     json.getBytes(StandardCharsets.UTF_8));
             log.debug("Saved recursive job state: jobId={}, phase={}",
-                    RecursiveLogValue.of(state.getJobId()), state.getState());
+                    RecursiveLogValue.of(state.getJobId().toString()), state.getState());
         } catch (final BlobPersistenceException | JsonParseException e) {
             throw new RecursiveStoreException("Failed to save recursive job", e);
         }
     }
 
     @Override
-    public Optional<RecursiveJobState> findById(final String jobId) {
+    public Optional<RecursiveJobState> findById(final UUID jobId) {
         try {
             return blobPersistence.getBlob(JOB_PREFIX + jobId)
                     .map(bytes -> jsonUtil.fromString(new String(bytes, StandardCharsets.UTF_8),
@@ -92,43 +93,43 @@ public class BlobRecursiveJobStateStore implements RecursiveJobStateStore {
     }
 
     @Override
-    public Optional<String> findJobIdByIncomingRequestMessageId(final String messageId) {
+    public Optional<UUID> findJobIdByIncomingRequestMessageId(final String messageId) {
         return findMessageMapping(INCOMING_REQUEST_MSG_PREFIX, messageId);
     }
 
     @Override
-    public void registerIncomingRequestMessageId(final String messageId, final String jobId) {
+    public void registerIncomingRequestMessageId(final String messageId, final UUID jobId) {
         registerMessageMapping(INCOMING_REQUEST_MSG_PREFIX, messageId, jobId);
     }
 
     @Override
-    public Optional<String> findJobIdByChildRequestMessageId(final String messageId) {
+    public Optional<UUID> findJobIdByChildRequestMessageId(final String messageId) {
         return findMessageMapping(CHILD_REQUEST_MSG_PREFIX, messageId);
     }
 
     @Override
-    public void registerChildRequestMessageId(final String messageId, final String jobId) {
+    public void registerChildRequestMessageId(final String messageId, final UUID jobId) {
         registerMessageMapping(CHILD_REQUEST_MSG_PREFIX, messageId, jobId);
     }
 
-    private Optional<String> findMessageMapping(final String prefix, final String messageId) {
+    private Optional<UUID> findMessageMapping(final String prefix, final String messageId) {
         if (messageId == null) {
             return Optional.empty();
         }
         try {
             return blobPersistence.getBlob(prefix + messageId)
-                    .map(bytes -> new String(bytes, StandardCharsets.UTF_8).trim());
-        } catch (final BlobPersistenceException e) {
+                    .map(bytes -> UUID.fromString(new String(bytes, StandardCharsets.UTF_8).trim()));
+        } catch (final BlobPersistenceException | IllegalArgumentException e) {
             throw new RecursiveStoreException("Failed to read recursive message mapping", e);
         }
     }
 
-    private void registerMessageMapping(final String prefix, final String messageId, final String jobId) {
+    private void registerMessageMapping(final String prefix, final String messageId, final UUID jobId) {
         if (messageId == null) {
             return;
         }
         try {
-            blobPersistence.putBlob(prefix + messageId, jobId.getBytes(StandardCharsets.UTF_8));
+            blobPersistence.putBlob(prefix + messageId, jobId.toString().getBytes(StandardCharsets.UTF_8));
         } catch (final BlobPersistenceException e) {
             throw new RecursiveStoreException("Failed to register recursive message mapping", e);
         }

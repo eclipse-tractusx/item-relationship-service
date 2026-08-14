@@ -35,12 +35,14 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
 import org.eclipse.tractusx.irs.edc.client.EdcOrchestrator;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationDeliveryFailureReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationMessage;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -67,6 +69,8 @@ class EdcRecursiveNotificationSenderTest {
     private EdcOrchestrator edcOrchestrator;
     @Mock
     private EdcDataPlaneClient edcDataPlaneClient;
+    @Mock
+    private PolicyCheckerService policyCheckerService;
 
     private EdcRecursiveNotificationSender sender;
 
@@ -76,18 +80,16 @@ class EdcRecursiveNotificationSenderTest {
         edcConfiguration.setAsyncTimeout(Duration.ofSeconds(1));
         edcConfiguration.getControlplane().setProviderSuffix("/api/v1/dsp");
         sender = new EdcRecursiveNotificationSender(connectorEndpointsService, edcConfiguration, edcOrchestrator,
-                edcDataPlaneClient);
+                edcDataPlaneClient, policyCheckerService);
     }
 
     @Test
     void shouldSendNotificationThroughLaterEndpointWhenEarlierEndpointFails() throws Exception {
         final RecursiveNotificationMessage message = RecursiveNotificationMessage.builder().build();
-        final CatalogItem catalogItem = CatalogItem.builder()
-                .itemId(NOTIFICATION_ASSET_ID)
-                .connectorId(REMOTE_BPNL)
-                .build();
+        final CatalogItem catalogItem = catalogItem(NOTIFICATION_ASSET_ID);
         final EndpointDataReference endpointDataReference = endpointDataReference();
         final EdcNotificationResponse deliveredResponse = () -> true;
+        acceptPolicy(catalogItem);
 
         when(connectorEndpointsService.fetchConnectorEndpoints(REMOTE_BPNL))
                 .thenReturn(List.of(FIRST_CONNECTOR, SECOND_CONNECTOR));
@@ -109,12 +111,10 @@ class EdcRecursiveNotificationSenderTest {
     @Test
     void shouldFindNotificationAssetByTypeAndVersion() throws Exception {
         final RecursiveNotificationMessage message = RecursiveNotificationMessage.builder().build();
-        final CatalogItem catalogItem = CatalogItem.builder()
-                                                   .itemId(NOTIFICATION_ASSET_ID)
-                                                   .connectorId(REMOTE_BPNL)
-                                                   .build();
+        final CatalogItem catalogItem = catalogItem(NOTIFICATION_ASSET_ID);
         final EndpointDataReference endpointDataReference = endpointDataReference();
         final ArgumentCaptor<QuerySpec> querySpecCaptor = ArgumentCaptor.forClass(QuerySpec.class);
+        acceptPolicy(catalogItem);
 
         when(connectorEndpointsService.fetchConnectorEndpoints(REMOTE_BPNL)).thenReturn(List.of(FIRST_CONNECTOR));
         when(edcOrchestrator.getCatalogItems(eq(FIRST_DSP_ENDPOINT), any(QuerySpec.class), eq(REMOTE_BPNL)))
@@ -187,23 +187,51 @@ class EdcRecursiveNotificationSenderTest {
     }
 
     @Test
-    void shouldRejectAmbiguousNotificationAssets() throws Exception {
-        final CatalogItem firstCatalogItem = CatalogItem.builder().itemId("notification-api-one").build();
-        final CatalogItem secondCatalogItem = CatalogItem.builder().itemId("notification-api-two").build();
+    void shouldSelectNegotiableCatalogItemDeterministically() throws Exception {
+        final CatalogItem rejectedCatalogItem = catalogItem("notification-api-a");
+        final CatalogItem selectedCatalogItem = catalogItem("notification-api-b");
+        final CatalogItem laterCatalogItem = catalogItem("notification-api-c");
+        final RecursiveNotificationMessage message = RecursiveNotificationMessage.builder().build();
+        final EndpointDataReference endpointDataReference = endpointDataReference();
+        when(policyCheckerService.isValid(rejectedCatalogItem.getPolicy(), REMOTE_BPNL)).thenReturn(false);
+        acceptPolicy(selectedCatalogItem);
+        acceptPolicy(laterCatalogItem);
         when(connectorEndpointsService.fetchConnectorEndpoints(REMOTE_BPNL)).thenReturn(List.of(FIRST_CONNECTOR));
         when(edcOrchestrator.getCatalogItems(eq(FIRST_DSP_ENDPOINT), any(QuerySpec.class), eq(REMOTE_BPNL)))
-                .thenReturn(List.of(firstCatalogItem, secondCatalogItem));
+                .thenReturn(List.of(laterCatalogItem, rejectedCatalogItem, selectedCatalogItem));
+        when(edcOrchestrator.getEndpointDataReference(FIRST_DSP_ENDPOINT, selectedCatalogItem))
+                .thenReturn(completedFuture(endpointDataReference));
+        when(edcDataPlaneClient.sendData(endpointDataReference, message)).thenReturn(() -> true);
+
+        sender.sendRequest(REMOTE_BPNL, message);
+
+        verify(edcOrchestrator).getEndpointDataReference(FIRST_DSP_ENDPOINT, selectedCatalogItem);
+        verify(edcOrchestrator, never()).getEndpointDataReference(FIRST_DSP_ENDPOINT, rejectedCatalogItem);
+        verify(edcOrchestrator, never()).getEndpointDataReference(FIRST_DSP_ENDPOINT, laterCatalogItem);
+    }
+
+    @Test
+    void shouldRejectCatalogWhenNoPolicyCanBeNegotiated() throws Exception {
+        final CatalogItem rejectedCatalogItem = catalogItem("notification-api-a");
+        final CatalogItem expiredCatalogItem = catalogItem("notification-api-b");
+        when(policyCheckerService.isValid(rejectedCatalogItem.getPolicy(), REMOTE_BPNL)).thenReturn(false);
+        when(policyCheckerService.isValid(expiredCatalogItem.getPolicy(), REMOTE_BPNL)).thenReturn(true);
+        when(policyCheckerService.isExpired(expiredCatalogItem.getPolicy(), REMOTE_BPNL)).thenReturn(true);
+        when(connectorEndpointsService.fetchConnectorEndpoints(REMOTE_BPNL)).thenReturn(List.of(FIRST_CONNECTOR));
+        when(edcOrchestrator.getCatalogItems(eq(FIRST_DSP_ENDPOINT), any(QuerySpec.class), eq(REMOTE_BPNL)))
+                .thenReturn(List.of(rejectedCatalogItem, expiredCatalogItem));
 
         assertThatThrownBy(() -> sender.sendRequest(REMOTE_BPNL, RecursiveNotificationMessage.builder().build()))
                 .isInstanceOfSatisfying(RecursiveNotificationDeliveryException.class, exception ->
                         assertThat(exception.getReason())
-                                .isEqualTo(RecursiveNotificationDeliveryFailureReason.NOTIFICATION_ASSET_AMBIGUOUS));
+                                .isEqualTo(RecursiveNotificationDeliveryFailureReason.NOTIFICATION_POLICY_REJECTED));
         verify(edcOrchestrator, never()).getEndpointDataReference(any(), any(CatalogItem.class));
     }
 
     @Test
     void shouldClassifyFailedNegotiationAsContractNegotiationFailure() throws Exception {
-        final CatalogItem catalogItem = CatalogItem.builder().itemId(NOTIFICATION_ASSET_ID).connectorId(REMOTE_BPNL).build();
+        final CatalogItem catalogItem = catalogItem(NOTIFICATION_ASSET_ID);
+        acceptPolicy(catalogItem);
         when(connectorEndpointsService.fetchConnectorEndpoints(REMOTE_BPNL)).thenReturn(List.of(FIRST_CONNECTOR));
         when(edcOrchestrator.getCatalogItems(eq(FIRST_DSP_ENDPOINT), any(QuerySpec.class), eq(REMOTE_BPNL)))
                 .thenReturn(List.of(catalogItem));
@@ -219,8 +247,9 @@ class EdcRecursiveNotificationSenderTest {
     @Test
     void shouldClassifyRejectedDataPlaneDeliveryAsDataPlaneFailure() throws Exception {
         final RecursiveNotificationMessage message = RecursiveNotificationMessage.builder().build();
-        final CatalogItem catalogItem = CatalogItem.builder().itemId(NOTIFICATION_ASSET_ID).connectorId(REMOTE_BPNL).build();
+        final CatalogItem catalogItem = catalogItem(NOTIFICATION_ASSET_ID);
         final EndpointDataReference endpointDataReference = endpointDataReference();
+        acceptPolicy(catalogItem);
         when(connectorEndpointsService.fetchConnectorEndpoints(REMOTE_BPNL)).thenReturn(List.of(FIRST_CONNECTOR));
         when(edcOrchestrator.getCatalogItems(eq(FIRST_DSP_ENDPOINT), any(QuerySpec.class), eq(REMOTE_BPNL)))
                 .thenReturn(List.of(catalogItem));
@@ -237,8 +266,9 @@ class EdcRecursiveNotificationSenderTest {
     @Test
     void shouldClassifyDataPlaneClientFailure() throws Exception {
         final RecursiveNotificationMessage message = RecursiveNotificationMessage.builder().build();
-        final CatalogItem catalogItem = CatalogItem.builder().itemId(NOTIFICATION_ASSET_ID).connectorId(REMOTE_BPNL).build();
+        final CatalogItem catalogItem = catalogItem(NOTIFICATION_ASSET_ID);
         final EndpointDataReference endpointDataReference = endpointDataReference();
+        acceptPolicy(catalogItem);
         when(connectorEndpointsService.fetchConnectorEndpoints(REMOTE_BPNL)).thenReturn(List.of(FIRST_CONNECTOR));
         when(edcOrchestrator.getCatalogItems(eq(FIRST_DSP_ENDPOINT), any(QuerySpec.class), eq(REMOTE_BPNL)))
                 .thenReturn(List.of(catalogItem));
@@ -277,5 +307,20 @@ class EdcRecursiveNotificationSenderTest {
                 .authKey("X-API-KEY")
                 .authCode("secret")
                 .build();
+    }
+
+    private CatalogItem catalogItem(final String assetId) {
+        return CatalogItem.builder()
+                .itemId(assetId)
+                .assetPropId(assetId)
+                .offerId("offer-" + assetId)
+                .policy(Policy.Builder.newInstance().target(assetId).build())
+                .connectorId(REMOTE_BPNL)
+                .build();
+    }
+
+    private void acceptPolicy(final CatalogItem catalogItem) {
+        when(policyCheckerService.isValid(catalogItem.getPolicy(), catalogItem.getConnectorId())).thenReturn(true);
+        when(policyCheckerService.isExpired(catalogItem.getPolicy(), catalogItem.getConnectorId())).thenReturn(false);
     }
 }

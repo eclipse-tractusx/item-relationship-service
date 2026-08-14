@@ -20,6 +20,7 @@ package org.eclipse.tractusx.irs.recursive.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.UnaryOperator;
 
@@ -33,7 +34,7 @@ import org.eclipse.tractusx.irs.recursive.store.RecursiveJobStateStore;
  *
  * <p>The blob store has no compare-and-swap, so concurrent child responses, send failures and
  * timeout sweeps could otherwise overwrite each other (lost update). Every read-modify-write
- * cycle must go through {@link #updateIfNotTerminal(String, RecursiveJobState, UnaryOperator)} -
+ * cycle must go through {@link #updateIfNotTerminal(UUID, RecursiveJobState, UnaryOperator)} -
  * there is intentionally no other mutation path for existing jobs.</p>
  */
 @RequiredArgsConstructor
@@ -45,9 +46,9 @@ public class RecursiveJobRepository {
      * One lock object per jobId. Entries are kept for the pod lifetime; jobs are few and the
      * objects are tiny, so no eviction is needed.
      */
-    private final ConcurrentHashMap<String, Object> jobLocks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Object> jobLocks = new ConcurrentHashMap<>();
 
-    public Optional<RecursiveJobState> findById(final String jobId) {
+    public Optional<RecursiveJobState> findById(final UUID jobId) {
         return store.findById(jobId);
     }
 
@@ -55,19 +56,19 @@ public class RecursiveJobRepository {
         return store.findAll();
     }
 
-    public Optional<String> findJobIdByIncomingRequestMessageId(final String messageId) {
+    public Optional<UUID> findJobIdByIncomingRequestMessageId(final String messageId) {
         return store.findJobIdByIncomingRequestMessageId(messageId);
     }
 
-    public void registerIncomingRequestMessageId(final String messageId, final String jobId) {
+    public void registerIncomingRequestMessageId(final String messageId, final UUID jobId) {
         store.registerIncomingRequestMessageId(messageId, jobId);
     }
 
-    public Optional<String> findJobIdByChildRequestMessageId(final String messageId) {
+    public Optional<UUID> findJobIdByChildRequestMessageId(final String messageId) {
         return store.findJobIdByChildRequestMessageId(messageId);
     }
 
-    public void registerChildRequestMessageId(final String messageId, final String jobId) {
+    public void registerChildRequestMessageId(final String messageId, final UUID jobId) {
         store.registerChildRequestMessageId(messageId, jobId);
     }
 
@@ -90,7 +91,7 @@ public class RecursiveJobRepository {
      * @param update   pure transformation from current to next state; null aborts the update
      * @return the persisted next state, or empty when the update was skipped
      */
-    public Optional<RecursiveJobState> updateIfNotTerminal(final String jobId, final RecursiveJobState fallback,
+    public Optional<RecursiveJobState> updateIfNotTerminal(final UUID jobId, final RecursiveJobState fallback,
             final UnaryOperator<RecursiveJobState> update) {
         synchronized (jobLocks.computeIfAbsent(jobId, id -> new Object())) {
             final RecursiveJobState current = store.findById(jobId).orElse(fallback);

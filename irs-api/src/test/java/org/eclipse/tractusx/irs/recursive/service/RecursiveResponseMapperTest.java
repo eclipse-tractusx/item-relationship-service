@@ -23,9 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspectItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveBomChild;
@@ -53,7 +55,7 @@ class RecursiveResponseMapperTest {
         final RecursiveChildItem rawChild = RecursiveChildItem.builder()
                 .materialNumber("MNR-1")
                 .materialName("Semiconductor")
-                .quantity(RecursiveQuantity.builder().value(2.0).unit("unit:piece").build())
+                .quantity(RecursiveQuantity.builder().value(2.0).unit(ItemUnitEnumeration.UNIT_PIECE).build())
                 .items(List.of(
                         aspectItem(ITEM_STOCK_ANONYMIZED, Map.of("quantity", 10)),
                         aspectItem(DELIVERY_INFORMATION_ANONYMIZED, Map.of("quantity", 30)),
@@ -97,7 +99,7 @@ class RecursiveResponseMapperTest {
         final String filteredAssetId = "urn:uuid:33333333-3333-3333-3333-333333333333";
         final String childMessageId = "child-request-message-id";
         final RecursiveJobState state = RecursiveJobState.builder()
-                .jobId("job-1")
+                .jobId(UUID.fromString("00000000-0000-0000-0000-000000000001"))
                 .openingId("opening-42")
                 .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
@@ -112,7 +114,7 @@ class RecursiveResponseMapperTest {
                 .state(RecursiveJobPhase.COMPLETED)
                 .rootJob(true)
                 .bomChildren(List.of(new RecursiveBomChild(filteredAssetId, filteredPartner,
-                        RecursiveQuantity.builder().value(1.0).unit("unit:piece").build())))
+                        RecursiveQuantity.builder().value(1.0).unit(ItemUnitEnumeration.UNIT_PIECE).build())))
                 .childBranches(List.of(RecursiveChildBranch.builder()
                         .messageId(childMessageId)
                         .partnerBpnl(filteredPartner)

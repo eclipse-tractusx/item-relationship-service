@@ -18,7 +18,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.recursive.model;
 
+import java.util.UUID;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
@@ -28,5 +32,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class RecursiveJobStartResponse {
 
-    private String jobId;
+    @NonNull
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    private UUID jobId;
 }

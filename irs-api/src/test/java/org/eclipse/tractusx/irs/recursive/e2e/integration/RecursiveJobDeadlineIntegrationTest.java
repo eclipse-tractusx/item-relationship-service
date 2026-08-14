@@ -24,12 +24,14 @@ import static org.awaitility.Awaitility.await;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobPhase;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobState;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobStatusResponse;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.recursive.store.RecursiveJobStateStore;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +48,7 @@ class RecursiveJobDeadlineIntegrationTest extends RecursiveIntegrationTestBase {
         final String jobId = "68904173-ad59-4a77-8412-3e73fcafbd86";
         final ZonedDateTime now = ZonedDateTime.now();
         atlas.context().getBean(RecursiveJobStateStore.class).save(RecursiveJobState.builder()
-                .jobId(jobId)
+                .jobId(UUID.fromString(jobId))
                 .openingId(OPENING_ID)
                 .useCase(PURIS_USE_CASE)
                 .globalAssetId(ATLAS_ASSET)
@@ -72,7 +74,8 @@ class RecursiveJobDeadlineIntegrationTest extends RecursiveIntegrationTestBase {
                     final RecursiveJobStatusResponse status = client.jobStatus(atlas, jobId);
                     assertThat(status.getJob().getState()).isEqualTo(JobState.ERROR);
                     assertThat(status.getJob().getException().getExceptionDate()).isNotNull();
-                    assertThat(status.getJob().getException().getException()).isEqualTo("RECURSIVE_DEADLINE_EXCEEDED");
+                    assertThat(status.getJob().getException().getException())
+                            .isEqualTo(RecursiveTombstoneReason.RECURSIVE_DEADLINE_EXCEEDED.name());
                 });
     }
 }

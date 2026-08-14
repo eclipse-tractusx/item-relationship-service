@@ -20,6 +20,7 @@ package org.eclipse.tractusx.irs.recursive.store;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobState;
 
@@ -44,15 +45,15 @@ public interface RecursiveJobStateStore {
      * @param jobId the job identifier
      * @return the stored job state, if present
      */
-    Optional<RecursiveJobState> findById(String jobId);
+    Optional<RecursiveJobState> findById(UUID jobId);
 
-    Optional<String> findJobIdByIncomingRequestMessageId(String messageId);
+    Optional<UUID> findJobIdByIncomingRequestMessageId(String messageId);
 
-    void registerIncomingRequestMessageId(String messageId, String jobId);
+    void registerIncomingRequestMessageId(String messageId, UUID jobId);
 
-    Optional<String> findJobIdByChildRequestMessageId(String messageId);
+    Optional<UUID> findJobIdByChildRequestMessageId(String messageId);
 
-    void registerChildRequestMessageId(String messageId, String jobId);
+    void registerChildRequestMessageId(String messageId, UUID jobId);
 
     /**
      * Returns all stored job states.

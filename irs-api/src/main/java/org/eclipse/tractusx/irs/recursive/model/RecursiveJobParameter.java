@@ -21,12 +21,16 @@ package org.eclipse.tractusx.irs.recursive.model;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 
 /**
  * Parameters used to start and process a recursive job.
@@ -37,6 +41,10 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RecursiveJobParameter {
 
+    @Schema(description = "Chain opening identifier, identical across the whole recursive chain.",
+            pattern = RecursivePatternStore.SAFE_SINGLE_LINE_STRING)
+    @Pattern(regexp = RecursivePatternStore.SAFE_SINGLE_LINE_STRING,
+             message = "openingId must not contain control or line separator characters")
     private String openingId;
     private RecursiveUseCase useCase;
     private BomLifecycle bomLifecycle;

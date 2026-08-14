@@ -61,7 +61,10 @@ include::../../../uml-diagrams/building-block-view/level-2-int-recursive-puris.p
 |Administrative REST controller for managing chain opening grants.
 
 |RecursiveNotificationController
-|REST controller for receiving recursive REQUEST and RESPONSE notifications from partner IRS instances.
+|REST controller that accepts recursive REQUEST and RESPONSE notifications and delegates them to the receiver.
+
+|RecursiveNotificationReceiver
+|Reads routing fields, validates the EDC transport identity and coordinates validation and processing of incoming notifications.
 
 |RecursiveJobService
 |Coordinates the recursive job lifecycle, grant validation, BOM traversal, child notifications, timeout handling and result aggregation.
@@ -75,8 +78,8 @@ include::../../../uml-diagrams/building-block-view/level-2-int-recursive-puris.p
 |RecursiveSubmodelCollector
 |Collects material metadata from PartTypeInformation and the requested anonymized PURIS submodel payloads for one material node.
 
-|RecursiveNotificationContractValidator
-|Reads routing fields from the raw notification JSON, strictly decodes the notification and validates the REQUEST or RESPONSE contract.
+|RecursiveNotificationMessageValidator
+|Strictly decodes the notification and validates the REQUEST or RESPONSE message contract.
 
 |RecursiveResponseMapper
 |Maps local job state and received child data to the external recursive job response model.

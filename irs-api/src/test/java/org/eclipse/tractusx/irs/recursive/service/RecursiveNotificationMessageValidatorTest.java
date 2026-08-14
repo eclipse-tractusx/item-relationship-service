@@ -48,7 +48,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RecursiveNotificationContractValidatorTest {
+class RecursiveNotificationMessageValidatorTest {
 
     private static final RecursiveUseCase USE_CASE = RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE;
     private static final String ASPECT = RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId();
@@ -56,12 +56,12 @@ class RecursiveNotificationContractValidatorTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private ValidatorFactory validatorFactory;
-    private RecursiveNotificationContractValidator contractValidator;
+    private RecursiveNotificationMessageValidator messageValidator;
 
     @BeforeEach
     void setUp() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
-        contractValidator = new RecursiveNotificationContractValidator(validatorFactory.getValidator(), objectMapper);
+        messageValidator = new RecursiveNotificationMessageValidator(validatorFactory.getValidator(), objectMapper);
     }
 
     @AfterEach
@@ -71,7 +71,7 @@ class RecursiveNotificationContractValidatorTest {
 
     @Test
     void acceptsCurrentRequestContract() {
-        assertThat(contractValidator.isValid(request())).isTrue();
+        assertThat(messageValidator.isValid(request())).isTrue();
     }
 
     @Test
@@ -79,35 +79,28 @@ class RecursiveNotificationContractValidatorTest {
         final JsonNode payload = objectMapper.valueToTree(request());
         ((ObjectNode) payload.get("content")).put("globalAssetId",
                 "68904173-ad59-4a77-8412-3e73fcafbd8b");
-        final RecursiveNotificationMessage decoded = contractValidator.decode(payload).orElseThrow();
+        final RecursiveNotificationMessage decoded = messageValidator.decode(payload).orElseThrow();
 
-        assertThat(contractValidator.isValid(decoded)).isTrue();
+        assertThat(messageValidator.isValid(decoded)).isTrue();
     }
 
     @Test
     void acceptsCurrentResponseContract() {
-        assertThat(contractValidator.isValid(response(result(USE_CASE)))).isTrue();
+        assertThat(messageValidator.isValid(response(result(USE_CASE)))).isTrue();
     }
 
     @Test
     void rejectsResponseWhoseResultDoesNotMatchTheEnvelope() {
-        assertThat(contractValidator.isValid(response(result(USE_CASE, List.of(DELIVERY_ASPECT))))).isFalse();
+        assertThat(messageValidator.isValid(response(result(USE_CASE, List.of(DELIVERY_ASPECT))))).isFalse();
     }
 
     @Test
-    void preservesCorrelationWhenStrictDecodingFails() {
+    void rejectsMessageWhenStrictDecodingFails() {
         final JsonNode payload = objectMapper.valueToTree(response(result(USE_CASE)));
         ((ObjectNode) payload.get("content")).put("status", "UNKNOWN_STATUS");
         ((ObjectNode) payload.get("header")).remove("senderBpn");
 
-        assertThat(contractValidator.readRoutingFields(payload))
-                .get()
-                .satisfies(routing -> {
-                    assertThat(routing.senderBpnl()).isNull();
-                    assertThat(routing.relatedMessageId()).isNotNull();
-                    assertThat(routing.type()).isEqualTo(RecursiveNotificationType.RESPONSE);
-                });
-        assertThat(contractValidator.decode(payload)).isEmpty();
+        assertThat(messageValidator.validate(payload)).isEmpty();
     }
 
     @Test
@@ -115,7 +108,7 @@ class RecursiveNotificationContractValidatorTest {
         final JsonNode payload = objectMapper.valueToTree(request());
         ((ObjectNode) payload.get("header")).put("traceId", "trace-42");
 
-        assertThat(contractValidator.decode(payload)).isPresent();
+        assertThat(messageValidator.decode(payload)).isPresent();
     }
 
     @Test
@@ -123,7 +116,7 @@ class RecursiveNotificationContractValidatorTest {
         final JsonNode payload = objectMapper.valueToTree(request());
         ((ObjectNode) payload.get("content")).put("unexpected", "value");
 
-        assertThat(contractValidator.decode(payload)).isEmpty();
+        assertThat(messageValidator.decode(payload)).isEmpty();
     }
 
     @Test
@@ -131,18 +124,18 @@ class RecursiveNotificationContractValidatorTest {
         final JsonNode payload = objectMapper.valueToTree(request());
         ((ObjectNode) payload.get("header")).put("context",
                 "IndustryCore-RecursiveIrsNotificationApi-Receive:1.1.0");
-        final RecursiveNotificationMessage decoded = contractValidator.decode(payload).orElseThrow();
+        final RecursiveNotificationMessage decoded = messageValidator.decode(payload).orElseThrow();
 
-        assertThat(contractValidator.isValid(decoded)).isFalse();
+        assertThat(messageValidator.isValid(decoded)).isFalse();
     }
 
     @Test
     void rejectsResponseWithoutBomLifecycle() {
         final JsonNode payload = objectMapper.valueToTree(response(result(USE_CASE)));
         ((ObjectNode) payload.get("content")).remove("bomLifecycle");
-        final RecursiveNotificationMessage decoded = contractValidator.decode(payload).orElseThrow();
+        final RecursiveNotificationMessage decoded = messageValidator.decode(payload).orElseThrow();
 
-        assertThat(contractValidator.isValid(decoded)).isFalse();
+        assertThat(messageValidator.isValid(decoded)).isFalse();
     }
 
     @Test
@@ -150,9 +143,9 @@ class RecursiveNotificationContractValidatorTest {
         final JsonNode payload = objectMapper.valueToTree(request());
         ((ObjectNode) payload.get("header")).put("sentDateTime",
                 "2026-08-06T10:00:00+02:00[Europe/Berlin]");
-        final RecursiveNotificationMessage decoded = contractValidator.decode(payload).orElseThrow();
+        final RecursiveNotificationMessage decoded = messageValidator.decode(payload).orElseThrow();
 
-        assertThat(contractValidator.isValid(decoded)).isFalse();
+        assertThat(messageValidator.isValid(decoded)).isFalse();
     }
 
     @Test
@@ -160,7 +153,7 @@ class RecursiveNotificationContractValidatorTest {
         final List<String> envelopeAspects = List.of(ASPECT, DELIVERY_ASPECT);
         final RecursiveJobResult result = result(USE_CASE, List.of(DELIVERY_ASPECT, ASPECT));
 
-        assertThat(contractValidator.isValid(response(result, envelopeAspects))).isTrue();
+        assertThat(messageValidator.isValid(response(result, envelopeAspects))).isTrue();
     }
 
     @Test
@@ -179,48 +172,48 @@ class RecursiveNotificationContractValidatorTest {
                 .tombstones(List.of())
                 .build();
 
-        assertThat(contractValidator.isValid(response(result))).isFalse();
+        assertThat(messageValidator.isValid(response(result))).isFalse();
     }
 
     @Test
     void rejectsTombstoneWithoutReason() {
-        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
                 validTombstone().reason(null).build())))).isFalse();
     }
 
     @Test
     void rejectsTombstoneWithoutScope() {
-        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
                 validTombstone().scope(null).build())))).isFalse();
     }
 
     @Test
     void rejectsTombstoneWithoutType() {
-        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
                 validTombstone().type(null).build())))).isFalse();
     }
 
     @Test
     void rejectsTombstoneWithoutUsefulDetail() {
-        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
                 validTombstone().detail(" ").build())))).isFalse();
     }
 
     @Test
     void rejectsTombstoneWithUnsafeDetail() {
-        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
                 validTombstone().detail("first line\nsecond line").build())))).isFalse();
     }
 
     @Test
     void rejectsTombstoneWithRetryableMismatch() {
-        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
                 validTombstone().retryable(false).build())))).isFalse();
     }
 
     @Test
     void rejectsTombstoneWithInvalidErrorRef() {
-        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
                 validTombstone().errorRefs(List.of("not-a-uuid")).build())))).isFalse();
     }
 

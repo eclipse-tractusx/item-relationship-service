@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspectItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChildItem;
@@ -90,7 +91,7 @@ class RecursiveResultTreeSanitizerTest {
     private RecursiveQuantity quantity(final double value) {
         return RecursiveQuantity.builder()
                 .value(value)
-                .unit("unit:piece")
+                .unit(ItemUnitEnumeration.UNIT_PIECE)
                 .build();
     }
 }

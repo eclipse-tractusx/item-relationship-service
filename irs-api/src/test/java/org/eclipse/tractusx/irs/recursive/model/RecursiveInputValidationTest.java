@@ -65,6 +65,19 @@ class RecursiveInputValidationTest {
     }
 
     @Test
+    void shouldRejectLineBreaksInJobParameter() {
+        final RecursiveJobParameter parameter = RecursiveJobParameter.builder()
+                .openingId("opening-42\nforged-entry")
+                .build();
+
+        final Set<ConstraintViolation<RecursiveJobParameter>> violations = validator.validate(parameter);
+
+        assertThat(violations)
+                .extracting(violation -> violation.getPropertyPath().toString())
+                .contains("openingId");
+    }
+
+    @Test
     void shouldValidateNestedNotificationFields() {
         final RecursiveNotificationMessage message = RecursiveNotificationMessage.builder()
                 .header(RecursiveNotificationMessage.Header.builder()
@@ -106,23 +119,28 @@ class RecursiveInputValidationTest {
 
     @Test
     void shouldAcceptSupportedGlobalAssetIdFormats() {
-        final RecursiveJobRequest plainUuidRequest = RecursiveJobRequest.builder()
-                .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
-                .globalAssetId("68904173-ad59-4a77-8412-3e73fcafbd8b")
-                .build();
-        final RecursiveChainOpeningGrant plainUuidGrant = RecursiveChainOpeningGrant.builder()
-                .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
-                .globalAssetId("68904173-ad59-4a77-8412-3e73fcafbd8b")
-                .requesterBpn("BPNL0000ATLS0001")
-                .build();
-        final RecursiveNotificationMessage plainUuidNotification = notificationWithGlobalAssetId(
-                "68904173-ad59-4a77-8412-3e73fcafbd8b");
+        final List<String> globalAssetIds = List.of(
+                "68904173-ad59-4a77-8412-3e73fcafbd8b",
+                "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b");
 
-        assertThat(validator.validate(plainUuidRequest)).isEmpty();
-        assertThat(validator.validate(plainUuidGrant)).isEmpty();
-        assertThat(validator.validate(plainUuidNotification)).isEmpty();
+        globalAssetIds.forEach(globalAssetId -> {
+            final RecursiveJobRequest request = RecursiveJobRequest.builder()
+                    .openingId("opening-42")
+                    .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                    .globalAssetId(globalAssetId)
+                    .build();
+            final RecursiveChainOpeningGrant grant = RecursiveChainOpeningGrant.builder()
+                    .openingId("opening-42")
+                    .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                    .globalAssetId(globalAssetId)
+                    .requesterBpn("BPNL0000ATLS0001")
+                    .build();
+            final RecursiveNotificationMessage notification = notificationWithGlobalAssetId(globalAssetId);
+
+            assertThat(validator.validate(request)).isEmpty();
+            assertThat(validator.validate(grant)).isEmpty();
+            assertThat(validator.validate(notification)).isEmpty();
+        });
     }
 
     @Test

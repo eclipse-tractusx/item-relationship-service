@@ -45,6 +45,7 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.recursive.config.RecursiveProperties;
+import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspectItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveBomChild;
@@ -80,8 +81,8 @@ class RecursiveJobServiceTest {
 
     private RecursiveJobService jobService;
     private RecursiveChainOpeningGrantStore grantStore;
-    private Map<String, RecursiveJobState> jobs;
-    private Map<String, String> messageIds;
+    private Map<UUID, RecursiveJobState> jobs;
+    private Map<String, UUID> messageIds;
     private final Instant clockStart = Instant.now();
     private RecursiveProperties recursiveProperties;
     private RecursiveSubmodelCollector submodelCollector;
@@ -121,10 +122,9 @@ class RecursiveJobServiceTest {
         final RecursiveChainOpeningGrant grant = validGrant();
         grantStore.store(grant);
 
-        final String jobId = jobService.startJob(request);
+        final UUID jobId = jobService.startJob(request);
 
         assertThat(jobId).isNotNull();
-        assertThat(UUID.fromString(jobId)).isNotNull(); // valid UUID
         assertThat(grantStore.find(RecursiveChainOpeningGrantKey.of(grant))).contains(grant);
     }
 
@@ -139,9 +139,9 @@ class RecursiveJobServiceTest {
         recursiveJobExecutor = queuedTasks::add;
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
-        assertThat(UUID.fromString(jobId)).isNotNull();
+        assertThat(jobId).isNotNull();
         assertThat(queuedTasks).hasSize(1);
         assertThat(resolverCalls).hasValue(0);
         assertThat(jobService.getJobStatus(jobId).getJob().getState()).isEqualTo(JobState.RUNNING);
@@ -182,7 +182,7 @@ class RecursiveJobServiceTest {
     void shouldReturnJobStatus() {
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
 
@@ -210,7 +210,7 @@ class RecursiveJobServiceTest {
         jobService = newJobService((globalAssetId, bpnl, bomLifecycle) -> List.of());
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
         assertThat(collectorCalls).hasValue(0);
@@ -225,7 +225,7 @@ class RecursiveJobServiceTest {
         clock.set(Clock.fixed(clockStart, ZoneOffset.UTC));
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest().toBuilder()
+        final UUID jobId = jobService.startJob(validRequest().toBuilder()
                 .ttl(null)
                 .build());
 
@@ -236,7 +236,7 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldThrowWhenJobNotFound() {
-        assertThatThrownBy(() -> jobService.getJobStatus("nonexistent"))
+        assertThatThrownBy(() -> jobService.getJobStatus(namedJobId("nonexistent")))
                 .isInstanceOf(RecursiveJobNotFoundException.class);
     }
 
@@ -245,8 +245,8 @@ class RecursiveJobServiceTest {
         final RecursiveJobRequest request = validRequest();
         grantStore.store(validGrant());
 
-        final String jobId1 = jobService.startJob(request);
-        final String jobId2 = jobService.startJob(request);
+        final UUID jobId1 = jobService.startJob(request);
+        final UUID jobId2 = jobService.startJob(request);
 
         // Root jobs are no longer deduplicated by a caller-supplied messageId; each start gets a fresh id.
         assertThat(jobId1).isNotEqualTo(jobId2);
@@ -264,7 +264,7 @@ class RecursiveJobServiceTest {
         final RecursiveJobRequest request = validRequest();
         grantStore.store(validGrant());
 
-        final String failedJobId = jobService.startJob(request);
+        final UUID failedJobId = jobService.startJob(request);
 
         final RecursiveJobStatusResponse failedStatus = jobService.getJobStatus(failedJobId);
         assertThat(failedStatus.getJob().getState()).isEqualTo(JobState.ERROR);
@@ -276,7 +276,7 @@ class RecursiveJobServiceTest {
                     assertThat(tombstone.getDetail()).isEqualTo("transient traversal failure");
                 });
 
-        final String retriedJobId = jobService.startJob(request);
+        final UUID retriedJobId = jobService.startJob(request);
 
         // A repeated root start creates a fresh job now - there is no caller messageId to deduplicate by.
         assertThat(jobService.getAllJobs()).hasSize(2);
@@ -294,7 +294,7 @@ class RecursiveJobServiceTest {
         });
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
         assertThat(status.getJob().getState()).isEqualTo(JobState.ERROR);
@@ -321,7 +321,7 @@ class RecursiveJobServiceTest {
         });
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
         assertThat(status.getJob().getState()).isEqualTo(JobState.ERROR);
@@ -361,7 +361,7 @@ class RecursiveJobServiceTest {
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
         assertThat(status.getJob().getState()).isEqualTo(JobState.RUNNING);
@@ -378,7 +378,7 @@ class RecursiveJobServiceTest {
         grantStore.store(validGrant());
         notificationSender = recordingSender(sentRequests);
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
         assertThat(sentRequests).hasSize(1);
@@ -394,7 +394,7 @@ class RecursiveJobServiceTest {
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000XXXX0001")));
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
         assertThat(status.getJob().getState()).isEqualTo(JobState.COMPLETED);
@@ -413,7 +413,7 @@ class RecursiveJobServiceTest {
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant().toBuilder().allowedBpnlSet(Set.of("BPNL0000BELF0001")).build());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
 
         assertThat(sentRequests).extracting(message -> message.getHeader().getReceiverBpnl())
@@ -448,7 +448,7 @@ class RecursiveJobServiceTest {
         final RecursiveJobRequest request = validRequest();
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(request);
+        final UUID jobId = jobService.startJob(request);
 
         final RecursiveJobStatusResponse runningStatus = jobService.getJobStatus(jobId);
         assertThat(runningStatus.getJob().getState()).isEqualTo(JobState.RUNNING);
@@ -474,7 +474,7 @@ class RecursiveJobServiceTest {
                 bomChild("urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final String relatedMessageId = sentRequests.get(0).getHeader().getMessageId();
         assertThat(jobService.rejectInvalidCorrelatedResponse("BPNL0000BELF0001", relatedMessageId)).isTrue();
@@ -495,7 +495,7 @@ class RecursiveJobServiceTest {
                 bomChild("urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
         final RecursiveNotificationMessage request = sentRequests.get(0);
 
         final RecursiveNotificationMessage response = RecursiveNotificationMessage.builder()
@@ -534,7 +534,7 @@ class RecursiveJobServiceTest {
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
         assertThat(sentRequests).hasSize(1);
 
         // Correct relatedMessageId, but a different (authenticated) partner answers for BELFAST's
@@ -573,7 +573,7 @@ class RecursiveJobServiceTest {
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse runningStatus = jobService.getJobStatus(jobId);
         assertThat(sentRequests).hasSize(2);
@@ -611,7 +611,7 @@ class RecursiveJobServiceTest {
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse runningStatus = jobService.getJobStatus(jobId);
         assertThat(sentRequests).singleElement().satisfies(request -> {
@@ -645,7 +645,7 @@ class RecursiveJobServiceTest {
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
         assertThat(sentRequests).hasSize(2);
 
         // Both child branches answer at the same time. Without per-job serialization one of the
@@ -716,7 +716,7 @@ class RecursiveJobServiceTest {
         // The self-loop child request needs its own grant for the child material.
         grantStore.store(childGrant());
 
-        final String jobId = jobService.startJob(validRequest().toBuilder()
+        final UUID jobId = jobService.startJob(validRequest().toBuilder()
                 .globalAssetId(rootAssetId)
                 .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                 .build());
@@ -742,7 +742,7 @@ class RecursiveJobServiceTest {
         final RecursiveJobRequest request = validRequest().toBuilder()
                 .ttl("PT2M")
                 .build();
-        final String jobId = jobService.startJob(request);
+        final UUID jobId = jobService.startJob(request);
 
         clock.set(Clock.fixed(clockStart.plusSeconds(61), ZoneOffset.UTC));
         final int processedJobs = jobService.processExpiredJobs();
@@ -768,7 +768,7 @@ class RecursiveJobServiceTest {
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveTombstone unsafeTombstone = RecursiveTombstone.builder()
                 .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
@@ -812,7 +812,7 @@ class RecursiveJobServiceTest {
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveTombstone rejection = RecursiveTombstone.builder()
                 .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
@@ -853,7 +853,7 @@ class RecursiveJobServiceTest {
         final RecursiveJobRequest request = validRequest().toBuilder()
                 .ttl("PT2M")
                 .build();
-        final String jobId = jobService.startJob(request);
+        final UUID jobId = jobService.startJob(request);
         clock.set(Clock.fixed(clockStart.plusSeconds(61), ZoneOffset.UTC));
         jobService.processExpiredJobs();
 
@@ -890,7 +890,7 @@ class RecursiveJobServiceTest {
         final RecursiveJobRequest request = validRequest().toBuilder()
                 .ttl("PT2M")
                 .build();
-        final String jobId = jobService.startJob(request);
+        final UUID jobId = jobService.startJob(request);
 
         clock.set(Clock.fixed(clockStart.plusSeconds(121), ZoneOffset.UTC));
         final int processedJobs = jobService.processExpiredJobs();
@@ -917,7 +917,7 @@ class RecursiveJobServiceTest {
         final RecursiveJobRequest request = validRequest().toBuilder()
                 .ttl("PT2M")
                 .build();
-        final String jobId = jobService.startJob(request);
+        final UUID jobId = jobService.startJob(request);
 
         clock.set(Clock.fixed(clockStart.plusSeconds(121), ZoneOffset.UTC));
         final int processedJobs = jobService.processExpiredJobs();
@@ -947,7 +947,7 @@ class RecursiveJobServiceTest {
         };
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
         assertThat(status.getJob().getState()).isEqualTo(JobState.COMPLETED);
@@ -984,7 +984,7 @@ class RecursiveJobServiceTest {
         };
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest().toBuilder()
+        final UUID jobId = jobService.startJob(validRequest().toBuilder()
                 .ttl("PT2M")
                 .build());
 
@@ -1146,7 +1146,7 @@ class RecursiveJobServiceTest {
         };
         grantStore.store(validGrant());
 
-        final String jobId = jobService.startJob(validRequest());
+        final UUID jobId = jobService.startJob(validRequest());
 
         // Local view: the detailed classification is persisted on the job.
         assertThat(jobs.get(jobId).getChildBranches())
@@ -1170,30 +1170,30 @@ class RecursiveJobServiceTest {
     @Test
     void shouldResumeGrantCheckedJobAfterRestart() {
         grantStore.store(validGrant());
-        jobs.put("stuck-job", seededState("stuck-job", RecursiveJobPhase.GRANT_CHECKED).build());
+        storeJob(seededState("stuck-job", RecursiveJobPhase.GRANT_CHECKED).build());
 
         final int resumed = jobService.recoverOpenJobs();
 
         assertThat(resumed).isEqualTo(1);
-        assertThat(jobs.get("stuck-job").getState()).isEqualTo(RecursiveJobPhase.COMPLETED);
+        assertThat(jobs.get(namedJobId("stuck-job")).getState()).isEqualTo(RecursiveJobPhase.COMPLETED);
     }
 
     @Test
     void shouldFailResumedJobWhenGrantDisappeared() {
-        jobs.put("orphaned-job", seededState("orphaned-job", RecursiveJobPhase.GRANT_CHECKED).build());
+        storeJob(seededState("orphaned-job", RecursiveJobPhase.GRANT_CHECKED).build());
 
         final int resumed = jobService.recoverOpenJobs();
 
         assertThat(resumed).isEqualTo(1);
-        assertThat(jobs.get("orphaned-job").getState()).isEqualTo(RecursiveJobPhase.FAILED);
-        assertThat(jobService.getJobStatus("orphaned-job").getResult().getTombstones())
+        assertThat(jobs.get(namedJobId("orphaned-job")).getState()).isEqualTo(RecursiveJobPhase.FAILED);
+        assertThat(jobService.getJobStatus(namedJobId("orphaned-job")).getResult().getTombstones())
                 .extracting(tombstone -> tombstone.getReason())
                 .containsExactly(RecursiveTombstoneReason.CHAIN_OPENING_REJECTED);
     }
 
     @Test
     void shouldFailRecoveredJobWithInvalidUseCasePolicy() {
-        jobs.put("invalid-job", seededState("invalid-job", RecursiveJobPhase.GRANT_CHECKED)
+        storeJob(seededState("invalid-job", RecursiveJobPhase.GRANT_CHECKED)
                 .useCase(null)
                 .aspects(List.of())
                 .build());
@@ -1201,8 +1201,8 @@ class RecursiveJobServiceTest {
         final int resumed = jobService.recoverOpenJobs();
 
         assertThat(resumed).isEqualTo(1);
-        assertThat(jobs.get("invalid-job").getState()).isEqualTo(RecursiveJobPhase.FAILED);
-        assertThat(jobService.getJobStatus("invalid-job").getResult().getResultStatus())
+        assertThat(jobs.get(namedJobId("invalid-job")).getState()).isEqualTo(RecursiveJobPhase.FAILED);
+        assertThat(jobService.getJobStatus(namedJobId("invalid-job")).getResult().getResultStatus())
                 .isEqualTo(RecursiveResultStatus.FAILED);
     }
 
@@ -1211,7 +1211,7 @@ class RecursiveJobServiceTest {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
-        jobs.put("waiting-job", seededState("waiting-job", RecursiveJobPhase.AWAITING_CHILDREN)
+        storeJob(seededState("waiting-job", RecursiveJobPhase.AWAITING_CHILDREN)
                 .childBranches(List.of(
                         RecursiveChildBranch.builder()
                                 .messageId("answered-msg").partnerBpnl("BPNL0000BELF0001")
@@ -1237,11 +1237,11 @@ class RecursiveJobServiceTest {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
-        jobs.put("done-job", seededState("done-job", RecursiveJobPhase.COMPLETED).build());
-        jobs.put("expired-job", seededState("expired-job", RecursiveJobPhase.GRANT_CHECKED)
+        storeJob(seededState("done-job", RecursiveJobPhase.COMPLETED).build());
+        storeJob(seededState("expired-job", RecursiveJobPhase.GRANT_CHECKED)
                 .deadline(ZonedDateTime.now().minusMinutes(1))
                 .build());
-        jobs.put("expired-children-job", seededState("expired-children-job", RecursiveJobPhase.AWAITING_CHILDREN)
+        storeJob(seededState("expired-children-job", RecursiveJobPhase.AWAITING_CHILDREN)
                 .childResponseDeadline(ZonedDateTime.now().minusMinutes(1))
                 .childBranches(List.of(RecursiveChildBranch.builder()
                         .messageId("open-msg").partnerBpnl("BPNL0000CERS0001")
@@ -1252,8 +1252,8 @@ class RecursiveJobServiceTest {
 
         assertThat(resumed).isZero();
         assertThat(sentRequests).isEmpty();
-        assertThat(jobs.get("done-job").getState()).isEqualTo(RecursiveJobPhase.COMPLETED);
-        assertThat(jobs.get("expired-job").getState()).isEqualTo(RecursiveJobPhase.GRANT_CHECKED);
+        assertThat(jobs.get(namedJobId("done-job")).getState()).isEqualTo(RecursiveJobPhase.COMPLETED);
+        assertThat(jobs.get(namedJobId("expired-job")).getState()).isEqualTo(RecursiveJobPhase.GRANT_CHECKED);
     }
 
     @Test
@@ -1308,7 +1308,7 @@ class RecursiveJobServiceTest {
     private RecursiveJobState.RecursiveJobStateBuilder seededState(final String jobId,
             final RecursiveJobPhase phase) {
         return RecursiveJobState.builder()
-                .jobId(jobId)
+                .jobId(namedJobId(jobId))
                 .openingId("opening-42")
                 .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
@@ -1325,6 +1325,14 @@ class RecursiveJobServiceTest {
                 .rootJob(true)
                 .bomChildren(List.of())
                 .childBranches(List.of());
+    }
+
+    private void storeJob(final RecursiveJobState state) {
+        jobs.put(state.getJobId(), state);
+    }
+
+    private static UUID namedJobId(final String value) {
+        return UUID.nameUUIDFromBytes(value.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
     private RecursiveNotificationSender recordingSender(final List<RecursiveNotificationMessage> sentRequests) {
@@ -1450,7 +1458,7 @@ class RecursiveJobServiceTest {
         return new RecursiveBomChild(globalAssetId, partnerBpnl,
                 org.eclipse.tractusx.irs.recursive.model.RecursiveQuantity.builder()
                         .value(1.0)
-                        .unit("unit:piece")
+                        .unit(ItemUnitEnumeration.UNIT_PIECE)
                         .build());
     }
 
@@ -1585,29 +1593,29 @@ class RecursiveJobServiceTest {
             }
 
             @Override
-            public Optional<RecursiveJobState> findById(final String jobId) {
+            public Optional<RecursiveJobState> findById(final UUID jobId) {
                 return Optional.ofNullable(jobs.get(jobId));
             }
 
             @Override
-            public Optional<String> findJobIdByIncomingRequestMessageId(final String messageId) {
+            public Optional<UUID> findJobIdByIncomingRequestMessageId(final String messageId) {
                 return Optional.ofNullable(messageIds.get("in:" + messageId));
             }
 
             @Override
-            public void registerIncomingRequestMessageId(final String messageId, final String jobId) {
+            public void registerIncomingRequestMessageId(final String messageId, final UUID jobId) {
                 if (messageId != null) {
                     messageIds.put("in:" + messageId, jobId);
                 }
             }
 
             @Override
-            public Optional<String> findJobIdByChildRequestMessageId(final String messageId) {
+            public Optional<UUID> findJobIdByChildRequestMessageId(final String messageId) {
                 return Optional.ofNullable(messageIds.get("out:" + messageId));
             }
 
             @Override
-            public void registerChildRequestMessageId(final String messageId, final String jobId) {
+            public void registerChildRequestMessageId(final String messageId, final UUID jobId) {
                 if (messageId != null) {
                     messageIds.put("out:" + messageId, jobId);
                 }

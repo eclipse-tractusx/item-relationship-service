@@ -19,9 +19,12 @@
 package org.eclipse.tractusx.irs.recursive.model;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
@@ -41,7 +44,9 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RecursiveJobView {
 
-    private String id;
+    @NonNull
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    private UUID id;
     private String globalAssetId;
     private JobState state;
     private ZonedDateTime createdOn;

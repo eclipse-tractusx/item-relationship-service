@@ -20,6 +20,7 @@ package org.eclipse.tractusx.irs.recursive.model;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
@@ -41,7 +42,8 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class RecursiveJobState {
 
-    private String jobId;
+    @NonNull
+    private UUID jobId;
     private String openingId;
     private RecursiveUseCase useCase;
     private String globalAssetId;

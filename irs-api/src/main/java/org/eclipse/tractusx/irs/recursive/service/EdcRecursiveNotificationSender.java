@@ -19,6 +19,7 @@
 package org.eclipse.tractusx.irs.recursive.service;
 
 import java.net.URISyntaxException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeoutException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
@@ -37,6 +39,7 @@ import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.util.UriPathJoiner;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationDeliveryFailureReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationMessage;
@@ -61,6 +64,7 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
     private final EdcConfiguration edcConfiguration;
     private final EdcOrchestrator edcOrchestrator;
     private final EdcDataPlaneClient edcDataPlaneClient;
+    private final PolicyCheckerService policyCheckerService;
 
     @Override
     public void sendRequest(final String receiverBpnl, final RecursiveNotificationMessage message) {
@@ -126,15 +130,8 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
             throw deliveryFailure(classifyCatalogFailure(exception), errorRef, notificationType, receiverBpnl,
                     connectorEndpoint, exception);
         }
-        if (catalogItems.isEmpty()) {
-            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.NOTIFICATION_ASSET_NOT_FOUND, errorRef,
-                    notificationType, receiverBpnl, connectorEndpoint, null);
-        }
-        if (catalogItems.size() > 1) {
-            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.NOTIFICATION_ASSET_AMBIGUOUS, errorRef,
-                    notificationType, receiverBpnl, connectorEndpoint, null);
-        }
-        final CatalogItem catalogItem = catalogItems.get(0);
+        final CatalogItem catalogItem = selectCatalogItem(catalogItems, errorRef, notificationType, receiverBpnl,
+                connectorEndpoint);
 
         final EndpointDataReference endpointDataReference;
         try {
@@ -168,6 +165,41 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
             return RecursiveNotificationDeliveryFailureReason.NOTIFICATION_POLICY_REJECTED;
         }
         return RecursiveNotificationDeliveryFailureReason.CATALOG_REQUEST_FAILED;
+    }
+
+    private CatalogItem selectCatalogItem(final List<CatalogItem> catalogItems, final String errorRef,
+            final RecursiveNotificationType notificationType, final String receiverBpnl,
+            final String connectorEndpoint) {
+        if (catalogItems.isEmpty()) {
+            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.NOTIFICATION_ASSET_NOT_FOUND, errorRef,
+                    notificationType, receiverBpnl, connectorEndpoint, null);
+        }
+        final List<CatalogItem> completeCatalogItems = catalogItems.stream()
+                .filter(this::isCompleteCatalogItem)
+                .toList();
+        if (completeCatalogItems.isEmpty()) {
+            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CATALOG_REQUEST_FAILED, errorRef,
+                    notificationType, receiverBpnl, connectorEndpoint, null);
+        }
+        return completeCatalogItems.stream()
+                .filter(catalogItem -> policyCheckerService.isValid(catalogItem.getPolicy(),
+                        catalogItem.getConnectorId())
+                        && !policyCheckerService.isExpired(catalogItem.getPolicy(), catalogItem.getConnectorId()))
+                .sorted(Comparator.comparing(CatalogItem::getAssetPropId)
+                        .thenComparing(CatalogItem::getOfferId))
+                .findFirst()
+                .orElseThrow(() -> deliveryFailure(
+                        RecursiveNotificationDeliveryFailureReason.NOTIFICATION_POLICY_REJECTED, errorRef,
+                        notificationType, receiverBpnl, connectorEndpoint, null));
+    }
+
+    private boolean isCompleteCatalogItem(final CatalogItem catalogItem) {
+        return catalogItem != null
+                && StringUtils.isNotBlank(catalogItem.getItemId())
+                && StringUtils.isNotBlank(catalogItem.getAssetPropId())
+                && StringUtils.isNotBlank(catalogItem.getOfferId())
+                && catalogItem.getPolicy() != null
+                && StringUtils.isNotBlank(catalogItem.getConnectorId());
     }
 
     private static QuerySpec notificationAssetQuery() {

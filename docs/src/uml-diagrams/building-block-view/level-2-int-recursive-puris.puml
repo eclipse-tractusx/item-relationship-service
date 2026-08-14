@@ -9,11 +9,12 @@ component [**RecursivePurisPath**] <<System>> as RecursivePuris {
     component [**RecursiveJobController**] <<Component>> as JobController
     component [**RecursiveChainOpeningGrantController**] <<Component>> as GrantController
     component [**RecursiveNotificationController**] <<Component>> as NotificationController
+    component [**RecursiveNotificationReceiver**] <<Component>> as NotificationReceiver
     component [**RecursiveJobService**] <<Component>> as JobService
     component [**RecursiveJobRepository**] <<Component>> as Repository
     component [**RecursiveTraversalService**] <<Component>> as Traversal
     component [**RecursiveSubmodelCollector**] <<Component>> as Collector
-    component [**RecursiveNotificationContractValidator**] <<Component>> as Validator
+    component [**RecursiveNotificationMessageValidator**] <<Component>> as Validator
     component [**RecursiveResultAggregator**] <<Component>> as Aggregator
     component [**RecursiveResponseMapper**] <<Component>> as ResponseMapper
     component [**RecursiveResultTreeSanitizer**] <<Component>> as Sanitizer
@@ -34,8 +35,9 @@ database "Blob store" as BlobStore
 RootCaller --> JobController
 PartnerIrs --> NotificationController
 JobController --> JobService
-NotificationController --> Validator
-NotificationController --> JobService
+NotificationController --> NotificationReceiver
+NotificationReceiver --> Validator
+NotificationReceiver --> JobService
 GrantController --> RecursiveChainOpeningGrantStore
 JobService --> Repository
 JobService --> Traversal

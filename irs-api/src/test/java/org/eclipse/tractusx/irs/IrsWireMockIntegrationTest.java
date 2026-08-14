@@ -115,7 +115,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @WireMockTest(httpPort = 8085)
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = WireMockTestConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = WireMockTestConfig.class,
+                properties = "irs.recursive.localBpnl=BPNL00000000TEST")
 @ContextConfiguration(initializers = IrsWireMockIntegrationTest.MinioConfigInitializer.class)
 @ActiveProfiles("integrationtest")
 class IrsWireMockIntegrationTest {

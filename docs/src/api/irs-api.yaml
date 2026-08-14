@@ -1677,7 +1677,7 @@ paths:
     post:
       description: Unified endpoint for child requests and parent responses.
         The content.type field (REQUEST or RESPONSE) determines the processing path.
-        REQUEST starts one downstream hop and requires header.expectedResponseBy,
+        REQUEST starts the next recursive child hop and requires header.expectedResponseBy,
         content.globalAssetId, content.bomLifecycle=asPlanned and a non-empty
         content.aspects list. RESPONSE returns the correlated child result and
         requires header.relatedMessageId, content.bomLifecycle=asPlanned, a non-empty
@@ -3482,6 +3482,9 @@ components:
           format: date-time
         openingId:
           type: string
+          description: "Chain opening identifier, identical across the whole recursive\
+            \ chain."
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
         useCase:
           type: string
           enum:
@@ -3591,9 +3594,12 @@ components:
     RecursiveJobStartResponse:
       type: object
       additionalProperties: false
+      required:
+        - jobId
       properties:
         jobId:
           type: string
+          format: uuid
     RecursiveJobStatusResponse:
       type: object
       additionalProperties: false
@@ -3605,6 +3611,8 @@ components:
     RecursiveJobView:
       type: object
       additionalProperties: false
+      required:
+        - id
       properties:
         asyncFetchedItems:
           $ref: "#/components/schemas/AsyncFetchedItems"
@@ -3620,6 +3628,7 @@ components:
           type: string
         id:
           type: string
+          format: uuid
         lastModifiedOn:
           type: string
           format: date-time
@@ -3638,8 +3647,8 @@ components:
     RecursiveNotificationMessage:
       type: object
       additionalProperties: false
-      description: Recursive notification envelope. REQUEST messages start one downstream
-        hop. RESPONSE messages return the correlated child result to the parent.
+      description: Recursive notification envelope. REQUEST messages start the next recursive
+        child hop. RESPONSE messages return the correlated child result to the parent.
       properties:
         content:
           $ref: "#/components/schemas/Content"
@@ -3659,9 +3668,48 @@ components:
     RecursiveQuantity:
       type: object
       additionalProperties: false
+      required:
+        - unit
+        - value
       properties:
         unit:
           type: string
+          enum:
+            - unit:piece
+            - unit:set
+            - unit:pair
+            - unit:page
+            - unit:cycle
+            - unit:kilowattHour
+            - unit:gram
+            - unit:kilogram
+            - unit:tonneMetricTon
+            - unit:tonUsOrShortTonUkorus
+            - unit:ounceAvoirdupois
+            - unit:pound
+            - unit:metre
+            - unit:centimetre
+            - unit:kilometre
+            - unit:inch
+            - unit:foot
+            - unit:yard
+            - unit:squareCentimetre
+            - unit:squareMetre
+            - unit:squareInch
+            - unit:squareFoot
+            - unit:squareYard
+            - unit:cubicCentimetre
+            - unit:cubicMetre
+            - unit:cubicInch
+            - unit:cubicFoot
+            - unit:cubicYard
+            - unit:litre
+            - unit:millilitre
+            - unit:hectolitre
+            - unit:secondUnitOfTime
+            - unit:minuteUnitOfTime
+            - unit:hourUnitOfTime
+            - unit:day
         value:
           type: number
           format: double
@@ -3690,6 +3738,7 @@ components:
               - urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized
               - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
               - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
+            pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
         detail:
           type: string
           minLength: 1

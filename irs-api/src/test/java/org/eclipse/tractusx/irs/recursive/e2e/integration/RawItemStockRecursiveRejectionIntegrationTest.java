@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
+import org.eclipse.tractusx.irs.recursive.model.RecursiveErrorCode;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,8 @@ class RawItemStockRecursiveRejectionIntegrationTest extends RecursiveIntegration
                 .satisfies(exception -> {
                     final HttpClientErrorException response = (HttpClientErrorException) exception;
                     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-                    assertThat(response.getResponseBodyAsString()).contains("UNSUPPORTED_ASPECT", ITEM_STOCK);
+                    assertThat(response.getResponseBodyAsString())
+                            .contains(RecursiveErrorCode.UNSUPPORTED_ASPECT.name(), ITEM_STOCK);
                 });
         assertThat(client.jobs(atlas)).isEmpty();
     }

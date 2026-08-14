@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveErrorResponse;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobRequest;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobStartResponse;
@@ -41,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,6 +63,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/irs/recursive")
 @RequiredArgsConstructor
 @Tag(name = "Recursive IRS", description = "Recursive supply chain traversal with grant-based access control")
+@PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
 public class RecursiveJobController {
 
     private final RecursiveJobService jobService;
@@ -96,7 +99,7 @@ public class RecursiveJobController {
             @Valid @RequestBody final RecursiveJobRequest request) {
         log.info("POST /irs/recursive/jobs - openingId={}, useCase={}",
                 RecursiveLogValue.of(request.getOpeningId()), RecursiveLogValue.of(request.getUseCase().name()));
-        final String jobId = jobService.startJob(request);
+        final UUID jobId = jobService.startJob(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(RecursiveJobStartResponse.builder().jobId(jobId).build());
     }
@@ -125,9 +128,8 @@ public class RecursiveJobController {
     @GetMapping("/jobs/{jobId}")
     public ResponseEntity<RecursiveJobStatusResponse> getJobStatus(
             @PathVariable final UUID jobId) {
-        final String jobIdValue = jobId.toString();
-        log.info("GET /irs/recursive/jobs/{}", RecursiveLogValue.of(jobIdValue));
-        return ResponseEntity.ok(jobService.getJobStatus(jobIdValue));
+        log.info("GET /irs/recursive/jobs/{}", RecursiveLogValue.of(jobId.toString()));
+        return ResponseEntity.ok(jobService.getJobStatus(jobId));
     }
 
     @Operation(summary = "List all recursive jobs")

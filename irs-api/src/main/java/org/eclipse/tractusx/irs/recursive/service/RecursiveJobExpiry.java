@@ -72,7 +72,7 @@ class RecursiveJobExpiry {
                 }
             } catch (final RuntimeException e) {
                 log.warn("Could not process expired recursive job {}: causeType={}",
-                        RecursiveLogValue.of(state.getJobId()), e.getClass().getName());
+                        RecursiveLogValue.of(state.getJobId().toString()), e.getClass().getName());
             }
         }
         return processed;
@@ -104,7 +104,7 @@ class RecursiveJobExpiry {
 
         failed.ifPresent(state -> {
             log.warn("Recursive job {} failed because its deadline expired: {}",
-                    RecursiveLogValue.of(state.getJobId()), state.getDeadline());
+                    RecursiveLogValue.of(state.getJobId().toString()), state.getDeadline());
             parentResponder.accept(state);
         });
         return failed.isPresent();
@@ -133,7 +133,8 @@ class RecursiveJobExpiry {
 
         completed.ifPresent(state -> {
             log.warn("Recursive job {} completed with timed out child responses: {}",
-                    RecursiveLogValue.of(state.getJobId()), statusCount(state, RecursiveResponseStatus.TIMED_OUT));
+                    RecursiveLogValue.of(state.getJobId().toString()),
+                    statusCount(state, RecursiveResponseStatus.TIMED_OUT));
             parentResponder.accept(state);
         });
         return completed.isPresent();

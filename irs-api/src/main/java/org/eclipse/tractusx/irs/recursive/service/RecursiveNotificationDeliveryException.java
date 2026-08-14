@@ -24,7 +24,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationDeliveryFai
  * A recursive notification could not be delivered to the DIRECT partner.
  *
  * <p>The reason classifies the local delivery step that failed (e.g. NO_CONNECTOR_ENDPOINT,
- * NOTIFICATION_ASSET_NOT_FOUND, NOTIFICATION_ASSET_AMBIGUOUS, CONTRACT_NEGOTIATION_FAILED,
+ * NOTIFICATION_ASSET_NOT_FOUND, NOTIFICATION_POLICY_REJECTED, CONTRACT_NEGOTIATION_FAILED,
  * DATA_PLANE_DELIVERY_FAILED).
  * This detail is allowed locally - the direct partner is known from the own BOM anyway - and is
  * persisted on the job plus logged with the errorRef. It never travels to the parent: more distant

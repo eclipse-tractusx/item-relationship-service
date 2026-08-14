@@ -50,24 +50,15 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneType;
 import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 
-/** Validates the shared notification envelope and the recursive operation contract. */
+/** Validates the shared notification envelope and the recursive message contract. */
 @RequiredArgsConstructor
-public class RecursiveNotificationContractValidator {
+public class RecursiveNotificationMessageValidator {
 
     private final Validator validator;
     private final ObjectMapper objectMapper;
 
-    public Optional<RoutingFields> readRoutingFields(final JsonNode payload) {
-        if (payload == null || !payload.isObject()) {
-            return Optional.empty();
-        }
-        final JsonNode header = payload.get("header");
-        if (header == null || !header.isObject()) {
-            return Optional.empty();
-        }
-        final JsonNode content = payload.get("content");
-        return Optional.of(new RoutingFields(textValue(header, "senderBpn"), textValue(header, "messageId"),
-                textValue(header, "relatedMessageId"), notificationType(content)));
+    public Optional<RecursiveNotificationMessage> validate(final JsonNode payload) {
+        return decode(payload).filter(this::isValid);
     }
 
     public Optional<RecursiveNotificationMessage> decode(final JsonNode payload) {
@@ -219,18 +210,6 @@ public class RecursiveNotificationContractValidator {
                 && new HashSet<>(actual).equals(expected);
     }
 
-    private RecursiveNotificationType notificationType(final JsonNode content) {
-        final String type = textValue(content, "type");
-        if (type == null) {
-            return null;
-        }
-        try {
-            return RecursiveNotificationType.valueOf(type);
-        } catch (final IllegalArgumentException exception) {
-            return null;
-        }
-    }
-
     private boolean isUuid(final String value) {
         if (value == null) {
             return false;
@@ -238,16 +217,4 @@ public class RecursiveNotificationContractValidator {
         return RecursivePatternStore.UUID_PATTERN.matcher(value).matches();
     }
 
-    private String textValue(final JsonNode parent, final String fieldName) {
-        if (parent == null || !parent.isObject()) {
-            return null;
-        }
-        final JsonNode value = parent.get(fieldName);
-        return value == null || !value.isTextual() ? null : value.textValue();
-    }
-
-    /** Fields read before strict notification deserialization. */
-    public record RoutingFields(String senderBpnl, String messageId, String relatedMessageId,
-                                RecursiveNotificationType type) {
-    }
 }

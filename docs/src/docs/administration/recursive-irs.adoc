@@ -118,7 +118,9 @@ The catalog request looks for:
 | `1.0`
 |===
 
-The notification message uses the CX-0151 message header context:
+The recursive notification header conforms to https://catenax-ev.github.io/docs/Saturn/standards/CX-0151-IndustryCoreBasics[CX-0151 Industry Core: Basics v1.0.0].
+It uses `MessageHeaderAspect` version `3.0.0` with the semantic ID `urn:samm:io.catenax.shared.message_header:3.0.0#MessageHeaderAspect`.
+The API-specific context and its version are:
 
 [source]
 ----

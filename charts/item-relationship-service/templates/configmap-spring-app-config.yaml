@@ -34,7 +34,7 @@ data:
 
     irs:
       recursive:
-        localBpnl: {{ tpl (.Values.recursive.localBpnl | default "") . | quote }}
+        localBpnl: {{ tpl (default .Values.bpn .Values.recursive.localBpnl) . | quote }}
         timeout:
           defaultJobTtl: {{ .Values.recursive.timeout.defaultJobTtl | default "PT30M" | quote }}
           maxJobTtl: {{ .Values.recursive.timeout.maxJobTtl | default "PT2H" | quote }}

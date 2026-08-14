@@ -61,7 +61,7 @@ class RecursiveRequestFactory {
      * @param isRootJob            true for jobs started via the public API
      * @param inheritedDeadline    the parent's {@code expectedResponseBy} for child jobs
      * @param inheritedMessageId   parent message id for child jobs (used as response correlation); null for root jobs
-     * @return all derived values; turn into a state via {@link PreparedRecursiveJob#toState(String)}
+     * @return all derived values; turn into a state via {@link PreparedRecursiveJob#toState(UUID)}
      */
     /* package */ PreparedRecursiveJob prepare(final RecursiveJobRequest request, final boolean isRootJob,
             final ZonedDateTime inheritedDeadline, final String inheritedMessageId) {
@@ -167,7 +167,7 @@ class RecursiveRequestFactory {
             BomLifecycle bomLifecycle, List<String> aspects, String requesterBpnl, String receiverBpnl, String messageId,
             ZonedDateTime createdOn, ZonedDateTime deadline, ZonedDateTime childResponseDeadline, boolean rootJob) {
 
-        /* package */ RecursiveJobState toState(final String jobId) {
+        /* package */ RecursiveJobState toState(final UUID jobId) {
             return RecursiveJobState.builder()
                                     .jobId(jobId)
                                     .openingId(openingId)

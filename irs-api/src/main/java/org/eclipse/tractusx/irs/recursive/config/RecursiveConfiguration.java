@@ -34,13 +34,15 @@ import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
 import org.eclipse.tractusx.irs.edc.client.EdcOrchestrator;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.recursive.service.EdcRecursiveNotificationSender;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveChainOpeningGrantService;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveJobService;
+import org.eclipse.tractusx.irs.recursive.service.RecursiveNotificationMessageValidator;
+import org.eclipse.tractusx.irs.recursive.service.RecursiveNotificationReceiver;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveNotificationSender;
-import org.eclipse.tractusx.irs.recursive.service.RecursiveNotificationContractValidator;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveStartupRecovery;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveSubmodelCollector;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveTimeoutMonitor;
@@ -121,15 +123,17 @@ public class RecursiveConfiguration {
             final ConnectorEndpointsService connectorEndpointsService,
             final EdcConfiguration edcConfiguration,
             final EdcOrchestrator edcOrchestrator,
-            final EdcDataPlaneClient edcDataPlaneClient) {
+            final EdcDataPlaneClient edcDataPlaneClient,
+            final PolicyCheckerService policyCheckerService) {
         return new EdcRecursiveNotificationSender(
-                connectorEndpointsService, edcConfiguration, edcOrchestrator, edcDataPlaneClient);
+                connectorEndpointsService, edcConfiguration, edcOrchestrator, edcDataPlaneClient,
+                policyCheckerService);
     }
 
     @Bean
-    public RecursiveNotificationContractValidator recursiveNotificationContractValidator(
+    public RecursiveNotificationMessageValidator recursiveNotificationMessageValidator(
             final Validator validator, final ObjectMapper objectMapper) {
-        return new RecursiveNotificationContractValidator(validator, objectMapper);
+        return new RecursiveNotificationMessageValidator(validator, objectMapper);
     }
 
     @Bean(name = "recursiveJobExecutor", destroyMethod = "shutdown")
@@ -150,6 +154,12 @@ public class RecursiveConfiguration {
             final Clock clock) {
         return new RecursiveJobService(grantService, traversalService, jobStateStore,
                 notificationSender, submodelCollector, properties, recursiveJobExecutor, clock);
+    }
+
+    @Bean
+    public RecursiveNotificationReceiver recursiveNotificationReceiver(final RecursiveJobService recursiveJobService,
+            final RecursiveNotificationMessageValidator messageValidator) {
+        return new RecursiveNotificationReceiver(recursiveJobService, messageValidator);
     }
 
     @Bean

@@ -96,8 +96,7 @@ final class RecursiveResultTreeSanitizer {
 
     /* package */ static RecursiveQuantity sanitizeQuantity(final RecursiveQuantity quantity) {
         if (quantity == null || quantity.getValue() == null || quantity.getUnit() == null
-                || !Double.isFinite(quantity.getValue()) || quantity.getValue() < 0
-                || quantity.getUnit().isBlank()) {
+                || !Double.isFinite(quantity.getValue()) || quantity.getValue() < 0) {
             return null;
         }
         return quantity;

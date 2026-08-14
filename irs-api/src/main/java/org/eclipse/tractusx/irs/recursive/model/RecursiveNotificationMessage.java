@@ -48,7 +48,7 @@ import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 @Value
 @Builder
 @Jacksonized
-@Schema(description = "Recursive notification envelope. REQUEST messages start one downstream hop. "
+@Schema(description = "Recursive notification envelope. REQUEST messages start the next recursive child hop. "
         + "RESPONSE messages return the correlated child result to the parent.")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RecursiveNotificationMessage {

@@ -19,6 +19,7 @@
 package org.eclipse.tractusx.irs.recursive.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -30,6 +31,9 @@ import lombok.extern.jackson.Jacksonized;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RecursiveQuantity {
 
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private Double value;
-    private String unit;
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    private ItemUnitEnumeration unit;
 }

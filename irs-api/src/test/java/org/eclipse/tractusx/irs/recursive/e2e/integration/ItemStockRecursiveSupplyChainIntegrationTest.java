@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChildItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobRequest;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobStatusResponse;
@@ -94,7 +95,7 @@ class ItemStockRecursiveSupplyChainIntegrationTest extends RecursiveIntegrationT
         assertThat(belfastNode.getMaterialNumber()).isEqualTo("MNR-BELFAST");
         assertThat(belfastNode.getMaterialName()).isEqualTo("Material belfast");
         assertThat(belfastNode.getQuantity().getValue()).isEqualTo(1.0);
-        assertThat(belfastNode.getQuantity().getUnit()).isEqualTo("unit:piece");
+        assertThat(belfastNode.getQuantity().getUnit()).isEqualTo(ItemUnitEnumeration.UNIT_PIECE);
         assertThat(ceresNode.getMaterialNumber()).isEqualTo("MNR-CERES");
         assertThat(deltaNode.getMaterialNumber()).isEqualTo("MNR-DELTA");
         assertThat(echoNode.getMaterialNumber()).isEqualTo("MNR-ECHO");

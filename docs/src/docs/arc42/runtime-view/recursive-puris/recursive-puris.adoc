@@ -216,9 +216,9 @@ This is the correlation link that connects one recursive hop back to the parent 
 === Notification validation
 
 Incoming notifications are validated in two steps.
-First, `RecursiveNotificationContractValidator` reads only routing fields from the raw JSON.
+First, `RecursiveNotificationReceiver` reads only routing fields from the raw JSON.
 This allows a RESPONSE with a valid `relatedMessageId` to be correlated even when the full payload is invalid.
-Second, the full notification is strictly decoded and validated against the REQUEST or RESPONSE contract.
+Second, `RecursiveNotificationMessageValidator` strictly decodes the full notification and validates it against the REQUEST or RESPONSE contract.
 An invalid but correlatable RESPONSE fails the corresponding child branch immediately instead of leaving the parent waiting until timeout.
 
 === Privacy and sanitizing

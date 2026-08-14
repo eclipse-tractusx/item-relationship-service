@@ -25,9 +25,11 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspectItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChildBranch;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChildItem;
@@ -96,7 +98,7 @@ class RecursiveChildTimeoutIntegrationTest extends RecursiveIntegrationTestBase 
         final ZonedDateTime now = ZonedDateTime.now();
         final RecursiveJobStateStore store = atlas.context().getBean(RecursiveJobStateStore.class);
         store.save(RecursiveJobState.builder()
-                .jobId(JOB_ID)
+                .jobId(UUID.fromString(JOB_ID))
                 .openingId(OPENING_ID)
                 .useCase(PURIS_USE_CASE)
                 .globalAssetId(ATLAS_ASSET)
@@ -129,7 +131,7 @@ class RecursiveChildTimeoutIntegrationTest extends RecursiveIntegrationTestBase 
                                 .build()))
                 .build());
         // The late response correlates via this mapping, exactly like a real child request.
-        store.registerChildRequestMessageId(UNANSWERED_MESSAGE_ID, JOB_ID);
+        store.registerChildRequestMessageId(UNANSWERED_MESSAGE_ID, UUID.fromString(JOB_ID));
     }
 
     private RecursiveNotificationMessage lateResponse() {
@@ -184,6 +186,6 @@ class RecursiveChildTimeoutIntegrationTest extends RecursiveIntegrationTestBase 
     }
 
     private RecursiveQuantity quantity() {
-        return RecursiveQuantity.builder().value(1.0).unit("unit:piece").build();
+        return RecursiveQuantity.builder().value(1.0).unit(ItemUnitEnumeration.UNIT_PIECE).build();
     }
 }

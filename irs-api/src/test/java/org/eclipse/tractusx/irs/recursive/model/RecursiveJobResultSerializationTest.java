@@ -19,6 +19,7 @@
 package org.eclipse.tractusx.irs.recursive.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ class RecursiveJobResultSerializationTest {
                 .childItems(List.of(RecursiveChildItem.builder()
                         .materialNumber("MNR-1")
                         .materialName("Semiconductor")
-                        .quantity(RecursiveQuantity.builder().value(2.0).unit("unit:piece").build())
+                        .quantity(RecursiveQuantity.builder().value(2.0).unit(ItemUnitEnumeration.UNIT_PIECE).build())
                         .items(List.of(RecursiveAspectItem.builder()
                                 .aspect(aspectType)
                                 .items(Map.of("direction", "OUTBOUND"))
@@ -54,12 +55,23 @@ class RecursiveJobResultSerializationTest {
         assertThat(childItem.path("materialNumber").asText()).isEqualTo("MNR-1");
         assertThat(childItem.path("materialName").asText()).isEqualTo("Semiconductor");
         assertThat(childItem.path("quantity").path("value").asDouble()).isEqualTo(2.0);
+        assertThat(childItem.path("quantity").path("unit").asText()).isEqualTo("unit:piece");
         assertThat(aspectItem.path("aspect").asText()).isEqualTo(aspectType);
         assertThat(aspectItem.path("items").path("direction").asText()).isEqualTo("OUTBOUND");
         assertThat(serialized.has("submodels")).isFalse();
         assertThat(serialized.has("submodelsByAspect")).isFalse();
         assertThat(serialized.has("supportedAspects")).isFalse();
         assertThat(serialized.has("supportedAspectsByLifecycle")).isFalse();
+    }
+
+    @Test
+    void shouldRejectUnsupportedQuantityUnit() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+
+        assertThatThrownBy(() -> objectMapper.readValue("""
+                {"value": 1.0, "unit": "unit:unsupported"}
+                """, RecursiveQuantity.class))
+                .hasMessageContaining("Unsupported item unit");
     }
 
     @Test

@@ -66,8 +66,8 @@ class RecursiveJobControllerTest {
 
     private RecursiveJobController controller;
     private RecursiveChainOpeningGrantStore grantStore;
-    private Map<String, RecursiveJobState> jobs;
-    private Map<String, String> messageIds;
+    private Map<UUID, RecursiveJobState> jobs;
+    private Map<String, UUID> messageIds;
     private MockMvc mockMvc;
     private RecursiveExceptionHandler exceptionHandler;
 
@@ -183,15 +183,15 @@ class RecursiveJobControllerTest {
         final ResponseEntity<RecursiveJobStartResponse> response = controller.startJob(validRequest());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().getJobId()).isNotBlank();
+        assertThat(response.getBody().getJobId()).isNotNull();
     }
 
     @Test
     void shouldReturnJobStatus() {
         grantStore.store(validGrant());
-        final String jobId = controller.startJob(validRequest()).getBody().getJobId();
+        final UUID jobId = controller.startJob(validRequest()).getBody().getJobId();
 
-        final ResponseEntity<RecursiveJobStatusResponse> response = controller.getJobStatus(UUID.fromString(jobId));
+        final ResponseEntity<RecursiveJobStatusResponse> response = controller.getJobStatus(jobId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getJob().getId()).isEqualTo(jobId);
@@ -229,7 +229,7 @@ class RecursiveJobControllerTest {
     }
 
     @Test
-    void shouldReturnSameForbiddenResponseWhenRootGrantIsInactive() throws Exception {
+    void shouldReturnForbiddenResponseWhenRootGrantIsInactive() throws Exception {
         grantStore.store(validGrant().toBuilder()
                 .validFrom(java.time.ZonedDateTime.now().plusHours(1))
                 .validTo(java.time.ZonedDateTime.now().plusHours(2))
@@ -318,29 +318,29 @@ class RecursiveJobControllerTest {
             }
 
             @Override
-            public Optional<RecursiveJobState> findById(final String jobId) {
+            public Optional<RecursiveJobState> findById(final UUID jobId) {
                 return Optional.ofNullable(jobs.get(jobId));
             }
 
             @Override
-            public Optional<String> findJobIdByIncomingRequestMessageId(final String messageId) {
+            public Optional<UUID> findJobIdByIncomingRequestMessageId(final String messageId) {
                 return Optional.ofNullable(messageIds.get("in:" + messageId));
             }
 
             @Override
-            public void registerIncomingRequestMessageId(final String messageId, final String jobId) {
+            public void registerIncomingRequestMessageId(final String messageId, final UUID jobId) {
                 if (messageId != null) {
                     messageIds.put("in:" + messageId, jobId);
                 }
             }
 
             @Override
-            public Optional<String> findJobIdByChildRequestMessageId(final String messageId) {
+            public Optional<UUID> findJobIdByChildRequestMessageId(final String messageId) {
                 return Optional.ofNullable(messageIds.get("out:" + messageId));
             }
 
             @Override
-            public void registerChildRequestMessageId(final String messageId, final String jobId) {
+            public void registerChildRequestMessageId(final String messageId, final UUID jobId) {
                 if (messageId != null) {
                     messageIds.put("out:" + messageId, jobId);
                 }

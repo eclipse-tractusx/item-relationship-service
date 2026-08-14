@@ -25,8 +25,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspectItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChildBranch;
@@ -105,7 +107,7 @@ class RecursiveResultAggregatorTest {
     }
 
     @Test
-    void shouldAddNodeTombstoneWhenBomQuantityIsIncomplete() {
+    void shouldAddNodeTombstoneWhenBomQuantityIsMissing() {
         final RecursiveJobState state = state(List.of(childRequest("message-1", null)));
 
         final RecursiveJobResult result = aggregate(state,
@@ -126,7 +128,7 @@ class RecursiveResultAggregatorTest {
     void shouldAddNodeTombstoneWhenBomQuantityIsInvalid() {
         final RecursiveQuantity invalidQuantity = RecursiveQuantity.builder()
                 .value(-1.0)
-                .unit("unit:piece")
+                .unit(ItemUnitEnumeration.UNIT_PIECE)
                 .build();
         final RecursiveJobState state = state(List.of(childRequest("message-1", invalidQuantity)));
 
@@ -255,13 +257,13 @@ class RecursiveResultAggregatorTest {
     }
 
     private RecursiveQuantity quantity(final double value) {
-        return RecursiveQuantity.builder().value(value).unit("unit:piece").build();
+        return RecursiveQuantity.builder().value(value).unit(ItemUnitEnumeration.UNIT_PIECE).build();
     }
 
     private RecursiveJobState state(final List<RecursiveChildBranch> childBranches) {
         final ZonedDateTime now = ZonedDateTime.now();
         return RecursiveJobState.builder()
-                                .jobId("job-1")
+                                .jobId(UUID.fromString("00000000-0000-0000-0000-000000000001"))
                                 .openingId("opening-1")
                                 .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
                                 .globalAssetId("urn:uuid:11111111-1111-1111-1111-111111111111")

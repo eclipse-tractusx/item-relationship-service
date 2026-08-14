@@ -45,6 +45,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescr
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.RelationshipSubmodel;
+import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveBomChild;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveQuantity;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
@@ -111,7 +112,7 @@ class RecursiveTraversalServiceTest {
             assertThat(child.partnerBpnl()).isEqualTo(CHILD_BPNL);
             assertThat(child.quantity()).isEqualTo(RecursiveQuantity.builder()
                     .value(2.5)
-                    .unit("unit:piece")
+                    .unit(ItemUnitEnumeration.UNIT_PIECE)
                     .build());
         });
     }

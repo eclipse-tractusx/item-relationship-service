@@ -75,12 +75,21 @@ class RecursiveSubmodelCollectorTest {
                 .thenThrow(new EdcClientException("first endpoint unreachable"));
         when(submodelFacade.getSubmodelPayload(eq(SECOND_DSP), anyString(), eq("part-type-asset"), eq(LOCAL_BPNL)))
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor(
-                        "cid", "{\"partTypeInformation\":{"
-                                + "\"manufacturerPartId\":\"MNR-1\","
-                                + "\"nameAtManufacturer\":\"Semiconductor\"}}"));
+                        "cid", """
+                                {
+                                  "partTypeInformation": {
+                                    "manufacturerPartId": "MNR-1",
+                                    "nameAtManufacturer": "Semiconductor"
+                                  }
+                                }
+                                """));
         when(submodelFacade.getSubmodelPayload(eq(SECOND_DSP), anyString(), eq("item-stock-asset"), eq(LOCAL_BPNL)))
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor(
-                        "cid", "{\"materialGlobalAssetIdAnonymized\":\"" + GLOBAL_ASSET_ID + "\"}"));
+                        "cid", """
+                                {
+                                  "materialGlobalAssetIdAnonymized": "%s"
+                                }
+                                """.formatted(GLOBAL_ASSET_ID)));
 
         final RecursiveChildItem result = collector.collect(GLOBAL_ASSET_ID, LOCAL_BPNL,
                 List.of(ITEM_STOCK_ANONYMIZED));
@@ -123,8 +132,16 @@ class RecursiveSubmodelCollectorTest {
                 .thenReturn(Optional.of(shellWithEndpoints(FIRST_DSP)));
         when(submodelFacade.getSubmodelPayload(eq(FIRST_DSP), anyString(), eq("part-type-asset"), eq(LOCAL_BPNL)))
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor(
-                        "cid", "{\"manufacturerPartId\":{\"value\":\"MNR-1\"},"
-                                + "\"nameAtManufacturer\":[\"Semiconductor\"]}"));
+                        "cid", """
+                                {
+                                  "manufacturerPartId": {
+                                    "value": "MNR-1"
+                                  },
+                                  "nameAtManufacturer": [
+                                    "Semiconductor"
+                                  ]
+                                }
+                                """));
         when(submodelFacade.getSubmodelPayload(eq(FIRST_DSP), anyString(), eq("item-stock-asset"), eq(LOCAL_BPNL)))
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor(
                         "cid", "{\"materialGlobalAssetIdAnonymized\":\"" + GLOBAL_ASSET_ID + "\"}"));
@@ -162,7 +179,12 @@ class RecursiveSubmodelCollectorTest {
         when(digitalTwinRegistryService.fetchShell(any())).thenReturn(Optional.of(shell));
         when(submodelFacade.getSubmodelPayload(eq(FIRST_DSP), anyString(), eq("part-type-asset"), eq(LOCAL_BPNL)))
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor(
-                        "cid", "{\"manufacturerPartId\":\"MNR-1\",\"nameAtManufacturer\":\"Semiconductor\"}"));
+                        "cid", """
+                                {
+                                  "manufacturerPartId": "MNR-1",
+                                  "nameAtManufacturer": "Semiconductor"
+                                }
+                                """));
         when(submodelFacade.getSubmodelPayload(eq(FIRST_DSP), anyString(), eq("item-stock-asset"), eq(LOCAL_BPNL)))
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor(
                         "cid", "{\"materialGlobalAssetIdAnonymized\":\"" + GLOBAL_ASSET_ID + "\"}"));
@@ -211,9 +233,14 @@ class RecursiveSubmodelCollectorTest {
                         .build())));
         when(submodelFacade.getSubmodelPayload(eq(FIRST_DSP), anyString(), eq("part-type-asset"), eq(LOCAL_BPNL)))
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor(
-                        "cid", "{\"partTypeInformation\":{"
-                                + "\"manufacturerPartId\":\"MNR-1\","
-                                + "\"nameAtManufacturer\":\"Semiconductor\"}}"));
+                        "cid", """
+                                {
+                                  "partTypeInformation": {
+                                    "manufacturerPartId": "MNR-1",
+                                    "nameAtManufacturer": "Semiconductor"
+                                  }
+                                }
+                                """));
 
         final RecursiveChildItem result = collector.collect(GLOBAL_ASSET_ID, LOCAL_BPNL,
                 List.of(ITEM_STOCK_ANONYMIZED));
