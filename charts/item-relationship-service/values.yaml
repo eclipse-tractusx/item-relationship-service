@@ -290,6 +290,7 @@ minio:
   mode: standalone
   persistence:
     size: 1Gi
+  # overwrite redis images due to deprecation of bitnami images
   image:
     repository: quay.io/minio/minio
     # overwrite minio version RELEASE.2022-11-11T03-44-20Z as this is not found in bitnami legacy
@@ -321,6 +322,7 @@ redis:
   auth:
     enabled: true
     password: redispwd
+  # overwrite redis images due to deprecation of bitnami images
   global:
     security:
       # needed to run legacy image
