@@ -406,3 +406,11 @@ policy store in order to receice further on assets with the specific policy.
 https://app.swaggerhub.com/apis/eclipse-tractusx-bot/tractusx-edc/0.5.3#/Contract%20Agreement/getAgreementById
 https://github.com/eclipse-tractusx/tractusx-edc/blob/main/docs/kit/Development%20View/01_MGMT_API_Walkthrough/02_policies.md
 https://eclipse-edc.github.io/docs/#/submodule/Connector/docs/developer/contracts
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

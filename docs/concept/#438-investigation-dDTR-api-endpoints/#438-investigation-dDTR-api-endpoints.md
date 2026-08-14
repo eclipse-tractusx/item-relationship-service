@@ -91,3 +91,11 @@ in order to fulfill [TRG 1.04](https://eclipse-tractusx.github.io/docs/release/t
 - [Concept of CRUD API for Access management APIs](https://github.com/eclipse-tractusx/sldt-digital-twin-registry/issues/291)
 - [Implementation for Access management to Digital Twins (via EDC extension)](https://github.com/eclipse-tractusx/sig-release/issues/417)
 - [EDC-based Access Control for Asset Administration Shells and Submodel Server](https://github.com/eclipse-tractusx/sig-release/issues/417#issuecomment-1883058762)
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service
