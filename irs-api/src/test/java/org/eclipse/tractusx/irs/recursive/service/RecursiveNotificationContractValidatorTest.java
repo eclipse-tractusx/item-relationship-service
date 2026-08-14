@@ -42,6 +42,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveResultStatus;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneScope;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneType;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveUseCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -194,9 +195,33 @@ class RecursiveNotificationContractValidatorTest {
     }
 
     @Test
+    void rejectsTombstoneWithoutType() {
+        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+                validTombstone().type(null).build())))).isFalse();
+    }
+
+    @Test
     void rejectsTombstoneWithoutUsefulDetail() {
         assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
                 validTombstone().detail(" ").build())))).isFalse();
+    }
+
+    @Test
+    void rejectsTombstoneWithUnsafeDetail() {
+        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+                validTombstone().detail("first line\nsecond line").build())))).isFalse();
+    }
+
+    @Test
+    void rejectsTombstoneWithRetryableMismatch() {
+        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+                validTombstone().retryable(false).build())))).isFalse();
+    }
+
+    @Test
+    void rejectsTombstoneWithInvalidErrorRef() {
+        assertThat(contractValidator.isValid(response(resultWithNodeTombstone(
+                validTombstone().errorRefs(List.of("not-a-uuid")).build())))).isFalse();
     }
 
     private RecursiveNotificationMessage request() {
@@ -285,7 +310,7 @@ class RecursiveNotificationContractValidatorTest {
 
     private RecursiveTombstone.RecursiveTombstoneBuilder validTombstone() {
         return RecursiveTombstone.builder()
-                .type("RECURSIVE_TOMBSTONE")
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                 .scope(RecursiveTombstoneScope.CHILD_BRANCH)
                 .aspects(List.of(ASPECT))
                 .reason(RecursiveTombstoneReason.CHILD_BRANCH_FAILED)

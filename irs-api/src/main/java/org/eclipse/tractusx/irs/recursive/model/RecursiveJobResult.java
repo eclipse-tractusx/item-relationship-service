@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -47,11 +48,11 @@ public class RecursiveJobResult {
     private List<String> requestedAspects;
 
     @Builder.Default
-    private List<RecursiveChildItem> childItems = List.of();
+    private List<@Valid RecursiveChildItem> childItems = List.of();
 
     @Schema(description = "Sanitized root-level or otherwise unassignable failures. Failures that belong "
             + "to a material node are exposed in that child item's tombstones. Identical tombstones within "
             + "the same scope are merged with an occurrences counter.")
     @Builder.Default
-    private List<RecursiveTombstone> tombstones = List.of();
+    private List<@Valid RecursiveTombstone> tombstones = List.of();
 }

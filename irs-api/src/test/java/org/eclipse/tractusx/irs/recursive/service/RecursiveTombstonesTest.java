@@ -29,6 +29,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneScope;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneType;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -62,7 +63,7 @@ class RecursiveTombstonesTest {
     @Test
     void sanitizedTombstoneLeaksNoForeignIdentifiers() {
         final RecursiveTombstone raw = RecursiveTombstone.builder()
-                .type("RECURSIVE_TOMBSTONE")
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                 .scope(RecursiveTombstoneScope.CHILD_BRANCH)
                 .aspects(List.of("BPNL000000000065-leak",
                         "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7"))
@@ -77,7 +78,7 @@ class RecursiveTombstonesTest {
         final RecursiveTombstone tombstone = RecursiveTombstones.sanitized(raw,
                 List.of("urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized"));
 
-        assertThat(tombstone.getType()).isEqualTo("RECURSIVE_TOMBSTONE");
+        assertThat(tombstone.getType()).isEqualTo(RecursiveTombstoneType.RECURSIVE_TOMBSTONE);
         assertThat(tombstone.getReason()).isEqualTo(RecursiveTombstoneReason.LOCAL_ASPECT_REQUEST_FAILED);
         assertThat(tombstone.getScope()).isEqualTo(RecursiveTombstoneScope.CHILD_BRANCH);
         assertThat(tombstone.getErrorRefs()).hasSize(1);
@@ -95,7 +96,7 @@ class RecursiveTombstonesTest {
         final String secondRef = "4e3bea84-a48f-4319-8380-a50e4d615560";
         final String thirdRef = "f410c848-2b87-48ae-9da4-294079226a1f";
         final RecursiveTombstone raw = RecursiveTombstone.builder()
-                .type("RECURSIVE_TOMBSTONE")
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                 .scope(RecursiveTombstoneScope.CHILD_BRANCH)
                 .aspects(List.of())
                 .reason(RecursiveTombstoneReason.CHILD_BRANCH_FAILED)
@@ -113,7 +114,7 @@ class RecursiveTombstonesTest {
     @Test
     void sanitizedKeepsAspectListMachineReadable() {
         final RecursiveTombstone raw = RecursiveTombstone.builder()
-                .type("RECURSIVE_TOMBSTONE")
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                 .scope(RecursiveTombstoneScope.CHILD_BRANCH)
                 .reason(RecursiveTombstoneReason.CHILD_BRANCH_FAILED)
                 .retryable(RecursiveTombstoneReason.CHILD_BRANCH_FAILED.isRetryable())
@@ -138,7 +139,7 @@ class RecursiveTombstonesTest {
     @Test
     void sanitizedRejectsIncompleteTombstone() {
         final RecursiveTombstone raw = RecursiveTombstone.builder()
-                .type("RECURSIVE_TOMBSTONE")
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                 .reason(RecursiveTombstoneReason.CHILD_BRANCH_FAILED)
                 .retryable(RecursiveTombstoneReason.CHILD_BRANCH_FAILED.isRetryable())
                 .detail("A recursive child branch failed.")
@@ -149,5 +150,32 @@ class RecursiveTombstonesTest {
 
         assertThatThrownBy(() -> RecursiveTombstones.sanitized(raw, List.of()))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void sanitizedRejectsUnsafeDetail() {
+        final RecursiveTombstone raw = RecursiveTombstone.builder()
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
+                .scope(RecursiveTombstoneScope.CHILD_BRANCH)
+                .reason(RecursiveTombstoneReason.CHILD_BRANCH_FAILED)
+                .retryable(RecursiveTombstoneReason.CHILD_BRANCH_FAILED.isRetryable())
+                .detail("first line\nsecond line")
+                .occurrences(1)
+                .aspects(List.of())
+                .errorRefs(List.of("4e3bea84-a48f-4319-8380-a50e4d615560"))
+                .build();
+
+        assertThatThrownBy(() -> RecursiveTombstones.sanitized(raw, List.of()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void factoryReplacesUnsafeDetail() {
+        final RecursiveTombstone tombstone = RecursiveTombstones.childBranch(
+                List.of(RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId()),
+                RecursiveTombstoneReason.CHILD_BRANCH_FAILED,
+                "first line\nsecond line");
+
+        assertThat(tombstone.getDetail()).isEqualTo("Recursive tombstone reason: CHILD_BRANCH_FAILED");
     }
 }

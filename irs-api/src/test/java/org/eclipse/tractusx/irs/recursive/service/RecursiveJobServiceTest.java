@@ -65,6 +65,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveResultStatus;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneScope;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneType;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveUseCase;
 import org.eclipse.tractusx.irs.recursive.store.InMemoryRecursiveChainOpeningGrantStore;
 import org.eclipse.tractusx.irs.recursive.store.RecursiveChainOpeningGrantStore;
@@ -770,7 +771,7 @@ class RecursiveJobServiceTest {
         final String jobId = jobService.startJob(validRequest());
 
         final RecursiveTombstone unsafeTombstone = RecursiveTombstone.builder()
-                .type("RECURSIVE_TOMBSTONE")
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                 .scope(RecursiveTombstoneScope.LOCAL_NODE)
                 .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                 .reason(RecursiveTombstoneReason.LOCAL_ASPECT_REQUEST_FAILED)
@@ -778,7 +779,7 @@ class RecursiveJobServiceTest {
                 .detail("GET http://ceres.example/shells failed for bpn=BPNL0000CERS0001 "
                         + "assetId=urn:uuid:33333333-3333-3333-3333-333333333333")
                 .occurrences(1)
-                .errorRefs(List.of("ref-1"))
+                .errorRefs(List.of("4e3bea84-a48f-4319-8380-a50e4d615560"))
                 .build();
         final RecursiveJobResult childResult = childResult(collectedNode("child").toBuilder()
                 .items(List.of())
@@ -814,14 +815,14 @@ class RecursiveJobServiceTest {
         final String jobId = jobService.startJob(validRequest());
 
         final RecursiveTombstone rejection = RecursiveTombstone.builder()
-                .type("RECURSIVE_TOMBSTONE")
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                 .scope(RecursiveTombstoneScope.RECURSIVE_CHAIN)
                 .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                 .reason(RecursiveTombstoneReason.CHAIN_OPENING_REJECTED)
                 .retryable(false)
                 .detail("Rejected by https://belfast.example/api for bpn=BPNL0000BELF0001")
                 .occurrences(1)
-                .errorRefs(List.of("ref-2"))
+                .errorRefs(List.of("f410c848-2b87-48ae-9da4-294079226a1f"))
                 .build();
         jobService.handleNotification(childResponse(sentRequests.get(0), RecursiveResponseStatus.FAILED,
                 childResult(emptyNode().toBuilder().tombstones(List.of(rejection)).build())));

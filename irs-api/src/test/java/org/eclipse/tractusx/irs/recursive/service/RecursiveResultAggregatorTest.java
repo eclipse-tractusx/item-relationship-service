@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveResultStatus;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneScope;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneType;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveUseCase;
 import org.junit.jupiter.api.Test;
 
@@ -165,7 +166,7 @@ class RecursiveResultAggregatorTest {
     void shouldAttachEarlyChildRejectionWithoutInvalidResponseTombstone() {
         final RecursiveJobState state = state(List.of(childRequest("message-1", quantity(2.0))));
         final RecursiveTombstone rejection = RecursiveTombstone.builder()
-                .type("RECURSIVE_TOMBSTONE")
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                 .scope(RecursiveTombstoneScope.RECURSIVE_CHAIN)
                 .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                 .reason(RecursiveTombstoneReason.CHAIN_OPENING_REJECTED)
@@ -231,7 +232,7 @@ class RecursiveResultAggregatorTest {
 
     private RecursiveTombstone localFailure(final String errorRef) {
         return RecursiveTombstone.builder()
-                                 .type("RECURSIVE_TOMBSTONE")
+                                 .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                                  .scope(RecursiveTombstoneScope.LOCAL_NODE)
                                  .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                                  .reason(RecursiveTombstoneReason.LOCAL_ASPECT_REQUEST_FAILED)

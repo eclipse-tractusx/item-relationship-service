@@ -28,7 +28,9 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneScope;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneType;
 import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
+import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 
 /**
  * Creates and sanitizes recursive tombstones.
@@ -116,14 +118,10 @@ final class RecursiveTombstones {
     }
 
     private static String sanitizedErrorRef(final String errorRef) {
-        return isCanonicalUuid(errorRef) ? errorRef : newErrorRef();
-    }
-
-    private static boolean isCanonicalUuid(final String value) {
         try {
-            return UUID.fromString(value).toString().equalsIgnoreCase(value);
+            return UUID.fromString(errorRef).toString();
         } catch (final IllegalArgumentException exception) {
-            return false;
+            return newErrorRef();
         }
     }
 
@@ -139,15 +137,26 @@ final class RecursiveTombstones {
                 RecursiveLogValue.of(errorRefs.toString()), RecursiveLogValue.of(scope.name()),
                 RecursiveLogValue.of(reason.name()), RecursiveLogValue.of(detail));
         return RecursiveTombstone.builder()
-                                 .type("RECURSIVE_TOMBSTONE")
+                                 .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                                  .scope(scope)
                                  .aspects(List.copyOf(aspects))
                                  .reason(reason)
                                  .retryable(reason.isRetryable())
-                                 .detail(detail == null ? "" : detail)
+                                 .detail(detailValue(reason, detail))
                                  .occurrences(occurrences)
                                  .errorRefs(List.copyOf(errorRefs))
                                  .build();
+    }
+
+    private static String detailValue(final RecursiveTombstoneReason reason, final String detail) {
+        final String rawDetail = detail == null || detail.isBlank()
+                ? "Recursive tombstone reason: " + reason.name()
+                : detail;
+        final String anonymizedDetail = RecursiveFailureDetails.anonymizedDetail(rawDetail);
+        if (!RecursivePatternStore.SAFE_SINGLE_LINE_PATTERN.matcher(anonymizedDetail).matches()) {
+            return "Recursive tombstone reason: " + reason.name();
+        }
+        return anonymizedDetail;
     }
 
     private static String newErrorRef() {
@@ -155,13 +164,31 @@ final class RecursiveTombstones {
     }
 
     private static void validateRequiredFields(final RecursiveTombstone raw) {
-        if (raw == null || !"RECURSIVE_TOMBSTONE".equals(raw.getType()) || raw.getScope() == null
-                || raw.getReason() == null || raw.getRetryable() == null
-                || raw.getRetryable() != raw.getReason().isRetryable() || raw.getDetail() == null
-                || raw.getDetail().isBlank() || raw.getOccurrences() == null || raw.getOccurrences() < 1
-                || raw.getAspects() == null || raw.getErrorRefs() == null || raw.getErrorRefs().isEmpty()) {
+        if (raw == null || !hasRequiredEnums(raw) || !hasValidDetail(raw) || !hasValidCounts(raw)) {
             throw new IllegalArgumentException("Recursive tombstone is incomplete.");
         }
+    }
+
+    private static boolean hasRequiredEnums(final RecursiveTombstone raw) {
+        return raw.getType() == RecursiveTombstoneType.RECURSIVE_TOMBSTONE
+                && raw.getScope() != null
+                && raw.getReason() != null
+                && raw.getRetryable() != null
+                && raw.getRetryable() == raw.getReason().isRetryable();
+    }
+
+    private static boolean hasValidDetail(final RecursiveTombstone raw) {
+        return raw.getDetail() != null
+                && !raw.getDetail().isBlank()
+                && RecursivePatternStore.SAFE_SINGLE_LINE_PATTERN.matcher(raw.getDetail()).matches();
+    }
+
+    private static boolean hasValidCounts(final RecursiveTombstone raw) {
+        return raw.getOccurrences() != null
+                && raw.getOccurrences() > 0
+                && raw.getAspects() != null
+                && raw.getErrorRefs() != null
+                && !raw.getErrorRefs().isEmpty();
     }
 
     private static List<String> aspectValue(final List<String> aspects) {

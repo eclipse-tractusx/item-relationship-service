@@ -180,6 +180,7 @@ public class RecursiveNotificationMessage {
         /**
          * For RESPONSE: aggregated result payload.
          */
+        @Valid
         private RecursiveJobResult result;
     }
 }

@@ -37,6 +37,14 @@ job:
   cached:
     threadCount: 5
 bpn: BPNL00000003AZQP
+recursive:
+  # Reuse the Umbrella BPNL instead of defining a second local identifier.
+  localBpnl: "{{ .Values.bpn }}"
+  timeout:
+    defaultJobTtl: PT30M
+    maxJobTtl: PT2H
+    childResponseSafetyBuffer: PT60S
+    timeoutCheckInterval: PT30S
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
 

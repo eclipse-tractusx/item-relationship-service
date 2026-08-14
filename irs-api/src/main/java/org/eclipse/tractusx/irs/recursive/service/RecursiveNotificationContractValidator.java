@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -48,6 +47,8 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationType;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveResponseStatus;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveResultStatus;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneType;
+import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 
 /** Validates the shared notification envelope and the recursive operation contract. */
 @RequiredArgsConstructor
@@ -185,12 +186,13 @@ public class RecursiveNotificationContractValidator {
     private boolean isValidTombstones(final List<RecursiveTombstone> tombstones,
             final Set<String> selectedAspects) {
         return tombstones.stream().allMatch(tombstone -> tombstone != null
-                && "RECURSIVE_TOMBSTONE".equals(tombstone.getType())
+                && tombstone.getType() == RecursiveTombstoneType.RECURSIVE_TOMBSTONE
                 && tombstone.getScope() != null
                 && tombstone.getReason() != null
                 && Objects.equals(tombstone.getRetryable(), tombstone.getReason().isRetryable())
                 && tombstone.getDetail() != null
                 && !tombstone.getDetail().isBlank()
+                && RecursivePatternStore.SAFE_SINGLE_LINE_PATTERN.matcher(tombstone.getDetail()).matches()
                 && tombstone.getOccurrences() != null
                 && tombstone.getOccurrences() > 0
                 && tombstone.getAspects() != null
@@ -233,11 +235,7 @@ public class RecursiveNotificationContractValidator {
         if (value == null) {
             return false;
         }
-        try {
-            return UUID.fromString(value).toString().equalsIgnoreCase(value);
-        } catch (final IllegalArgumentException exception) {
-            return false;
-        }
+        return RecursivePatternStore.UUID_PATTERN.matcher(value).matches();
     }
 
     private String textValue(final JsonNode parent, final String fieldName) {

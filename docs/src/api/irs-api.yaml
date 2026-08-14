@@ -3672,6 +3672,15 @@ components:
         that belong to a material node are exposed in that child item's tombstones.
         Identical tombstones within the same scope are merged with an occurrences
         counter.
+      required:
+        - aspects
+        - detail
+        - errorRefs
+        - occurrences
+        - reason
+        - retryable
+        - scope
+        - type
       properties:
         aspects:
           type: array
@@ -3683,13 +3692,18 @@ components:
               - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
         detail:
           type: string
+          minLength: 1
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
         errorRefs:
           type: array
+          minItems: 1
           items:
             type: string
+            pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         occurrences:
           type: integer
           format: int32
+          minimum: 1
         reason:
           type: string
           enum:
@@ -3717,6 +3731,8 @@ components:
             - RECURSIVE_CHAIN
         type:
           type: string
+          enum:
+            - RECURSIVE_TOMBSTONE
     Reference:
       type: object
       additionalProperties: false

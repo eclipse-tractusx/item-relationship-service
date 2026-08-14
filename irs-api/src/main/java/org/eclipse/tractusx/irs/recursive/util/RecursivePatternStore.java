@@ -38,6 +38,10 @@ public final class RecursivePatternStore {
 
     public static final Pattern BPNL_PATTERN = Pattern.compile(BPNL_STRING);
 
+    public static final String UUID_STRING = "^" + UUID_VALUE + "$";
+
+    public static final Pattern UUID_PATTERN = Pattern.compile(UUID_STRING);
+
     public static final String OPTIONAL_BPNL_STRING = "^(?:" + BPNL_VALUE + ")?$";
 
     public static final String GLOBAL_ASSET_ID_STRING = "^" + GLOBAL_ASSET_ID_VALUE + "$";

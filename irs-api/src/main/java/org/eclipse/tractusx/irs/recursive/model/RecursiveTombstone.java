@@ -21,9 +21,16 @@ package org.eclipse.tractusx.irs.recursive.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+
+import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 
 /**
  * Externally visible recursive tombstone.
@@ -42,20 +49,35 @@ import lombok.extern.jackson.Jacksonized;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RecursiveTombstone {
 
-    private String type;
+    @NotNull
+    private RecursiveTombstoneType type;
+
+    @NotNull
     private RecursiveTombstoneScope scope;
 
     /**
      * The requested aspect semantic IDs this failure relates to.
      */
-    private List<String> aspects;
+    @NotNull
+    private List<@Pattern(regexp = RecursivePatternStore.SAFE_SINGLE_LINE_STRING,
+            message = "aspects must not contain control or line separator characters") String> aspects;
+
+    @NotNull
     private RecursiveTombstoneReason reason;
+
+    @NotNull
     private Boolean retryable;
+
+    @NotBlank
+    @Pattern(regexp = RecursivePatternStore.SAFE_SINGLE_LINE_STRING,
+             message = "detail must not contain control or line separator characters")
     private String detail;
 
     /**
      * Number of identical failures aggregated into this tombstone.
      */
+    @NotNull
+    @Min(1)
     private Integer occurrences;
 
     /**
@@ -63,5 +85,7 @@ public class RecursiveTombstone {
      * but let a support request (customer quotes an errorRef) be mapped to the detailed internal
      * diagnostics in the logs of the node that produced it.
      */
-    private List<String> errorRefs;
+    @NotEmpty
+    private List<@Pattern(regexp = RecursivePatternStore.UUID_STRING,
+            message = "errorRefs must contain UUIDs") String> errorRefs;
 }

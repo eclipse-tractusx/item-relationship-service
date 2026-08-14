@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChainOpeningGrant;
@@ -154,9 +155,10 @@ public class RecursiveChainOpeningGrantService {
             final String requesterBpn, final RecursiveUseCase useCase, final boolean validOnly) {
         final ZonedDateTime now = ZonedDateTime.now(clock);
         final String canonicalGlobalAssetId = RecursiveGlobalAssetId.canonicalizeOptional(globalAssetId);
-        if (isCompleteGrantKey(openingId, canonicalGlobalAssetId, requesterBpn, useCase)) {
-            final RecursiveChainOpeningGrantKey key = new RecursiveChainOpeningGrantKey(openingId,
-                    canonicalGlobalAssetId, requesterBpn, useCase);
+        final Optional<RecursiveChainOpeningGrantKey> completeKey =
+                RecursiveChainOpeningGrantKey.optionalOf(openingId, canonicalGlobalAssetId, requesterBpn, useCase);
+        if (completeKey.isPresent()) {
+            final RecursiveChainOpeningGrantKey key = completeKey.get();
             return grantStore.find(key)
                     .filter(grant -> !validOnly || isValidAt(grant, now))
                     .stream()
@@ -209,11 +211,6 @@ public class RecursiveChainOpeningGrantService {
     private boolean isValidAt(final RecursiveChainOpeningGrant grant, final ZonedDateTime now) {
         return (grant.getValidFrom() == null || !now.isBefore(grant.getValidFrom()))
                 && (grant.getValidTo() == null || !now.isAfter(grant.getValidTo()));
-    }
-
-    private boolean isCompleteGrantKey(final String openingId, final String globalAssetId,
-            final String requesterBpn, final RecursiveUseCase useCase) {
-        return StringUtils.isNoneBlank(openingId, globalAssetId, requesterBpn) && useCase != null;
     }
 
     private int allowedBpnlSize(final RecursiveChainOpeningGrant grant) {

@@ -23,6 +23,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -47,9 +48,9 @@ public class RecursiveChildItem {
     private List<RecursiveAspectItem> items = List.of();
 
     @Builder.Default
-    private List<RecursiveTombstone> tombstones = List.of();
+    private List<@Valid RecursiveTombstone> tombstones = List.of();
 
     @ArraySchema(schema = @Schema(implementation = RecursiveChildItem.class))
     @Builder.Default
-    private List<RecursiveChildItem> childItems = List.of();
+    private List<@Valid RecursiveChildItem> childItems = List.of();
 }

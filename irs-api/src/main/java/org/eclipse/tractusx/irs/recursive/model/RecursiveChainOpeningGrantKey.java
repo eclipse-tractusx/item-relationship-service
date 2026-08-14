@@ -18,6 +18,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.recursive.model;
 
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.recursive.util.RecursiveGlobalAssetId;
 
 /**
@@ -35,6 +38,14 @@ public record RecursiveChainOpeningGrantKey(String openingId, String globalAsset
     public static RecursiveChainOpeningGrantKey of(final RecursiveChainOpeningGrant grant) {
         return new RecursiveChainOpeningGrantKey(grant.getOpeningId(), grant.getGlobalAssetId(),
                 grant.getRequesterBpn(), grant.getUseCase());
+    }
+
+    public static Optional<RecursiveChainOpeningGrantKey> optionalOf(final String openingId,
+            final String globalAssetId, final String requesterBpn, final RecursiveUseCase useCase) {
+        if (StringUtils.isNoneBlank(openingId, globalAssetId, requesterBpn) && useCase != null) {
+            return Optional.of(new RecursiveChainOpeningGrantKey(openingId, globalAssetId, requesterBpn, useCase));
+        }
+        return Optional.empty();
     }
 
     @Override

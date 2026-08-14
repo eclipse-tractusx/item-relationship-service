@@ -182,7 +182,9 @@ blobstore:
     containerName: irs-policy-bucket
     daysToLive: -1
   chainOpeningGrants:
+    # -- Blob-store container used for recursive chain opening grants.
     containerName: irs-chain-opening-grants
+    # -- Number of days to retain chain opening grants. Use -1 to disable cleanup.
     daysToLive: -1
 
 oauth2:
