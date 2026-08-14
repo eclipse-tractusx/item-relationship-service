@@ -506,6 +506,11 @@ minio:
   mode: standalone
   persistence:
     size: 1Gi
+  # overwrite redis images due to deprecation of bitnami images
+  image:
+    repository: quay.io/minio/minio
+    # overwrite minio version RELEASE.2022-11-11T03-44-20Z as this is not found in bitnami legacy
+    tag: RELEASE.2022-11-11T03-44-20Z
   resources:
     limits:
       cpu: 1
@@ -533,44 +538,39 @@ redis:
   auth:
     enabled: true
     password: redispwd
-
-############################
-# Prometheus Configuration #
-############################
-prometheus:
-  enabled: false  # ①
-  rbac:
-    create: false
-  alertmanager:
-    enabled: false
-  prometheus-node-exporter:
-    enabled: false
-  kubeStateMetrics:
-    enabled: false
-  prometheus-pushgateway:
-    enabled: false
-  configmapReload:
-    prometheus:
-      enabled: false
+  # overwrite redis images due to deprecation of bitnami images
+  global:
+    security:
+      # needed to run legacy image
+      allowInsecureImages: true
+  image:
+    repository: bitnamilegacy/redis
+    # overwrite minio version 7.4.2-debian-12-r6
+    tag: 7.4.2-debian-12-r9
+  master:
+    image:
+      repository: bitnamilegacy/redis
+      tag: 7.4.2-debian-12-r9
+  metrics:
 ```
 
 1. Use this to enable or disable the monitoring components
 
 #### Values explained
 
-##### irs-url
+##### &lt;irs-url>
 
 The hostname where the IRS will be made available.
 
-##### api-key-admin
+##### &lt;api-key-admin>
 
 Api key to access API with admin role.
 
-##### api-key-regular
+##### &lt;api-key-regular>
 
 Api key to access API with regular/view role.
 
-#### ingress
+#### &lt;ingress>
 
 To expose the IRS service, you need to add an ingress for the default port 8080.
 You can do this by adding this to ingress:
@@ -595,38 +595,38 @@ ingress:
       secretName: tls-secret
 ```
 
-##### digital-twin-registry-url
+##### &lt;digital-twin-registry-url>
 
 The URL of the Digital Twin Registry. The IRS uses this service to fetch AAS shells.
 
-##### discovery-finder-url
+##### &lt;discovery-finder-url>
 
 The URL of the Discovery Finder. The IRS uses this service to discover EDC to a particular BPN.
 
-##### semantics-hub-url
+##### &lt;semantics-hub-url>
 
 The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas for payload validation.
 
-##### oauth2-token-uri
+##### &lt;oauth2-token-uri>
 
 The URL of the OAuth2 token API. Used by the IRS for token creation to authenticate with other services.
 
-##### grafana-url
+##### &lt;grafana-url>
 
 The hostname where Grafana will be made available.
 
-##### edc-controlplane-endpoint-data
+##### &lt;edc-controlplane-endpoint-data>
 
 The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.
 
-##### discoveryFinderClient.cacheTTL
+##### &lt;discoveryFinderClient.cacheTTL>
 
 When IRS calls the Discovery Finder URL for BPNLs, the results are cached to improve performance.
 This parameter defines how long the cache is maintained before it is cleared.
 Data is in ISO 8601.
 
-##### connectorEndpointService.cacheTTL
+##### &lt;connectorEndpointService.cacheTTL>
 
 When IRS calls EDC Discovery Service to fetch connector endpoints for BPNLs, the results are cached to improve performance.
 This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.
@@ -713,43 +713,43 @@ This is a list of all secrets used in the deployment.
 **⚠️ WARNING**\
 Keep the values for these settings safe and do not publish them!
 
-#### semantics-client-id
+#### &lt;semantics-client-id>
 
 Semantic Hub client ID for OAuth2 provider. Request this from your OAuth2 operator.
 
-#### semantics-client-secret
+#### &lt;semantics-client-secret>
 
 Semantic Hub client secret for OAuth2 provider. Request this from your OAuth2 operator.
 
-#### discovery-client-id
+#### &lt;discovery-client-id>
 
 Dataspace Discovery  client ID for OAuth2 provider. Request this from your OAuth2 operator.
 
-#### discovery-client-secret
+#### &lt;discovery-client-secret>
 
 Dataspace Discovery  client secret for OAuth2 provider. Request this from your OAuth2 operator.
 
-#### minio-username
+#### &lt;minio-username>
 
 Login username for Minio. To be defined by you.
 
-#### minio-password
+#### &lt;minio-password>
 
 Login password for Minio. To be defined by you.
 
-#### edc-api-key
+#### &lt;edc-api-key>
 
 An API key for the EDC API. To be defined by you.
 
-#### vault-token
+#### &lt;vault-token>
 
 The access token for the HashiCorp Vault API.
 
-#### grafana-username
+#### &lt;grafana-username>
 
 Login username for Grafana. To be defined by you.
 
-#### grafana-password
+#### &lt;grafana-password>
 
 Login password for Grafana. To be defined by you.
 

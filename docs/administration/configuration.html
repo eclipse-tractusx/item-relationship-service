@@ -1156,6 +1156,11 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">mode</span><span class="pi">:</span> <span class="s">standalone</span>
   <span class="na">persistence</span><span class="pi">:</span>
     <span class="na">size</span><span class="pi">:</span> <span class="s">1Gi</span>
+  <span class="c1"># overwrite redis images due to deprecation of bitnami images</span>
+  <span class="na">image</span><span class="pi">:</span>
+    <span class="na">repository</span><span class="pi">:</span> <span class="s">quay.io/minio/minio</span>
+    <span class="c1"># overwrite minio version RELEASE.2022-11-11T03-44-20Z as this is not found in bitnami legacy</span>
+    <span class="na">tag</span><span class="pi">:</span> <span class="s">RELEASE.2022-11-11T03-44-20Z</span>
   <span class="na">resources</span><span class="pi">:</span>
     <span class="na">limits</span><span class="pi">:</span>
       <span class="na">cpu</span><span class="pi">:</span> <span class="m">1</span>
@@ -1183,25 +1188,20 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">auth</span><span class="pi">:</span>
     <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
     <span class="na">password</span><span class="pi">:</span> <span class="s">redispwd</span>
-
-<span class="c1">############################</span>
-<span class="c1"># Prometheus Configuration #</span>
-<span class="c1">############################</span>
-<span class="na">prometheus</span><span class="pi">:</span>
-  <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>  <i class="conum" data-value="1"></i><b>(1)</b>
-  <span class="na">rbac</span><span class="pi">:</span>
-    <span class="na">create</span><span class="pi">:</span> <span class="no">false</span>
-  <span class="na">alertmanager</span><span class="pi">:</span>
-    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
-  <span class="na">prometheus-node-exporter</span><span class="pi">:</span>
-    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
-  <span class="na">kubeStateMetrics</span><span class="pi">:</span>
-    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
-  <span class="na">prometheus-pushgateway</span><span class="pi">:</span>
-    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
-  <span class="na">configmapReload</span><span class="pi">:</span>
-    <span class="na">prometheus</span><span class="pi">:</span>
-      <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span></code></pre>
+  <span class="c1"># overwrite redis images due to deprecation of bitnami images</span>
+  <span class="na">global</span><span class="pi">:</span>
+    <span class="na">security</span><span class="pi">:</span>
+      <span class="c1"># needed to run legacy image</span>
+      <span class="na">allowInsecureImages</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">image</span><span class="pi">:</span>
+    <span class="na">repository</span><span class="pi">:</span> <span class="s">bitnamilegacy/redis</span>
+    <span class="c1"># overwrite minio version 7.4.2-debian-12-r6</span>
+    <span class="na">tag</span><span class="pi">:</span> <span class="s">7.4.2-debian-12-r9</span>
+  <span class="na">master</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span>
+      <span class="na">repository</span><span class="pi">:</span> <span class="s">bitnamilegacy/redis</span>
+      <span class="na">tag</span><span class="pi">:</span> <span class="s">7.4.2-debian-12-r9</span>
+  <span class="na">metrics</span><span class="pi">:</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1501,7 +1501,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-05-16 10:51:29 UTC
+Last updated 2026-08-14 06:54:42 UTC
 </div>
 </div>
 </body>
