@@ -28,3 +28,10 @@ The Service interacts with the Catena-X [Digital Twin Registry](https://github.c
 - 📄 [IRS REST API Documentation](https://eclipse-tractusx.github.io/item-relationship-service/docs/api-specification/api-specification.html)
 - 📄 Catena-X Kit's
 
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2022 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

@@ -46,3 +46,11 @@ Additionally, it is possible to generate one manually by selecting a request and
 
 Some requests consist of prompts which you need to provide data. 
 The last input will be remembered and filled in advance for the next request.
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2023 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

@@ -94,3 +94,11 @@ Now you can start using the client by injecting a bean of the `DigitalTwinRegist
 You can set up the beans by yourself. This can be useful if you want to override some default implementations or
 programmatically provide the right dependencies. Please refer to
 the `org.eclipse.tractusx.irs.registryclient.DefaultConfiguration` for an example.
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2023 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

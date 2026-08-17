@@ -9,3 +9,11 @@
 This is a sample description of a quality requirement. It describes the expected state or metrics of the application in a measurable way.
 
 If the requirement is complex, additional quality scenarios should be described to make the requirement comprehensible.
+
+== NOTICE
+
+This work is licensed under the https://creativecommons.org/licenses/by/4.0/legalcode[CC-BY-4.0].
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2022 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

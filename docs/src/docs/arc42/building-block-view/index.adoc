@@ -6,3 +6,11 @@
 - xref:level-1.adoc[Level 1]
 - xref:level-2.adoc[Level 2]
 - xref:irs-api.adoc[IRS API]
+
+== NOTICE
+
+This work is licensed under the https://creativecommons.org/licenses/by/4.0/legalcode[CC-BY-4.0].
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2022 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

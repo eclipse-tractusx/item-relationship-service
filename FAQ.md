@@ -146,3 +146,11 @@ deep in the chain.
 Based on our testing, a CPU limit of 1.5 is capable of handling >40 Jobs with a depth of ~3 simultaneously without any
 issues.  
 In case you run into OutOfMemory Exceptions, increase the memory request and limit.
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

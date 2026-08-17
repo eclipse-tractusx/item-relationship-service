@@ -8,18 +8,33 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      maven-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
 
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      github-actions-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
 
   # Enable version updates for Docker
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      docker-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
 
       
 

@@ -241,3 +241,10 @@ values.yaml
 - [CX-0126 Industry Core Part Type Standard 1.0.0](https://github.com/catenax-eV/product-standardization-prod/blob/CX-0126-IndustryCorePartType-v1.0.0/standards/CX-0126-IndustryCorePartType/1.0.0/CX-0126-Industry-Core-Part-Type.pdf)
 - [CX-0126 Industry Core Part Instance Standard 1.0.0](https://github.com/catenax-eV/product-standardization-prod/blob/CX-0127-IndustryCorePartInstance-v1.0.0/standards/CX-0127-IndustryCorePartInstance/1.0.0/CX%20-%200127%20Industry%20Core%20Part%20Instance%201.0.0.pdf)
 
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

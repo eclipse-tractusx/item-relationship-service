@@ -5,9 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
+
 ## [Unreleased] - 2025-XX-XX
+
 ### Changed
+
 - #1063 commons-beanutils:commons-beanutils 1.9.4 to 1.11.0 to fix CVE-2025-48734
+- ci:
+  - update dependabot to create one PR per package manager to fix security vulnerabilities ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
+  - switch to specter in open api validation due to unreliability of swagger editor ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
+- chore:
+  - add missing `repoCategory` to `.tractusx` file and add missing notice section for non-included (ascii) documentation for TRG 7.07 compliance ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
+- fix: change bitnami legacy images in chart ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
+  - `bitnami/redis` image to `bitnamilegacy/redis`
+  - `bitnami/minio` image to `quay.io/minio/minio`
 
 ## [7.0.1] - 2025-05-16
 ### Fixed

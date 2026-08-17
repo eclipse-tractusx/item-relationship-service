@@ -50,3 +50,11 @@ Rel(IRS-App, SH, "Get schemas to validate response from EDC, https, access token
 
 Rel(DAPS, EDC, "")
 ```
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2023 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

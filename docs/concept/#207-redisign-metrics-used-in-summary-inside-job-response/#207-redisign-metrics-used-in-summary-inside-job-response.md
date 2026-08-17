@@ -53,3 +53,11 @@ Tree is stored as list of nodes in list of Relationships as filed `private List<
 Tree is assebmled in class `ItemTreesAssembler` in method `retrieveItemGraph`. 
 We should get the depth of the tree and add it to the response. Consider using https://www.geeksforgeeks.org/depth-n-ary-tree/  
 Important to note that determining the depth of a running job like this is only suitable as some sort of progress bar. The actual "completion by depth" criteria still has to be evaluated in the DigitalTwinDelegate and needs to be done independently for every branch of the tree
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

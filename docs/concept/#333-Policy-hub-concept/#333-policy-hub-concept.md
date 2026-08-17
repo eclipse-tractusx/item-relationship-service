@@ -262,3 +262,11 @@ POST {{baseUrl}}/api/policy-hub/policy-content
 ## References
 * [Swagger Policy Hub](https://policy-hub.dev.demo.catena-x.net/api/policy-hub/swagger/index.html)
 * [API endpoint usage](https://github.com/eclipse-tractusx/policy-hub/blob/feature/request-docu/docs/developer/Technical-Documentation/requests/example-requests.md)
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

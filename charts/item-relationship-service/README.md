@@ -25,3 +25,11 @@ helm install irs-app irs/item-relationship-service
 ## Default configuration values
 
 See [the configuration docs](https://eclipse-tractusx.github.io/item-relationship-service/docs/administration/administration-guide.html#_helm_configuration_irs_values_yaml) or run `helm show values irs/item-relationship-service` for the default values.
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2023 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service

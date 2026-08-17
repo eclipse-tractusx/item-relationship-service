@@ -15,8 +15,9 @@ jobs:
     name: Swagger Editor Validator Remote
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Validate OpenAPI definition
-        uses: swaggerexpert/swagger-editor-validate@v1
+        uses: stoplightio/spectral-action@6416fd018ae38e60136775066eb3e98172143141 # v0.8.13
         with:
-          definition-file: docs/src/api/irs-api.yaml
+          file_glob: docs/src/api/irs-api.yaml
+          spectral_ruleset: .config/spectral/restCompleteSet.yml
