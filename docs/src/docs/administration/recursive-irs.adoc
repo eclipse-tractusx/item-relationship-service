@@ -1,5 +1,10 @@
 = Recursive IRS
 
+[IMPORTANT]
+====
+DISCLAIMER: THIS IS AN EXPERIMENTAL FEATURE INTRODUCED WITH APP VERSION 7.1.0 AND CHART VERSION 9.1.0.
+====
+
 The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` use case with `asPlanned` BOM traversal and anonymized PURIS aspect models.
 
 == Supported use case

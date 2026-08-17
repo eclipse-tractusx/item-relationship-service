@@ -8,6 +8,14 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased] - 2025-05-13
 
+### Added
+
+- Add configuration for the experimental recursive IRS path ([#1607](https://github.com/eclipse-tractusx/sig-release/issues/1607))
+
+### Changed
+
+- Update IRS version to 7.1.0
+
 ## [9.0.0] - 2025-05-16
 ### Changed
 
@@ -571,4 +579,3 @@ Please make sure that you update your URL config for the semantics hub (see "Cha
 ### Changed
 - Refactored chart structure to no longer include environment values
 - Simplified configuration in values.yaml
-

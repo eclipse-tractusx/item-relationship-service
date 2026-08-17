@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased] - 2025-XX-XX
 
+### Added
+
+- Add the experimental recursive IRS path for grant-controlled collection and aggregation of anonymized PURIS data ([#1607](https://github.com/eclipse-tractusx/sig-release/issues/1607))
+
 ### Changed
 
 - #1063 commons-beanutils:commons-beanutils 1.9.4 to 1.11.0 to fix CVE-2025-48734
