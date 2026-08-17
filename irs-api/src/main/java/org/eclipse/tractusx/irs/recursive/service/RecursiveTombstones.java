@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
  * errorRef back to the detailed internal diagnostics.</p>
  */
 @Slf4j
+@SuppressWarnings("PMD.TooManyMethods")
 final class RecursiveTombstones {
 
     private RecursiveTombstones() {
@@ -133,9 +134,11 @@ final class RecursiveTombstones {
     private static RecursiveTombstone create(final RecursiveTombstoneScope scope, final List<String> aspects,
             final RecursiveTombstoneReason reason, final String detail, final List<String> errorRefs,
             final int occurrences) {
-        log.debug("Recursive tombstone errorRefs={} scope={} reason={} detail={}",
-                RecursiveLogValue.of(errorRefs.toString()), RecursiveLogValue.of(scope.name()),
-                RecursiveLogValue.of(reason.name()), RecursiveLogValue.of(detail));
+        if (log.isDebugEnabled()) {
+            log.debug("Recursive tombstone errorRefs={} scope={} reason={} detail={}",
+                    RecursiveLogValue.of(errorRefs.toString()), RecursiveLogValue.of(scope.name()),
+                    RecursiveLogValue.of(reason.name()), RecursiveLogValue.of(detail));
+        }
         return RecursiveTombstone.builder()
                                  .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
                                  .scope(scope)

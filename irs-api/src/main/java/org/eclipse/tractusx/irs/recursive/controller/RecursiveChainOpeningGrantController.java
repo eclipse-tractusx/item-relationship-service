@@ -71,6 +71,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "Recursive Chain Opening Grants",
      description = "Grant storage and lookup for recursive chain openings")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })
 public class RecursiveChainOpeningGrantController {
 
     private final RecursiveChainOpeningGrantService chainOpeningGrantService;

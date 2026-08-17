@@ -32,6 +32,8 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveChildItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveQuantity;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 
+/** Sanitizes and aggregates material-tree nodes before they cross a recursive API boundary. */
+@SuppressWarnings("PMD.TooManyMethods")
 final class RecursiveResultTreeSanitizer {
 
     private RecursiveResultTreeSanitizer() {
@@ -64,6 +66,7 @@ final class RecursiveResultTreeSanitizer {
                             .toList();
     }
 
+    @SuppressWarnings({ "PMD.AvoidInstantiatingObjectsInLoops", "PMD.UseConcurrentHashMap" })
     /* package */ static List<RecursiveTombstone> aggregateTombstones(
             final List<RecursiveTombstone> tombstones) {
         final Map<String, RecursiveTombstone> byKey = new LinkedHashMap<>();

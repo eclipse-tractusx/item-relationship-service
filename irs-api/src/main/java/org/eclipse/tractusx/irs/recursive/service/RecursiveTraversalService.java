@@ -66,13 +66,16 @@ import lombok.extern.slf4j.Slf4j;
  * not full submodel collection.</p>
  */
 @Slf4j
+@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.TooManyMethods" })
 public class RecursiveTraversalService {
 
     private static final String SINGLE_LEVEL_BOM_AS_PLANNED_PREFIX =
             "urn:samm:io.catenax.single_level_bom_as_planned:";
+    private static final int EXPECTED_BOM_DESCRIPTOR_COUNT = 1;
 
     private final TraversalResolver traversalResolver;
 
+    /** Resolves one shell and its direct BOM children. */
     @FunctionalInterface
     private interface TraversalResolver {
         TraversalResult resolve(String globalAssetId, String bpnl, BomLifecycle bomLifecycle);
@@ -119,6 +122,7 @@ public class RecursiveTraversalService {
      * treated as leaf nodes. Present but unsupported BOM versions, missing endpoints and
      * registry or EDC failures are converted into controlled recursive traversal errors.
      */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     private static TraversalResult resolveTraversalViaIrsClients(
             final DigitalTwinRegistryService digitalTwinRegistryService,
             final EdcSubmodelFacade submodelFacade,
@@ -132,8 +136,8 @@ public class RecursiveTraversalService {
                     .bpn(bpnl)
                     .build();
             final Shell shell = digitalTwinRegistryService.fetchShell(itemKey)
-                    .orElseThrow(() -> new IllegalStateException(
-                            "Shell not found for globalAssetId=" + globalAssetId + ", bpnl=" + bpnl));
+                    .orElseThrow(() -> new RecursiveExternalCallException("SHELL_NOT_FOUND",
+                            "Digital twin shell was not found while resolving BOM relationships.", null));
 
             final RelationshipAspect relationshipAspect = RelationshipAspect.from(bomLifecycle, Direction.DOWNWARD);
             final List<Endpoint> relationshipEndpoints = relationshipEndpoints(shell.payload(), bomLifecycle);
@@ -151,14 +155,6 @@ public class RecursiveTraversalService {
             }
 
             return new TraversalResult(result.stream().distinct().toList(), shell.payload());
-        } catch (final RecursiveExternalCallException e) {
-            throw e;
-        } catch (final IllegalStateException e) {
-            if (e.getMessage() != null && e.getMessage().startsWith("Shell not found")) {
-                throw new RecursiveExternalCallException("SHELL_NOT_FOUND",
-                        "Digital twin shell was not found while resolving BOM relationships.", e);
-            }
-            throw e;
         } catch (final RegistryServiceException e) {
             throw new RecursiveExternalCallException("DIGITAL_TWIN_REQUEST_FAILED",
                     "Digital twin registry request failed while resolving BOM relationships.", e);
@@ -177,7 +173,6 @@ public class RecursiveTraversalService {
 
     private static Optional<SubmodelDescriptor> supportedBomDescriptor(
             final AssetAdministrationShellDescriptor shellDescriptor, final BomLifecycle bomLifecycle) {
-        final String supportedSemanticId = supportedBomSemanticId(bomLifecycle);
         final List<SubmodelDescriptor> bomDescriptors = Optional.ofNullable(shellDescriptor.getSubmodelDescriptors())
                 .orElse(List.of())
                 .stream()
@@ -188,6 +183,7 @@ public class RecursiveTraversalService {
             return Optional.empty();
         }
 
+        final String supportedSemanticId = supportedBomSemanticId(bomLifecycle);
         final List<SubmodelDescriptor> matchingDescriptors = bomDescriptors.stream()
                 .filter(descriptor -> hasSemanticId(descriptor, supportedSemanticId))
                 .toList();
@@ -195,7 +191,7 @@ public class RecursiveTraversalService {
             throw new RecursiveExternalCallException("BOM_SUBMODEL_NOT_SUPPORTED",
                     "Available BOM relationship submodel version is not supported.", null);
         }
-        if (matchingDescriptors.size() > 1) {
+        if (matchingDescriptors.size() > EXPECTED_BOM_DESCRIPTOR_COUNT) {
             throw new RecursiveExternalCallException("BOM_SUBMODEL_NOT_SUPPORTED",
                     "Multiple supported BOM relationship submodels are available.", null);
         }
@@ -269,8 +265,10 @@ public class RecursiveTraversalService {
                     "BOM relationship endpoint does not contain " + DSP_ENDPOINT + ".", null);
         }
 
-        log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload",
-                RecursiveLogValue.of(subprotocolBody));
+        if (log.isDebugEnabled()) {
+            log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload",
+                    RecursiveLogValue.of(subprotocolBody));
+        }
         return submodelFacade.getSubmodelPayload(
                 dspEndpoint.get(),
                 digitalTwinRegistryEndpoint.getProtocolInformation().getHref(),

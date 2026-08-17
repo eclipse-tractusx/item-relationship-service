@@ -38,6 +38,7 @@ public class RecursiveStartupRecovery {
     private final Executor recursiveJobExecutor;
 
     @EventListener(ApplicationReadyEvent.class)
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public void recoverAfterRestart() {
         recursiveJobExecutor.execute(() -> {
             try {

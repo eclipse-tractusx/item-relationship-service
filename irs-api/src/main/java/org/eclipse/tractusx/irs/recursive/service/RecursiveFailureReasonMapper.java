@@ -20,6 +20,7 @@ package org.eclipse.tractusx.irs.recursive.service;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyExpiredException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
@@ -51,18 +52,18 @@ final class RecursiveFailureReasonMapper {
             return RecursiveTombstoneReason.fromInternalReason(externalCallException.getReason());
         }
         final String detail = failureSignal(exception);
-        if (detail.contains("digital_twin_request_failed") || detail.contains("dtr")
-                || detail.contains("digital twin") || detail.contains("shell")) {
+        if (containsAny(detail, "digital_twin_request_failed", "dtr", "digital twin", "shell",
+                "submodel_request_failed", "submodel", "bom")) {
             return RecursiveTombstoneReason.LOCAL_ASPECT_REQUEST_FAILED;
         }
-        if (detail.contains("submodel_request_failed") || detail.contains("submodel") || detail.contains("bom")) {
-            return RecursiveTombstoneReason.LOCAL_ASPECT_REQUEST_FAILED;
-        }
-        if (detail.contains("edc_notification_failed") || detail.contains("edc") || detail.contains("notification")
-                || detail.contains("connector endpoint")) {
+        if (containsAny(detail, "edc_notification_failed", "edc", "notification", "connector endpoint")) {
             return RecursiveTombstoneReason.CHILD_BRANCH_FAILED;
         }
         return RecursiveTombstoneReason.CHILD_BRANCH_FAILED;
+    }
+
+    private static boolean containsAny(final String value, final String... candidates) {
+        return Stream.of(candidates).anyMatch(value::contains);
     }
 
     private static String failureSignal(final Exception exception) {

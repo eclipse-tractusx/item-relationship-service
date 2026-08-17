@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,8 @@ import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceExcepti
 /** Collects material metadata and anonymized PURIS aspects for one recursive node. */
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.ExcessiveImports", "PMD.GodClass",
+                    "PMD.TooManyMethods" })
 public class RecursiveSubmodelCollector {
 
     /* package */ static final String PART_TYPE_INFORMATION_SEMANTIC_ID =
@@ -261,12 +264,13 @@ public class RecursiveSubmodelCollector {
                 RecursiveFailureDetails.anonymizedDetail(lastFailure));
     }
 
-    private Map<String, Object> readPayload(final String payload) throws Exception {
+    private Map<String, Object> readPayload(final String payload) throws JsonProcessingException {
         final Object parsedPayload = objectMapper.readValue(payload, Object.class);
         return payloadMap(parsedPayload)
                 .orElseThrow(() -> new IllegalArgumentException("Submodel payload must be a JSON object."));
     }
 
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private Optional<Map<String, Object>> payloadMap(final Object payload) {
         if (!(payload instanceof Map<?, ?> rawMap)) {
             return Optional.empty();
@@ -281,7 +285,7 @@ public class RecursiveSubmodelCollector {
     }
 
     private Map<String, Object> requestSubmodelPayload(final Endpoint endpoint, final String localBpnl)
-            throws Exception {
+            throws EdcClientException, JsonProcessingException {
         final String body = endpoint.getProtocolInformation().getSubprotocolBody();
         final Optional<String> dsp = extractDspEndpoint(body);
         if (dsp.isEmpty()) {

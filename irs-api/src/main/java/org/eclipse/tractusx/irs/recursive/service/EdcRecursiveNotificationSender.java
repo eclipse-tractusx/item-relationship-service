@@ -76,6 +76,7 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
         send(receiverBpnl, message, RecursiveNotificationType.RESPONSE);
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private void send(final String receiverBpnl, final RecursiveNotificationMessage message,
             final RecursiveNotificationType notificationType) {
         final String errorRef = UUID.randomUUID().toString();
@@ -112,6 +113,7 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
      * The detailed log lines (partner, endpoint, step) are local-only diagnostics; the thrown
      * exception carries just the reason code and errorRef.
      */
+    @SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.CyclomaticComplexity" })
     private void sendViaConnector(final String connectorEndpoint, final String receiverBpnl,
             final RecursiveNotificationMessage message, final RecursiveNotificationType notificationType,
             final String errorRef) {
@@ -137,10 +139,11 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
         try {
             endpointDataReference = edcOrchestrator.getEndpointDataReference(dspEndpointAddress, catalogItem)
                     .get(edcConfiguration.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
-        } catch (final EdcClientException | InterruptedException | ExecutionException | TimeoutException exception) {
-            if (exception instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
+        } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CONTRACT_NEGOTIATION_FAILED, errorRef,
+                    notificationType, receiverBpnl, connectorEndpoint, exception);
+        } catch (final EdcClientException | ExecutionException | TimeoutException exception) {
             throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CONTRACT_NEGOTIATION_FAILED, errorRef,
                     notificationType, receiverBpnl, connectorEndpoint, exception);
         }

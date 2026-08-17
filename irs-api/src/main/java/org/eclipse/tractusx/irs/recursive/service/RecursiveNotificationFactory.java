@@ -63,6 +63,7 @@ final class RecursiveNotificationFactory {
                 .build();
     }
 
+    @SuppressWarnings("PMD.NullAssignment")
     /* package */ static RecursiveNotificationMessage parentResponse(final RecursiveJobState state,
             final String localBpnl, final RecursiveResponseStatus status, final RecursiveJobResult result,
             final List<String> responseAspects, final ZonedDateTime sentAt) {

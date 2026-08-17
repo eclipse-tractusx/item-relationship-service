@@ -40,6 +40,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
+@SuppressWarnings("PMD.TooManyFields")
 public class RecursiveJobState {
 
     @NonNull

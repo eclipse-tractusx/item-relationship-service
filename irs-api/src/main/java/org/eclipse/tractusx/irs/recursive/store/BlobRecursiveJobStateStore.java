@@ -74,8 +74,10 @@ public class BlobRecursiveJobStateStore implements RecursiveJobStateStore {
             final String json = jsonUtil.asString(state);
             blobPersistence.putBlob(JOB_PREFIX + state.getJobId(),
                     json.getBytes(StandardCharsets.UTF_8));
-            log.debug("Saved recursive job state: jobId={}, phase={}",
-                    RecursiveLogValue.of(state.getJobId().toString()), state.getState());
+            if (log.isDebugEnabled()) {
+                log.debug("Saved recursive job state: jobId={}, phase={}",
+                        RecursiveLogValue.of(state.getJobId().toString()), state.getState());
+            }
         } catch (final BlobPersistenceException | JsonParseException e) {
             throw new RecursiveStoreException("Failed to save recursive job", e);
         }

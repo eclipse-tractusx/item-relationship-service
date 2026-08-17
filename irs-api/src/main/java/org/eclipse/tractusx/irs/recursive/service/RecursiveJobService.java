@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,6 +75,8 @@ import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
  * Notifications to partners are always sent outside the job lock.</p>
  */
 @Slf4j
+@SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.CyclomaticComplexity", "PMD.ExcessiveImports",
+                    "PMD.GodClass", "PMD.TooManyMethods" })
 public class RecursiveJobService {
 
     private final RecursiveChainOpeningGrantService grantService;
@@ -220,7 +223,7 @@ public class RecursiveJobService {
 
     private boolean resumeJob(final RecursiveJobState state) {
         if (RecursiveJobRepository.isTerminal(state)
-                || (state.getDeadline() != null && now().isAfter(state.getDeadline()))) {
+                || state.getDeadline() != null && now().isAfter(state.getDeadline())) {
             return false;
         }
         if (state.getUseCase() == null
@@ -308,7 +311,7 @@ public class RecursiveJobService {
         log.info("Job accepted: jobId={}, phase={}", RecursiveLogValue.of(jobId.toString()), state.getState());
         try {
             recursiveJobExecutor.execute(() -> processAcceptedJob(grant, state));
-        } catch (final RuntimeException e) {
+        } catch (final RejectedExecutionException e) {
             markAcceptedJobFailed(state, e);
         }
         return jobId;
@@ -379,11 +382,11 @@ public class RecursiveJobService {
     }
 
     private boolean handleRequest(final RecursiveNotificationMessage msg) {
-        final RecursiveNotificationMessage.Header hdr = msg.getHeader();
         final RecursiveNotificationMessage.Content cnt = msg.getContent();
         if (cnt == null) {
             throw new RecursiveNotificationValidationException("Notification content is required for requests");
         }
+        final RecursiveNotificationMessage.Header hdr = msg.getHeader();
         if (!Objects.equals(hdr.getReceiverBpnl(), localBpnl())) {
             throw new RecursiveNotificationValidationException(
                     "Recursive request receiver does not match this IRS instance.");
@@ -538,17 +541,15 @@ public class RecursiveJobService {
         final List<RecursiveChildBranch> branches = new ArrayList<>();
         boolean changed = false;
         for (final RecursiveChildBranch childBranch : current.getChildBranches()) {
-            if (!Objects.equals(childBranch.getMessageId(), childRequestMessageId)) {
-                branches.add(childBranch);
-            } else if (childBranch.getStatus() != null) {
-                return null;
-            } else {
-                branches.add(childBranch.toBuilder()
-                        .status(status)
-                        .responsePayload(payload)
-                        .build());
+            if (Objects.equals(childBranch.getMessageId(), childRequestMessageId)) {
+                if (childBranch.getStatus() != null) {
+                    return null;
+                }
+                branches.add(childBranch.toBuilder().status(status).responsePayload(payload).build());
                 changed = true;
+                continue;
             }
+            branches.add(childBranch);
         }
         return changed ? applyChildBranches(current, branches) : null;
     }
@@ -581,6 +582,7 @@ public class RecursiveJobService {
                 .count();
     }
 
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private void sendChildRequests(final RecursiveJobState state, final List<RecursiveChildBranch> childBranches) {
         final Map<String, RuntimeException> deliveryFailuresByChildRequestMessageId = new LinkedHashMap<>();
         for (final RecursiveChildBranch childBranch : childBranches) {

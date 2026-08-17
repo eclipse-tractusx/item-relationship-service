@@ -26,4 +26,8 @@ public class RecursiveNotificationValidationException extends RuntimeException {
     public RecursiveNotificationValidationException(final String message) {
         super(message);
     }
+
+    public RecursiveNotificationValidationException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

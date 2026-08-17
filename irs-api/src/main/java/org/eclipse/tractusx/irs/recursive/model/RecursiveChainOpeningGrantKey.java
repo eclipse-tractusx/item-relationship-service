@@ -35,6 +35,7 @@ public record RecursiveChainOpeningGrantKey(String openingId, String globalAsset
         globalAssetId = RecursiveGlobalAssetId.canonicalize(globalAssetId);
     }
 
+    @SuppressWarnings("PMD.ShortMethodName")
     public static RecursiveChainOpeningGrantKey of(final RecursiveChainOpeningGrant grant) {
         return new RecursiveChainOpeningGrantKey(grant.getOpeningId(), grant.getGlobalAssetId(),
                 grant.getRequesterBpn(), grant.getUseCase());

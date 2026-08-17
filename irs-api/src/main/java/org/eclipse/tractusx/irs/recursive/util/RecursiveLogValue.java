@@ -29,6 +29,7 @@ public final class RecursiveLogValue {
     private RecursiveLogValue() {
     }
 
+    @SuppressWarnings("PMD.ShortMethodName")
     public static String of(final String value) {
         if (value == null) {
             return NULL_VALUE;

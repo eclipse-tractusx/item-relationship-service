@@ -52,6 +52,7 @@ import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 
 /** Validates the shared notification envelope and the recursive message contract. */
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.TooManyMethods")
 public class RecursiveNotificationMessageValidator {
 
     private final Validator validator;
@@ -115,31 +116,48 @@ public class RecursiveNotificationMessageValidator {
     }
 
     private boolean isValidResult(final RecursiveNotificationMessage.Content content) {
-        final RecursiveJobResult result = content.getResult();
         if (content.getUseCase() == null) {
             return false;
         }
+        final RecursiveJobResult result = content.getResult();
         final Set<String> selectedAspects = content.getUseCase()
                 .selectAspectIds(content.getBomLifecycle(), content.getAspects())
                 .orElse(Set.of());
-        if (selectedAspects.isEmpty()
-                || result.getResultStatus() == null
-                || result.getChildItems() == null
-                || result.getTombstones() == null
-                || !Objects.equals(result.getUseCase(), content.getUseCase())
-                || !Objects.equals(result.getBomLifecycle(), content.getBomLifecycle())
-                || !containsSameAspects(result.getRequestedAspects(), selectedAspects)
-                || !isValidTombstones(result.getTombstones(), selectedAspects)
-                || content.getStatus() == RecursiveResponseStatus.FAILED
-                        && result.getResultStatus() != RecursiveResultStatus.FAILED) {
+        if (selectedAspects.isEmpty() || !hasRequiredResultFields(result)) {
             return false;
         }
-        final boolean validRoot = result.getChildItems().size() == 1
+        if (!hasConsistentResultMetadata(content, result, selectedAspects)) {
+            return false;
+        }
+        if (content.getStatus() == RecursiveResponseStatus.FAILED
+                && result.getResultStatus() != RecursiveResultStatus.FAILED) {
+            return false;
+        }
+        return hasValidResultRoot(content, result)
+                && result.getChildItems().stream().allMatch(node -> isValidNode(node, selectedAspects));
+    }
+
+    private boolean hasRequiredResultFields(final RecursiveJobResult result) {
+        return result != null
+                && result.getResultStatus() != null
+                && result.getChildItems() != null
+                && result.getTombstones() != null;
+    }
+
+    private boolean hasConsistentResultMetadata(final RecursiveNotificationMessage.Content content,
+            final RecursiveJobResult result, final Set<String> selectedAspects) {
+        return Objects.equals(result.getUseCase(), content.getUseCase())
+                && Objects.equals(result.getBomLifecycle(), content.getBomLifecycle())
+                && containsSameAspects(result.getRequestedAspects(), selectedAspects)
+                && isValidTombstones(result.getTombstones(), selectedAspects);
+    }
+
+    private boolean hasValidResultRoot(final RecursiveNotificationMessage.Content content,
+            final RecursiveJobResult result) {
+        return result.getChildItems().size() == 1
                 || content.getStatus() == RecursiveResponseStatus.FAILED
                         && result.getChildItems().isEmpty()
                         && !result.getTombstones().isEmpty();
-        return validRoot && result.getChildItems().stream()
-                .allMatch(node -> isValidNode(node, selectedAspects));
     }
 
     private boolean isValidNode(final RecursiveChildItem node, final Set<String> selectedAspects) {

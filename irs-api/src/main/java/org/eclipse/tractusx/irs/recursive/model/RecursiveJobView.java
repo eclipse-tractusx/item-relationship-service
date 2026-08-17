@@ -42,6 +42,7 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 @Builder
 @Jacksonized
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@SuppressWarnings("PMD.ShortVariable")
 public class RecursiveJobView {
 
     @NonNull

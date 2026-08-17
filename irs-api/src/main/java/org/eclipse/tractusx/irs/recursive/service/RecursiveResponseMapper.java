@@ -55,6 +55,7 @@ final class RecursiveResponseMapper {
                                          .build();
     }
 
+    @SuppressWarnings("PMD.NullAssignment")
     private static RecursiveJobView toJobView(final RecursiveJobState state, final List<String> selectedAspectIds) {
         final boolean terminal = state.getState().isTerminal();
         return RecursiveJobView.builder()
@@ -87,6 +88,7 @@ final class RecursiveResponseMapper {
                     .orElseGet(List::of);
     }
 
+    @SuppressWarnings("PMD.NullAssignment")
     private static JobErrorDetails toJobException(final RecursiveJobState state) {
         if (state.getState() != RecursiveJobPhase.FAILED) {
             return null;
@@ -122,6 +124,7 @@ final class RecursiveResponseMapper {
                                 .build();
     }
 
+    @SuppressWarnings("PMD.NullAssignment")
     /* package */ static RecursiveJobResult toExternalResult(final RecursiveJobResult rawResult,
             final RecursiveUseCase useCase, final BomLifecycle bomLifecycle, final List<String> fallbackAspects) {
         if (rawResult == null) {

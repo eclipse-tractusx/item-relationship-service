@@ -80,6 +80,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableConfigurationProperties(RecursiveProperties.class)
+@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.TooManyMethods" })
 public class RecursiveConfiguration {
 
     @Bean

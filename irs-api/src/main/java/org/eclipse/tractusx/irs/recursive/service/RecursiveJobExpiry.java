@@ -62,6 +62,7 @@ class RecursiveJobExpiry {
      *
      * @return number of jobs completed because a deadline expired
      */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     /* package */ int processExpiredJobs() {
         final ZonedDateTime checkTime = now.get();
         int processed = 0;

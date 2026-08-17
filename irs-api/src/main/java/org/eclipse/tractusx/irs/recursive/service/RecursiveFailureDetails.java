@@ -48,7 +48,7 @@ final class RecursiveFailureDetails {
 
     /* package */ static String anonymizedDetail(final String detail) {
         String sanitized = detail == null || detail.isBlank() ? "External recursive request failed." : detail;
-        for (NamedValuePattern replacement : NAMED_VALUE_PATTERNS) {
+        for (final NamedValuePattern replacement : NAMED_VALUE_PATTERNS) {
             sanitized = replacement.pattern().matcher(sanitized).replaceAll(replacement.replacement());
         }
         sanitized = URL.matcher(sanitized).replaceAll("<url>");

@@ -71,7 +71,9 @@ public class BlobRecursiveChainOpeningGrantStore implements RecursiveChainOpenin
         try {
             final String json = jsonUtil.asString(grant);
             blobPersistence.putBlob(toBlobKey(key), json.getBytes(StandardCharsets.UTF_8));
-            log.debug("Stored grant: {}", RecursiveLogValue.of(key.toString()));
+            if (log.isDebugEnabled()) {
+                log.debug("Stored grant: {}", RecursiveLogValue.of(key.toString()));
+            }
         } catch (final BlobPersistenceException | JsonParseException e) {
             throw new RecursiveStoreException("Failed to store recursive chain opening grant", e);
         }

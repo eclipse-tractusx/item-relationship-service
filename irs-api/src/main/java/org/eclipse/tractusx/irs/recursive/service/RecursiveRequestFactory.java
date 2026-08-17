@@ -92,7 +92,7 @@ class RecursiveRequestFactory {
                                  .toZonedDateTime();
         } catch (final DateTimeParseException e) {
             throw new RecursiveNotificationValidationException(
-                    "expectedResponseBy must be an ISO-8601 offset timestamp");
+                    "expectedResponseBy must be an ISO-8601 offset timestamp", e);
         }
     }
 
@@ -145,7 +145,7 @@ class RecursiveRequestFactory {
         if (ttl != null && !ttl.isBlank()) {
             try {
                 requestedTtl = Duration.parse(ttl);
-            } catch (final RuntimeException e) {
+            } catch (final DateTimeParseException e) {
                 log.warn("Could not parse recursive job ttl, using {}", timeout.getDefaultJobTtl());
                 requestedTtl = timeout.getDefaultJobTtl();
             }

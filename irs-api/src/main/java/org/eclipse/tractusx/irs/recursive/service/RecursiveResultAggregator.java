@@ -36,6 +36,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 
 /** Builds the material tree returned by a recursive PURIS job. */
+@SuppressWarnings("PMD.TooManyMethods")
 class RecursiveResultAggregator {
 
     /* package */ RecursiveJobResult aggregate(final RecursiveJobState state,

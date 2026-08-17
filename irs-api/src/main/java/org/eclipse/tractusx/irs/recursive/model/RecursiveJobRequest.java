@@ -33,31 +33,14 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 
 /**
- * Request DTO for starting a new recursive IRS job.
+ * Request DTO for starting a recursive IRS job.
  *
- * <h3>Minimal - only 3 fields required</h3>
- * <pre>
- * {
- *   "openingId":     "recursive-irs-demo-opening",
- *   "useCase":       "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
- *   "globalAssetId": "urn:uuid:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1"
- * }
- * </pre>
+ * <p>{@code openingId}, {@code useCase} and {@code globalAssetId} are required. Lifecycle, aspects and TTL use
+ * their configured PURIS defaults when omitted. The notification message ID used for idempotency and response
+ * correlation is not part of this public request.</p>
  *
- * <p>The remaining fields are optional: {@code bomLifecycle} defaults to {@code asPlanned},
- * {@code aspects} defaults to all three anonymized PURIS aspects, {@code requesterBpn} falls back
- * to {@code irs.recursive.localBpnl} and {@code ttl} to
- * {@code irs.recursive.timeout.defaultJobTtl}.</p>
- *
- * <p>The {@code messageId} used for idempotency and response correlation is not part of the public body:
- * root jobs generate it, while child jobs inherit it from the incoming partner notification.</p>
- *
- * <h3>Use-case packages</h3>
- * <p>Specifying only {@code useCase = "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE"} tells the service which submodels
- * to query (BOM + anonymized PURIS aspects) without enumerating aspects in the request. Requests may
- * select an explicit subset of the bundle. PURIS traversal uses {@code asPlanned}; unknown use cases,
- * unsupported lifecycles and aspects are rejected at every hop. See {@link RecursiveUseCase} for the bundle
- * definition.</p>
+ * <p>The supported aspect bundle and lifecycle are defined by {@link RecursiveUseCase}. Unsupported selections
+ * are rejected at every hop.</p>
  */
 @Value
 @Builder(toBuilder = true)
