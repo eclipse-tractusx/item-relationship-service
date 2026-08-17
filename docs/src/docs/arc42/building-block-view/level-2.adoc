@@ -37,9 +37,9 @@ include::../../../uml-diagrams/building-block-view/level-2-int.puml[]
 |===
 
 
-== Recursive PURIS path
+== Recursive IRS
 
-The recursive PURIS path provides grant-controlled partner-to-partner traversal.
+The recursive IRS provides grant-controlled partner-to-partner traversal.
 It starts from one root asset, resolves the supported `SingleLevelBomAsPlanned` relationship, filters direct children by the local chain opening grant and aggregates anonymized PURIS payloads into a material tree.
 
 === Component diagram
@@ -54,65 +54,26 @@ include::../../../uml-diagrams/building-block-view/level-2-int-recursive-puris.p
 |===
 |Components |Description
 
-|RecursiveJobController
-|REST controller for starting, listing and retrieving recursive jobs.
+|Recursive Job API
+|Starts recursive jobs and provides their current state and result to the root caller.
 
-|RecursiveChainOpeningGrantController
-|Administrative REST controller for managing chain opening grants.
+|Recursive Notification API
+|Receives REQUEST notifications that start child jobs and RESPONSE notifications that return their results.
 
-|RecursiveNotificationController
-|REST controller that accepts recursive REQUEST and RESPONSE notifications and delegates them to the receiver.
+|Chain Opening Grant API
+|Manages the local grants that authorize recursive traversal for one chain opening.
 
-|RecursiveNotificationReceiver
-|Reads routing fields, validates the EDC transport identity and coordinates validation and processing of incoming notifications.
+|Recursive Job Processing
+|Coordinates grant validation, BOM traversal, child requests, timeout handling and result aggregation.
 
-|RecursiveJobService
-|Coordinates the recursive job lifecycle, grant validation, BOM traversal, child notifications, timeout handling and result aggregation.
+|Digital Twin and Submodel Access
+|Resolves shell and submodel descriptors through the Digital Twin Registry and retrieves BOM, PartTypeInformation and anonymized PURIS payloads through EDC.
 
-|RecursiveJobRepository
-|Serializes read-modify-write updates for one recursive job and prevents updates after a job is terminal.
+|Notification Transport
+|Discovers the recursive notification API in the EDC catalog and sends REQUEST and RESPONSE notifications through EDC.
 
-|RecursiveTraversalService
-|Uses the Digital Twin Registry and the submodel interface to resolve the local shell, select the supported BOM descriptor and read direct BOM children.
-
-|RecursiveSubmodelCollector
-|Collects material metadata from PartTypeInformation and the requested anonymized PURIS submodel payloads for one material node.
-
-|RecursiveNotificationMessageValidator
-|Strictly decodes the notification and validates the REQUEST or RESPONSE message contract.
-
-|RecursiveResponseMapper
-|Maps local job state and received child data to the external recursive job response model.
-
-|RecursiveResultTreeSanitizer
-|Normalizes the result tree before it is returned or forwarded and removes malformed child nodes, duplicate aspect entries and invalid quantities.
-
-|RecursiveTombstones
-|Creates and sanitizes recursive tombstones so that upstream responses do not expose hidden partner or connector details.
-
-|EdcRecursiveNotificationSender
-|Discovers the recursive notification API asset through the EDC catalog and sends recursive REQUEST and RESPONSE notifications through EDC.
-
-|RecursiveJobExpiry
-|Finds overdue recursive jobs and terminalizes them with timeout tombstones.
-
-|RecursiveStartupRecovery
-|Resumes open recursive jobs after application startup.
-
-|RecursiveJobStateStore
-|Store interface for recursive job state and message correlation entries.
-
-|RecursiveChainOpeningGrantStore
-|Store interface for chain opening grants.
-
-|BlobRecursiveJobStateStore
-|Blob-store implementation of `RecursiveJobStateStore`.
-
-|BlobRecursiveChainOpeningGrantStore
-|Blob-store implementation of `RecursiveChainOpeningGrantStore`.
-
-|RecursiveResultAggregator
-|Builds the final material tree from local node data, child responses and sanitized tombstones.
+|Recursive Persistence
+|Stores recursive jobs, notification correlation entries and chain opening grants in the configured blob store.
 |===
 
 The recursive result must not expose hidden partner identities.

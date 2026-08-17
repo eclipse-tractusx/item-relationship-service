@@ -42,9 +42,11 @@ include::../../../../uml-diagrams/runtime-view/recursive-puris/recursive-puris-j
 
 == Processing steps
 
+The sequence diagram shows the technical message flow. The following table summarizes it as ten business processing phases.
+
 [cols="1,2,4"]
 |===
-| Step | Actor | Action
+| Phase | Actor | Action
 
 | 1
 | Root caller
@@ -52,7 +54,7 @@ include::../../../../uml-diagrams/runtime-view/recursive-puris/recursive-puris-j
 
 | 2
 | IRS
-| Validates the request, resolves default values, creates the root job and validates the local chain opening grant.
+| Validates the request, resolves default values and validates the local chain opening grant before creating the root job.
 
 | 3
 | IRS
@@ -60,11 +62,11 @@ include::../../../../uml-diagrams/runtime-view/recursive-puris/recursive-puris-j
 
 | 4
 | IRS
-| Reads the BOM submodel through the EDC submodel access flow and creates one direct child branch per valid BOM child.
+| Reads the BOM submodel through the EDC submodel access flow and filters direct children by the local chain opening grant. Filtered partners are not exposed to the caller.
 
 | 5
 | IRS
-| Filters direct children by the local chain opening grant. Filtered partners are not exposed to the caller.
+| Creates and persists one direct child branch per valid, grant-allowed BOM child.
 
 | 6
 | IRS
@@ -76,7 +78,7 @@ include::../../../../uml-diagrams/runtime-view/recursive-puris/recursive-puris-j
 
 | 8
 | Child IRS
-| Waits until all expected child responses are available or until the child response deadline is reached.
+| Remains in `AWAITING_CHILDREN` until all expected child responses are available or the child response deadline is processed.
 
 | 9
 | Child IRS
@@ -191,50 +193,6 @@ The recursive path should be operated with one IRS replica unless an external me
 Large chains can create large result trees because no recursive tree-size or payload-size limit is enforced by the recursive aggregation.
 The notification endpoint also has no recursive request-size limit; large incoming notifications should be limited by the surrounding runtime or ingress setup.
 
-== Internal contracts
+== Cross-cutting contracts
 
-=== State mutation and concurrency
-
-Recursive job state is persisted in `BlobRecursiveJobStateStore`.
-Existing jobs are changed through `RecursiveJobRepository.updateIfNotTerminal`.
-That repository serializes read-modify-write cycles per job and skips updates once a job is terminal.
-Partner notifications are sent outside the job lock.
-This prevents long EDC calls from blocking state updates and avoids overwriting concurrent child responses, delivery failures or timeout updates.
-
-=== Message correlation
-
-The blob store keeps two message correlation maps.
-`recursive-msg-in:` maps an incoming REQUEST `messageId` to the local child job.
-It is used for idempotency when the same parent request is delivered again.
-`recursive-msg-out:` maps an outgoing child REQUEST `messageId` to the local parent job.
-When a child later sends a RESPONSE, the parent uses `header.relatedMessageId` to find the matching open child branch.
-
-A child RESPONSE always gets its own new `messageId`.
-Its `relatedMessageId` is the `messageId` of the REQUEST received from the parent.
-This is the correlation link that connects one recursive hop back to the parent request.
-
-=== Notification validation
-
-Incoming notifications are validated in two steps.
-First, `RecursiveNotificationReceiver` reads only routing fields from the raw JSON.
-This allows a RESPONSE with a valid `relatedMessageId` to be correlated even when the full payload is invalid.
-Second, `RecursiveNotificationMessageValidator` strictly decodes the full notification and validates it against the REQUEST or RESPONSE contract.
-An invalid but correlatable RESPONSE fails the corresponding child branch immediately instead of leaving the parent waiting until timeout.
-
-=== Privacy and sanitizing
-
-The privacy boundary is enforced when data is mapped or forwarded upstream.
-`RecursiveResponseMapper`, `RecursiveResultTreeSanitizer` and `RecursiveTombstones` keep the material tree structurally readable while sanitizing tombstones and malformed downstream data.
-Upstream responses must not expose hidden partner BPNLs, connector URLs or downstream asset identifiers that are not part of the agreed anonymized payload contract.
-
-=== Recovery
-
-`RecursiveStartupRecovery` resumes open jobs after application startup.
-Jobs in `GRANT_CHECKED` are resumed from accepted processing.
-Jobs in `AWAITING_CHILDREN` resend unanswered child requests.
-The timeout monitor remains the final safety net for jobs that still exceed their deadline.
-
-=== Where to start reading
-
-The recursive integration tests under `irs-api/src/test/java/org/eclipse/tractusx/irs/recursive/e2e` start multiple IRS instances with Testcontainers-backed external systems.
-They are useful entry points for understanding the complete recursive choreography.
+State consistency, message correlation, notification validation, privacy and restart recovery apply across all recursive processing steps. They are described in xref:../../cross-cutting/recursive-irs.adoc[Recursive IRS concepts].

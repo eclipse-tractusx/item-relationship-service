@@ -14,6 +14,7 @@ component [**EDC**] <<System>> as EDC
 
 component [**IRS-Application**] <<System>> as IRS {
     component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
+    component [**Recursive IRS**] <<Component>> as RecursiveIrs
     component [**IrsController**] <<Component>> as IrsController
     component [**PolicyStoreController**] <<Component>> as PolicyStoreController
     component [**EssController**] <<Component>> as EssController
@@ -29,8 +30,15 @@ component [**IRS-Application**] <<System>> as IRS {
     JobOrchestrator <..> TransferProcessManagement
     JobOrchestrator <..> RecursiveJobHandler
     TransferProcessManagement --( StoreInterface
+    RecursiveIrs --( StoreInterface
     PolicyStoreController --( StoreInterface
     EssController <..> JobOrchestrator
+
+    note right of RecursiveIrs
+      Recursive Job API
+      Recursive Notification API
+      Chain Opening Grant API
+    end note
 }
 
 
@@ -38,6 +46,7 @@ component [**IRS-Application**] <<System>> as IRS {
 
 
 IrsController -up- API_PORT
+RecursiveIrs -up- API_PORT
 PolicyStoreController -down- API_PORT
 EssController -down- API_PORT
 IrsApiConsumer --down(0- API_PORT
@@ -46,6 +55,8 @@ PolicyStoreApiConsumer --(0- API_PORT
 
 TransferProcessManagement --right-- AAS_PORT
 TransferProcessManagement --right-- EDC_PORT
+RecursiveIrs --right-- AAS_PORT
+RecursiveIrs --right-- EDC_PORT
 
 AAS_PORT -up-(0 DTR
 EDC_PORT -up-(0 EDC

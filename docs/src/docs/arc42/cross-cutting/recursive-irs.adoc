@@ -1,0 +1,46 @@
+= Recursive IRS concepts
+
+The following contracts apply across the recursive job, notification and persistence flows. The complete runtime choreography is described in xref:../runtime-view/recursive-puris/recursive-puris.adoc[Use Case: Recursive PURIS Anonymized Data].
+
+== State consistency and concurrency
+
+Recursive job state is persisted in `BlobRecursiveJobStateStore`.
+Existing jobs are changed through `RecursiveJobRepository.updateIfNotTerminal`.
+That repository serializes read-modify-write cycles per job and skips updates once a job is terminal.
+Partner notifications are sent outside the job lock.
+This prevents long EDC calls from blocking state updates and avoids overwriting concurrent child responses, delivery failures or timeout updates.
+
+== Message correlation and idempotency
+
+The blob store keeps two message correlation maps.
+`recursive-msg-in:` maps an incoming REQUEST `messageId` to the local child job.
+It is used for idempotency when the same parent request is delivered again.
+`recursive-msg-out:` maps an outgoing child REQUEST `messageId` to the local parent job.
+When a child later sends a RESPONSE, the parent uses `header.relatedMessageId` to find the matching open child branch.
+
+A child RESPONSE always gets its own new `messageId`.
+Its `relatedMessageId` is the `messageId` of the REQUEST received from the parent.
+This is the correlation link that connects one recursive hop back to the parent request.
+
+== Notification validation
+
+Incoming notifications are validated in two steps.
+First, `RecursiveNotificationReceiver` reads only routing fields from the raw JSON.
+This allows a RESPONSE with a valid `relatedMessageId` to be correlated even when the full payload is invalid.
+Second, `RecursiveNotificationMessageValidator` strictly decodes the full notification and validates it against the REQUEST or RESPONSE contract.
+An invalid but correlatable RESPONSE fails the corresponding child branch immediately instead of leaving the parent waiting until timeout.
+
+[#recursive-irs-tombstone-concept]
+== Privacy and tombstone sanitization
+
+The privacy boundary is enforced when data is mapped or forwarded upstream.
+`RecursiveResponseMapper`, `RecursiveResultTreeSanitizer` and `RecursiveTombstones` keep the material tree structurally readable while sanitizing tombstones and malformed downstream data.
+Upstream responses must not expose hidden partner BPNLs, connector URLs or downstream asset identifiers that are not part of the agreed anonymized payload contract.
+Tombstones associated with a material branch remain on that material node. Failures that cannot be assigned to a material node are returned as root-level tombstones.
+
+== Restart recovery
+
+`RecursiveStartupRecovery` resumes open jobs after application startup.
+Jobs in `GRANT_CHECKED` are resumed from accepted processing.
+Jobs in `AWAITING_CHILDREN` resend unanswered child requests.
+The timeout monitor remains the final safety net for jobs that still exceed their deadline.

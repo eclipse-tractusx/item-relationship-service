@@ -5,61 +5,38 @@ skinparam shadowing false
 skinparam linetype ortho
 skinparam defaultFontName "Architects daughter"
 
-component [**RecursivePurisPath**] <<System>> as RecursivePuris {
-    component [**RecursiveJobController**] <<Component>> as JobController
-    component [**RecursiveChainOpeningGrantController**] <<Component>> as GrantController
-    component [**RecursiveNotificationController**] <<Component>> as NotificationController
-    component [**RecursiveNotificationReceiver**] <<Component>> as NotificationReceiver
-    component [**RecursiveJobService**] <<Component>> as JobService
-    component [**RecursiveJobRepository**] <<Component>> as Repository
-    component [**RecursiveTraversalService**] <<Component>> as Traversal
-    component [**RecursiveSubmodelCollector**] <<Component>> as Collector
-    component [**RecursiveNotificationMessageValidator**] <<Component>> as Validator
-    component [**RecursiveResultAggregator**] <<Component>> as Aggregator
-    component [**RecursiveResponseMapper**] <<Component>> as ResponseMapper
-    component [**RecursiveResultTreeSanitizer**] <<Component>> as Sanitizer
-    component [**RecursiveTombstones**] <<Component>> as Tombstones
-    component [**EdcRecursiveNotificationSender**] <<Component>> as NotificationSender
-    component [**RecursiveJobExpiry**] <<Component>> as Expiry
-    component [**RecursiveStartupRecovery**] <<Component>> as Recovery
-    interface RecursiveJobStateStore
-    interface RecursiveChainOpeningGrantStore
-}
-
 actor "Root caller" as RootCaller
 actor "Partner IRS" as PartnerIrs
-database "Digital Twin Registry" as DTR
-component [**EDC**] as EDC
-database "Blob store" as BlobStore
+actor "Grant administrator" as GrantAdministrator
 
-RootCaller --> JobController
-PartnerIrs --> NotificationController
-JobController --> JobService
-NotificationController --> NotificationReceiver
-NotificationReceiver --> Validator
-NotificationReceiver --> JobService
-GrantController --> RecursiveChainOpeningGrantStore
-JobService --> Repository
-JobService --> Traversal
-JobService --> Collector
-JobService --> Aggregator
-JobService --> NotificationSender
-JobService --> ResponseMapper
-JobService --> Tombstones
-Aggregator --> Sanitizer
-Aggregator --> Tombstones
-ResponseMapper --> Sanitizer
-ResponseMapper --> Tombstones
-Expiry --> Repository
-Expiry --> Tombstones
-Recovery --> JobService
-Repository --> RecursiveJobStateStore
-RecursiveJobStateStore --> BlobStore
-RecursiveChainOpeningGrantStore --> BlobStore
-Traversal --> DTR
-Traversal --> EDC
-Collector --> DTR
-Collector --> EDC
-NotificationSender --> EDC
+rectangle "Recursive IRS" <<System>> as RecursiveIrs {
+    component [**Recursive Job API**] <<Component>> as JobApi
+    component [**Recursive Notification API**] <<Component>> as NotificationApi
+    component [**Chain Opening Grant API**] <<Component>> as GrantApi
+    component [**Recursive Job Processing**] <<Component>> as JobProcessing
+    component [**Digital Twin and Submodel Access**] <<Component>> as DataAccess
+    component [**Notification Transport**] <<Component>> as NotificationTransport
+    component [**Recursive Persistence**] <<Component>> as Persistence
+}
+
+component [**Digital Twin Registry**] <<External System>> as DTR
+component [**EDC**] <<External System>> as EDC
+database "Blob Store" as BlobStore
+
+RootCaller --> JobApi
+PartnerIrs --> NotificationApi
+GrantAdministrator --> GrantApi
+
+JobApi --> JobProcessing
+NotificationApi --> JobProcessing
+GrantApi --> Persistence
+JobProcessing --> DataAccess
+JobProcessing --> NotificationTransport
+JobProcessing --> Persistence
+
+DataAccess --> DTR
+DataAccess --> EDC
+NotificationTransport --> EDC
+Persistence --> BlobStore
 
 @enduml
