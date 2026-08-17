@@ -34,10 +34,10 @@ jobs:
       - name: Run helm install
         # Install latest released item-relationship-service version
         run: |
-          helm install irs irs/item-relationship-service 
+          helm install irs irs/item-relationship-service --set bpn=BPNL000000000000
 
       - name: Run helm upgrade
         # Upgrade the installed item-relationship-service version with the locally available charts
         run: |
           helm dependency update charts/item-relationship-service
-          helm upgrade irs charts/item-relationship-service 
+          helm upgrade irs charts/item-relationship-service --set bpn=BPNL000000000000
