@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -145,6 +146,23 @@ class RecursiveJobServiceTest {
         assertThat(queuedTasks).hasSize(1);
         assertThat(resolverCalls).hasValue(0);
         assertThat(jobService.getJobStatus(jobId).getJob().getState()).isEqualTo(JobState.RUNNING);
+    }
+
+    @Test
+    void shouldFailAcceptedJobWhenExecutorRejectsProcessing() {
+        recursiveJobExecutor = command -> {
+            throw new RejectedExecutionException("executor unavailable");
+        };
+        grantStore.store(validGrant());
+
+        final UUID jobId = jobService.startJob(validRequest());
+
+        final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
+        assertThat(status.getJob().getState()).isEqualTo(JobState.ERROR);
+        assertThat(status.getResult().getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
+        assertThat(allTombstones(status))
+                .anySatisfy(tombstone ->
+                        assertThat(tombstone.getReason()).isEqualTo(RecursiveTombstoneReason.CHILD_BRANCH_FAILED));
     }
 
     @Test
