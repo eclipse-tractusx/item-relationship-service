@@ -206,16 +206,16 @@ Each participant acts as an EDC provider for incoming recursive notifications an
 
 . Configure the local BPNL and both IRS API keys. Keep the administrative key outside the notification asset; use the regular `VIEW_IRS` key in the notification data address.
 . Publish the recursive notification asset in the participant's provider EDC with `dct:type`, `cx-common:version`, the IRS notification endpoint and the regular IRS API key shown above.
-. Create a CX-0152-compliant access policy and contract policy for the notification asset. The access policy controls catalog visibility; the contract policy defines the permitted use of the endpoint.
+. Create an access policy and contract policy for the notification asset that are compatible with the current IRS policy matcher. The access policy controls catalog visibility; the contract policy defines the permitted use of the endpoint.
 . Create a contract definition that links the notification asset to those policies so partner IRS instances can discover and negotiate the offer.
 . Register an accepted policy for each target participant BPNL in the IRS Policy Store through `/irs/policies`, or configure the documented default accepted policy. The offered contract policy must satisfy an active accepted policy; otherwise the recursive sender rejects the catalog offer.
 . Store the local chain opening grant for every asset that the participant may process under the opening. Leaf participants use an empty `allowedBpnlSet`.
 . Verify that each direct partner can discover an offer with `dct:type=https://w3id.org/catenax/taxonomy#RecursiveIrsNotificationApi` and `cx-common:version=1.0` and that its policy is accepted.
 . Start the root job only after the notification routes, policies, contract definitions and local grants are available on all participating tiers.
 
-Access and contract policies must follow https://catenax-ev.github.io/docs/Saturn/standards/CX-0152-PolicyConstrainsForDataExchange[CX-0152 Policy Constraints for Data Exchange v1.0.0]. IRS does not prescribe one fixed business policy for every deployment; the provider offer and the consumer's accepted policy configuration must be compatible.
+The provider offer and the consumer's accepted policy configuration must use compatible constraints. The current IRS policy matcher uses the `https://w3id.org/catenax/policy/` namespace and represents each `rightOperand` as a single string.
 
-The following example shows the expected structure of an accepted policy. Replace the framework agreement and usage purpose placeholders with the values agreed for the PURIS data exchange. The provider's EDC contract policy must contain constraints that satisfy this accepted policy.
+The following example shows the internal accepted-policy representation used by the IRS Policy Store. It is not a complete EDC policy definition and therefore does not contain an EDC `@context` or policy `profile`. Replace the framework agreement and usage purpose placeholders with values that exactly match the provider's EDC contract policy.
 
 [source,json]
 ----
