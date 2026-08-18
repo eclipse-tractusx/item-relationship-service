@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
-## [Unreleased] - 2025-05-13
+## [Unreleased]
+
+## [9.1.0] - 2026-09-16
 
 ### Added
 
