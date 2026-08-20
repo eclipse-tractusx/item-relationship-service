@@ -23,7 +23,7 @@ The recursive IRS path provides a partner-to-partner traversal for PURIS data. I
 | `urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized`, `urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized`, `urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized`
 |===
 
-The recursive IRS does not anonymize the PURIS payload itself. The submodel provider must provide anonymized aspect payloads. The IRS only validates, forwards and aggregates the received payloads.
+The recursive IRS does not anonymize the PURIS payload itself. The submodel provider must provide anonymized aspect payloads. The IRS validates the recursive request and notification contracts and the supported semantic IDs, but it does not validate the content of a PURIS payload against its semantic model. It reads the payload as a JSON object and forwards and aggregates it without modifying its domain structure.
 
 For BOM traversal, the absence of a `SingleLevelBomAsPlanned` descriptor means that the material is treated as a leaf. If a `SingleLevelBomAsPlanned` descriptor is present but does not use the supported `3.0.0` semantic ID, or if the supported descriptor is ambiguous or has no usable endpoint, the branch is completed with a sanitized tombstone. For a root job, the same condition fails the root job itself because there is no parent branch.
 
@@ -52,6 +52,34 @@ The recursive path exposes three API groups.
 |===
 
 The complete request and response schemas are published in the https://eclipse-tractusx.github.io/api-hub/item-relationship-service/[Item Relationship Service API definition].
+
+=== Polling a recursive job
+
+`POST /irs/recursive/jobs` returns `201 Created` with a `jobId` after the request and its local chain opening grant have been accepted. Traversal and partner communication continue asynchronously. Poll `GET /irs/recursive/jobs/{jobId}` until `job.state` is `COMPLETED` or `ERROR`.
+
+While `job.state` is `RUNNING`, the response contains the current `job` envelope but omits `result` and `job.completedOn`. A `200 OK` response therefore only means that the job was found; it does not mean that processing has finished. The direct-child counters under `job.asyncFetchedItems` show the current local progress.
+
+The following shortened response shows a job waiting for one direct child:
+
+[source,json]
+----
+{
+  "job": {
+    "id": "80afc5d8-42bd-4136-bb3f-82d1a8b8227e",
+    "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
+    "state": "RUNNING",
+    "createdOn": "2026-08-20T08:00:00Z",
+    "lastModifiedOn": "2026-08-20T08:00:02Z",
+    "asyncFetchedItems": {
+      "running": 1,
+      "completed": 0,
+      "failed": 0
+    }
+  }
+}
+----
+
+After the job becomes terminal, evaluate `job.state` as the technical execution state and `result.resultStatus` as the separate business outcome. A technically `COMPLETED` job can have a `PARTIAL` or `FAILED` result.
 
 == Authorization
 
@@ -198,7 +226,7 @@ Set `recursive.localBpnl` only if the recursive path must use a different BPNL t
 
 `recursive.timeout.defaultJobTtl` defines the runtime of a root job when the start request does not provide an explicit TTL. For stable productive usage the default of `PT30M` gives slow partners enough time to answer. For short-lived test or demo scenarios `PT5M` can be used if the involved submodel providers and EDC negotiations are expected to answer quickly.
 
-`recursive.timeout.maxJobTtl` caps requested TTL values. `recursive.timeout.childResponseSafetyBuffer` is subtracted from the overall job deadline before waiting for child responses stops. This gives a child tier enough time to aggregate its result and send the parent response before the parent's final deadline is reached.
+`recursive.timeout.maxJobTtl` caps requested TTL values. `recursive.timeout.childResponseSafetyBuffer` is subtracted from the current tier's job deadline to determine when waiting for direct child responses stops. The remaining time is reserved for local aggregation and, for a non-root job, sending the response upstream before the local hard deadline is reached.
 
 == Partner setup
 
@@ -208,50 +236,248 @@ Each participant acts as an EDC provider for incoming recursive notifications an
 . Publish the recursive notification asset in the participant's provider EDC with `dct:type`, `cx-common:version`, the IRS notification endpoint and the regular IRS API key shown above.
 . Create an access policy and contract policy for the notification asset that are compatible with the current IRS policy matcher. The access policy controls catalog visibility; the contract policy defines the permitted use of the endpoint.
 . Create a contract definition that links the notification asset to those policies so partner IRS instances can discover and negotiate the offer.
-. Register an accepted policy for each target participant BPNL in the IRS Policy Store through `/irs/policies`, or configure the documented default accepted policy. The offered contract policy must satisfy an active accepted policy; otherwise the recursive sender rejects the catalog offer.
+. Register the DTR, PURIS and Industry Core accepted policies described below in the IRS Policy Store through `POST /irs/policies`. The offered contract policy must satisfy an active accepted policy; otherwise the recursive sender rejects the catalog offer.
 . Store the local chain opening grant for every asset that the participant may process under the opening. Leaf participants use an empty `allowedBpnlSet`.
 . Verify that each direct partner can discover an offer with `dct:type=https://w3id.org/catenax/taxonomy#RecursiveIrsNotificationApi` and `cx-common:version=1.0` and that its policy is accepted.
 . Start the root job only after the notification routes, policies, contract definitions and local grants are available on all participating tiers.
 
 The provider offer and the consumer's accepted policy configuration must use compatible constraints. The current IRS policy matcher uses the `https://w3id.org/catenax/policy/` namespace and represents each `rightOperand` as a single string.
 
-The following example shows the internal accepted-policy representation used by the IRS Policy Store. It is not a complete EDC policy definition and therefore does not contain an EDC `@context` or policy `profile`. Replace the framework agreement and usage purpose placeholders with values that exactly match the provider's EDC contract policy.
+=== Provider EDC policy and contract definition
+
+The provider EDC and the consumer IRS use separate policy representations. The provider creates policy definitions through the EDC Management API and publishes the contract policy as part of the catalog offer. The consumer stores an accepted policy in the IRS Policy Store and uses it to decide whether that catalog offer is acceptable.
+
+The access policy is also created as an EDC policy definition. Its constraints determine catalog visibility and depend on the participant's connector and identity setup. The following template shows the Management API structure without prescribing participant-specific access constraints. Replace the operand placeholders with the access rule agreed for the target environment.
 
 [source,json]
 ----
-[
-  {
-    "policyId": "recursive-puris-policy",
-    "createdOn": "2026-01-01T00:00:00Z",
-    "validUntil": "2099-12-31T23:59:59Z",
-    "permissions": [
+{
+  "@context": {
+    "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+    "odrl": "http://www.w3.org/ns/odrl/2/"
+  },
+  "@id": "recursive-notification-access-policy",
+  "policy": {
+    "@type": "odrl:Set",
+    "odrl:permission": [
       {
-        "action": "use",
-        "constraint": {
-          "and": [
+        "odrl:action": {
+          "@id": "odrl:use"
+        },
+        "odrl:constraint": {
+          "odrl:and": [
             {
-              "leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
-              "operator": {
-                "@id": "eq"
+              "odrl:leftOperand": "<ACCESS_LEFT_OPERAND>",
+              "odrl:operator": {
+                "@id": "odrl:eq"
               },
-              "rightOperand": "<PURIS_FRAMEWORK_AGREEMENT>:<VERSION>"
-            },
-            {
-              "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
-              "operator": {
-                "@id": "eq"
-              },
-              "rightOperand": "<PURIS_USAGE_PURPOSE>:<VERSION>"
+              "odrl:rightOperand": "<ACCESS_RIGHT_OPERAND>"
             }
           ]
         }
       }
     ]
   }
-]
+}
 ----
 
-The policy can be stored for a target participant through the Policy Store API or configured as a default through `edc.catalog.acceptedPolicies` in the Helm values. The default policy shipped with the chart is a general IRS default and is not a prescribed policy contract for the recursive PURIS use case. Policy Store configuration is described in xref:configuration.adoc#_configuration[IRS configuration], and the REST schema is available in the https://eclipse-tractusx.github.io/api-hub/item-relationship-service/[Item Relationship Service API definition].
+The following example shows the provider-side contract policy definition for the recursive PURIS notification asset using the constraint format supported by the current IRS policy matcher.
+
+[source,json]
+----
+{
+  "@context": {
+    "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+    "odrl": "http://www.w3.org/ns/odrl/2/",
+    "cx-policy": "https://w3id.org/catenax/policy/"
+  },
+  "@id": "recursive-puris-contract-policy",
+  "policy": {
+    "@type": "odrl:Set",
+    "odrl:permission": [
+      {
+        "odrl:action": {
+          "@id": "odrl:use"
+        },
+        "odrl:constraint": {
+          "odrl:and": [
+            {
+              "odrl:leftOperand": "cx-policy:FrameworkAgreement",
+              "odrl:operator": {
+                "@id": "odrl:eq"
+              },
+              "odrl:rightOperand": "DataExchangeGovernance:1.0"
+            },
+            {
+              "odrl:leftOperand": "cx-policy:UsagePurpose",
+              "odrl:operator": {
+                "@id": "odrl:eq"
+              },
+              "odrl:rightOperand": "cx.puris.base:1"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+----
+
+Create a contract definition that links the notification asset, the access policy and the contract policy:
+
+[source,json]
+----
+{
+  "@context": {
+    "@vocab": "https://w3id.org/edc/v0.0.1/ns/"
+  },
+  "@type": "ContractDefinition",
+  "@id": "recursive-puris-contract-definition",
+  "accessPolicyId": "recursive-notification-access-policy",
+  "contractPolicyId": "recursive-puris-contract-policy",
+  "assetsSelector": {
+    "@type": "CriterionDto",
+    "operandLeft": "https://w3id.org/edc/v0.0.1/ns/id",
+    "operator": "=",
+    "operandRight": "<NOTIFICATION_ASSET_ID>"
+  }
+}
+----
+
+These payloads are sent to the policy-definition and contract-definition endpoints of the provider EDC Management API. The exact endpoint paths and Management API envelope depend on the connector version. The IDs must reference resources provisioned in the same provider EDC.
+
+=== Consumer IRS accepted policy
+
+The recursive path requires accepted policies for Digital Twin Registry access, PURIS submodels and Industry Core submodels. Register them with an `ADMIN_IRS` API key through:
+
+[source]
+----
+POST /irs/policies
+----
+
+The endpoint expects a `CreatePolicyRequest` with `validUntil` and an EDC policy payload. The requests below intentionally omit `businessPartnerNumber`, which stores the policies as defaults. Default policies are used when no policies are registered specifically for the target BPNL.
+
+The Digital Twin Registry policy accepts active Catena-X members for the Digital Twin Registry usage purpose:
+
+[source,json]
+----
+{
+  "validUntil": "2099-12-12T23:59:59.999Z",
+  "payload": {
+    "@context": {
+      "odrl": "http://www.w3.org/ns/odrl/2/"
+    },
+    "@id": "global_dtr_contract_policy",
+    "policy": {
+      "permissions": [
+        {
+          "action": "use",
+          "constraint": {
+            "and": [
+              {
+                "leftOperand": "https://w3id.org/catenax/policy/Membership",
+                "operator": {
+                  "@id": "eq"
+                },
+                "rightOperand": "active"
+              },
+              {
+                "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                "operator": {
+                  "@id": "eq"
+                },
+                "rightOperand": "cx.core.digitalTwinRegistry:1"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+----
+
+The PURIS policy accepts the anonymized PURIS submodels used by the recursive job:
+
+[source,json]
+----
+{
+  "validUntil": "2099-12-12T23:59:59.999Z",
+  "payload": {
+    "@context": {
+      "odrl": "http://www.w3.org/ns/odrl/2/"
+    },
+    "@id": "global_submodel_contract_policy",
+    "policy": {
+      "permissions": [
+        {
+          "action": "use",
+          "constraint": {
+            "and": [
+              {
+                "leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                "operator": {
+                  "@id": "eq"
+                },
+                "rightOperand": "DataExchangeGovernance:1.0"
+              },
+              {
+                "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                "operator": {
+                  "@id": "eq"
+                },
+                "rightOperand": "cx.puris.base:1"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+----
+
+The Industry Core policy accepts the BOM and PartTypeInformation submodels used during traversal and material-data collection:
+
+[source,json]
+----
+{
+  "validUntil": "2099-12-12T23:59:59.999Z",
+  "payload": {
+    "@context": {
+      "odrl": "http://www.w3.org/ns/odrl/2/"
+    },
+    "@id": "global_irs_default_contract_policy",
+    "policy": {
+      "permissions": [
+        {
+          "action": "use",
+          "constraint": {
+            "and": [
+              {
+                "leftOperand": "https://w3id.org/catenax/policy/FrameworkAgreement",
+                "operator": {
+                  "@id": "eq"
+                },
+                "rightOperand": "DataExchangeGovernance:1.0"
+              },
+              {
+                "leftOperand": "https://w3id.org/catenax/policy/UsagePurpose",
+                "operator": {
+                  "@id": "eq"
+                },
+                "rightOperand": "cx.core.industrycore:1"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+----
+
+The policy IDs identify the local Policy Store records. Catalog offers are accepted by comparing their permission constraints with the active stored policies. The provider's offered contract policy must therefore use matching left operands, operators and right operands. Policy Store configuration is described in xref:configuration.adoc#_configuration[IRS configuration], and the REST schema is available in the https://eclipse-tractusx.github.io/api-hub/item-relationship-service/[Item Relationship Service API definition].
 
 == Persistence and cleanup
 
@@ -276,7 +502,7 @@ The MinIO lifecycle rule is only applied when IRS creates a missing bucket. If t
 mc ilm rule add --expire-days 7 myminio/irs-jobs
 ----
 
-Adjust the MinIO alias, bucket name and retention value to the target environment. Values of `0` or below disable expiration entirely. Do not use such values for recursive jobs unless another cleanup mechanism is in place. Without a retention policy, recursive job blobs and message correlation blobs remain in MinIO.
+Adjust the MinIO alias, bucket name and retention value to the target environment. Use `-1` to disable expiration. Do not disable expiration for recursive jobs unless another cleanup mechanism is in place. Without a retention policy, recursive job blobs and message correlation blobs remain in MinIO.
 
 Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.
 
@@ -302,6 +528,12 @@ The recursive result separates technical job execution from the business result.
 
 | `tombstones`
 | Sanitized failure information. Tombstones must not expose hidden partner identities or connector details.
+
+| `tombstones[].occurrences`
+| Number of identical failures represented by an aggregated tombstone.
+
+| `tombstones[].errorRefs`
+| Identity-free UUIDs used to correlate the aggregated failures with IRS logs.
 |===
 
 The privacy boundary, placement and sanitization rules for tombstones are described in xref:../arc42/cross-cutting/recursive-irs.adoc#recursive-irs-tombstone-concept[Recursive IRS tombstone concept].
@@ -309,6 +541,134 @@ The privacy boundary, placement and sanitization rules for tombstones are descri
 Root jobs return the material tree below the requested root asset. For the supported PURIS use case, the root asset's own PURIS payload is not collected.
 
 `COMPLETE` means that the aggregation finished without tombstones. The tree can still be empty if the requested root asset has no BOM children and root payload collection is not part of the supported PURIS use case. `PARTIAL` means that at least one tombstone is present and the material tree still contains usable data. `FAILED` means that no usable material tree could be produced, or that validation or deadline handling failed the job.
+
+=== Error correlation
+
+A synchronous recursive API error contains one `errorRef`. The same UUID is written to the logs of the IRS instance that returned the error. Use it together with the response `code` and HTTP status when investigating a rejected or failed request.
+
+Every recursive tombstone contains a non-empty `errorRefs` list. When identical tombstones are merged at the same result-tree node, their `occurrences` values and correlation references are combined. Valid references received from a child are preserved across the recursive response path; missing or invalid references are replaced during sanitization. The UUIDs contain no partner, asset or endpoint identity.
+
+Notification-delivery failures log their reference at `ERROR` on the sending IRS instance. References created for other tombstone reasons are logged by `RecursiveTombstones` at `DEBUG` on the IRS instance where the failure originated. Enable DEBUG logging for `org.eclipse.tractusx.irs.recursive.service.RecursiveTombstones` when those references must be correlated during troubleshooting. A failure originating at another tier may require the operator of that IRS instance to perform the search.
+
+== Troubleshooting
+
+[cols="2,3,4",options="header"]
+|===
+| Symptom | Likely cause | Checks and corrective action
+
+| IRS startup fails with a recursive configuration error
+| The local BPNL is blank or does not match the BPNL format.
+| Check `bpn` and the optional Helm override `recursive.localBpnl`. Outside Helm, configure `irs.recursive.localBpnl` or `IRS_RECURSIVE_LOCAL_BPNL`.
+
+| Starting a job returns `403` with `CHAIN_OPENING_GRANT_REJECTED`
+| No active local grant matches the request.
+| Verify the complete grant key (`openingId`, `globalAssetId`, `requesterBpn`, `useCase`) and its optional `validFrom` and `validTo` values.
+
+| A BOM child is not contacted and no tombstone is returned for it
+| Its BPNL is not included in the local grant's `allowedBpnlSet`.
+| Compare the local BOM relationships with the direct-child allow-list. Grant filtering intentionally does not expose filtered partners in the result.
+
+| Receiving a notification returns `403` with `NOTIFICATION_AUTHENTICATION_FAILED`
+| The EDC transport identity does not match the notification sender.
+| Verify that the data plane forwards `edc-bpn` and that it equals `header.senderBpn`.
+
+| A child branch fails during notification delivery
+| Connector discovery, catalog lookup, policy matching, contract negotiation or data-plane delivery failed.
+| Inspect the `CHILD_BRANCH_FAILED` tombstone and search the sender's logs using its `errorRefs`. Verify the receiver's notification asset, policies, contract definition, DSP endpoint and data-plane availability.
+
+| A job remains `RUNNING`
+| The job is still processing or waiting for child responses before its configured deadline.
+| Check `job.asyncFetchedItems`, the job and child-response deadlines, notification delivery on the direct children and `recursive.timeout.timeoutCheckInterval`.
+
+| The terminal result is `PARTIAL` or `FAILED`
+| At least one branch, local aspect or required material value could not be processed.
+| Inspect tombstone `scope`, `reason`, `detail`, `occurrences` and `errorRefs`. Delivery-failure references are available in the sender's error logs. For other tombstones, search the originating IRS instance with DEBUG logging enabled for `RecursiveTombstones`.
+
+| A recursive endpoint returns `503` with `PERSISTENCE_UNAVAILABLE`
+| The configured job or grant blob store is unavailable.
+| Check the MinIO or Azure connection, credentials, containers and IRS persistence logs using the response `errorRef`.
+|===
+
+=== Tombstone reasons
+
+The recursive result exposes the tombstone reasons listed below. The `retryable` field classifies whether the cause can be transient. It does not trigger an automatic retry of the current job. Evaluate `scope`, `reason`, `detail`, `occurrences` and `errorRefs` together when investigating a result.
+
+[cols="2,1,3,4",options="header"]
+|===
+| Reason | Retryable | Meaning | Checks and corrective action
+
+| `RECURSIVE_DEADLINE_EXCEEDED`
+| Yes
+| The hard deadline of the local recursive job was reached.
+| Check the requested TTL, the configured default and maximum TTL, child-response deadlines, and notification and submodel latency.
+
+| `CHILD_RESPONSE_TIMEOUT`
+| Yes
+| A direct child did not return a response before the child-response deadline.
+| Check the child job, both notification directions, synchronized system clocks, `recursive.timeout.childResponseSafetyBuffer` and `recursive.timeout.timeoutCheckInterval`.
+
+| `CHILD_BRANCH_FAILED`
+| Yes
+| Processing a child branch or delivering an outbound notification failed.
+| Delivery failures can be correlated through the sender's error logs. Other child-processing failures require DEBUG logging for `RecursiveTombstones` on the originating IRS instance. Local delivery classifications include `NO_CONNECTOR_ENDPOINT`, `CONNECTOR_DISCOVERY_FAILED`, `CONNECTOR_ENDPOINT_INVALID`, `NOTIFICATION_ASSET_NOT_FOUND`, `NOTIFICATION_POLICY_REJECTED`, `CATALOG_REQUEST_FAILED`, `CONTRACT_NEGOTIATION_FAILED`, `DATA_PLANE_DELIVERY_FAILED` and `EDC_NOTIFICATION_FAILED`.
+
+| `CHILD_RESPONSE_INVALID`
+| Yes
+| A correlated child response violates the notification contract, contains no result or contains an invalid material tree.
+| Compare the response header and content with the notification contract. Verify message correlation, lifecycle, aspects, result status and material-tree fields. Correlating locally generated references requires DEBUG logging for `RecursiveTombstones`.
+
+| `CHAIN_OPENING_REJECTED`
+| No
+| The receiving child found no active local grant for the incoming recursive request.
+| On the child, verify the complete grant key (`openingId`, `globalAssetId`, `requesterBpn`, `useCase`) and the optional validity interval.
+
+| `LOCAL_ASPECT_NOT_AVAILABLE`
+| No
+| The digital twin shell, the requested aspect descriptor or a usable descriptor endpoint is missing.
+| Verify that the DTR contains the shell and the exact requested semantic ID with at least one endpoint.
+
+| `LOCAL_ASPECT_REQUEST_FAILED`
+| Yes
+| An available requested aspect could not be retrieved through the DTR, EDC or submodel path.
+| Check the descriptor endpoint, DSP endpoint, catalog offer, accepted policy, contract negotiation and data-plane or submodel endpoint. Correlating the tombstone reference requires DEBUG logging for `RecursiveTombstones` on the originating IRS instance.
+
+| `PART_TYPE_INFORMATION_NOT_AVAILABLE`
+| No
+| PartTypeInformation is unavailable or at least one required material field is missing.
+| Verify the descriptor and endpoints and ensure the payload contains both `manufacturerPartId` and `nameAtManufacturer`.
+
+| `PART_TYPE_INFORMATION_REQUEST_FAILED`
+| Yes
+| The PartTypeInformation submodel could not be retrieved for technical reasons.
+| Check shell resolution, the descriptor and DSP endpoint, catalog and policy matching, contract negotiation and data-plane delivery.
+
+| `BOM_QUANTITY_NOT_AVAILABLE`
+| No
+| A BOM relationship does not provide a complete quantity value and supported unit.
+| Ensure the relationship contains a numeric quantity value and one of the supported SAMM units.
+
+| `BOM_CHILD_GLOBAL_ASSET_ID_INVALID`
+| No
+| A BOM relationship contains a child global asset ID that is neither a UUID nor a URN UUID.
+| Correct `linkedItem.childCatenaXId.globalAssetId`. The invalid branch is isolated; valid sibling branches can continue.
+
+| `BOM_SUBMODEL_NOT_SUPPORTED`
+| No
+| A SingleLevelBomAsPlanned descriptor is present, but no unique descriptor matches the supported version, or the requested lifecycle is unsupported.
+| Provide exactly one descriptor with the supported SingleLevelBomAsPlanned semantic ID. If no BOM descriptor exists at all, the asset is treated as a leaf instead of producing this reason.
+
+| `BOM_SUBMODEL_ENDPOINT_MISSING`
+| No
+| The supported BOM descriptor has no endpoint, or its endpoint does not contain a usable `dspEndpoint`.
+| Add a descriptor endpoint with a valid `dspEndpoint` in its `subprotocolBody`.
+
+| `UNSUPPORTED_ANONYMIZED_ASPECT`
+| No
+| The requested aspect is not part of the supported recursive PURIS use case.
+| Use the supported ItemStockAnonymized, DeliveryInformationAnonymized and PlannedProductionOutputAnonymized semantic IDs consistently on all tiers.
+|===
+
+`RecursiveNotificationDeliveryFailureReason` values such as `EDC_NOTIFICATION_FAILED`, `NOTIFICATION_ASSET_NOT_FOUND` and `NOTIFICATION_POLICY_REJECTED` are local delivery classifications. They are not returned as tombstone reasons. Other chain members receive the privacy-safe `CHILD_BRANCH_FAILED` reason and use its `errorRefs` for cross-tier log correlation.
 
 == Known limitations
 

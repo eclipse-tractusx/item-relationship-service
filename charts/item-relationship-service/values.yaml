@@ -177,10 +177,14 @@ blobstore:
       accessKey: minio
       secretKey:
   jobs:
+    # -- Blob-store container used for jobs.
     containerName: irs-jobs
+    # -- Number of days to retain jobs. Use -1 to disable cleanup.
     daysToLive: 7
   policies:
+    # -- Blob-store container used for policies.
     containerName: irs-policy-bucket
+    # -- Number of days to retain policies. Use -1 to disable cleanup.
     daysToLive: -1
   chainOpeningGrants:
     # -- Blob-store container used for recursive chain opening grants.

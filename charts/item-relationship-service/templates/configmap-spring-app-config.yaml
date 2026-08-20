@@ -77,10 +77,10 @@ data:
         {{- end }}
       jobs:
         containerName: {{ ((.Values.blobstore).jobs).containerName | default "irs-jobs" | quote }}
-        daysToLive: {{ ((.Values.blobstore).jobs).daysToLine | default 7 | quote }}
+        daysToLive: {{ ((.Values.blobstore).jobs).daysToLive | default 7 | quote }}
       policies:
         containerName: {{ ((.Values.blobstore).policies).containerName | default "irs-policy" | quote }}
-        daysToLive: {{ ((.Values.blobstore).policies).daysToLine | default -1 | quote }}
+        daysToLive: {{ ((.Values.blobstore).policies).daysToLive | default -1 | quote }}
       chainOpeningGrants:
         containerName: {{ ((.Values.blobstore).chainOpeningGrants).containerName | default "irs-chain-opening-grants" | quote }}
         daysToLive: {{ ((.Values.blobstore).chainOpeningGrants).daysToLive | default -1 | quote }}
