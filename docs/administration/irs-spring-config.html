@@ -734,6 +734,13 @@ pre.rouge {
 
 <span class="na">irs</span><span class="pi">:</span> <span class="c1"># Application config</span>
   <span class="na">apiUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_API_URL:http://localhost:8080}"</span> <span class="c1"># Public URL of the application, used in Swagger UI</span>
+  <span class="na">recursive</span><span class="pi">:</span>
+    <span class="na">localBpnl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_LOCAL_BPNL:}</span> <span class="c1"># Mandatory BPNL of this IRS instance; startup fails when blank or not a BPNL.</span>
+    <span class="na">timeout</span><span class="pi">:</span>
+      <span class="na">defaultJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_DEFAULT_JOB_TTL:PT30M}</span>
+      <span class="na">maxJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_MAX_JOB_TTL:PT2H}</span>
+      <span class="na">childResponseSafetyBuffer</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_CHILD_RESPONSE_SAFETY_BUFFER:PT60S}</span>
+      <span class="na">timeoutCheckInterval</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_CHECK_INTERVAL:PT30S}</span>
   <span class="na">job</span><span class="pi">:</span>
     <span class="na">batch</span><span class="pi">:</span>
       <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
@@ -788,6 +795,9 @@ pre.rouge {
   <span class="na">policies</span><span class="pi">:</span>
     <span class="na">containerName</span><span class="pi">:</span> <span class="s">${BLOB_STORE_POLICY_CONTAINER:irs-policy-bucket}</span>  <span class="c1"># the name of the S3 bucket or Blob store container for policies</span>
     <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">${BLOB_STORE_POLICY_EXPIRATION:-1}</span> <span class="c1"># number of days to keep policies in the store, use -1 to disable cleanup</span>
+  <span class="na">chainOpeningGrants</span><span class="pi">:</span>
+    <span class="na">containerName</span><span class="pi">:</span> <span class="s">${BLOB_STORE_CHAIN_OPENING_GRANT_CONTAINER:irs-chain-opening-grants}</span> <span class="c1"># the name of the S3 bucket or Blob store container for chain opening grants</span>
+    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">${BLOB_STORE_CHAIN_OPENING_GRANT_EXPIRATION:-1}</span> <span class="c1"># number of days to keep chain opening grants in the store, use -1 to disable cleanup</span>
 
 <span class="na">resilience4j</span><span class="pi">:</span>
   <span class="na">retry</span><span class="pi">:</span> <span class="c1"># REST client retry configuration</span>
@@ -915,7 +925,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-14 06:54:42 UTC
+Last updated 2026-08-24 15:21:58 UTC
 </div>
 </div>
 </body>

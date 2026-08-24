@@ -456,10 +456,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_irs_recursive">IRS Recursive</a></li>
+<li><a href="#_use_case_recursive_puris_anonymized_data">Use Case: Recursive PURIS Anonymized Data</a>
+<ul class="sectlevel2">
+<li><a href="#_participants">Participants</a></li>
+<li><a href="#_overall_flow">Overall flow</a></li>
+<li><a href="#_processing_steps">Processing steps</a></li>
+<li><a href="#_bom_descriptor_handling">BOM descriptor handling</a></li>
+<li><a href="#_grant_boundary">Grant boundary</a></li>
+<li><a href="#_payload_boundary">Payload boundary</a></li>
+<li><a href="#_timeouts">Timeouts</a></li>
+<li><a href="#_job_phases">Job phases</a></li>
+<li><a href="#_result_status">Result status</a></li>
+<li><a href="#_operational_limits">Operational limits</a></li>
+<li><a href="#_cross_cutting_contracts">Cross-cutting contracts</a></li>
+</ul>
+</li>
 <li><a href="#_use_case_ess_environmental_and_social_standards_top_down_approach">Use Case: ESS (Environmental and Social Standards) Top-Down Approach</a>
 <ul class="sectlevel2">
 <li><a href="#_specification">Specification</a></li>
-<li><a href="#_overall_flow">Overall flow</a></li>
+<li><a href="#_overall_flow_2">Overall flow</a></li>
 <li><a href="#_flow_on_company_level">Flow on company level</a></li>
 <li><a href="#_application_functionality_overview">Application Functionality Overview</a></li>
 <li><a href="#_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</a></li>
@@ -635,6 +650,318 @@ Only if the job is in state "COMPLETED" or if the caller has set the parameter "
 <p>This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_case_recursive_puris_anonymized_data">Use Case: Recursive PURIS Anonymized Data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The recursive PURIS path is a partner-to-partner traversal for anonymized PURIS aspect models.
+The root caller starts a recursive job with a <code>globalAssetId</code>, an <code>openingId</code>, the recursive PURIS use case and the anonymized aspect bundle.
+This use case is different from the ESS recursive investigation described in the adjacent ESS runtime section.</p>
+</div>
+<div class="paragraph">
+<p>The supported use case is <code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code>.
+It traverses <code>SingleLevelBomAsPlanned</code> version <code>3.0.0</code> and collects anonymized PURIS payloads.
+Only the <code>asPlanned</code> lifecycle is supported.</p>
+</div>
+<div class="sect2">
+<h3 id="_participants">Participants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Participant</th>
+<th class="tableblock halign-left valign-top">Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Root caller</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starts the recursive job and reads the final aggregated result.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Validates the chain opening grant, resolves the local digital twin, reads the local BOM, filters direct children by grant and coordinates child requests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Child IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receives a recursive REQUEST, validates the same chain opening, processes its direct children and returns a recursive RESPONSE to the parent.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EDC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides catalog, contract negotiation, data transfer and notification transport between partners.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin Registry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides shell descriptors and submodel descriptors for BOM, PartTypeInformation and anonymized payload aspects.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Submodel provider</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides the BOM and anonymized PURIS aspect payloads through the EDC data plane.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_overall_flow">Overall flow</h3>
+<div class="imageblock">
+<div class="content">
+<img src="recursive-puris-job.svg" alt="recursive puris job" width="2312" height="2120">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_processing_steps">Processing steps</h3>
+<div class="paragraph">
+<p>The sequence diagram shows the technical message flow. The following table summarizes it as ten business processing phases.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 28.5714%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Phase</th>
+<th class="tableblock halign-left valign-top">Actor</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Root caller</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starts a recursive job via <code>POST /irs/recursive/jobs</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Validates the request, resolves default values and validates the local chain opening grant before creating the root job.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Looks up the root shell in the Digital Twin Registry and selects the supported <code>SingleLevelBomAsPlanned</code> descriptor. If no BOM descriptor is present, the asset is treated as a leaf.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reads the BOM submodel through the EDC submodel access flow and filters direct children by the local chain opening grant. Filtered partners are not exposed to the caller.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates and persists one direct child branch per valid, grant-allowed BOM child.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends recursive REQUEST notifications to allowed direct children through EDC.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Child IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Performs the same processing for its own direct children. It collects its own anonymized aspect payloads unless it is the root job.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Child IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remains in <code>AWAITING_CHILDREN</code> until all expected child responses are available or the child response deadline is processed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Child IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregates its local node, child nodes and tombstones and sends a recursive RESPONSE to its parent.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Root IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregates all received direct child results and exposes the final result via <code>GET /irs/recursive/jobs/{jobId}</code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_bom_descriptor_handling">BOM descriptor handling</h3>
+<div class="paragraph">
+<p>The recursive PURIS path supports exactly <code>SingleLevelBomAsPlanned</code> version <code>3.0.0</code>.
+If no <code>SingleLevelBomAsPlanned</code> descriptor is present, the current asset is a leaf and no child branches are created.
+If a <code>SingleLevelBomAsPlanned</code> descriptor is present with an unsupported version, the branch fails with a sanitized tombstone.
+The branch also fails with a sanitized tombstone when the supported descriptor is ambiguous or does not expose a usable EDC endpoint.
+For a root job, these descriptor errors fail the root job itself because there is no parent branch.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_grant_boundary">Grant boundary</h3>
+<div class="paragraph">
+<p>The recursive path does not discover and traverse the complete BOM without an explicit chain opening grant.
+Every hop validates a grant before it can continue.
+The grant only contains direct child partners for the local hop.
+This means a tier knows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the parent that called it</p>
+</li>
+<li>
+<p>its own direct children from its BOM</p>
+</li>
+<li>
+<p>the direct children allowed by the local grant</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It does not know the full upstream or downstream chain.
+Grant-filtered partners are local information and must not be represented in parent-facing tombstones or counters.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_payload_boundary">Payload boundary</h3>
+<div class="paragraph">
+<p>Productive recursive PURIS jobs use anonymized PURIS aspect models.
+The IRS does not transform non-anonymized PURIS payloads into anonymized payloads.
+Instead, it requests only the allowed anonymized aspect semantic IDs from the provider.</p>
+</div>
+<div class="paragraph">
+<p>The result model contains a material tree:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>childItems</code> for BOM child nodes</p>
+</li>
+<li>
+<p><code>materialNumber</code> and <code>materialName</code> from PartTypeInformation, if available</p>
+</li>
+<li>
+<p><code>quantity</code> from the BOM relationship</p>
+</li>
+<li>
+<p><code>items</code> for collected anonymized aspect payloads at the material node</p>
+</li>
+<li>
+<p><code>tombstones</code> for sanitized errors associated with the material node</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Root-level tombstones are used for failures that cannot be assigned to a specific material node.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_timeouts">Timeouts</h3>
+<div class="paragraph">
+<p>The root job has one overall deadline.
+Each child receives an expected response timestamp before that deadline.
+The safety buffer gives each tier time to aggregate and send its response upstream.</p>
+</div>
+<div class="paragraph">
+<p>If a child does not answer before the child response deadline, the parent marks the child branch as timed out and continues aggregation.
+A timeout therefore results in a terminal response with a partial or failed business result instead of an indefinitely running job.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_job_phases">Job phases</h3>
+<div class="paragraph">
+<p>The recursive path stores its own job phase and maps it to the generic IRS job state in the API response.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="recursive-puris-job-phase.svg" alt="recursive puris job phase" width="1020" height="408">
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Recursive phase</th>
+<th class="tableblock halign-left valign-top">API job state</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GRANT_CHECKED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RUNNING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The request and local chain opening grant have been accepted. BOM resolution, partner filtering and local processing are queued or running.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AWAITING_CHILDREN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RUNNING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Child requests were sent and the job waits for all expected child responses or for the child response deadline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>COMPLETED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>COMPLETED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The recursive job is terminal and a recursive result is available. The business result can still be <code>COMPLETE</code>, <code>PARTIAL</code> or <code>FAILED</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FAILED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The recursive job is terminal because validation, grant handling, traversal, persistence or deadline handling failed the job.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_result_status">Result status</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>COMPLETE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aggregation finished without tombstones. The material tree can still be empty, for example when the requested root asset is a leaf and root payload collection is not part of the supported PURIS use case.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PARTIAL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one tombstone is present and the material tree still contains usable data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FAILED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No usable material tree could be produced, or the job was failed by validation or deadline handling.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The technical job state and the business result status are intentionally separate.
+A job can be technically <code>COMPLETED</code> while its <code>result.resultStatus</code> is <code>FAILED</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_operational_limits">Operational limits</h3>
+<div class="paragraph">
+<p>The recursive job store has no API delete operation, so persisted jobs must be removed through the configured blob-store retention.
+For MinIO this requires a lifecycle rule on the jobs bucket.
+The recursive path should be operated with one IRS replica unless an external mechanism serializes updates to the same persisted recursive job.
+Large chains can create large result trees because no recursive tree-size or payload-size limit is enforced by the recursive aggregation.
+The notification endpoint also has no recursive request-size limit; large incoming notifications should be limited by the surrounding runtime or ingress setup.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cross_cutting_contracts">Cross-cutting contracts</h3>
+<div class="paragraph">
+<p>State consistency, message correlation, notification validation, privacy and restart recovery apply across all recursive processing steps. They are described in <a href="../../cross-cutting/recursive-irs.html">Recursive IRS concepts</a>.</p>
+</div>
 <div class="paragraph">
 <p>The IRS recursive approach is a decentral approach of retrieving and aggregating data throughout the Catena-X network.</p>
 </div>
@@ -643,6 +970,7 @@ This recursive scenario is illustrated using the various use cases realized in t
 </div>
 <div class="paragraph">
 <p>Investigations triggered on the next level down the supply chain can trigger further investigations themselves, hence the name <em>IRS recursive</em>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -674,7 +1002,7 @@ The BoM as planned aspect models consists of three aspect models:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_overall_flow">Overall flow</h3>
+<h3 id="_overall_flow_2">Overall flow</h3>
 <div class="imageblock">
 <div class="content">
 <img src="ess-top-down.svg" alt="ess top down" width="1201" height="748">
@@ -1269,7 +1597,7 @@ The response of each direct supplier may contain the following results;</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-14 06:54:42 UTC
+Last updated 2026-08-24 15:21:58 UTC
 </div>
 </div>
 </body>

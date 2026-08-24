@@ -25,6 +25,7 @@ The IRS is a:
 * 'asBuild' BoM of serialized components
 * provides endpoints for submodel-descriptors
 * start recursive Environmental and Social Standard investigations throughout the network based on the "asPlanned" lifecycle
+* provide grant-controlled recursive traversal of `SingleLevelBomAsPlanned` relationships and aggregate anonymized PURIS payloads into a material tree
 
 ## Quality goals
 
@@ -293,6 +294,7 @@ The interfaces show how the components interact with each other and which interf
  | --- | --- |
  | **IRS** | The IRS builds a digital representation of a product (digital twin) and the relationships of items the product consists of in a hierarchical structure. The result is an item graph in which each node represents a digital item of the product - this graph is called "Item Graph". |
  | **IRS API** | The **IRS API** is the Interface over which the Data Consumer is communicating. |
+ | **Recursive IRS** | The **Recursive IRS** provides grant-controlled partner-to-partner traversal. It exposes the recursive job, notification and chain opening grant APIs, reads direct `SingleLevelBomAsPlanned` relationships, requests anonymized PURIS payloads through EDC and persists local job, correlation and grant state. |
  | **IrsController** | The **IrsController** provides a REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process. |
  | **IrsItemGraphQueryService** | The **IrsItemGraphQueryService** implements the REST Interface of the IrsController. |
  | **JobOrchestrator** | The **JobOrchestrator** is a component which manages (start, end, cancel, resume) the jobs which execute the item graph retrieval process. |
@@ -327,13 +329,38 @@ The IRS REST controller is used to provide a RESTful web service.
  | BlobstorePersistence | Interface for storing data blobs. |
  | Policy Store | The **Policy Store** provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers. |
 
+### Recursive IRS
+
+The recursive IRS provides grant-controlled partner-to-partner traversal.
+It starts from one root asset, resolves the supported `SingleLevelBomAsPlanned` relationship, filters direct children by the local chain opening grant and aggregates anonymized PURIS payloads into a material tree.
+
+#### Component diagram
+
+![arc42_005](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_005.png)
+
+#### Component description
+
+ | Components | Description |
+ | --- | --- |
+ | Recursive Job API | Starts recursive jobs and provides their current state and result to the root caller. |
+ | Recursive Notification API | Receives REQUEST notifications that start child jobs and RESPONSE notifications that return their results. |
+ | Chain Opening Grant API | Manages the local grants that authorize recursive traversal for one chain opening. |
+ | Recursive Job Processing | Coordinates grant validation, BOM traversal, child requests, timeout handling and result aggregation. |
+ | Digital Twin and Submodel Access | Resolves shell and submodel descriptors through the Digital Twin Registry and retrieves BOM, PartTypeInformation and anonymized PURIS payloads through EDC. |
+ | Notification Transport | Discovers the recursive notification API in the EDC catalog and sends REQUEST and RESPONSE notifications through EDC. |
+ | Recursive Persistence | Stores recursive jobs, notification correlation entries and chain opening grants in the configured blob store. |
+
+The recursive result must not expose hidden partner identities.
+Partner filtering is local to the current hop.
+Failures that are returned upstream are represented as sanitized tombstones.
+
 ### RecursiveJobHandler
 
 The **RecursiveJobHandler** component provide the logic to build jobs recursively to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.
 
 #### Component diagram
 
-![arc42_005](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_005.png)
+![arc42_006](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_006.png)
 
 #### Component description
 
@@ -350,7 +377,7 @@ The TransferProcessManager creates executions and provides them to the executor 
 
 #### Component diagram
 
-![arc42_006](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_006.png)
+![arc42_007](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_007.png)
 
 #### Component description
 
@@ -385,7 +412,7 @@ The ESS REST controller is used to provide a RESTful web service to related Envi
 
 #### Component diagram
 
-![arc42_007](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_007.png)
+![arc42_008](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_008.png)
 
 #### Component description
 
@@ -406,11 +433,11 @@ Since we cannot rely on synchronous responses regarding the requests of submodel
 
 ### IRS interaction diagram
 
-![arc42_008](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_008.png)
+![arc42_009](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_009.png)
 
 ### ESS Investigation interaction diagram
 
-![arc42_009](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_009.png)
+![arc42_010](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_010.png)
 
 ## Runtime view
 
@@ -424,37 +451,37 @@ IRS Iterative is the main IRS mode for retrieving data chains throughout the Cat
 2. Retrieve the EDC endpoint for the BPN, search the catalog for the Digital Twin Registry contract Offer and search the DTR for the provided BPN.
 3. Retrieve the relationship submodel for the requested lifecycle and direction and repeat step 1 with the globalAssetIds and BPNs from the relationship submodel linked data until the desired depth is reached or no more relationships could be found.
 
-![arc42_010](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_010.png)
+![arc42_011](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_011.png)
 
 ### Submodel
 
 This section describes how the IRS fetches submodel payload.
 
-![arc42_011](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_011.png)
+![arc42_012](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_012.png)
 
 ### Job orchestration flow
 
 This section describes the job orchestration in IRS.
 
-![arc42_012](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_012.png)
+![arc42_013](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_013.png)
 
 ### Policy store flow
 
 This section describes the policy store in IRS.
 
-![arc42_013](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_013.png)
+![arc42_014](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_014.png)
 
 ### Policy check procedure
 
 This section describes the way IRS is validating policies found in assets.
 
-![arc42_014](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_014.png)
+![arc42_015](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_015.png)
 
 ## Scenario 1: Create job
 
 This section describes what happens when user creates a new job.
 
-![arc42_015](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_015.png)
+![arc42_016](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_016.png)
 
 ### Overview
 
@@ -469,7 +496,7 @@ The input provided by the caller determines how the job will operate (starting p
 
 This section describes how a job is asynchronously executed inside the IRS.
 
-![arc42_016](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_016.png)
+![arc42_017](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_017.png)
 
 ### Overview
 
@@ -484,7 +511,7 @@ As soon as all transfers are finished, the results will be combined and stored i
 
 ## Scenario 3: Request for JobResponse
 
-![arc42_017](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_017.png)
+![arc42_018](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_018.png)
 
 ### Overview
 
@@ -495,7 +522,7 @@ This will then be passed to the caller.
 
 ## Scenario 4: Cancel job execution
 
-![arc42_018](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_018.png)
+![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
 
 ### Overview
 
@@ -507,6 +534,131 @@ Afterwards, the IRS will return the updated job details of the canceled job to t
 
 This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.
+
+## Use Case: Recursive PURIS Anonymized Data
+
+The recursive PURIS path is a partner-to-partner traversal for anonymized PURIS aspect models.
+The root caller starts a recursive job with a `globalAssetId`, an `openingId`, the recursive PURIS use case and the anonymized aspect bundle.
+This use case is different from the ESS recursive investigation described in the adjacent ESS runtime section.
+
+The supported use case is `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE`.
+It traverses `SingleLevelBomAsPlanned` version `3.0.0` and collects anonymized PURIS payloads.
+Only the `asPlanned` lifecycle is supported.
+
+### Participants
+
+ | Participant | Responsibility |
+ | --- | --- |
+ | Root caller | Starts the recursive job and reads the final aggregated result. |
+ | Local IRS | Validates the chain opening grant, resolves the local digital twin, reads the local BOM, filters direct children by grant and coordinates child requests. |
+ | Child IRS | Receives a recursive REQUEST, validates the same chain opening, processes its direct children and returns a recursive RESPONSE to the parent. |
+ | EDC | Provides catalog, contract negotiation, data transfer and notification transport between partners. |
+ | Digital Twin Registry | Provides shell descriptors and submodel descriptors for BOM, PartTypeInformation and anonymized payload aspects. |
+ | Submodel provider | Provides the BOM and anonymized PURIS aspect payloads through the EDC data plane. |
+
+### Overall flow
+
+![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
+
+### Processing steps
+
+The sequence diagram shows the technical message flow. The following table summarizes it as ten business processing phases.
+
+ | Phase | Actor | Action |
+ | --- | --- | --- |
+ | 1 | Root caller | Starts a recursive job via `POST /irs/recursive/jobs`. |
+ | 2 | IRS | Validates the request, resolves default values and validates the local chain opening grant before creating the root job. |
+ | 3 | IRS | Looks up the root shell in the Digital Twin Registry and selects the supported `SingleLevelBomAsPlanned` descriptor. If no BOM descriptor is present, the asset is treated as a leaf. |
+ | 4 | IRS | Reads the BOM submodel through the EDC submodel access flow and filters direct children by the local chain opening grant. Filtered partners are not exposed to the caller. |
+ | 5 | IRS | Creates and persists one direct child branch per valid, grant-allowed BOM child. |
+ | 6 | IRS | Sends recursive REQUEST notifications to allowed direct children through EDC. |
+ | 7 | Child IRS | Performs the same processing for its own direct children. It collects its own anonymized aspect payloads unless it is the root job. |
+ | 8 | Child IRS | Remains in `AWAITING_CHILDREN` until all expected child responses are available or the child response deadline is processed. |
+ | 9 | Child IRS | Aggregates its local node, child nodes and tombstones and sends a recursive RESPONSE to its parent. |
+ | 10 | Root IRS | Aggregates all received direct child results and exposes the final result via `GET /irs/recursive/jobs/{jobId}`. |
+
+### BOM descriptor handling
+
+The recursive PURIS path supports exactly `SingleLevelBomAsPlanned` version `3.0.0`.
+If no `SingleLevelBomAsPlanned` descriptor is present, the current asset is a leaf and no child branches are created.
+If a `SingleLevelBomAsPlanned` descriptor is present with an unsupported version, the branch fails with a sanitized tombstone.
+The branch also fails with a sanitized tombstone when the supported descriptor is ambiguous or does not expose a usable EDC endpoint.
+For a root job, these descriptor errors fail the root job itself because there is no parent branch.
+
+### Grant boundary
+
+The recursive path does not discover and traverse the complete BOM without an explicit chain opening grant.
+Every hop validates a grant before it can continue.
+The grant only contains direct child partners for the local hop.
+This means a tier knows:
+
+* the parent that called it
+* its own direct children from its BOM
+* the direct children allowed by the local grant
+
+It does not know the full upstream or downstream chain.
+Grant-filtered partners are local information and must not be represented in parent-facing tombstones or counters.
+
+### Payload boundary
+
+Productive recursive PURIS jobs use anonymized PURIS aspect models.
+The IRS does not transform non-anonymized PURIS payloads into anonymized payloads.
+Instead, it requests only the allowed anonymized aspect semantic IDs from the provider.
+
+The result model contains a material tree:
+
+* `childItems` for BOM child nodes
+* `materialNumber` and `materialName` from PartTypeInformation, if available
+* `quantity` from the BOM relationship
+* `items` for collected anonymized aspect payloads at the material node
+* `tombstones` for sanitized errors associated with the material node
+
+Root-level tombstones are used for failures that cannot be assigned to a specific material node.
+
+### Timeouts
+
+The root job has one overall deadline.
+Each child receives an expected response timestamp before that deadline.
+The safety buffer gives each tier time to aggregate and send its response upstream.
+
+If a child does not answer before the child response deadline, the parent marks the child branch as timed out and continues aggregation.
+A timeout therefore results in a terminal response with a partial or failed business result instead of an indefinitely running job.
+
+### Job phases
+
+The recursive path stores its own job phase and maps it to the generic IRS job state in the API response.
+
+![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
+
+ | Recursive phase | API job state | Meaning |
+ | --- | --- | --- |
+ | `GRANT_CHECKED` | `RUNNING` | The request and local chain opening grant have been accepted. BOM resolution, partner filtering and local processing are queued or running. |
+ | `AWAITING_CHILDREN` | `RUNNING` | Child requests were sent and the job waits for all expected child responses or for the child response deadline. |
+ | `COMPLETED` | `COMPLETED` | The recursive job is terminal and a recursive result is available. The business result can still be `COMPLETE`, `PARTIAL` or `FAILED`. |
+ | `FAILED` | `ERROR` | The recursive job is terminal because validation, grant handling, traversal, persistence or deadline handling failed the job. |
+
+### Result status
+
+ | Status | Meaning |
+ | --- | --- |
+ | `COMPLETE` | The aggregation finished without tombstones. The material tree can still be empty, for example when the requested root asset is a leaf and root payload collection is not part of the supported PURIS use case. |
+ | `PARTIAL` | At least one tombstone is present and the material tree still contains usable data. |
+ | `FAILED` | No usable material tree could be produced, or the job was failed by validation or deadline handling. |
+
+The technical job state and the business result status are intentionally separate.
+A job can be technically `COMPLETED` while its `result.resultStatus` is `FAILED`.
+
+### Operational limits
+
+The recursive job store has no API delete operation, so persisted jobs must be removed through the configured blob-store retention.
+For MinIO this requires a lifecycle rule on the jobs bucket.
+The recursive path should be operated with one IRS replica unless an external mechanism serializes updates to the same persisted recursive job.
+Large chains can create large result trees because no recursive tree-size or payload-size limit is enforced by the recursive aggregation.
+The notification endpoint also has no recursive request-size limit; large incoming notifications should be limited by the surrounding runtime or ingress setup.
+
+### Cross-cutting contracts
+
+State consistency, message correlation, notification validation, privacy and restart recovery apply across all recursive processing steps. They are described in [Recursive IRS concepts](../../cross-cutting/recursive-irs.adoc).
 
 The IRS recursive approach is a decentral approach of retrieving and aggregating data throughout the Catena-X network.
 
@@ -530,7 +682,7 @@ The BoM as planned aspect models consists of three aspect models:
 
 ### Overall flow
 
-![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
+![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
 
  | Step | Actor | Action | Details |
  | --- | --- | --- | --- |
@@ -554,7 +706,7 @@ Note: ESS supplier responses are involved in each step of the process.
 
 ### Flow on company level
 
-![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
+![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
 
 #### Step 0: Process initiation
 
@@ -611,13 +763,13 @@ In case at least one "YES" is received, the process step 3 ends
  | NO | UNKNOW | NO | UNKNOW | Unknown if no Yes and at leat one bpn is unknown state. |
  | NO | NO | NO | NO | No if complete SupplyChain is not impacted |
 
-![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
+![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
 
 ### Application Functionality Overview
 
 #### Register an Ess-Investigation-Order
 
-![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
+![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
 
 ##### 1. Client Request
 
@@ -661,7 +813,7 @@ This section describes what happens when user creates an ess order.
 
 ### Register an Ess-Investigation-Order
 
-![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
+![arc42_026](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_026.png)
 
  | Step | Actor | Action | Details |
  | --- | --- | --- | --- |
@@ -682,7 +834,7 @@ This section describes what happens when user creates an ess job.
 
 ### Register an Ess-Investigation Job
 
-![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
+![arc42_027](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_027.png)
 
  | Step | Actor | Action | Details |
  | --- | --- | --- | --- |
@@ -709,7 +861,7 @@ This section describes what happens when user creates an ess job.
 
 The deployment view shows the IRS application on ArgoCD, which is a continuous delivery tool for Kubernetes. Kubernetes manifests are specified using Helm charts. Helm is a package manager for Kubernetes. IRS is developed in a cloud-agnostic manner, so the application could be installed in any cloud infrastructure (on-premises, hybrid, or public cloud infrastructure).
 
-![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
+![arc42_028](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_028.png)
 
 ### Operator
 
@@ -751,25 +903,25 @@ For information on how to run the application locally, please check the README d
 
 The isolated environment contains the IRS as well as all surrounding services.
 
-![arc42_026](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_026.png)
+![arc42_029](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_029.png)
 
 ### Development environment
 
 The development environment contains the IRS as well as the essential surrounding services, excluding the external IAM.
 
-![arc42_027](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_027.png)
+![arc42_030](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_030.png)
 
 ### Integrated environment
 
 The integrated environment contains the IRS and is integrated with the rest of the Catena-X network.
 
-![arc42_028](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_028.png)
+![arc42_031](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_031.png)
 
 ## Level 1 - IRS application
 
 This section focuses only on the IRS itself, detached from its neighbors. It shows the resources deployed in Kubernetes for the IRS.
 
-![arc42_029](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_029.png)
+![arc42_032](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_032.png)
 
 ### Pod
 
@@ -793,11 +945,11 @@ The ingress uses a reverse proxy to provide specified Service ports to the inter
 
 ### Domain entity model
 
-![arc42_030](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_030.png)
+![arc42_033](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_033.png)
 
 ### Domain model
 
-![arc42_031](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_031.png)
+![arc42_034](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_034.png)
 
 ### API Model
 
@@ -816,15 +968,15 @@ A job can be in one of the following states:
  | COMPLETED | The job has completed. See the job response for details on the data. |
  | ERROR | The job could not be processed correctly by the IRS due to a technical problem. |
 
-![arc42_032](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_032.png)
+![arc42_035](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_035.png)
 
 ### Job Store Datamodel
 
-![arc42_033](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_033.png)
+![arc42_036](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_036.png)
 
 ### Job Response Datamodel
 
-![arc42_034](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_034.png)
+![arc42_037](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_037.png)
 
 ```json
 {
@@ -1032,7 +1184,53 @@ The hexagonal architecture divides a system into several loosely-coupled interch
 
 For the IRS, this means decoupling the application logic from components like the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (so-called port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic will be necessary.
 
-![arc42_035](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_035.png)
+![arc42_038](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_038.png)
+
+## Recursive IRS concepts
+
+The following contracts apply across the recursive job, notification and persistence flows. The complete runtime choreography is described in [Use Case: Recursive PURIS Anonymized Data](../runtime-view/recursive-puris/recursive-puris.adoc).
+
+### State consistency and concurrency
+
+Recursive job state is persisted in `BlobRecursiveJobStateStore`.
+Existing jobs are changed through `RecursiveJobRepository.updateIfNotTerminal`.
+That repository serializes read-modify-write cycles per job and skips updates once a job is terminal.
+Partner notifications are sent outside the job lock.
+This prevents long EDC calls from blocking state updates and avoids overwriting concurrent child responses, delivery failures or timeout updates.
+
+### Message correlation and idempotency
+
+The blob store keeps two message correlation maps.
+`recursive-msg-in:` maps an incoming REQUEST `messageId` to the local child job.
+It is used for idempotency when the same parent request is delivered again.
+`recursive-msg-out:` maps an outgoing child REQUEST `messageId` to the local parent job.
+When a child later sends a RESPONSE, the parent uses `header.relatedMessageId` to find the matching open child branch.
+
+A child RESPONSE always gets its own new `messageId`.
+Its `relatedMessageId` is the `messageId` of the REQUEST received from the parent.
+This is the correlation link that connects one recursive hop back to the parent request.
+
+### Notification validation
+
+Incoming notifications are validated in two steps.
+First, `RecursiveNotificationReceiver` reads only routing fields from the raw JSON.
+This allows a RESPONSE with a valid `relatedMessageId` to be correlated even when the full payload is invalid.
+Second, `RecursiveNotificationMessageValidator` strictly decodes the full notification and validates it against the REQUEST or RESPONSE contract.
+An invalid but correlatable RESPONSE fails the corresponding child branch immediately instead of leaving the parent waiting until timeout.
+
+### Privacy and tombstone sanitization
+
+The privacy boundary is enforced when data is mapped or forwarded upstream.
+`RecursiveResponseMapper`, `RecursiveResultTreeSanitizer` and `RecursiveTombstones` keep the material tree structurally readable while sanitizing tombstones and malformed downstream data.
+Upstream responses must not expose hidden partner BPNLs, connector URLs or downstream asset identifiers that are not part of the agreed anonymized payload contract.
+Tombstones associated with a material branch remain on that material node. Failures that cannot be assigned to a material node are returned as root-level tombstones.
+
+### Restart recovery
+
+`RecursiveStartupRecovery` resumes open jobs after application startup.
+Jobs in `GRANT_CHECKED` are resumed from accepted processing.
+Jobs in `AWAITING_CHILDREN` resend unanswered child requests.
+The timeout monitor remains the final safety net for jobs that still exceed their deadline.
 
 ## "Under-the-hood" concepts
 
@@ -1379,6 +1577,11 @@ Cucumber feature files are located in [irs-cucumber-tests/src/test/resources/org
 
 Tavern Tests are located in [local/testing/api-tests](https://github.com/eclipse-tractusx/item-relationship-service/tree/main/local/testing/api-tests) and executed with a GitHub workflow [tavern-UMBRELLA.yml](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml).
 
+### Recursive IRS integration tests
+
+The recursive integration tests under `irs-api/src/test/java/org/eclipse/tractusx/irs/recursive/e2e` start multiple IRS instances with Testcontainers-backed external systems.
+They are useful entry points for understanding the complete recursive choreography.
+
 ### Umbrella
 
 The [umbrella chart](https://github.com/eclipse-tractusx/tractus-x-umbrella) provides a pre-configured catena-x network which includes all necessary components for the IRS to work.
@@ -1721,9 +1924,10 @@ The quality scenarios in this section depict the fundamental quality goals as we
 This work is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 * SPDX-License-Identifier: Apache-2.0
-* SPDX-FileCopyrightText: 2021, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-* SPDX-FileCopyrightText: 2022, 2023 BOSCH AG
-* SPDX-FileCopyrightText: 2021, 2022 ZF Friedrichshafen AG
-* SPDX-FileCopyrightText: 2022  ISTOS GmbH
-* SPDX-FileCopyrightText: 2021, 2024 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2021 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+* SPDX-FileCopyrightText: 2022 BOSCH AG
+* SPDX-FileCopyrightText: 2021 ZF Friedrichshafen AG
+* SPDX-FileCopyrightText: 2022 ISTOS GmbH
+* SPDX-FileCopyrightText: 2021 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2026 Volkswagen AG
 * Source URL: <https://github.com/eclipse-tractusx/item-relationship-service>

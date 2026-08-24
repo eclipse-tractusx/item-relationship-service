@@ -782,6 +782,13 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
 <span class="na">irs</span><span class="pi">:</span> <span class="c1"># Application config</span>
   <span class="na">apiUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_API_URL:http://localhost:8080}"</span> <span class="c1"># Public URL of the application, used in Swagger UI</span>
+  <span class="na">recursive</span><span class="pi">:</span>
+    <span class="na">localBpnl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_LOCAL_BPNL:}</span> <span class="c1"># Mandatory BPNL of this IRS instance; startup fails when blank or not a BPNL.</span>
+    <span class="na">timeout</span><span class="pi">:</span>
+      <span class="na">defaultJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_DEFAULT_JOB_TTL:PT30M}</span>
+      <span class="na">maxJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_MAX_JOB_TTL:PT2H}</span>
+      <span class="na">childResponseSafetyBuffer</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_CHILD_RESPONSE_SAFETY_BUFFER:PT60S}</span>
+      <span class="na">timeoutCheckInterval</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_CHECK_INTERVAL:PT30S}</span>
   <span class="na">job</span><span class="pi">:</span>
     <span class="na">batch</span><span class="pi">:</span>
       <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
@@ -836,6 +843,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">policies</span><span class="pi">:</span>
     <span class="na">containerName</span><span class="pi">:</span> <span class="s">${BLOB_STORE_POLICY_CONTAINER:irs-policy-bucket}</span>  <span class="c1"># the name of the S3 bucket or Blob store container for policies</span>
     <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">${BLOB_STORE_POLICY_EXPIRATION:-1}</span> <span class="c1"># number of days to keep policies in the store, use -1 to disable cleanup</span>
+  <span class="na">chainOpeningGrants</span><span class="pi">:</span>
+    <span class="na">containerName</span><span class="pi">:</span> <span class="s">${BLOB_STORE_CHAIN_OPENING_GRANT_CONTAINER:irs-chain-opening-grants}</span> <span class="c1"># the name of the S3 bucket or Blob store container for chain opening grants</span>
+    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">${BLOB_STORE_CHAIN_OPENING_GRANT_EXPIRATION:-1}</span> <span class="c1"># number of days to keep chain opening grants in the store, use -1 to disable cleanup</span>
 
 <span class="na">resilience4j</span><span class="pi">:</span>
   <span class="na">retry</span><span class="pi">:</span> <span class="c1"># REST client retry configuration</span>
@@ -967,7 +977,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="na">job</span><span class="pi">:</span>
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">irsUrl</span><span class="pi">:</span>  <span class="c1"># "https://&lt;irs-url&gt;"</span>
+<span class="na">job</span><span class="pi">:</span>
   <span class="na">batch</span><span class="pi">:</span>
     <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
   <span class="na">scheduled</span><span class="pi">:</span>
@@ -978,6 +989,18 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">failed</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PT24H"</span>
     <span class="na">completed</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PT24H"</span>
 <span class="na">bpn</span><span class="pi">:</span>  <span class="c1"># BPN for this IRS instance; only users with this BPN are allowed to access the API</span>
+<span class="na">recursive</span><span class="pi">:</span>
+  <span class="c1"># -- Optional BPNL override for recursive requests and responses. Defaults to the IRS instance value from `bpn`.</span>
+  <span class="na">localBpnl</span><span class="pi">:</span>
+  <span class="na">timeout</span><span class="pi">:</span>
+    <span class="c1"># -- Default lifetime of a recursive job when a request does not provide an explicit deadline. ISO-8601 duration.</span>
+    <span class="na">defaultJobTtl</span><span class="pi">:</span> <span class="s">PT30M</span>
+    <span class="c1"># -- Maximum accepted lifetime of a recursive job. Longer requested deadlines are capped to this value. ISO-8601 duration.</span>
+    <span class="na">maxJobTtl</span><span class="pi">:</span> <span class="s">PT2H</span>
+    <span class="c1"># -- Safety buffer subtracted from the job deadline before waiting for child responses stops. ISO-8601 duration.</span>
+    <span class="na">childResponseSafetyBuffer</span><span class="pi">:</span> <span class="s">PT60S</span>
+    <span class="c1"># -- Interval used by the recursive timeout monitor to check for expired jobs and child response deadlines. ISO-8601 duration.</span>
+    <span class="na">timeoutCheckInterval</span><span class="pi">:</span> <span class="s">PT30S</span>
 <span class="na">apiKeyAdmin</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-admin&gt; Admin auth key, Should be changed!</span>
 <span class="na">apiKeyRegular</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-regular&gt; View auth key, Should be changed!</span>
 <span class="na">ingress</span><span class="pi">:</span>
@@ -1030,10 +1053,19 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">accessKey</span><span class="pi">:</span> <span class="s">minio</span>
       <span class="na">secretKey</span><span class="pi">:</span>
   <span class="na">jobs</span><span class="pi">:</span>
+    <span class="c1"># -- Blob-store container used for jobs.</span>
     <span class="na">containerName</span><span class="pi">:</span> <span class="s">irs-jobs</span>
+    <span class="c1"># -- Number of days to retain jobs. Use -1 to disable cleanup.</span>
     <span class="na">daysToLive</span><span class="pi">:</span> <span class="m">7</span>
   <span class="na">policies</span><span class="pi">:</span>
+    <span class="c1"># -- Blob-store container used for policies.</span>
     <span class="na">containerName</span><span class="pi">:</span> <span class="s">irs-policy-bucket</span>
+    <span class="c1"># -- Number of days to retain policies. Use -1 to disable cleanup.</span>
+    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">-1</span>
+  <span class="na">chainOpeningGrants</span><span class="pi">:</span>
+    <span class="c1"># -- Blob-store container used for recursive chain opening grants.</span>
+    <span class="na">containerName</span><span class="pi">:</span> <span class="s">irs-chain-opening-grants</span>
+    <span class="c1"># -- Number of days to retain chain opening grants. Use -1 to disable cleanup.</span>
     <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">-1</span>
 
 <span class="na">oauth2</span><span class="pi">:</span>
@@ -1178,30 +1210,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
   <span class="na">environment</span><span class="pi">:</span>
     <span class="na">MINIO_PROMETHEUS_JOB_ID</span><span class="pi">:</span> <span class="s">minio-actuator</span>
-    <span class="na">MINIO_PROMETHEUS_URL</span><span class="pi">:</span> <span class="s">http://prometheus:9090</span>
-
-<span class="c1">#######################</span>
-<span class="c1"># Redis configuration #</span>
-<span class="c1">#######################</span>
-<span class="na">redis</span><span class="pi">:</span>
-  <span class="na">architecture</span><span class="pi">:</span> <span class="s">standalone</span>
-  <span class="na">auth</span><span class="pi">:</span>
-    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
-    <span class="na">password</span><span class="pi">:</span> <span class="s">redispwd</span>
-  <span class="c1"># overwrite redis images due to deprecation of bitnami images</span>
-  <span class="na">global</span><span class="pi">:</span>
-    <span class="na">security</span><span class="pi">:</span>
-      <span class="c1"># needed to run legacy image</span>
-      <span class="na">allowInsecureImages</span><span class="pi">:</span> <span class="no">true</span>
-  <span class="na">image</span><span class="pi">:</span>
-    <span class="na">repository</span><span class="pi">:</span> <span class="s">bitnamilegacy/redis</span>
-    <span class="c1"># overwrite minio version 7.4.2-debian-12-r6</span>
-    <span class="na">tag</span><span class="pi">:</span> <span class="s">7.4.2-debian-12-r9</span>
-  <span class="na">master</span><span class="pi">:</span>
-    <span class="na">image</span><span class="pi">:</span>
-      <span class="na">repository</span><span class="pi">:</span> <span class="s">bitnamilegacy/redis</span>
-      <span class="na">tag</span><span class="pi">:</span> <span class="s">7.4.2-debian-12-r9</span>
-  <span class="na">metrics</span><span class="pi">:</span></code></pre>
+    <span class="na">MINIO_PROMETHEUS_URL</span><span class="pi">:</span> <span class="s">http://prometheus:9090</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1501,7 +1510,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-14 06:54:42 UTC
+Last updated 2026-08-24 15:21:58 UTC
 </div>
 </div>
 </body>

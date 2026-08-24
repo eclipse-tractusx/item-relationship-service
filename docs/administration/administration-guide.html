@@ -675,7 +675,22 @@ pre.rouge {
 <li><a href="#_secrets">Secrets</a></li>
 </ul>
 </li>
-<li><a href="#_troubleshooting">Troubleshooting</a>
+<li><a href="#_recursive_irs">Recursive IRS</a>
+<ul class="sectlevel2">
+<li><a href="#_supported_use_case">Supported use case</a></li>
+<li><a href="#_api_overview">API overview</a></li>
+<li><a href="#_authorization">Authorization</a></li>
+<li><a href="#_chain_opening_grants">Chain opening grants</a></li>
+<li><a href="#_recursive_notification_asset">Recursive notification asset</a></li>
+<li><a href="#_required_configuration">Required configuration</a></li>
+<li><a href="#_partner_setup">Partner setup</a></li>
+<li><a href="#_persistence_and_cleanup">Persistence and cleanup</a></li>
+<li><a href="#_result_model">Result model</a></li>
+<li><a href="#_troubleshooting">Troubleshooting</a></li>
+<li><a href="#_known_limitations">Known limitations</a></li>
+</ul>
+</li>
+<li><a href="#_troubleshooting_2">Troubleshooting</a>
 <ul class="sectlevel2">
 <li><a href="#_proxy_support">Proxy support</a></li>
 <li><a href="#_troubleshooting_faq">Troubleshooting FAQ</a></li>
@@ -862,6 +877,13 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
 <span class="na">irs</span><span class="pi">:</span> <span class="c1"># Application config</span>
   <span class="na">apiUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_API_URL:http://localhost:8080}"</span> <span class="c1"># Public URL of the application, used in Swagger UI</span>
+  <span class="na">recursive</span><span class="pi">:</span>
+    <span class="na">localBpnl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_LOCAL_BPNL:}</span> <span class="c1"># Mandatory BPNL of this IRS instance; startup fails when blank or not a BPNL.</span>
+    <span class="na">timeout</span><span class="pi">:</span>
+      <span class="na">defaultJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_DEFAULT_JOB_TTL:PT30M}</span>
+      <span class="na">maxJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_MAX_JOB_TTL:PT2H}</span>
+      <span class="na">childResponseSafetyBuffer</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_CHILD_RESPONSE_SAFETY_BUFFER:PT60S}</span>
+      <span class="na">timeoutCheckInterval</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_CHECK_INTERVAL:PT30S}</span>
   <span class="na">job</span><span class="pi">:</span>
     <span class="na">batch</span><span class="pi">:</span>
       <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
@@ -916,6 +938,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">policies</span><span class="pi">:</span>
     <span class="na">containerName</span><span class="pi">:</span> <span class="s">${BLOB_STORE_POLICY_CONTAINER:irs-policy-bucket}</span>  <span class="c1"># the name of the S3 bucket or Blob store container for policies</span>
     <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">${BLOB_STORE_POLICY_EXPIRATION:-1}</span> <span class="c1"># number of days to keep policies in the store, use -1 to disable cleanup</span>
+  <span class="na">chainOpeningGrants</span><span class="pi">:</span>
+    <span class="na">containerName</span><span class="pi">:</span> <span class="s">${BLOB_STORE_CHAIN_OPENING_GRANT_CONTAINER:irs-chain-opening-grants}</span> <span class="c1"># the name of the S3 bucket or Blob store container for chain opening grants</span>
+    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">${BLOB_STORE_CHAIN_OPENING_GRANT_EXPIRATION:-1}</span> <span class="c1"># number of days to keep chain opening grants in the store, use -1 to disable cleanup</span>
 
 <span class="na">resilience4j</span><span class="pi">:</span>
   <span class="na">retry</span><span class="pi">:</span> <span class="c1"># REST client retry configuration</span>
@@ -1045,7 +1070,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <h3 id="_helm_configuration_irs_values_yaml">Helm configuration IRS (values.yaml)</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="na">job</span><span class="pi">:</span>
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">irsUrl</span><span class="pi">:</span>  <span class="c1"># "https://&lt;irs-url&gt;"</span>
+<span class="na">job</span><span class="pi">:</span>
   <span class="na">batch</span><span class="pi">:</span>
     <span class="na">threadCount</span><span class="pi">:</span> <span class="m">5</span>
   <span class="na">scheduled</span><span class="pi">:</span>
@@ -1056,6 +1082,18 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">failed</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PT24H"</span>
     <span class="na">completed</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PT24H"</span>
 <span class="na">bpn</span><span class="pi">:</span>  <span class="c1"># BPN for this IRS instance; only users with this BPN are allowed to access the API</span>
+<span class="na">recursive</span><span class="pi">:</span>
+  <span class="c1"># -- Optional BPNL override for recursive requests and responses. Defaults to the IRS instance value from `bpn`.</span>
+  <span class="na">localBpnl</span><span class="pi">:</span>
+  <span class="na">timeout</span><span class="pi">:</span>
+    <span class="c1"># -- Default lifetime of a recursive job when a request does not provide an explicit deadline. ISO-8601 duration.</span>
+    <span class="na">defaultJobTtl</span><span class="pi">:</span> <span class="s">PT30M</span>
+    <span class="c1"># -- Maximum accepted lifetime of a recursive job. Longer requested deadlines are capped to this value. ISO-8601 duration.</span>
+    <span class="na">maxJobTtl</span><span class="pi">:</span> <span class="s">PT2H</span>
+    <span class="c1"># -- Safety buffer subtracted from the job deadline before waiting for child responses stops. ISO-8601 duration.</span>
+    <span class="na">childResponseSafetyBuffer</span><span class="pi">:</span> <span class="s">PT60S</span>
+    <span class="c1"># -- Interval used by the recursive timeout monitor to check for expired jobs and child response deadlines. ISO-8601 duration.</span>
+    <span class="na">timeoutCheckInterval</span><span class="pi">:</span> <span class="s">PT30S</span>
 <span class="na">apiKeyAdmin</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-admin&gt; Admin auth key, Should be changed!</span>
 <span class="na">apiKeyRegular</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-regular&gt; View auth key, Should be changed!</span>
 <span class="na">ingress</span><span class="pi">:</span>
@@ -1108,10 +1146,19 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">accessKey</span><span class="pi">:</span> <span class="s">minio</span>
       <span class="na">secretKey</span><span class="pi">:</span>
   <span class="na">jobs</span><span class="pi">:</span>
+    <span class="c1"># -- Blob-store container used for jobs.</span>
     <span class="na">containerName</span><span class="pi">:</span> <span class="s">irs-jobs</span>
+    <span class="c1"># -- Number of days to retain jobs. Use -1 to disable cleanup.</span>
     <span class="na">daysToLive</span><span class="pi">:</span> <span class="m">7</span>
   <span class="na">policies</span><span class="pi">:</span>
+    <span class="c1"># -- Blob-store container used for policies.</span>
     <span class="na">containerName</span><span class="pi">:</span> <span class="s">irs-policy-bucket</span>
+    <span class="c1"># -- Number of days to retain policies. Use -1 to disable cleanup.</span>
+    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">-1</span>
+  <span class="na">chainOpeningGrants</span><span class="pi">:</span>
+    <span class="c1"># -- Blob-store container used for recursive chain opening grants.</span>
+    <span class="na">containerName</span><span class="pi">:</span> <span class="s">irs-chain-opening-grants</span>
+    <span class="c1"># -- Number of days to retain chain opening grants. Use -1 to disable cleanup.</span>
     <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">-1</span>
 
 <span class="na">oauth2</span><span class="pi">:</span>
@@ -1256,30 +1303,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
   <span class="na">environment</span><span class="pi">:</span>
     <span class="na">MINIO_PROMETHEUS_JOB_ID</span><span class="pi">:</span> <span class="s">minio-actuator</span>
-    <span class="na">MINIO_PROMETHEUS_URL</span><span class="pi">:</span> <span class="s">http://prometheus:9090</span>
-
-<span class="c1">#######################</span>
-<span class="c1"># Redis configuration #</span>
-<span class="c1">#######################</span>
-<span class="na">redis</span><span class="pi">:</span>
-  <span class="na">architecture</span><span class="pi">:</span> <span class="s">standalone</span>
-  <span class="na">auth</span><span class="pi">:</span>
-    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
-    <span class="na">password</span><span class="pi">:</span> <span class="s">redispwd</span>
-  <span class="c1"># overwrite redis images due to deprecation of bitnami images</span>
-  <span class="na">global</span><span class="pi">:</span>
-    <span class="na">security</span><span class="pi">:</span>
-      <span class="c1"># needed to run legacy image</span>
-      <span class="na">allowInsecureImages</span><span class="pi">:</span> <span class="no">true</span>
-  <span class="na">image</span><span class="pi">:</span>
-    <span class="na">repository</span><span class="pi">:</span> <span class="s">bitnamilegacy/redis</span>
-    <span class="c1"># overwrite minio version 7.4.2-debian-12-r6</span>
-    <span class="na">tag</span><span class="pi">:</span> <span class="s">7.4.2-debian-12-r9</span>
-  <span class="na">master</span><span class="pi">:</span>
-    <span class="na">image</span><span class="pi">:</span>
-      <span class="na">repository</span><span class="pi">:</span> <span class="s">bitnamilegacy/redis</span>
-      <span class="na">tag</span><span class="pi">:</span> <span class="s">7.4.2-debian-12-r9</span>
-  <span class="na">metrics</span><span class="pi">:</span></code></pre>
+    <span class="na">MINIO_PROMETHEUS_URL</span><span class="pi">:</span> <span class="s">http://prometheus:9090</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1570,7 +1594,931 @@ Keep the values for these settings safe and do not publish them!
 </div>
 </div>
 <div class="sect1">
-<h2 id="_troubleshooting">Troubleshooting</h2>
+<h2 id="_recursive_irs">Recursive IRS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>IMPORTANT:</strong> THIS IS AN EXPERIMENTAL FEATURE INTRODUCED WITH APP VERSION 7.1.0 AND CHART VERSION 9.1.0.</p>
+</div>
+<div class="paragraph">
+<p>The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the <code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code> use case with <code>asPlanned</code> BOM traversal and anonymized PURIS aspect models.</p>
+</div>
+<div class="sect2">
+<h3 id="_supported_use_case">Supported use case</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use case</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BOM lifecycle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>asPlanned</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BOM model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Payload aspects</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized</code>, <code>urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized</code>, <code>urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The recursive IRS does not anonymize the PURIS payload itself. The submodel provider must provide anonymized aspect payloads. The IRS validates the recursive request and notification contracts and the supported semantic IDs, but it does not validate the content of a PURIS payload against its semantic model. It reads the payload as a JSON object and forwards and aggregates it without modifying its domain structure.</p>
+</div>
+<div class="paragraph">
+<p>For BOM traversal, the absence of a <code>SingleLevelBomAsPlanned</code> descriptor means that the material is treated as a leaf. If a <code>SingleLevelBomAsPlanned</code> descriptor is present but does not use the supported <code>3.0.0</code> semantic ID, or if the supported descriptor is ambiguous or has no usable endpoint, the branch is completed with a sanitized tombstone. For a root job, the same condition fails the root job itself because there is no parent branch.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_api_overview">API overview</h3>
+<div class="paragraph">
+<p>The recursive path exposes three API groups.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Endpoint</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /irs/recursive/jobs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starts a root recursive job.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET /irs/recursive/jobs/{jobId}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the local recursive job state and the aggregated result if available.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET /irs/recursive/jobs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lists locally persisted recursive jobs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/irs/recursive/chain-openings/grants</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Admin endpoints for creating, replacing, deleting and listing chain opening grants.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /irs/recursive/notifications</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partner-to-partner endpoint used by EDC notifications. This endpoint receives recursive REQUEST and RESPONSE messages.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The complete request and response schemas are published in the <a href="https://eclipse-tractusx.github.io/api-hub/item-relationship-service/">Item Relationship Service API definition</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="_polling_a_recursive_job">Polling a recursive job</h4>
+<div class="paragraph">
+<p><code>POST /irs/recursive/jobs</code> returns <code>201 Created</code> with a <code>jobId</code> after the request and its local chain opening grant have been accepted. Traversal and partner communication continue asynchronously. Poll <code>GET /irs/recursive/jobs/{jobId}</code> until <code>job.state</code> is <code>COMPLETED</code> or <code>ERROR</code>.</p>
+</div>
+<div class="paragraph">
+<p>While <code>job.state</code> is <code>RUNNING</code>, the response contains the current <code>job</code> envelope but omits <code>result</code> and <code>job.completedOn</code>. A <code>200 OK</code> response therefore only means that the job was found; it does not mean that processing has finished. The direct-child counters under <code>job.asyncFetchedItems</code> show the current local progress.</p>
+</div>
+<div class="paragraph">
+<p>The following shortened response shows a job waiting for one direct child:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"job"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"80afc5d8-42bd-4136-bb3f-82d1a8b8227e"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"globalAssetId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RUNNING"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"createdOn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-08-20T08:00:00Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lastModifiedOn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-08-20T08:00:02Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"asyncFetchedItems"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"running"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"completed"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"failed"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the job becomes terminal, evaluate <code>job.state</code> as the technical execution state and <code>result.resultStatus</code> as the separate business outcome. A technically <code>COMPLETED</code> job can have a <code>PARTIAL</code> or <code>FAILED</code> result.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_authorization">Authorization</h3>
+<div class="paragraph">
+<p>The recursive endpoints use the existing IRS API key security setup. Clients authenticate through the <code>X-API-KEY</code> header, and the configured key determines the IRS role.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Operation</th>
+<th class="tableblock halign-left valign-top">Required access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start, read and list recursive jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ADMIN_IRS</code> or <code>VIEW_IRS</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create, replace or delete recursive chain opening grants</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ADMIN_IRS</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List recursive chain opening grants</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ADMIN_IRS</code> or <code>VIEW_IRS</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receive recursive notifications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ADMIN_IRS</code> or <code>VIEW_IRS</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The administrative key configured as <code>apiKeyAdmin</code> grants <code>ADMIN_IRS</code>; the regular key configured as <code>apiKeyRegular</code> grants <code>VIEW_IRS</code>. The notification asset should use the regular key because <code>VIEW_IRS</code> is sufficient for the notification endpoint. Do not place the administrative key in the EDC data address.</p>
+</div>
+<div class="paragraph">
+<p>The API key authenticates the HTTP request at IRS. The <code>edc-bpn</code> header is a separate transport identity supplied through EDC; IRS compares it with <code>header.senderBpn</code> from the notification message. The EDC Management API key used while provisioning the asset is also a separate credential and is not sent to the recursive IRS endpoint.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_chain_opening_grants">Chain opening grants</h3>
+<div class="paragraph">
+<p>A recursive traversal is only allowed when the local IRS instance has a valid chain opening grant. The root job validates the grant before the traversal starts. Every following tier validates the same opening before it processes an incoming recursive REQUEST.</p>
+</div>
+<div class="paragraph">
+<p>A grant is scoped by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>openingId</code></p>
+</li>
+<li>
+<p><code>globalAssetId</code></p>
+</li>
+<li>
+<p><code>requesterBpn</code></p>
+</li>
+<li>
+<p><code>useCase</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The grant contains the allowed direct child partners for this hop in <code>allowedBpnlSet</code>. Partners that are not part of the grant are filtered locally and are not exposed to the caller as missing partners, errors or tombstones.</p>
+</div>
+<div class="paragraph">
+<p>The following example uses three IRS participants and two partner-to-partner hops. Because every participant validates its own local processing step, one local grant record is required per processed asset, including the root authorization and the leaf grant with an empty allow-list.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 28.5714%;">
+<col style="width: 28.5714%;">
+<col style="width: 28.5715%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Local grant store</th>
+<th class="tableblock halign-left valign-top"><code>globalAssetId</code> and <code>requesterBpn</code></th>
+<th class="tableblock halign-left valign-top"><code>allowedBpnlSet</code></th>
+<th class="tableblock halign-left valign-top">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Root participant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Root asset and Root BPNL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier 1 BPNL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authorizes the root job and the request to the direct Tier 1 child.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier 1 participant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier 1 asset and Root BPNL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier 2 BPNL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authorizes the request received from Root and the request to the direct Tier 2 child.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier 2 participant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier 2 asset and Tier 1 BPNL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Empty set</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authorizes processing of the leaf request. No further partner is contacted.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>All three records use the same <code>openingId</code> and <code>useCase</code>. If validity windows are configured, they must cover the expected processing period. The <code>requesterBpn</code> always identifies the caller of the local request; <code>allowedBpnlSet</code> only contains direct children known at that participant.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_recursive_notification_asset">Recursive notification asset</h3>
+<div class="paragraph">
+<p>Each participant must publish one EDC notification asset for the recursive IRS notification endpoint. The receiving endpoint is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>POST /irs/recursive/notifications</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The asset must be discoverable by the recursive IRS notification API metadata and not by a fixed asset id. The <code>dct</code> prefix resolves to <code><a href="http://purl.org/dc/terms/" class="bare">http://purl.org/dc/terms/</a></code>; <code>cx-common</code> resolves to <code><a href="https://w3id.org/catenax/ontology/common#" class="bare">https://w3id.org/catenax/ontology/common#</a></code>. The catalog request looks for:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Asset property</th>
+<th class="tableblock halign-left valign-top">Expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dct:type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://w3id.org/catenax/taxonomy#RecursiveIrsNotificationApi" class="bare">https://w3id.org/catenax/taxonomy#RecursiveIrsNotificationApi</a></code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cx-common:version</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.0</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following JSON-LD shows the relevant asset properties and data address. The exact Management API envelope can differ with the connector version. Replace all placeholders while provisioning the participant&#8217;s provider EDC and resolve the API key from a secret instead of committing it to source control.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@vocab"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/edc/v0.0.1/ns/"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dct"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://purl.org/dc/terms/"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"cx-common"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/ontology/common#"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;NOTIFICATION_ASSET_ID&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Asset"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"dct:type"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/taxonomy#RecursiveIrsNotificationApi"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"cx-common:version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"dataAddress"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HttpData"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"baseUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://&lt;IRS_HOST&gt;/irs/recursive/notifications"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"proxyMethod"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"proxyBody"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"authKey"</span><span class="p">:</span><span class="w"> </span><span class="s2">"X-API-KEY"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"authCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;IRS_REGULAR_API_KEY&gt;"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The recursive notification header conforms to <a href="https://catenax-ev.github.io/docs/Saturn/standards/CX-0151-IndustryCoreBasics">CX-0151 Industry Core: Basics v1.0.0</a>. It uses <code>MessageHeaderAspect</code> version <code>3.0.0</code> with the semantic ID <code>urn:samm:io.catenax.shared.message_header:3.0.0#MessageHeaderAspect</code>. The API-specific context and its version are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>IndustryCore-RecursiveIrsNotificationApi-Receive:1.0.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The data plane must pass the sender identity to IRS with the <code>edc-bpn</code> header. IRS compares this transport identity with <code>header.senderBpn</code> from the incoming notification.</p>
+</div>
+<div class="paragraph">
+<p>For the complete notification request and response contract, see the <a href="https://eclipse-tractusx.github.io/api-hub/item-relationship-service/">Item Relationship Service API definition</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_required_configuration">Required configuration</h3>
+<div class="paragraph">
+<p>Each IRS instance must have a local BPNL for the recursive path. The Helm chart uses the existing <code>bpn</code> value by default and supports <code>recursive.localBpnl</code> as an explicit override:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">bpn</span><span class="pi">:</span> <span class="s">&lt;LOCAL_BPNL&gt;</span>
+<span class="na">recursive</span><span class="pi">:</span>
+  <span class="c1"># Optional. Omit this value to reuse bpn.</span>
+  <span class="na">localBpnl</span><span class="pi">:</span>
+  <span class="na">timeout</span><span class="pi">:</span>
+    <span class="na">defaultJobTtl</span><span class="pi">:</span> <span class="s">PT30M</span>
+    <span class="na">maxJobTtl</span><span class="pi">:</span> <span class="s">PT2H</span>
+    <span class="na">childResponseSafetyBuffer</span><span class="pi">:</span> <span class="s">PT60S</span>
+    <span class="na">timeoutCheckInterval</span><span class="pi">:</span> <span class="s">PT30S</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Set <code>recursive.localBpnl</code> only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property <code>irs.recursive.localBpnl</code>, or the environment variable <code>IRS_RECURSIVE_LOCAL_BPNL</code>, remains required. The value identifies the local IRS instance when it sends recursive partner notifications.</p>
+</div>
+<div class="paragraph">
+<p><code>recursive.timeout.defaultJobTtl</code> defines the runtime of a root job when the start request does not provide an explicit TTL. For stable productive usage the default of <code>PT30M</code> gives slow partners enough time to answer. For short-lived test or demo scenarios <code>PT5M</code> can be used if the involved submodel providers and EDC negotiations are expected to answer quickly.</p>
+</div>
+<div class="paragraph">
+<p><code>recursive.timeout.maxJobTtl</code> caps requested TTL values. <code>recursive.timeout.childResponseSafetyBuffer</code> is subtracted from the current tier&#8217;s job deadline to determine when waiting for direct child responses stops. The remaining time is reserved for local aggregation and, for a non-root job, sending the response upstream before the local hard deadline is reached.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_partner_setup">Partner setup</h3>
+<div class="paragraph">
+<p>Each participant acts as an EDC provider for incoming recursive notifications and as an EDC consumer for outgoing notifications. Complete the following setup before starting a recursive job:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure the local BPNL and both IRS API keys. Keep the administrative key outside the notification asset; use the regular <code>VIEW_IRS</code> key in the notification data address.</p>
+</li>
+<li>
+<p>Publish the recursive notification asset in the participant&#8217;s provider EDC with <code>dct:type</code>, <code>cx-common:version</code>, the IRS notification endpoint and the regular IRS API key shown above.</p>
+</li>
+<li>
+<p>Create an access policy and contract policy for the notification asset that are compatible with the current IRS policy matcher. The access policy controls catalog visibility; the contract policy defines the permitted use of the endpoint.</p>
+</li>
+<li>
+<p>Create a contract definition that links the notification asset to those policies so partner IRS instances can discover and negotiate the offer.</p>
+</li>
+<li>
+<p>Register the DTR, PURIS and Industry Core accepted policies described below in the IRS Policy Store through <code>POST /irs/policies</code>. The offered contract policy must satisfy an active accepted policy; otherwise the recursive sender rejects the catalog offer.</p>
+</li>
+<li>
+<p>Store the local chain opening grant for every asset that the participant may process under the opening. Leaf participants use an empty <code>allowedBpnlSet</code>.</p>
+</li>
+<li>
+<p>Verify that each direct partner can discover an offer with <code>dct:type=https://w3id.org/catenax/taxonomy#RecursiveIrsNotificationApi</code> and <code>cx-common:version=1.0</code> and that its policy is accepted.</p>
+</li>
+<li>
+<p>Start the root job only after the notification routes, policies, contract definitions and local grants are available on all participating tiers.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The provider offer and the consumer&#8217;s accepted policy configuration must use compatible constraints. The current IRS policy matcher uses the <code><a href="https://w3id.org/catenax/policy/" class="bare">https://w3id.org/catenax/policy/</a></code> namespace and represents each <code>rightOperand</code> as a single string.</p>
+</div>
+<div class="sect3">
+<h4 id="_provider_edc_policy_and_contract_definition">Provider EDC policy and contract definition</h4>
+<div class="paragraph">
+<p>The provider EDC and the consumer IRS use separate policy representations. The provider creates policy definitions through the EDC Management API and publishes the contract policy as part of the catalog offer. The consumer stores an accepted policy in the IRS Policy Store and uses it to decide whether that catalog offer is acceptable.</p>
+</div>
+<div class="paragraph">
+<p>The access policy is also created as an EDC policy definition. Its constraints determine catalog visibility and depend on the participant&#8217;s connector and identity setup. The following template shows the Management API structure without prescribing participant-specific access constraints. Replace the operand placeholders with the access rule agreed for the target environment.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@vocab"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/edc/v0.0.1/ns/"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"odrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.w3.org/ns/odrl/2/"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recursive-notification-access-policy"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"odrl:Set"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"odrl:permission"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"odrl:action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"odrl:use"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"odrl:constraint"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"odrl:and"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"odrl:leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;ACCESS_LEFT_OPERAND&gt;"</span><span class="p">,</span><span class="w">
+              </span><span class="nl">"odrl:operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"odrl:eq"</span><span class="w">
+              </span><span class="p">},</span><span class="w">
+              </span><span class="nl">"odrl:rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;ACCESS_RIGHT_OPERAND&gt;"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following example shows the provider-side contract policy definition for the recursive PURIS notification asset using the constraint format supported by the current IRS policy matcher.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@vocab"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/edc/v0.0.1/ns/"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"odrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.w3.org/ns/odrl/2/"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"cx-policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/policy/"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recursive-puris-contract-policy"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"odrl:Set"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"odrl:permission"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"odrl:action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"odrl:use"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"odrl:constraint"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"odrl:and"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"odrl:leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cx-policy:FrameworkAgreement"</span><span class="p">,</span><span class="w">
+              </span><span class="nl">"odrl:operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"odrl:eq"</span><span class="w">
+              </span><span class="p">},</span><span class="w">
+              </span><span class="nl">"odrl:rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DataExchangeGovernance:1.0"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"odrl:leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cx-policy:UsagePurpose"</span><span class="p">,</span><span class="w">
+              </span><span class="nl">"odrl:operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"odrl:eq"</span><span class="w">
+              </span><span class="p">},</span><span class="w">
+              </span><span class="nl">"odrl:rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cx.puris.base:1"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a contract definition that links the notification asset, the access policy and the contract policy:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@vocab"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/edc/v0.0.1/ns/"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ContractDefinition"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recursive-puris-contract-definition"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"accessPolicyId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recursive-notification-access-policy"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"contractPolicyId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"recursive-puris-contract-policy"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"assetsSelector"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CriterionDto"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"operandLeft"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/edc/v0.0.1/ns/id"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"="</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"operandRight"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;NOTIFICATION_ASSET_ID&gt;"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These payloads are sent to the policy-definition and contract-definition endpoints of the provider EDC Management API. The exact endpoint paths and Management API envelope depend on the connector version. The IDs must reference resources provisioned in the same provider EDC.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_consumer_irs_accepted_policy">Consumer IRS accepted policy</h4>
+<div class="paragraph">
+<p>The recursive path requires accepted policies for Digital Twin Registry access, PURIS submodels and Industry Core submodels. Register them with an <code>ADMIN_IRS</code> API key through:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>POST /irs/policies</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The endpoint expects a <code>CreatePolicyRequest</code> with <code>validUntil</code> and an EDC policy payload. The requests below intentionally omit <code>businessPartnerNumber</code>, which stores the policies as defaults. Default policies are used when no policies are registered specifically for the target BPNL.</p>
+</div>
+<div class="paragraph">
+<p>The Digital Twin Registry policy accepts active Catena-X members for the Digital Twin Registry usage purpose:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"validUntil"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2099-12-12T23:59:59.999Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"payload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"odrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.w3.org/ns/odrl/2/"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"global_dtr_contract_policy"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"use"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"constraint"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"and"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+              </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/policy/Membership"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="w">
+              </span><span class="p">},</span><span class="w">
+              </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/policy/UsagePurpose"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cx.core.digitalTwinRegistry:1"</span><span class="w">
+              </span><span class="p">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The PURIS policy accepts the anonymized PURIS submodels used by the recursive job:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"validUntil"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2099-12-12T23:59:59.999Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"payload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"odrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.w3.org/ns/odrl/2/"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"global_submodel_contract_policy"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"use"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"constraint"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"and"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+              </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/policy/FrameworkAgreement"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DataExchangeGovernance:1.0"</span><span class="w">
+              </span><span class="p">},</span><span class="w">
+              </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/policy/UsagePurpose"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cx.puris.base:1"</span><span class="w">
+              </span><span class="p">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Industry Core policy accepts the BOM and PartTypeInformation submodels used during traversal and material-data collection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"validUntil"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2099-12-12T23:59:59.999Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"payload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"odrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.w3.org/ns/odrl/2/"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"global_irs_default_contract_policy"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"policy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"use"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"constraint"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"and"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+              </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/policy/FrameworkAgreement"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DataExchangeGovernance:1.0"</span><span class="w">
+              </span><span class="p">},</span><span class="w">
+              </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"leftOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://w3id.org/catenax/policy/UsagePurpose"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"operator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                  </span><span class="nl">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eq"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"rightOperand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cx.core.industrycore:1"</span><span class="w">
+              </span><span class="p">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The policy IDs identify the local Policy Store records. Catalog offers are accepted by comparing their permission constraints with the active stored policies. The provider&#8217;s offered contract policy must therefore use matching left operands, operators and right operands. Policy Store configuration is described in <a href="#_configuration">IRS configuration</a>, and the REST schema is available in the <a href="https://eclipse-tractusx.github.io/api-hub/item-relationship-service/">Item Relationship Service API definition</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_persistence_and_cleanup">Persistence and cleanup</h3>
+<div class="paragraph">
+<p>Recursive job state is persisted in the regular job blob store. With the default MinIO configuration this is the <code>irs-jobs</code> bucket. The recursive path stores job state and message correlation entries with dedicated prefixes in that bucket. The blob prefixes are <code>recursive-job:</code>, <code>recursive-msg-in:</code> and <code>recursive-msg-out:</code>.</p>
+</div>
+<div class="paragraph">
+<p>Recursive jobs are intentionally persisted so that a restarted IRS instance can continue or finish known recursive jobs. The recursive API does not provide a job delete endpoint. Therefore the blob store retention must be configured by the operator. The retention setting applies to the configured jobs bucket, not only to one individual recursive job. When IRS creates a missing MinIO bucket, it configures bucket lifecycle expiration from:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">blobstore</span><span class="pi">:</span>
+  <span class="na">jobs</span><span class="pi">:</span>
+    <span class="na">containerName</span><span class="pi">:</span> <span class="s">irs-jobs</span>
+    <span class="na">daysToLive</span><span class="pi">:</span> <span class="s">7</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>daysToLive</code> is day-based in the MinIO persistence implementation and is separate from the recursive job runtime TTL. Use a short retention such as <code>1</code> day for test or demo environments. For productive environments, choose a value that fits operational debugging, audit and storage requirements. The default is <code>7</code> days.</p>
+</div>
+<div class="paragraph">
+<p>The MinIO lifecycle rule is only applied when IRS creates a missing bucket. If the bucket already exists, changing <code>daysToLive</code> does not update the bucket lifecycle automatically. Update the lifecycle rule in MinIO directly, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">mc ilm rule add <span class="nt">--expire-days</span> 7 myminio/irs-jobs</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Adjust the MinIO alias, bucket name and retention value to the target environment. Use <code>-1</code> to disable expiration. Do not disable expiration for recursive jobs unless another cleanup mechanism is in place. Without a retention policy, recursive job blobs and message correlation blobs remain in MinIO.</p>
+</div>
+<div class="paragraph">
+<p>Chain opening grants are stored separately in the <code>irs-chain-opening-grants</code> container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_result_model">Result model</h3>
+<div class="paragraph">
+<p>The recursive result separates technical job execution from the business result.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>job.state</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Technical state of the local job. A job can be technically <code>COMPLETED</code> even if the business result is <code>FAILED</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.resultStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Business outcome of the recursive aggregation. Possible values are <code>COMPLETE</code>, <code>PARTIAL</code> and <code>FAILED</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.childItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregated material tree. Each node represents a BOM child and can contain material metadata, BOM quantity, local aspect payloads, tombstones and further child nodes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>items</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aspect payloads collected for one material node.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tombstones</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sanitized failure information. Tombstones must not expose hidden partner identities or connector details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tombstones[].occurrences</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of identical failures represented by an aggregated tombstone.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tombstones[].errorRefs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Identity-free UUIDs used to correlate the aggregated failures with IRS logs.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The privacy boundary, placement and sanitization rules for tombstones are described in <a href="../arc42/cross-cutting/recursive-irs.html#recursive-irs-tombstone-concept">Recursive IRS tombstone concept</a>.</p>
+</div>
+<div class="paragraph">
+<p>Root jobs return the material tree below the requested root asset. For the supported PURIS use case, the root asset&#8217;s own PURIS payload is not collected.</p>
+</div>
+<div class="paragraph">
+<p><code>COMPLETE</code> means that the aggregation finished without tombstones. The tree can still be empty if the requested root asset has no BOM children and root payload collection is not part of the supported PURIS use case. <code>PARTIAL</code> means that at least one tombstone is present and the material tree still contains usable data. <code>FAILED</code> means that no usable material tree could be produced, or that validation or deadline handling failed the job.</p>
+</div>
+<div class="sect3">
+<h4 id="_error_correlation">Error correlation</h4>
+<div class="paragraph">
+<p>A synchronous recursive API error contains one <code>errorRef</code>. The same UUID is written to the logs of the IRS instance that returned the error. Use it together with the response <code>code</code> and HTTP status when investigating a rejected or failed request.</p>
+</div>
+<div class="paragraph">
+<p>Every recursive tombstone contains a non-empty <code>errorRefs</code> list. When identical tombstones are merged at the same result-tree node, their <code>occurrences</code> values and correlation references are combined. Valid references received from a child are preserved across the recursive response path; missing or invalid references are replaced during sanitization. The UUIDs contain no partner, asset or endpoint identity.</p>
+</div>
+<div class="paragraph">
+<p>Notification-delivery failures log their reference at <code>ERROR</code> on the sending IRS instance. References created for other tombstone reasons are logged by <code>RecursiveTombstones</code> at <code>DEBUG</code> on the IRS instance where the failure originated. Enable DEBUG logging for <code>org.eclipse.tractusx.irs.recursive.service.RecursiveTombstones</code> when those references must be correlated during troubleshooting. A failure originating at another tier may require the operator of that IRS instance to perform the search.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting">Troubleshooting</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22.2222%;">
+<col style="width: 33.3333%;">
+<col style="width: 44.4445%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Symptom</th>
+<th class="tableblock halign-left valign-top">Likely cause</th>
+<th class="tableblock halign-left valign-top">Checks and corrective action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS startup fails with a recursive configuration error</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local BPNL is blank or does not match the BPNL format.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check <code>bpn</code> and the optional Helm override <code>recursive.localBpnl</code>. Outside Helm, configure <code>irs.recursive.localBpnl</code> or <code>IRS_RECURSIVE_LOCAL_BPNL</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starting a job returns <code>403</code> with <code>CHAIN_OPENING_GRANT_REJECTED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No active local grant matches the request.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify the complete grant key (<code>openingId</code>, <code>globalAssetId</code>, <code>requesterBpn</code>, <code>useCase</code>) and its optional <code>validFrom</code> and <code>validTo</code> values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A BOM child is not contacted and no tombstone is returned for it</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Its BPNL is not included in the local grant&#8217;s <code>allowedBpnlSet</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compare the local BOM relationships with the direct-child allow-list. Grant filtering intentionally does not expose filtered partners in the result.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receiving a notification returns <code>403</code> with <code>NOTIFICATION_AUTHENTICATION_FAILED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The EDC transport identity does not match the notification sender.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the data plane forwards <code>edc-bpn</code> and that it equals <code>header.senderBpn</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A child branch fails during notification delivery</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connector discovery, catalog lookup, policy matching, contract negotiation or data-plane delivery failed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inspect the <code>CHILD_BRANCH_FAILED</code> tombstone and search the sender&#8217;s logs using its <code>errorRefs</code>. Verify the receiver&#8217;s notification asset, policies, contract definition, DSP endpoint and data-plane availability.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A job remains <code>RUNNING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job is still processing or waiting for child responses before its configured deadline.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check <code>job.asyncFetchedItems</code>, the job and child-response deadlines, notification delivery on the direct children and <code>recursive.timeout.timeoutCheckInterval</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The terminal result is <code>PARTIAL</code> or <code>FAILED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one branch, local aspect or required material value could not be processed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inspect tombstone <code>scope</code>, <code>reason</code>, <code>detail</code>, <code>occurrences</code> and <code>errorRefs</code>. Delivery-failure references are available in the sender&#8217;s error logs. For other tombstones, search the originating IRS instance with DEBUG logging enabled for <code>RecursiveTombstones</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A recursive endpoint returns <code>503</code> with <code>PERSISTENCE_UNAVAILABLE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The configured job or grant blob store is unavailable.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check the MinIO or Azure connection, credentials, containers and IRS persistence logs using the response <code>errorRef</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_tombstone_reasons">Tombstone reasons</h4>
+<div class="paragraph">
+<p>The recursive result exposes the tombstone reasons listed below. The <code>retryable</code> field classifies whether the cause can be transient. It does not trigger an automatic retry of the current job. Evaluate <code>scope</code>, <code>reason</code>, <code>detail</code>, <code>occurrences</code> and <code>errorRefs</code> together when investigating a result.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 10%;">
+<col style="width: 30%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Reason</th>
+<th class="tableblock halign-left valign-top">Retryable</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+<th class="tableblock halign-left valign-top">Checks and corrective action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RECURSIVE_DEADLINE_EXCEEDED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The hard deadline of the local recursive job was reached.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check the requested TTL, the configured default and maximum TTL, child-response deadlines, and notification and submodel latency.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CHILD_RESPONSE_TIMEOUT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A direct child did not return a response before the child-response deadline.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check the child job, both notification directions, synchronized system clocks, <code>recursive.timeout.childResponseSafetyBuffer</code> and <code>recursive.timeout.timeoutCheckInterval</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CHILD_BRANCH_FAILED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processing a child branch or delivering an outbound notification failed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delivery failures can be correlated through the sender&#8217;s error logs. Other child-processing failures require DEBUG logging for <code>RecursiveTombstones</code> on the originating IRS instance. Local delivery classifications include <code>NO_CONNECTOR_ENDPOINT</code>, <code>CONNECTOR_DISCOVERY_FAILED</code>, <code>CONNECTOR_ENDPOINT_INVALID</code>, <code>NOTIFICATION_ASSET_NOT_FOUND</code>, <code>NOTIFICATION_POLICY_REJECTED</code>, <code>CATALOG_REQUEST_FAILED</code>, <code>CONTRACT_NEGOTIATION_FAILED</code>, <code>DATA_PLANE_DELIVERY_FAILED</code> and <code>EDC_NOTIFICATION_FAILED</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CHILD_RESPONSE_INVALID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A correlated child response violates the notification contract, contains no result or contains an invalid material tree.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compare the response header and content with the notification contract. Verify message correlation, lifecycle, aspects, result status and material-tree fields. Correlating locally generated references requires DEBUG logging for <code>RecursiveTombstones</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CHAIN_OPENING_REJECTED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The receiving child found no active local grant for the incoming recursive request.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">On the child, verify the complete grant key (<code>openingId</code>, <code>globalAssetId</code>, <code>requesterBpn</code>, <code>useCase</code>) and the optional validity interval.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOCAL_ASPECT_NOT_AVAILABLE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The digital twin shell, the requested aspect descriptor or a usable descriptor endpoint is missing.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the DTR contains the shell and the exact requested semantic ID with at least one endpoint.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOCAL_ASPECT_REQUEST_FAILED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An available requested aspect could not be retrieved through the DTR, EDC or submodel path.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check the descriptor endpoint, DSP endpoint, catalog offer, accepted policy, contract negotiation and data-plane or submodel endpoint. Correlating the tombstone reference requires DEBUG logging for <code>RecursiveTombstones</code> on the originating IRS instance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PART_TYPE_INFORMATION_NOT_AVAILABLE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PartTypeInformation is unavailable or at least one required material field is missing.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify the descriptor and endpoints and ensure the payload contains both <code>manufacturerPartId</code> and <code>nameAtManufacturer</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PART_TYPE_INFORMATION_REQUEST_FAILED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The PartTypeInformation submodel could not be retrieved for technical reasons.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check shell resolution, the descriptor and DSP endpoint, catalog and policy matching, contract negotiation and data-plane delivery.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BOM_QUANTITY_NOT_AVAILABLE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A BOM relationship does not provide a complete quantity value and supported unit.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ensure the relationship contains a numeric quantity value and one of the supported SAMM units.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BOM_CHILD_GLOBAL_ASSET_ID_INVALID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A BOM relationship contains a child global asset ID that is neither a UUID nor a URN UUID.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Correct <code>linkedItem.childCatenaXId.globalAssetId</code>. The invalid branch is isolated; valid sibling branches can continue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BOM_SUBMODEL_NOT_SUPPORTED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A SingleLevelBomAsPlanned descriptor is present, but no unique descriptor matches the supported version, or the requested lifecycle is unsupported.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provide exactly one descriptor with the supported SingleLevelBomAsPlanned semantic ID. If no BOM descriptor exists at all, the asset is treated as a leaf instead of producing this reason.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BOM_SUBMODEL_ENDPOINT_MISSING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The supported BOM descriptor has no endpoint, or its endpoint does not contain a usable <code>dspEndpoint</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add a descriptor endpoint with a valid <code>dspEndpoint</code> in its <code>subprotocolBody</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNSUPPORTED_ANONYMIZED_ASPECT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The requested aspect is not part of the supported recursive PURIS use case.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use the supported ItemStockAnonymized, DeliveryInformationAnonymized and PlannedProductionOutputAnonymized semantic IDs consistently on all tiers.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>RecursiveNotificationDeliveryFailureReason</code> values such as <code>EDC_NOTIFICATION_FAILED</code>, <code>NOTIFICATION_ASSET_NOT_FOUND</code> and <code>NOTIFICATION_POLICY_REJECTED</code> are local delivery classifications. They are not returned as tombstone reasons. Other chain members receive the privacy-safe <code>CHILD_BRANCH_FAILED</code> reason and use its <code>errorRefs</code> for cross-tier log correlation.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_known_limitations">Known limitations</h3>
+<div class="paragraph">
+<p>The recursive path currently has the following operational limitations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The recursive job store does not provide an API delete operation. Use MinIO lifecycle rules or an equivalent operator-managed cleanup process.</p>
+</li>
+<li>
+<p>The recursive job repository uses local in-memory locks around persisted job blobs. Run one IRS replica for the recursive path unless the deployment provides external serialized job updates.</p>
+</li>
+<li>
+<p>There is no recursive tree-size or payload-size limit in the recursive aggregation itself. There is also no recursive request-size limit on the notification endpoint. Large chains can create large persisted results and large API responses; large incoming notifications should be limited by the surrounding runtime or ingress setup.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting_2">Troubleshooting</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_proxy_support">Proxy support</h3>
@@ -1635,19 +2583,22 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 <p>SPDX-License-Identifier: Apache-2.0</p>
 </li>
 <li>
-<p>SPDX-FileCopyrightText: 2021, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)</p>
+<p>SPDX-FileCopyrightText: 2021 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)</p>
 </li>
 <li>
-<p>SPDX-FileCopyrightText: 2022, 2023 BOSCH AG</p>
+<p>SPDX-FileCopyrightText: 2022 BOSCH AG</p>
 </li>
 <li>
-<p>SPDX-FileCopyrightText: 2021, 2022 ZF Friedrichshafen AG</p>
+<p>SPDX-FileCopyrightText: 2021 ZF Friedrichshafen AG</p>
 </li>
 <li>
-<p>SPDX-FileCopyrightText: 2022  ISTOS GmbH</p>
+<p>SPDX-FileCopyrightText: 2022 ISTOS GmbH</p>
 </li>
 <li>
-<p>SPDX-FileCopyrightText: 2021, 2024 Contributors to the Eclipse Foundation</p>
+<p>SPDX-FileCopyrightText: 2021 Contributors to the Eclipse Foundation</p>
+</li>
+<li>
+<p>SPDX-FileCopyrightText: 2026 Volkswagen AG</p>
 </li>
 <li>
 <p>Source URL: <a href="https://github.com/eclipse-tractusx/item-relationship-service" class="bare">https://github.com/eclipse-tractusx/item-relationship-service</a></p>
@@ -1659,7 +2610,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-14 06:54:42 UTC
+Last updated 2026-08-24 15:21:58 UTC
 </div>
 </div>
 </body>

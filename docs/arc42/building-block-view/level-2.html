@@ -449,28 +449,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_component_description">Component description</a></li>
 </ul>
 </li>
-<li><a href="#_recursivejobhandler">RecursiveJobHandler</a>
+<li><a href="#_recursive_irs">Recursive IRS</a>
 <ul class="sectlevel2">
 <li><a href="#_component_diagram_2">Component diagram</a></li>
 <li><a href="#_component_description_2">Component description</a></li>
 </ul>
 </li>
-<li><a href="#_transferprocessmanagement">TransferProcessManagement</a>
+<li><a href="#_recursivejobhandler">RecursiveJobHandler</a>
 <ul class="sectlevel2">
 <li><a href="#_component_diagram_3">Component diagram</a></li>
 <li><a href="#_component_description_3">Component description</a></li>
 </ul>
 </li>
-<li><a href="#_aastransferprocessmanager">AASTransferProcessManager</a>
+<li><a href="#_transferprocessmanagement">TransferProcessManagement</a>
 <ul class="sectlevel2">
 <li><a href="#_component_diagram_4">Component diagram</a></li>
 <li><a href="#_component_description_4">Component description</a></li>
 </ul>
 </li>
-<li><a href="#_ess_controller">ESS controller</a>
+<li><a href="#_aastransferprocessmanager">AASTransferProcessManager</a>
 <ul class="sectlevel2">
 <li><a href="#_component_diagram_5">Component diagram</a></li>
 <li><a href="#_component_description_5">Component description</a></li>
+</ul>
+</li>
+<li><a href="#_ess_controller">ESS controller</a>
+<ul class="sectlevel2">
+<li><a href="#_component_diagram_6">Component diagram</a></li>
+<li><a href="#_component_description_6">Component description</a></li>
 </ul>
 </li>
 </ul>
@@ -535,13 +541,80 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
+<h2 id="_recursive_irs">Recursive IRS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The recursive IRS provides grant-controlled partner-to-partner traversal.
+It starts from one root asset, resolves the supported <code>SingleLevelBomAsPlanned</code> relationship, filters direct children by the local chain opening grant and aggregates anonymized PURIS payloads into a material tree.</p>
+</div>
+<div class="sect2">
+<h3 id="_component_diagram_2">Component diagram</h3>
+<div class="imageblock">
+<div class="content">
+<img src="level-2-recursive-puris.svg" alt="level 2 recursive puris" width="953" height="513">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_component_description_2">Component description</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Components</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recursive Job API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starts recursive jobs and provides their current state and result to the root caller.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recursive Notification API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receives REQUEST notifications that start child jobs and RESPONSE notifications that return their results.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Chain Opening Grant API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages the local grants that authorize recursive traversal for one chain opening.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recursive Job Processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coordinates grant validation, BOM traversal, child requests, timeout handling and result aggregation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin and Submodel Access</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Resolves shell and submodel descriptors through the Digital Twin Registry and retrieves BOM, PartTypeInformation and anonymized PURIS payloads through EDC.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Notification Transport</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Discovers the recursive notification API in the EDC catalog and sends REQUEST and RESPONSE notifications through EDC.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recursive Persistence</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stores recursive jobs, notification correlation entries and chain opening grants in the configured blob store.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The recursive result must not expose hidden partner identities.
+Partner filtering is local to the current hop.
+Failures that are returned upstream are represented as sanitized tombstones.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_recursivejobhandler">RecursiveJobHandler</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <strong>RecursiveJobHandler</strong> component provide the logic to build jobs recursively to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.</p>
 </div>
 <div class="sect2">
-<h3 id="_component_diagram_2">Component diagram</h3>
+<h3 id="_component_diagram_3">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
 <img src="level-2-jobhandler.svg" alt="level 2 jobhandler" width="752" height="280">
@@ -549,7 +622,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_component_description_2">Component description</h3>
+<h3 id="_component_description_3">Component description</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -590,7 +663,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.</p>
 </div>
 <div class="sect2">
-<h3 id="_component_diagram_3">Component diagram</h3>
+<h3 id="_component_diagram_4">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
 <img src="level-2-transfer-process-management.svg" alt="level 2 transfer process management" width="1408" height="1017">
@@ -598,7 +671,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_component_description_3">Component description</h3>
+<h3 id="_component_description_4">Component description</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -648,7 +721,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 The Runnable consists of different Delegates which are each responsible for requesting certain types of data.</p>
 </div>
 <div class="sect2">
-<h3 id="_component_diagram_4">Component diagram</h3>
+<h3 id="_component_diagram_5">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
 <img src="level-2-int-transfer-process-delegate.svg" alt="level 2 int transfer process delegate" width="743" height="615">
@@ -656,7 +729,7 @@ The Runnable consists of different Delegates which are each responsible for requ
 </div>
 </div>
 <div class="sect2">
-<h3 id="_component_description_4">Component description</h3>
+<h3 id="_component_description_5">Component description</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -692,7 +765,7 @@ The result is stored in "relationships" of the job response.</p></td>
 <p>The ESS REST controller is used to provide a RESTful web service to related Environmental and Social Standards functionalities.</p>
 </div>
 <div class="sect2">
-<h3 id="_component_diagram_5">Component diagram</h3>
+<h3 id="_component_diagram_6">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
 <img src="level-2-ess-controller.svg" alt="level 2 ess controller" width="627" height="445">
@@ -700,7 +773,7 @@ The result is stored in "relationships" of the job response.</p></td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_component_description_5">Component description</h3>
+<h3 id="_component_description_6">Component description</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -737,7 +810,7 @@ The result is stored in "relationships" of the job response.</p></td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-14 06:54:42 UTC
+Last updated 2026-08-24 15:21:58 UTC
 </div>
 </div>
 </body>

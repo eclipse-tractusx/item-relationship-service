@@ -465,6 +465,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_hexagonal_architecture">Hexagonal architecture</a></li>
 </ul>
 </li>
+<li><a href="#_recursive_irs_concepts">Recursive IRS concepts</a>
+<ul class="sectlevel2">
+<li><a href="#_state_consistency_and_concurrency">State consistency and concurrency</a></li>
+<li><a href="#_message_correlation_and_idempotency">Message correlation and idempotency</a></li>
+<li><a href="#_notification_validation">Notification validation</a></li>
+<li><a href="#recursive-irs-tombstone-concept">Privacy and tombstone sanitization</a></li>
+<li><a href="#_restart_recovery">Restart recovery</a></li>
+</ul>
+</li>
 <li><a href="#_under_the_hood_concepts">"Under-the-hood" concepts</a>
 <ul class="sectlevel2">
 <li><a href="#_persistence">Persistence</a></li>
@@ -501,6 +510,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_testing_concepts">Testing concepts</a>
 <ul class="sectlevel2">
 <li><a href="#_how_to_test_a_feature">How to test a feature</a></li>
+<li><a href="#_recursive_irs_integration_tests">Recursive IRS integration tests</a></li>
 <li><a href="#_umbrella">Umbrella</a></li>
 </ul>
 </li>
@@ -831,6 +841,67 @@ Abstractions should not depend on details. Details (concrete implementations) sh
 <div class="content">
 <img src="architecture.svg" alt="architecture" width="710" height="507">
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_recursive_irs_concepts">Recursive IRS concepts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following contracts apply across the recursive job, notification and persistence flows. The complete runtime choreography is described in <a href="../runtime-view/recursive-puris/recursive-puris.html">Use Case: Recursive PURIS Anonymized Data</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_state_consistency_and_concurrency">State consistency and concurrency</h3>
+<div class="paragraph">
+<p>Recursive job state is persisted in <code>BlobRecursiveJobStateStore</code>.
+Existing jobs are changed through <code>RecursiveJobRepository.updateIfNotTerminal</code>.
+That repository serializes read-modify-write cycles per job and skips updates once a job is terminal.
+Partner notifications are sent outside the job lock.
+This prevents long EDC calls from blocking state updates and avoids overwriting concurrent child responses, delivery failures or timeout updates.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_message_correlation_and_idempotency">Message correlation and idempotency</h3>
+<div class="paragraph">
+<p>The blob store keeps two message correlation maps.
+<code>recursive-msg-in:</code> maps an incoming REQUEST <code>messageId</code> to the local child job.
+It is used for idempotency when the same parent request is delivered again.
+<code>recursive-msg-out:</code> maps an outgoing child REQUEST <code>messageId</code> to the local parent job.
+When a child later sends a RESPONSE, the parent uses <code>header.relatedMessageId</code> to find the matching open child branch.</p>
+</div>
+<div class="paragraph">
+<p>A child RESPONSE always gets its own new <code>messageId</code>.
+Its <code>relatedMessageId</code> is the <code>messageId</code> of the REQUEST received from the parent.
+This is the correlation link that connects one recursive hop back to the parent request.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_notification_validation">Notification validation</h3>
+<div class="paragraph">
+<p>Incoming notifications are validated in two steps.
+First, <code>RecursiveNotificationReceiver</code> reads only routing fields from the raw JSON.
+This allows a RESPONSE with a valid <code>relatedMessageId</code> to be correlated even when the full payload is invalid.
+Second, <code>RecursiveNotificationMessageValidator</code> strictly decodes the full notification and validates it against the REQUEST or RESPONSE contract.
+An invalid but correlatable RESPONSE fails the corresponding child branch immediately instead of leaving the parent waiting until timeout.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="recursive-irs-tombstone-concept">Privacy and tombstone sanitization</h3>
+<div class="paragraph">
+<p>The privacy boundary is enforced when data is mapped or forwarded upstream.
+<code>RecursiveResponseMapper</code>, <code>RecursiveResultTreeSanitizer</code> and <code>RecursiveTombstones</code> keep the material tree structurally readable while sanitizing tombstones and malformed downstream data.
+Upstream responses must not expose hidden partner BPNLs, connector URLs or downstream asset identifiers that are not part of the agreed anonymized payload contract.
+Tombstones associated with a material branch remain on that material node. Failures that cannot be assigned to a material node are returned as root-level tombstones.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_restart_recovery">Restart recovery</h3>
+<div class="paragraph">
+<p><code>RecursiveStartupRecovery</code> resumes open jobs after application startup.
+Jobs in <code>GRANT_CHECKED</code> are resumed from accepted processing.
+Jobs in <code>AWAITING_CHILDREN</code> resend unanswered child requests.
+The timeout monitor remains the final safety net for jobs that still exceed their deadline.</p>
 </div>
 </div>
 </div>
@@ -1401,6 +1472,13 @@ This test can be extended with your desired configuration to maintain full cover
 </div>
 <div class="paragraph">
 <p>Tavern Tests are located in <a href="https://github.com/eclipse-tractusx/item-relationship-service/tree/main/local/testing/api-tests">local/testing/api-tests</a> and executed with a GitHub workflow <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml">tavern-UMBRELLA.yml</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_recursive_irs_integration_tests">Recursive IRS integration tests</h3>
+<div class="paragraph">
+<p>The recursive integration tests under <code>irs-api/src/test/java/org/eclipse/tractusx/irs/recursive/e2e</code> start multiple IRS instances with Testcontainers-backed external systems.
+They are useful entry points for understanding the complete recursive choreography.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2165,7 +2243,7 @@ For this reason, the IRS test data was changed to include only data pointing to 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-14 06:54:42 UTC
+Last updated 2026-08-24 15:21:58 UTC
 </div>
 </div>
 </body>

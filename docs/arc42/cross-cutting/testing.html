@@ -444,6 +444,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_how_to_test_a_feature">How to test a feature</a></li>
+<li><a href="#_recursive_irs_integration_tests">Recursive IRS integration tests</a></li>
 <li><a href="#_umbrella">Umbrella</a></li>
 </ul>
 </div>
@@ -468,6 +469,15 @@ This test can be extended with your desired configuration to maintain full cover
 </div>
 <div class="paragraph">
 <p>Tavern Tests are located in <a href="https://github.com/eclipse-tractusx/item-relationship-service/tree/main/local/testing/api-tests">local/testing/api-tests</a> and executed with a GitHub workflow <a href="https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml">tavern-UMBRELLA.yml</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_recursive_irs_integration_tests">Recursive IRS integration tests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The recursive integration tests under <code>irs-api/src/test/java/org/eclipse/tractusx/irs/recursive/e2e</code> start multiple IRS instances with Testcontainers-backed external systems.
+They are useful entry points for understanding the complete recursive choreography.</p>
 </div>
 </div>
 </div>
@@ -562,7 +572,7 @@ For this reason, the IRS test data was changed to include only data pointing to 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-14 06:54:42 UTC
+Last updated 2026-08-24 15:21:58 UTC
 </div>
 </div>
 </body>
