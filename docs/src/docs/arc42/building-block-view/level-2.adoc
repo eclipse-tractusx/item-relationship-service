@@ -37,6 +37,50 @@ include::../../../uml-diagrams/building-block-view/level-2-int.puml[]
 |===
 
 
+== Recursive IRS
+
+The recursive IRS provides grant-controlled partner-to-partner traversal.
+It starts from one root asset, resolves the supported `SingleLevelBomAsPlanned` relationship, filters direct children by the local chain opening grant and aggregates anonymized PURIS payloads into a material tree.
+
+=== Component diagram
+
+[plantuml, target=level-2-recursive-puris, format=svg]
+....
+include::../../../uml-diagrams/building-block-view/level-2-int-recursive-puris.puml[]
+....
+
+=== Component description
+
+|===
+|Components |Description
+
+|Recursive Job API
+|Starts recursive jobs and provides their current state and result to the root caller.
+
+|Recursive Notification API
+|Receives REQUEST notifications that start child jobs and RESPONSE notifications that return their results.
+
+|Chain Opening Grant API
+|Manages the local grants that authorize recursive traversal for one chain opening.
+
+|Recursive Job Processing
+|Coordinates grant validation, BOM traversal, child requests, timeout handling and result aggregation.
+
+|Digital Twin and Submodel Access
+|Resolves shell and submodel descriptors through the Digital Twin Registry and retrieves BOM, PartTypeInformation and anonymized PURIS payloads through EDC.
+
+|Notification Transport
+|Discovers the recursive notification API in the EDC catalog and sends REQUEST and RESPONSE notifications through EDC.
+
+|Recursive Persistence
+|Stores recursive jobs, notification correlation entries and chain opening grants in the configured blob store.
+|===
+
+The recursive result must not expose hidden partner identities.
+Partner filtering is local to the current hop.
+Failures that are returned upstream are represented as sanitized tombstones.
+
+
 == RecursiveJobHandler
 
 The *RecursiveJobHandler* component provide the logic to build jobs recursively to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.

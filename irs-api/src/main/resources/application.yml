@@ -70,6 +70,13 @@ springdoc: # API docs configuration
 
 irs: # Application config
   apiUrl: "${IRS_API_URL:http://localhost:8080}" # Public URL of the application, used in Swagger UI
+  recursive:
+    localBpnl: ${IRS_RECURSIVE_LOCAL_BPNL:} # Mandatory BPNL of this IRS instance; startup fails when blank or not a BPNL.
+    timeout:
+      defaultJobTtl: ${IRS_RECURSIVE_TIMEOUT_DEFAULT_JOB_TTL:PT30M}
+      maxJobTtl: ${IRS_RECURSIVE_TIMEOUT_MAX_JOB_TTL:PT2H}
+      childResponseSafetyBuffer: ${IRS_RECURSIVE_TIMEOUT_CHILD_RESPONSE_SAFETY_BUFFER:PT60S}
+      timeoutCheckInterval: ${IRS_RECURSIVE_TIMEOUT_CHECK_INTERVAL:PT30S}
   job:
     batch:
       threadCount: 5
@@ -124,6 +131,9 @@ blobstore:
   policies:
     containerName: ${BLOB_STORE_POLICY_CONTAINER:irs-policy-bucket}  # the name of the S3 bucket or Blob store container for policies
     daysToLive: ${BLOB_STORE_POLICY_EXPIRATION:-1} # number of days to keep policies in the store, use -1 to disable cleanup
+  chainOpeningGrants:
+    containerName: ${BLOB_STORE_CHAIN_OPENING_GRANT_CONTAINER:irs-chain-opening-grants} # the name of the S3 bucket or Blob store container for chain opening grants
+    daysToLive: ${BLOB_STORE_CHAIN_OPENING_GRANT_EXPIRATION:-1} # number of days to keep chain opening grants in the store, use -1 to disable cleanup
 
 resilience4j:
   retry: # REST client retry configuration

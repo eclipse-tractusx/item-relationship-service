@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022 BOSCH AG
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -91,7 +91,9 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(descriptorEndpoint);
         final Map<String, String> values = Map.of(PLACEHOLDER_AAS_IDENTIFIER, encodeWithBase64(aasIdentifier));
-        return restTemplate.getForObject(uriBuilder.build(values), AssetAdministrationShellDescriptor.class);
+        return restTemplate.getForObject(
+                uriBuilder.buildAndExpand(values).encode().toUri(),
+                AssetAdministrationShellDescriptor.class);
     }
 
     @Override
@@ -99,8 +101,11 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
     public LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(
             final List<IdentifierKeyValuePair> assetIds) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
-        uriBuilder.uriVariables(Map.of(PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds)));
-        return restTemplate.exchange(uriBuilder.build().toUri(), HttpMethod.GET, null, LookupShellsResponse.class)
+        final var uri = uriBuilder.buildAndExpand(Map.of(
+                PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds)))
+                .encode()
+                .toUri();
+        return restTemplate.exchange(uri, HttpMethod.GET, null, LookupShellsResponse.class)
                            .getBody();
     }
 

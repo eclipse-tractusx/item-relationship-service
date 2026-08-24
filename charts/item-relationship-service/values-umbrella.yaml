@@ -1,4 +1,5 @@
 # Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2026 Volkswagen AG
 # Copyright (c) 2021 Contributors to the Eclipse Foundation
 # Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
 #
@@ -37,6 +38,14 @@ job:
   cached:
     threadCount: 5
 bpn: BPNL00000003AZQP
+recursive:
+  # Reuse the Umbrella BPNL instead of defining a second local identifier.
+  localBpnl: "{{ .Values.bpn }}"
+  timeout:
+    defaultJobTtl: PT30M
+    maxJobTtl: PT2H
+    childResponseSafetyBuffer: PT60S
+    timeoutCheckInterval: PT30S
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
 
@@ -111,6 +120,9 @@ blobstore:
     daysToLive: 7
   policies:
     containerName: irs-policy-bucket
+    daysToLive: -1
+  chainOpeningGrants:
+    containerName: irs-chain-opening-grants
     daysToLive: -1
 
 oauth2:

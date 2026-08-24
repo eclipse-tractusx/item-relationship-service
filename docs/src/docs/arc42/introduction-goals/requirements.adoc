@@ -16,3 +16,4 @@ The IRS is a:
 - 'asBuild' BoM of serialized components
 - provides endpoints for submodel-descriptors
 - start recursive Environmental and Social Standard investigations throughout the network based on the "asPlanned" lifecycle
+- provide grant-controlled recursive traversal of `SingleLevelBomAsPlanned` relationships and aggregate anonymized PURIS payloads into a material tree

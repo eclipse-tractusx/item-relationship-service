@@ -4,6 +4,28 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [7.1.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/7.1.0) - 2026-09-16
+
+| Dependency                                                                                                                               | Version                      | Helm       | Comments                                      |
+|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|------------|-----------------------------------------------|
+| EDC                                                                                                                                      | 0.10.0-rc1                   | 0.10.0-rc1 | REST connection                               |
+| Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1      | REST connection                               |
+| DTR                                                                                                                                      | 0.12.0                       | 0.12.0     | REST connection                               |
+| Discovery Finder                                                                                                                         | 0.2.5                        | -          | REST connection                               |
+| MinIO                                                                                                                                    | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                                               |
+| Redis                                                                                                                                    | 7.4.2-debian-12-r9           | 20.11.4    | Optional endpoint data reference store        |
+| Helm                                                                                                                                     | 3.9.3+                       | -          | Minimum version                               |
+| Kubernetes                                                                                                                               | [ 1.28; 1.29; 1.30 ]         | -          | -                                             |
+| [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built)         | [ 2.0.0; 3.0.0 ]             | -          | Model version                                 |
+| [SingleLevelBomAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_planned)     | [ 2.0.0; 3.0.0 ]             | -          | Recursive path requires 3.0.0                 |
+| [SingleLevelBomAsSpecified](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_specified) | 2.0.0                        | -          | Model version                                 |
+| [SingleLevelUsageAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_built)     | 3.0.0                        | -          | Model version                                 |
+| [SingleLevelUsageAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_planned) | 2.0.0                        | -          | Model version                                 |
+| [PartTypeInformation](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.part_type_information)               | 1.0.0                        | -          | Recursive material metadata                   |
+| ItemStockAnonymized                                                                                                                      | 1.0.0                        | -          | Recursive PURIS payload                       |
+| DeliveryInformationAnonymized                                                                                                            | 1.0.0                        | -          | Recursive PURIS payload                       |
+| PlannedProductionOutputAnonymized                                                                                                        | 1.0.0                        | -          | Recursive PURIS payload                       |
+
 ## [6.0.1](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/6.0.1)- 2025-02-14
 
 | Dependency                                                                                                                               | Version                      | Helm  | Comments        |

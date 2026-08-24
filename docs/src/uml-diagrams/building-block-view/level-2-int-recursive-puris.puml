@@ -1,0 +1,42 @@
+@startuml
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam linetype ortho
+skinparam defaultFontName "Architects daughter"
+
+actor "Root caller" as RootCaller
+actor "Partner IRS" as PartnerIrs
+actor "Grant administrator" as GrantAdministrator
+
+rectangle "Recursive IRS" <<System>> as RecursiveIrs {
+    component [**Recursive Job API**] <<Component>> as JobApi
+    component [**Recursive Notification API**] <<Component>> as NotificationApi
+    component [**Chain Opening Grant API**] <<Component>> as GrantApi
+    component [**Recursive Job Processing**] <<Component>> as JobProcessing
+    component [**Digital Twin and Submodel Access**] <<Component>> as DataAccess
+    component [**Notification Transport**] <<Component>> as NotificationTransport
+    component [**Recursive Persistence**] <<Component>> as Persistence
+}
+
+component [**Digital Twin Registry**] <<External System>> as DTR
+component [**EDC**] <<External System>> as EDC
+database "Blob Store" as BlobStore
+
+RootCaller --> JobApi
+PartnerIrs --> NotificationApi
+GrantAdministrator --> GrantApi
+
+JobApi --> JobProcessing
+NotificationApi --> JobProcessing
+GrantApi --> Persistence
+JobProcessing --> DataAccess
+JobProcessing --> NotificationTransport
+JobProcessing --> Persistence
+
+DataAccess --> DTR
+DataAccess --> EDC
+NotificationTransport --> EDC
+Persistence --> BlobStore
+
+@enduml

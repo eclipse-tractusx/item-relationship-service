@@ -20,6 +20,9 @@ The result is an item graph in which each node represents a digital item of the 
 |*IRS API*
 |The *IRS API* is the Interface over which the Data Consumer is communicating.
 
+|*Recursive IRS*
+|The *Recursive IRS* provides grant-controlled partner-to-partner traversal. It exposes the recursive job, notification and chain opening grant APIs, reads direct `SingleLevelBomAsPlanned` relationships, requests anonymized PURIS payloads through EDC and persists local job, correlation and grant state.
+
 |*IrsController*
 |The *IrsController* provides a REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process.
 

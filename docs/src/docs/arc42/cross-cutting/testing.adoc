@@ -14,6 +14,11 @@ Cucumber feature files are located in https://github.com/eclipse-tractusx/item-r
 
 Tavern Tests are located in https://github.com/eclipse-tractusx/item-relationship-service/tree/main/local/testing/api-tests[local/testing/api-tests] and executed with a GitHub workflow https://github.com/eclipse-tractusx/item-relationship-service/blob/main/.github/workflows/tavern-UMBRELLA.yml[tavern-UMBRELLA.yml].
 
+== Recursive IRS integration tests
+
+The recursive integration tests under `irs-api/src/test/java/org/eclipse/tractusx/irs/recursive/e2e` start multiple IRS instances with Testcontainers-backed external systems.
+They are useful entry points for understanding the complete recursive choreography.
+
 == Umbrella
 
 The https://github.com/eclipse-tractusx/tractus-x-umbrella[umbrella chart] provides a pre-configured catena-x network which includes all necessary components for the IRS to work.

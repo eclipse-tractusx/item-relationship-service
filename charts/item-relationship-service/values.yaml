@@ -2,6 +2,7 @@
 # Copyright (c) 2022 ISTOS GmbH
 # Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
 # Copyright (c) 2022 BOSCH AG
+# Copyright (c) 2026 Volkswagen AG
 # Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
 # Copyright (c) 2021 Contributors to the Eclipse Foundation
 #
@@ -112,6 +113,18 @@ job:
     failed: "PT24H"
     completed: "PT24H"
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
+recursive:
+  # -- Optional BPNL override for recursive requests and responses. Defaults to the IRS instance value from `bpn`.
+  localBpnl:
+  timeout:
+    # -- Default lifetime of a recursive job when a request does not provide an explicit deadline. ISO-8601 duration.
+    defaultJobTtl: PT30M
+    # -- Maximum accepted lifetime of a recursive job. Longer requested deadlines are capped to this value. ISO-8601 duration.
+    maxJobTtl: PT2H
+    # -- Safety buffer subtracted from the job deadline before waiting for child responses stops. ISO-8601 duration.
+    childResponseSafetyBuffer: PT60S
+    # -- Interval used by the recursive timeout monitor to check for expired jobs and child response deadlines. ISO-8601 duration.
+    timeoutCheckInterval: PT30S
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
 ingress:
@@ -164,10 +177,19 @@ blobstore:
       accessKey: minio
       secretKey:
   jobs:
+    # -- Blob-store container used for jobs.
     containerName: irs-jobs
+    # -- Number of days to retain jobs. Use -1 to disable cleanup.
     daysToLive: 7
   policies:
+    # -- Blob-store container used for policies.
     containerName: irs-policy-bucket
+    # -- Number of days to retain policies. Use -1 to disable cleanup.
+    daysToLive: -1
+  chainOpeningGrants:
+    # -- Blob-store container used for recursive chain opening grants.
+    containerName: irs-chain-opening-grants
+    # -- Number of days to retain chain opening grants. Use -1 to disable cleanup.
     daysToLive: -1
 
 oauth2:

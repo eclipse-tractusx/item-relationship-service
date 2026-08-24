@@ -40,7 +40,16 @@ jobs:
 
       - name: Ensure DEPENDENCIES file is reflecting the current state
         run: |
-          mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES-gen -P dash
+          for attempt in 1 2 3; do
+            rm -f DEPENDENCIES-gen
+            if mvn --batch-mode org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES-gen -P dash; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 15))
+          done
           diff DEPENDENCIES DEPENDENCIES-gen
 
 

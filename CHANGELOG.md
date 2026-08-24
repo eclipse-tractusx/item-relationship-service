@@ -6,7 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
-## [Unreleased] - 2025-XX-XX
+## [Unreleased]
+
+## [7.1.0] - 2026-09-16
+
+### Added
+
+- Add the experimental recursive IRS path for grant-controlled collection and aggregation of anonymized PURIS data ([#1607](https://github.com/eclipse-tractusx/sig-release/issues/1607))
 
 ### Changed
 
@@ -19,6 +25,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - fix: change bitnami legacy images in chart ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
   - `bitnami/redis` image to `bitnamilegacy/redis`
   - `bitnami/minio` image to `quay.io/minio/minio`
+- Publish the updated IRS Maven libraries as version 3.2.0 ([#1607](https://github.com/eclipse-tractusx/sig-release/issues/1607))
 
 ## [7.0.1] - 2025-05-16
 ### Fixed
@@ -880,7 +887,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/7.0.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/7.1.0...HEAD
+[7.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/7.0.1...7.1.0
 [7.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.1...7.0.1
 [6.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...6.0.1
 [6.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.4.1...6.0.0

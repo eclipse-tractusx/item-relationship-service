@@ -3,11 +3,18 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: 7.0.1
+  version: 7.1.0
 servers:
   - url: http://localhost:8080
 security:
   - api_key: []
+tags:
+  - description: Partner-to-partner recursive notification endpoint
+    name: Recursive IRS Notifications
+  - description: Grant storage and lookup for recursive chain openings
+    name: Recursive Chain Opening Grants
+  - description: Recursive supply chain traversal with grant-based access control
+    name: Recursive IRS
 paths:
   /ess/bpn/investigations:
     post:
@@ -282,7 +289,7 @@ paths:
             type: integer
             default: 20
         - description: "Sorting criteria in the format: property,(asc|desc). Default\
-          \ sort order is ascending. Multiple sort criteria are supported."
+            \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
           required: false
@@ -395,8 +402,8 @@ paths:
             type: string
             format: uuid
         - description: "\\<true\\> Return job with current processed item graph. \\\
-          <false\\> Return job with item graph if job is in state COMPLETED, otherwise\
-          \ job."
+            <false\\> Return job with item graph if job is in state COMPLETED, otherwise\
+            \ job."
           in: query
           name: returnUncompletedJob
           required: false
@@ -969,7 +976,7 @@ paths:
       operationId: autocomplete
       parameters:
         - description: "The field to autocomplete (BPN, policyId, createdOn, validUntil,\
-          \ action)"
+            \ action)"
           in: path
           name: field
           required: true
@@ -1191,6 +1198,556 @@ paths:
         negotiation.
       tags:
         - Policy Store API
+  /irs/recursive/chain-openings/grants:
+    delete:
+      operationId: deleteRecursiveChainOpeningGrant
+      parameters:
+        - description: Id of the recursive chain opening.
+          example: opening-42
+          in: query
+          name: openingId
+          required: true
+          schema:
+            type: string
+            pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        - description: The granted material.
+          example: urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b
+          in: query
+          name: globalAssetId
+          required: true
+          schema:
+            type: string
+            pattern: "^(?:urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        - description: The requesting partner.
+          example: BPNL0000ATLS0001
+          in: query
+          name: requesterBpn
+          required: true
+          schema:
+            type: string
+            pattern: "^BPNL[0-9A-Za-z]{12}$"
+        - description: Recursive use case.
+          example: PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+          in: query
+          name: useCase
+          required: true
+          schema:
+            type: string
+            enum:
+              - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+      responses:
+        "204":
+          description: Grant deleted
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Invalid grant key
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-401"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Authorization refused by server.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Grant not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Unexpected recursive IRS error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Recursive persistence unavailable
+      security:
+        - api_key: []
+      summary: Delete a chain opening grant
+      tags:
+        - Recursive Chain Opening Grants
+    get:
+      description: Admin query endpoint for chain opening grants. By default only
+        currently valid grants are returned; set validOnly=false to include expired
+        and not-yet-valid grants.
+      operationId: listRecursiveChainOpeningGrants
+      parameters:
+        - description: Optional chain opening filter.
+          example: opening-42
+          in: query
+          name: openingId
+          required: false
+          schema:
+            type: string
+            pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]*$"
+        - description: Optional filter on the granted material.
+          example: urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b
+          in: query
+          name: globalAssetId
+          required: false
+          schema:
+            type: string
+            pattern: "^(?:(?:urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?$"
+        - description: Optional filter on the requesting partner.
+          example: BPNL0000ATLS0001
+          in: query
+          name: requesterBpn
+          required: false
+          schema:
+            type: string
+            pattern: "^(?:BPNL[0-9A-Za-z]{12})?$"
+        - description: Recursive use case.
+          example: PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+          in: query
+          name: useCase
+          required: false
+          schema:
+            type: string
+            enum:
+              - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+        - description: Return only grants valid at query time.
+          example: true
+          in: query
+          name: validOnly
+          required: false
+          schema:
+            type: boolean
+            default: true
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Grant list returned
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Invalid grant filter
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-401"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Authorization refused by server.
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Requested response media type is not supported
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Unexpected recursive IRS error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Recursive persistence unavailable
+      security:
+        - api_key: []
+      summary: List chain opening grants
+      tags:
+        - Recursive Chain Opening Grants
+    post:
+      description: "Stores a grant that authorizes recursive traversal for a specific\
+        \ chain opening. The grant key (openingId + globalAssetId + requesterBpn +\
+        \ useCase) is taken from the request body; several grants may exist per openingId,\
+        \ one per requested material and requesting partner. Only the configured PURIS\
+        \ recursive use case is accepted."
+      operationId: registerRecursiveChainOpeningGrant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecursiveChainOpeningGrant"
+        required: true
+      responses:
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RecursiveChainOpeningGrant"
+          description: Grant registered
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Invalid grant payload
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-401"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Authorization refused by server.
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Requested response media type is not supported
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: A grant with the same openingId + globalAssetId + requesterBpn
+            + useCase already exists
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Request media type is not supported
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Unexpected recursive IRS error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Recursive persistence unavailable
+      security:
+        - api_key: []
+      summary: Register a chain opening grant
+      tags:
+        - Recursive Chain Opening Grants
+    put:
+      description: Replaces a grant identified by the grant key (openingId + globalAssetId
+        + requesterBpn + useCase) in the request body. The stored grant keeps its
+        original createdAt timestamp and receives a fresh updatedAt. Only the configured
+        PURIS recursive use case is accepted.
+      operationId: replaceRecursiveChainOpeningGrant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecursiveChainOpeningGrant"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RecursiveChainOpeningGrant"
+          description: Grant replaced
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Invalid grant payload
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-401"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Authorization refused by server.
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Requested response media type is not supported
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Request media type is not supported
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Unexpected recursive IRS error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Recursive persistence unavailable
+      security:
+        - api_key: []
+      summary: Replace a chain opening grant
+      tags:
+        - Recursive Chain Opening Grants
+  /irs/recursive/jobs:
+    get:
+      operationId: listJobs
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecursiveJobStatusResponse"
+          description: Jobs returned
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Requested response media type is not supported
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Unexpected recursive IRS error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Recursive persistence unavailable
+      summary: List all recursive jobs
+      tags:
+        - Recursive IRS
+    post:
+      description: "Validates the request against the local grant store, resolves\
+        \ the BOM, and determines allowed child partners."
+      operationId: startJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecursiveJobRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RecursiveJobStartResponse"
+          description: Job created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: "Unknown use case, unsupported lifecycle, or invalid request"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Grant validation failed
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Requested response media type is not supported
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Request media type is not supported
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Request contains an unsupported aspect
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Unexpected recursive IRS error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Recursive persistence unavailable
+      summary: Start a new recursive job
+      tags:
+        - Recursive IRS
+  /irs/recursive/jobs/{jobId}:
+    get:
+      description: "Returns the job envelope and, once terminal, the aggregated result.\
+        \ Note: job.state reflects the technical run (COMPLETED = all processing finished),\
+        \ result.resultStatus the business outcome (COMPLETE/PARTIAL/FAILED) - a COMPLETED\
+        \ job can carry a FAILED result."
+      operationId: getJobStatus
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RecursiveJobStatusResponse"
+          description: Job found
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Invalid job id
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Job not found
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Requested response media type is not supported
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Unexpected recursive IRS error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Recursive persistence unavailable
+      summary: Get recursive job status
+      tags:
+        - Recursive IRS
+  /irs/recursive/notifications:
+    post:
+      description: Unified endpoint for child requests and parent responses.
+        The content.type field (REQUEST or RESPONSE) determines the processing path.
+        REQUEST starts the next recursive child hop and requires header.expectedResponseBy,
+        content.globalAssetId, content.bomLifecycle=asPlanned and a non-empty
+        content.aspects list. RESPONSE returns the correlated child result and
+        requires header.relatedMessageId, content.bomLifecycle=asPlanned, a non-empty
+        content.aspects list, content.status and content.result; header.expectedResponseBy
+        must be omitted.
+        This is the endpoint that the EDC notification asset points to.
+      operationId: receiveNotification
+      parameters:
+        - in: header
+          name: edc-bpn
+          description: EDC transport identity of the sending partner.
+          required: true
+          schema:
+            type: string
+            pattern: "^BPNL[0-9A-Za-z]{12}$"
+            example: BPNL000000000000
+      requestBody:
+        description: Recursive notification. See RecursiveNotificationMessage, Header
+          and Content for REQUEST and RESPONSE field rules.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecursiveNotificationMessage"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RecursiveNotificationResponse"
+          description: Notification accepted or correlated response rejected
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Notification payload is invalid
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Transport identity check failed
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Requested response media type is not supported
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Request media type is not supported
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Unexpected recursive IRS error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveErrorResponse"
+          description: Recursive persistence unavailable
+      summary: Receive a recursive notification
+      tags:
+        - Recursive IRS Notifications
 components:
   examples:
     aspect-models-list:
@@ -1323,8 +1880,8 @@ components:
                   value: "12309481209312"
               submodelDescriptors:
                 - description:
-                    - language: en
-                      text: Provides base vehicle information
+                  - language: en
+                    text: Provides base vehicle information
                   endpoints:
                     - interface: HTTP
                       protocolInformation:
@@ -1343,8 +1900,8 @@ components:
                         value: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
                     type: ModelReference
                 - description:
-                    - language: en
-                      text: Provides base vehicle information
+                  - language: en
+                    text: Provides base vehicle information
                   endpoints:
                     - interface: HTTP
                       protocolInformation:
@@ -1446,8 +2003,8 @@ components:
                   value: "12309481209312"
               submodelDescriptors:
                 - description:
-                    - language: en
-                      text: Provides base vehicle information
+                  - language: en
+                    text: Provides base vehicle information
                   endpoints:
                     - interface: HTTP
                       protocolInformation:
@@ -1466,8 +2023,8 @@ components:
                         value: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
                     type: ModelReference
                 - description:
-                    - language: en
-                      text: Provides base vehicle information
+                  - language: en
+                    text: Provides base vehicle information
                   endpoints:
                     - interface: HTTP
                       protocolInformation:
@@ -1706,8 +2263,8 @@ components:
                   value: "12309481209312"
               submodelDescriptors:
                 - description:
-                    - language: en
-                      text: Provides base vehicle information
+                  - language: en
+                    text: Provides base vehicle information
                   endpoints:
                     - interface: HTTP
                       protocolInformation:
@@ -1726,8 +2283,8 @@ components:
                         value: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
                     type: ModelReference
                 - description:
-                    - language: en
-                      text: Provides base vehicle information
+                  - language: en
+                    text: Provides base vehicle information
                   endpoints:
                     - interface: HTTP
                       protocolInformation:
@@ -2010,6 +2567,56 @@ components:
         manufacturerName:
           type: string
           example: OEM A
+    Content:
+      type: object
+      additionalProperties: false
+      description: Recursive notification content. REQUEST requires type, openingId,
+        useCase, globalAssetId, bomLifecycle=asPlanned and a non-empty aspects list;
+        status and result must be omitted. RESPONSE requires type, openingId, useCase,
+        bomLifecycle=asPlanned, the same non-empty aspects list, status and result.
+      properties:
+        aspects:
+          type: array
+          items:
+            type: string
+            enum:
+              - urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized
+              - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
+              - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
+            pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        bomLifecycle:
+          type: string
+          description: BOM lifecycle used for recursive PURIS traversal. PURIS supports
+            only asPlanned.
+          enum:
+            - asPlanned
+        globalAssetId:
+          type: string
+          pattern: "^(?:urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        openingId:
+          type: string
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        result:
+          $ref: "#/components/schemas/RecursiveJobResult"
+        status:
+          type: string
+          enum:
+            - COMPLETED
+            - FAILED
+            - TIMED_OUT
+        type:
+          type: string
+          enum:
+            - REQUEST
+            - RESPONSE
+        useCase:
+          type: string
+          enum:
+            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+      required:
+        - openingId
+        - type
+        - useCase
     CreatePoliciesResponse:
       type: object
       additionalProperties: false
@@ -2209,6 +2816,54 @@ components:
             - 509 BANDWIDTH_LIMIT_EXCEEDED
             - 510 NOT_EXTENDED
             - 511 NETWORK_AUTHENTICATION_REQUIRED
+    Header:
+      type: object
+      additionalProperties: true
+      description: CX-0151 message header based on
+        urn:samm:io.catenax.shared.message_header:3.0.0#MessageHeaderAspect.
+        REQUEST messages require expectedResponseBy. RESPONSE messages require relatedMessageId
+        and must not contain expectedResponseBy.
+      properties:
+        context:
+          type: string
+          description: Recursive IRS notification API context.
+          pattern: ^IndustryCore-RecursiveIrsNotificationApi-Receive:1\.0\.0$
+        expectedResponseBy:
+          type: string
+          description: REQUEST only. ISO 8601 timestamp by which the child should
+            respond. Must be omitted for RESPONSE messages.
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        messageId:
+          type: string
+          pattern: "^(?:urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        receiverBpn:
+          type: string
+          description: Receiver BPNL.
+          pattern: "^BPNL[0-9A-Za-z]{12}$"
+        relatedMessageId:
+          type: string
+          description: Correlation to the previous recursive notification. REQUEST
+            uses it to link to the parent job message. RESPONSE uses it to reference
+            the child request being answered.
+          pattern: "^(?:urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        senderBpn:
+          type: string
+          description: Sender BPNL.
+          pattern: "^BPNL[0-9A-Za-z]{12}$"
+        sentDateTime:
+          type: string
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        version:
+          type: string
+          description: MessageHeaderAspect semantic model version.
+          pattern: ^3\.0\.0$
+      required:
+        - context
+        - messageId
+        - receiverBpn
+        - senderBpn
+        - sentDateTime
+        - version
     IdentifierKeyValuePair:
       type: object
       additionalProperties: false
@@ -2687,6 +3342,446 @@ components:
           example: 1.0
           maximum: 2147483647
           minimum: 0
+    RecursiveAspectItem:
+      type: object
+      additionalProperties: false
+      properties:
+        aspect:
+          type: string
+          enum:
+            - urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized
+            - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
+            - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
+        items:
+          type: object
+          additionalProperties: true
+    RecursiveChainOpeningGrant:
+      type: object
+      additionalProperties: false
+      properties:
+        allowedBpnlSet:
+          type: array
+          items:
+            type: string
+            pattern: "^BPNL[0-9A-Za-z]{12}$"
+          uniqueItems: true
+        createdAt:
+          type: string
+          format: date-time
+        globalAssetId:
+          type: string
+          pattern: "^(?:urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        openingId:
+          type: string
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        requesterBpn:
+          type: string
+          pattern: "^BPNL[0-9A-Za-z]{12}$"
+        updatedAt:
+          type: string
+          format: date-time
+        useCase:
+          type: string
+          description: Supported recursive use case.
+          enum:
+            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+      required:
+        - globalAssetId
+        - openingId
+        - requesterBpn
+        - useCase
+    RecursiveChildItem:
+      type: object
+      additionalProperties: false
+      properties:
+        childItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecursiveChildItem"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecursiveAspectItem"
+        materialName:
+          type: string
+        materialNumber:
+          type: string
+        quantity:
+          $ref: "#/components/schemas/RecursiveQuantity"
+        tombstones:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecursiveTombstone"
+    RecursiveErrorResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+            - INVALID_REQUEST
+            - MALFORMED_REQUEST
+            - UNSUPPORTED_ASPECT
+            - CHAIN_OPENING_GRANT_REJECTED
+            - NOTIFICATION_AUTHENTICATION_FAILED
+            - AUTHORIZATION_FAILED
+            - INVALID_NOTIFICATION
+            - RECURSIVE_JOB_NOT_FOUND
+            - CHAIN_OPENING_GRANT_NOT_FOUND
+            - CHAIN_OPENING_GRANT_ALREADY_EXISTS
+            - PERSISTENCE_UNAVAILABLE
+            - RECURSIVE_ENDPOINT_NOT_FOUND
+            - METHOD_NOT_ALLOWED
+            - NOT_ACCEPTABLE
+            - UNSUPPORTED_MEDIA_TYPE
+            - INTERNAL_ERROR
+        errorRef:
+          type: string
+        message:
+          type: string
+        status:
+          type: integer
+          format: int32
+        supportedAspects:
+          type: array
+          items:
+            type: string
+        unknownAspects:
+          type: array
+          items:
+            type: string
+    RecursiveJobParameter:
+      type: object
+      additionalProperties: false
+      properties:
+        aspects:
+          type: array
+          items:
+            type: string
+            enum:
+              - urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized
+              - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
+              - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
+        bomLifecycle:
+          type: string
+          description: BOM lifecycle used for recursive PURIS traversal. PURIS supports
+            only asPlanned.
+          enum:
+            - asPlanned
+        childResponseDeadline:
+          type: string
+          format: date-time
+        deadline:
+          type: string
+          format: date-time
+        openingId:
+          type: string
+          description: "Chain opening identifier, identical across the whole recursive\
+            \ chain."
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        useCase:
+          type: string
+          enum:
+            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+    RecursiveJobRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        aspects:
+          type: array
+          description: "Semantic IDs of the payload aspects to collect. Optional -\
+            \ when omitted, all three anonymized PURIS aspects are collected. An explicit\
+            \ list must be a subset of the configured use-case bundle. Unknown or\
+            \ bundle-external aspects are rejected at every hop."
+          items:
+            type: string
+            description: "Semantic IDs of the payload aspects to collect. Optional\
+              \ - when omitted, all three anonymized PURIS aspects are collected.\
+              \ An explicit list must be a subset of the configured use-case bundle.\
+              \ Unknown or bundle-external aspects are rejected at every hop."
+            enum:
+              - urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized
+              - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
+              - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
+            pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        bomLifecycle:
+          type: string
+          default: asPlanned
+          description: BOM lifecycle used for recursive PURIS traversal. PURIS supports
+            only asPlanned.
+          enum:
+            - asPlanned
+        globalAssetId:
+          type: string
+          pattern: "^(?:urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        openingId:
+          type: string
+          description: "Chain opening identifier, identical across the whole recursive\
+            \ chain."
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        requesterBpn:
+          type: string
+          pattern: "^(?:BPNL[0-9A-Za-z]{12})?$"
+        ttl:
+          type: string
+          description: "Job time-to-live as ISO 8601 duration, e.g. PT30M. Defaults\
+            \ to irs.recursive.timeout.defaultJobTtl and is capped at maxJobTtl. Each\
+            \ hop passes the remaining budget minus a safety buffer to the child\
+            \ as the child response deadline."
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]*$"
+        useCase:
+          type: string
+          description: Recursive use case. Only the configured PURIS anonymized bundle
+            is supported.
+          enum:
+            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+          example: PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+      required:
+        - globalAssetId
+        - openingId
+        - useCase
+    RecursiveJobResult:
+      type: object
+      additionalProperties: false
+      properties:
+        bomLifecycle:
+          type: string
+          description: BOM lifecycle used for recursive PURIS traversal. PURIS supports
+            only asPlanned.
+          enum:
+            - asPlanned
+        childItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecursiveChildItem"
+        requestedAspects:
+          type: array
+          items:
+            type: string
+            enum:
+              - urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized
+              - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
+              - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
+        resultStatus:
+          type: string
+          description: "Business outcome of the aggregation: COMPLETE (no tombstones),\
+            \ PARTIAL (usable material tree plus tombstones) or FAILED (no usable\
+            \ material tree). Independent of job.state, which reflects the technical\
+            \ run - a COMPLETED job can carry a FAILED result when the chain delivered\
+            \ no usable data."
+          enum:
+            - COMPLETE
+            - PARTIAL
+            - FAILED
+        tombstones:
+          type: array
+          description: Sanitized root-level or otherwise unassignable failures. Failures
+            that belong to a material node are exposed in that child item's tombstones.
+            Identical tombstones within the same scope are merged with an occurrences
+            counter.
+          items:
+            $ref: "#/components/schemas/RecursiveTombstone"
+        useCase:
+          type: string
+          enum:
+            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+    RecursiveJobStartResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - jobId
+      properties:
+        jobId:
+          type: string
+          format: uuid
+    RecursiveJobStatusResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        job:
+          $ref: "#/components/schemas/RecursiveJobView"
+        result:
+          $ref: "#/components/schemas/RecursiveJobResult"
+    RecursiveJobView:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+      properties:
+        asyncFetchedItems:
+          $ref: "#/components/schemas/AsyncFetchedItems"
+        completedOn:
+          type: string
+          format: date-time
+        createdOn:
+          type: string
+          format: date-time
+        exception:
+          $ref: "#/components/schemas/JobErrorDetails"
+        globalAssetId:
+          type: string
+        id:
+          type: string
+          format: uuid
+        lastModifiedOn:
+          type: string
+          format: date-time
+        parameter:
+          $ref: "#/components/schemas/RecursiveJobParameter"
+        state:
+          type: string
+          enum:
+            - UNSAVED
+            - INITIAL
+            - RUNNING
+            - TRANSFERS_FINISHED
+            - COMPLETED
+            - CANCELED
+            - ERROR
+    RecursiveNotificationMessage:
+      type: object
+      additionalProperties: false
+      description: Recursive notification envelope. REQUEST messages start the next recursive
+        child hop. RESPONSE messages return the correlated child result to the parent.
+      properties:
+        content:
+          $ref: "#/components/schemas/Content"
+        header:
+          $ref: "#/components/schemas/Header"
+      required:
+        - content
+        - header
+    RecursiveNotificationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        messageId:
+          type: string
+        status:
+          type: string
+    RecursiveQuantity:
+      type: object
+      additionalProperties: false
+      required:
+        - unit
+        - value
+      properties:
+        unit:
+          type: string
+          enum:
+            - unit:piece
+            - unit:set
+            - unit:pair
+            - unit:page
+            - unit:cycle
+            - unit:kilowattHour
+            - unit:gram
+            - unit:kilogram
+            - unit:tonneMetricTon
+            - unit:tonUsOrShortTonUkorus
+            - unit:ounceAvoirdupois
+            - unit:pound
+            - unit:metre
+            - unit:centimetre
+            - unit:kilometre
+            - unit:inch
+            - unit:foot
+            - unit:yard
+            - unit:squareCentimetre
+            - unit:squareMetre
+            - unit:squareInch
+            - unit:squareFoot
+            - unit:squareYard
+            - unit:cubicCentimetre
+            - unit:cubicMetre
+            - unit:cubicInch
+            - unit:cubicFoot
+            - unit:cubicYard
+            - unit:litre
+            - unit:millilitre
+            - unit:hectolitre
+            - unit:secondUnitOfTime
+            - unit:minuteUnitOfTime
+            - unit:hourUnitOfTime
+            - unit:day
+        value:
+          type: number
+          format: double
+    RecursiveTombstone:
+      type: object
+      additionalProperties: false
+      description: Sanitized root-level or otherwise unassignable failures. Failures
+        that belong to a material node are exposed in that child item's tombstones.
+        Identical tombstones within the same scope are merged with an occurrences
+        counter.
+      required:
+        - aspects
+        - detail
+        - errorRefs
+        - occurrences
+        - reason
+        - retryable
+        - scope
+        - type
+      properties:
+        aspects:
+          type: array
+          items:
+            type: string
+            enum:
+              - urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized
+              - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
+              - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
+            pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        detail:
+          type: string
+          minLength: 1
+          pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
+        errorRefs:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        occurrences:
+          type: integer
+          format: int32
+          minimum: 1
+        reason:
+          type: string
+          enum:
+            - RECURSIVE_DEADLINE_EXCEEDED
+            - CHILD_RESPONSE_TIMEOUT
+            - CHILD_BRANCH_FAILED
+            - CHILD_RESPONSE_INVALID
+            - CHAIN_OPENING_REJECTED
+            - LOCAL_ASPECT_NOT_AVAILABLE
+            - LOCAL_ASPECT_REQUEST_FAILED
+            - PART_TYPE_INFORMATION_NOT_AVAILABLE
+            - PART_TYPE_INFORMATION_REQUEST_FAILED
+            - BOM_QUANTITY_NOT_AVAILABLE
+            - BOM_CHILD_GLOBAL_ASSET_ID_INVALID
+            - BOM_SUBMODEL_NOT_SUPPORTED
+            - BOM_SUBMODEL_ENDPOINT_MISSING
+            - UNSUPPORTED_ANONYMIZED_ASPECT
+        retryable:
+          type: boolean
+        scope:
+          type: string
+          enum:
+            - LOCAL_NODE
+            - CHILD_BRANCH
+            - RECURSIVE_CHAIN
+        type:
+          type: string
+          enum:
+            - RECURSIVE_TOMBSTONE
     Reference:
       type: object
       additionalProperties: false

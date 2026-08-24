@@ -1,0 +1,108 @@
+@startuml
+
+participant "Root caller" as Caller
+participant "Root IRS" as Root
+participant "Root Digital Twin Registry" as RootDtr
+participant "Root EDC" as RootEdc
+participant "Root Submodel Provider" as RootSubmodel
+participant "Child EDC" as ChildEdc
+participant "Child IRS" as Child
+participant "Child Digital Twin Registry" as ChildDtr
+participant "Child Submodel Provider" as ChildSubmodel
+
+== Root job submission ==
+
+Caller -> Root: POST /irs/recursive/jobs
+activate Root
+Root -> Root: validate request and chain opening grant
+Root --> Caller: 201 Created (jobId)
+deactivate Root
+
+Root -> Root: start asynchronous job processing
+activate Root
+note right of Root
+  Processing continues asynchronously.
+  See processing phases 3-6 below.
+end note
+
+== Root traversal ==
+
+Root -> RootDtr: lookup shell by globalAssetId
+RootDtr --> Root: shell descriptor
+Root -> RootEdc: request SingleLevelBomAsPlanned submodel
+RootEdc -> RootSubmodel: EDC data transfer
+RootSubmodel --> RootEdc: BOM payload
+RootEdc --> Root: BOM payload
+Root -> Root: extract direct BOM children
+Root -> Root: filter direct children by grant
+Root -> Root: persist child branches and AWAITING_CHILDREN
+
+== Child request dispatch (allowed children exist) ==
+
+loop for each allowed direct child
+    Root -> RootEdc: send recursive REQUEST notification
+    RootEdc -> ChildEdc: EDC transfer
+    ChildEdc -> Child: POST /irs/recursive/notifications
+    activate Child
+    Child -> Child: validate routing, payload and chain opening grant
+    Child --> ChildEdc: 200 OK (accepted)
+    deactivate Child
+end
+deactivate Root
+
+== Child processing (one direct child) ==
+
+Child -> Child: start asynchronous child job processing
+activate Child
+Child -> ChildDtr: lookup shell by globalAssetId
+ChildDtr --> Child: shell descriptor
+Child -> ChildEdc: request SingleLevelBomAsPlanned submodel
+ChildEdc -> ChildSubmodel: EDC data transfer
+ChildSubmodel --> ChildEdc: BOM payload
+ChildEdc --> Child: BOM payload
+Child -> Child: extract direct BOM children
+Child -> ChildEdc: request PartTypeInformation and anonymized PURIS submodels
+ChildEdc -> ChildSubmodel: EDC data transfers
+ChildSubmodel --> ChildEdc: material metadata and anonymized payloads
+ChildEdc --> Child: material metadata and local items
+Child -> Child: filter direct BOM children by grant
+
+alt allowed direct children exist
+    Child -> Child: persist child branches and AWAITING_CHILDREN
+    loop for each allowed direct child
+        Child -> ChildEdc: send recursive REQUEST notification through EDC
+    end
+    deactivate Child
+    note over Child
+        Processing returns after the child requests are sent.
+        A later child response or the timeout sweeper resumes the job.
+    end note
+    Child -> Child: resume after final child response or timeout
+    activate Child
+    Child -> Child: apply final child response or mark open branches TIMED_OUT
+    Child -> Child: aggregate childItems, items and tombstones
+else leaf or no allowed direct children
+    Child -> Child: persist COMPLETED state
+    Child -> Child: aggregate childItems, items and tombstones
+end
+
+== Upstream response ==
+
+Child -> ChildEdc: send recursive RESPONSE notification
+deactivate Child
+ChildEdc -> RootEdc: EDC transfer
+RootEdc -> Root: POST /irs/recursive/notifications
+activate Root
+Root -> Root: validate and correlate child response
+Root -> Root: update child branch and aggregate terminal result when complete
+Root --> RootEdc: 200 OK (accepted)
+deactivate Root
+
+== Result polling ==
+
+Caller -> Root: GET /irs/recursive/jobs/{jobId}
+activate Root
+Root --> Caller: job envelope and recursive result
+deactivate Root
+
+@enduml
