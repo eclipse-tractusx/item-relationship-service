@@ -108,7 +108,7 @@ public class ConstraintCheckerService {
                                         .isValid();
     }
 
-    private Operator toOperator(OperatorType operatorType) {
+    private Operator toOperator(final OperatorType operatorType) {
         return Arrays.stream(Operator.values())
                 .filter(operator -> operator.getOdrlRepresentation().endsWith(operatorType.getCode()))
                 .findAny()

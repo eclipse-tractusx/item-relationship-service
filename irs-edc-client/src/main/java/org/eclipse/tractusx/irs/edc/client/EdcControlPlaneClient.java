@@ -37,14 +37,7 @@ import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
-import org.eclipse.tractusx.irs.edc.client.model.DSPVersionParamsRequest;
-import org.eclipse.tractusx.irs.edc.client.model.DSPVersionParamsResponse;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
-import org.eclipse.tractusx.irs.edc.client.model.Response;
-import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
-import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
+import org.eclipse.tractusx.irs.edc.client.model.*;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -75,7 +68,7 @@ public class EdcControlPlaneClient {
     private final EdcConfiguration config;
     private final EdcTransformer edcTransformer;
     
-    private Map<String, DSPVersionParamsCacheEntry> dspVersionParamsCache = new ConcurrentHashMap<>();
+    private final Map<String, DSPVersionParamsCacheEntry> dspVersionParamsCache = new ConcurrentHashMap<>();
 
     public EdcControlPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate,
             final AsyncPollingService pollingService, final EdcConfiguration config,
