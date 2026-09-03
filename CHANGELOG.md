@@ -13,6 +13,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Added
 
 - Add the experimental recursive IRS path for grant-controlled collection and aggregation of anonymized PURIS data ([#1607](https://github.com/eclipse-tractusx/sig-release/issues/1607))
+- Support EDC 12
 
 ### Changed
 
