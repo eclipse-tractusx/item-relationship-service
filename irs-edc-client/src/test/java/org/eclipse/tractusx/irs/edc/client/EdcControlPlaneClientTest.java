@@ -47,6 +47,8 @@ import jakarta.json.JsonObject;
 import org.assertj.core.api.Assertions;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
+import org.eclipse.tractusx.irs.edc.client.model.DSPVersionParamsRequest;
+import org.eclipse.tractusx.irs.edc.client.model.DSPVersionParamsResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
@@ -57,6 +59,7 @@ import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -68,6 +71,7 @@ import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class EdcControlPlaneClientTest {
+    private final String PROVIDER_URL = "https://irs-consumer-controlplane.dev.demo.catena-x.net/data";
 
     @Mock
     private RestTemplate restTemplate;
@@ -87,7 +91,7 @@ class EdcControlPlaneClientTest {
     void setUp() {
         config.setControlplane(new EdcConfiguration.ControlplaneConfig());
         config.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
-        config.getControlplane().getEndpoint().setData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
+        config.getControlplane().getEndpoint().setData(PROVIDER_URL);
         config.getControlplane().setRequestTtl(Duration.ofMinutes(10));
         config.getControlplane().setApiKey(new EdcConfiguration.ControlplaneConfig.ApiKeyConfig());
         config.getControlplane().setCatalogPageSize(10);
@@ -234,5 +238,105 @@ class EdcControlPlaneClientTest {
 
         // assert
         assertThat(transferProcessResponse).isEqualTo(response);
+    }
+
+    @Test
+    void shouldReplaceFieldsWithDspVersionParams_catalogRequest() {
+        // arrange
+        config.getControlplane().getEndpoint().setDspVersionParams("/v4alpha/connectordiscovery/dspversionparams");
+
+        final var catalog = mock(Catalog.class);
+        final var catalogString = "test";
+        final String providerBpn = "BPN000123456";
+        final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
+        final DSPVersionParamsResponse dspVersionParamsResponse = new DSPVersionParamsResponse("new-protocol", "new-address", "did");
+
+        // Capture the Catalog request
+        ArgumentCaptor<CatalogRequest> entityCaptor = ArgumentCaptor.forClass(CatalogRequest.class);
+
+        doReturn(emptyJsonObject).when(edcTransformer).transformCatalogRequestToJson(entityCaptor.capture());
+        doReturn(catalog).when(edcTransformer).transformCatalog(anyString(), eq(StandardCharsets.UTF_8));
+        doReturn(emptyJsonObject).when(edcTransformer).transformDspVersionParamsRequestToJson(any(DSPVersionParamsRequest.class));
+        when(restTemplate.exchange(eq(PROVIDER_URL + "null"), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(catalogString)));
+        when(restTemplate.exchange(eq(PROVIDER_URL + "/v4alpha/connectordiscovery/dspversionparams"), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(DSPVersionParamsResponse.class))).thenReturn(ResponseEntity.of(Optional.of(dspVersionParamsResponse)));
+
+        // act
+        final var result = testee.getCatalogWithFilter("test", "asset:prop:type", "data.core.digitalTwinRegistry", providerBpn);
+
+        // assert
+        assertThat(result).isEqualTo(catalog);
+
+        CatalogRequest capturedCatalogRequest = entityCaptor.getValue();
+        assertThat(capturedCatalogRequest.getProtocol()).isEqualTo("new-protocol");
+        assertThat(capturedCatalogRequest.getCounterPartyAddress()).isEqualTo("new-address");
+        assertThat(capturedCatalogRequest.getCounterPartyId()).isEqualTo("did");
+    }
+
+    @Test
+    void shouldReplaceFieldsWithDspVersionParams_negotiationRequest() {
+        // arrange
+        config.getControlplane().getEndpoint().setDspVersionParams("/v4alpha/connectordiscovery/dspversionparams");
+        final var negotiationId = Response.builder().responseId("test").build();
+        final DSPVersionParamsResponse dspVersionParamsResponse = new DSPVersionParamsResponse("new-protocol", "new-address", "did");
+
+        // Capture the Catalog request
+        ArgumentCaptor<NegotiationRequest> requestCaptor = ArgumentCaptor.forClass(NegotiationRequest.class);
+
+        doReturn(JsonObject.EMPTY_JSON_OBJECT).when(edcTransformer).transformDspVersionParamsRequestToJson(any(DSPVersionParamsRequest.class));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(Response.class))).thenReturn(
+                ResponseEntity.of(Optional.of(negotiationId)));
+        when(restTemplate.exchange(eq(PROVIDER_URL + "/v4alpha/connectordiscovery/dspversionparams"), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(DSPVersionParamsResponse.class))).thenReturn(ResponseEntity.of(Optional.of(dspVersionParamsResponse)));
+        final NegotiationRequest request = NegotiationRequest.builder()
+                .counterPartyId("BPN000123456")
+                .counterPartyAddress("https://test.com").build();
+        final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
+
+        doReturn(emptyJsonObject).when(edcTransformer).transformNegotiationRequestToJson(requestCaptor.capture());
+
+        // act
+        final var result = testee.startNegotiations(request);
+
+        // assert
+        Assertions.assertThat(result).isEqualTo(negotiationId);
+        NegotiationRequest capturedCatalogRequest = requestCaptor.getValue();
+        assertThat(capturedCatalogRequest.getProtocol()).isEqualTo("new-protocol");
+        assertThat(capturedCatalogRequest.getCounterPartyAddress()).isEqualTo("new-address");
+        assertThat(capturedCatalogRequest.getCounterPartyId()).isEqualTo("did");
+    }
+
+    @Test
+    void shouldReplaceFieldsWithDspVersionParams_transferProcessRequest() {
+        // arrange
+        config.getControlplane().getEndpoint().setDspVersionParams("/v4alpha/connectordiscovery/dspversionparams");
+        final var processId = Response.builder().responseId("transferProcessId").build();
+        final var request = TransferProcessRequest.builder()
+                                                  .connectorId("BPN000123456")
+                                                  .counterPartyAddress("https://test.com")
+                                                  .assetId("testRequest")
+                                                  .build();
+        final DSPVersionParamsResponse dspVersionParamsResponse = new DSPVersionParamsResponse("new-protocol", "new-address", "did");
+
+        // Capture the Catalog request
+        ArgumentCaptor<TransferProcessRequest> requestCaptor = ArgumentCaptor.forClass(TransferProcessRequest.class);
+
+        doReturn(JsonObject.EMPTY_JSON_OBJECT).when(edcTransformer).transformDspVersionParamsRequestToJson(any(DSPVersionParamsRequest.class));
+        when(restTemplate.exchange(eq(PROVIDER_URL + "null"), eq(HttpMethod.POST), any(), eq(Response.class))).thenReturn(
+                ResponseEntity.of(Optional.of(processId)));
+        when(restTemplate.exchange(eq(PROVIDER_URL + "/v4alpha/connectordiscovery/dspversionparams"), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(DSPVersionParamsResponse.class))).thenReturn(ResponseEntity.of(Optional.of(dspVersionParamsResponse)));
+        doReturn(JsonObject.EMPTY_JSON_OBJECT).when(edcTransformer).transformTransferProcessRequestToJson(requestCaptor.capture());
+
+        // act
+        final var result = testee.startTransferProcess(request);
+
+        // assert
+        Assertions.assertThat(result).isEqualTo(processId);
+        TransferProcessRequest capturedCatalogRequest = requestCaptor.getValue();
+        assertThat(capturedCatalogRequest.getProtocol()).isEqualTo("new-protocol");
+        assertThat(capturedCatalogRequest.getCounterPartyAddress()).isEqualTo("new-address");
+        assertThat(capturedCatalogRequest.getConnectorId()).isEqualTo("did");
     }
 }

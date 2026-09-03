@@ -72,7 +72,7 @@ public class EdcCallbackController {
             final Properties properties = Optional.ofNullable(dataAddress.properties()).orElseThrow();
 
             dataReference = EndpointDataReference.Builder.newInstance()
-                                                         .contractId(properties.agreementId())
+                                                         .contractId(payload.contractId())
                                                          .id(properties.processId())
                                                          .authKey(HttpHeaders.AUTHORIZATION)
                                                          .authCode(properties.authorization())
