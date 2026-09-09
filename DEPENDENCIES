@@ -64,7 +64,7 @@ maven/mavencentral/com.softwaremill.quicklens/quicklens_2.13/1.9.3, Apache-2.0, 
 maven/mavencentral/com.squareup.okhttp3/okhttp/4.12.0, Apache-2.0, approved, #15227
 maven/mavencentral/com.squareup.okio/okio-jvm/3.5.0, Apache-2.0, approved, #9851
 maven/mavencentral/com.squareup.okio/okio/3.6.0, Apache-2.0, approved, #11155
-maven/mavencentral/com.sun.activation/jakarta.activation/2.0.1, EPL-2.0 OR BSD-3-Clause OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jaf
+maven/mavencentral/com.sun.activation/jakarta.activation/2.0.1, EPL-2.0 OR BSD-3-Clause OR GPL-2.0-only WITH Classpath-exception-2.0, approved, ee4j.jaf
 maven/mavencentral/com.tdunning/t-digest/3.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.typesafe.akka/akka-actor_2.13/2.6.20, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.typesafe.akka/akka-slf4j_2.13/2.6.20, Apache-2.0, approved, clearlydefined
@@ -217,14 +217,14 @@ maven/mavencentral/io.suzaku/boopickle_2.13/1.3.3, Apache-2.0, approved, clearly
 maven/mavencentral/io.swagger.core.v3/swagger-annotations-jakarta/2.2.29, Apache-2.0, approved, #5947
 maven/mavencentral/io.swagger.core.v3/swagger-core-jakarta/2.2.25, Apache-2.0, approved, #5929
 maven/mavencentral/io.swagger.core.v3/swagger-models-jakarta/2.2.25, Apache-2.0, approved, #5919
-maven/mavencentral/jakarta.activation/jakarta.activation-api/2.1.3, EPL-2.0 OR BSD-3-Clause OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jaf
-maven/mavencentral/jakarta.annotation/jakarta.annotation-api/2.1.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.ca
-maven/mavencentral/jakarta.json/jakarta.json-api/2.1.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jsonp
-maven/mavencentral/jakarta.json/jakarta.json-api/2.1.3, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jsonp
+maven/mavencentral/jakarta.activation/jakarta.activation-api/2.1.3, BSD-3-Clause OR EPL-2.0 OR GPL-2.0-only WITH Classpath-Exception-2.0, approved, #8015
+maven/mavencentral/jakarta.annotation/jakarta.annotation-api/2.1.1, EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0, approved, #8018
+maven/mavencentral/jakarta.json/jakarta.json-api/2.1.1, EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0, approved, #7907
+maven/mavencentral/jakarta.json/jakarta.json-api/2.1.3, EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0, approved, #7907
 maven/mavencentral/jakarta.validation/jakarta.validation-api/3.0.2, Apache-2.0, approved, ee4j.validation
-maven/mavencentral/jakarta.ws.rs/jakarta.ws.rs-api/3.1.0, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.rest
+maven/mavencentral/jakarta.ws.rs/jakarta.ws.rs-api/3.1.0, EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0, approved, #8019
 maven/mavencentral/jakarta.xml.bind/jakarta.xml.bind-api/3.0.1, BSD-3-Clause, approved, ee4j.jaxb
-maven/mavencentral/jakarta.xml.bind/jakarta.xml.bind-api/4.0.2, BSD-3-Clause, approved, ee4j.jaxb
+maven/mavencentral/jakarta.xml.bind/jakarta.xml.bind-api/4.0.2, BSD-3-Clause, approved, #8016
 maven/mavencentral/javax.jms/javax.jms-api/2.0.1, CDDL-1.1 OR GPL-2.0-only WITH Classpath-exception-2.0, approved, #1516
 maven/mavencentral/junit/junit/4.13.2, EPL-2.0, approved, CQ23636
 maven/mavencentral/net.bytebuddy/byte-buddy-agent/1.15.11, Apache-2.0, approved, #16009
@@ -265,13 +265,13 @@ maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-websocket/11.0.6, Apache
 maven/mavencentral/org.apache.tomcat/tomcat-annotations-api/10.1.39, Apache-2.0, approved, #8196
 maven/mavencentral/org.apache.tomcat/tomcat-annotations-api/11.0.6, Apache-2.0, approved, #21067
 maven/mavencentral/org.apiguardian/apiguardian-api/1.1.2, Apache-2.0, approved, #17641
-maven/mavencentral/org.aspectj/aspectjweaver/1.9.23, EPL-2.0, approved, tools.aspectj
+maven/mavencentral/org.aspectj/aspectjweaver/1.9.23, Apache-2.0 AND BSD-3-Clause AND EPL-1.0 AND BSD-3-Clause AND Apache-1.1, approved, #15252
 maven/mavencentral/org.assertj/assertj-core/3.26.3, Apache-2.0, approved, #14886
 maven/mavencentral/org.awaitility/awaitility/4.2.0, Apache-2.0, approved, #14178
 maven/mavencentral/org.awaitility/awaitility/4.2.2, Apache-2.0, approved, #14178
-maven/mavencentral/org.bouncycastle/bcpkix-jdk18on/1.78, MIT, approved, #14434
-maven/mavencentral/org.bouncycastle/bcprov-jdk18on/1.78, MIT AND CC0-1.0, approved, #14433
-maven/mavencentral/org.bouncycastle/bcutil-jdk18on/1.78, MIT, approved, #14435
+maven/mavencentral/org.bouncycastle/bcpkix-jdk18on/1.78, MIT, approved, #14235
+maven/mavencentral/org.bouncycastle/bcprov-jdk18on/1.78, MIT AND CC0-1.0, approved, #14237
+maven/mavencentral/org.bouncycastle/bcutil-jdk18on/1.78, MIT, approved, #14238
 maven/mavencentral/org.ccil.cowan.tagsoup/tagsoup/1.2.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.checkerframework/checker-qual/3.37.0, MIT, approved, clearlydefined
 maven/mavencentral/org.checkerframework/checker-qual/3.41.0, MIT, approved, #12032
@@ -338,7 +338,7 @@ maven/mavencentral/org.eclipse.tractusx.irs/irs-models/3.2.0, Apache-2.0, approv
 maven/mavencentral/org.eclipse.tractusx.irs/irs-policy-store/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/3.2.0, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-testing/3.2.0, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.glassfish/jakarta.json/2.0.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jsonp
+maven/mavencentral/org.glassfish/jakarta.json/2.0.1, EPL-2.0 OR (GPL-2.0-only WITH Classpath-exception-2.0), approved, #15267
 maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, #23163
 maven/mavencentral/org.hamcrest/hamcrest/2.2, BSD-3-Clause, approved, #17677
 maven/mavencentral/org.hdrhistogram/HdrHistogram/2.1.12, CC0-1.0, approved, #15259
