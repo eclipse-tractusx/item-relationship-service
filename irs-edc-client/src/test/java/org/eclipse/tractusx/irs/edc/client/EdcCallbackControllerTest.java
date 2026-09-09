@@ -1,11 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2026: Volkswagen AG
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022 BOSCH AG
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -134,6 +133,29 @@ class EdcCallbackControllerTest {
     }
 
     @Test
+    void shouldNotStoreEdrWithUnsafeContractId() {
+        final EndpointDataReferenceStorage endpointDataReferenceStorage = mock(EndpointDataReferenceStorage.class);
+        final String ref = """
+                {
+                    "payload": {
+                        "contractId": "contractId\\nforged-log-entry",
+                        "dataAddress": {
+                            "properties": {
+                                "process_id": "testid",
+                                "https://w3id.org/edc/v0.0.1/ns/endpoint": "test",
+                                "https://w3id.org/edc/v0.0.1/ns/authorization": "testToken"
+                            }
+                        }
+                    }
+                }
+                """;
+
+        new EdcCallbackController(endpointDataReferenceStorage, contractNegotiationIdStorage).receiveEdcCallback(ref);
+
+        verifyNoInteractions(endpointDataReferenceStorage);
+    }
+
+    @Test
     void shouldNotStoreNullCallbackPayload() {
         final EndpointDataReferenceStorage endpointDataReferenceStorage = mock(EndpointDataReferenceStorage.class);
 
@@ -162,6 +184,25 @@ class EdcCallbackControllerTest {
                     }
                 }
                 """;
+
+        new EdcCallbackController(storage, negotiationIdStorage).receiveNegotiationsCallback(callback);
+
+        verifyNoInteractions(negotiationIdStorage);
+    }
+
+    @Test
+    void shouldNotStoreNegotiationWithOversizedIdentifier() {
+        final ContractNegotiationIdStorage negotiationIdStorage = mock(ContractNegotiationIdStorage.class);
+        final String callback = """
+                {
+                    "payload": {
+                        "contractNegotiationId": "%s",
+                        "contractAgreement": {
+                            "id": "contractAgreementId"
+                        }
+                    }
+                }
+                """.formatted("a".repeat(256));
 
         new EdcCallbackController(storage, negotiationIdStorage).receiveNegotiationsCallback(callback);
 

@@ -178,13 +178,16 @@ class EdcOrchestratorTest {
 
         final CatalogItem selectedOffer = orchestrator.getCatalogItem(ENDPOINT_ADDRESS, "assetId", BPN);
 
-        assertThat(selectedOffer).isSameAs(acceptedOffer);
+        assertThat(selectedOffer).isNotSameAs(acceptedOffer);
+        assertThat(selectedOffer).usingRecursiveComparison().ignoringFields("connectorId").isEqualTo(acceptedOffer);
+        assertThat(selectedOffer.getConnectorId()).isEqualTo(BPN);
+        assertThat(acceptedOffer.getConnectorId()).isNull();
         verify(contractNegotiationService).selectCatalogItem(catalogItems, BPN);
     }
 
     @Test
     void shouldUseCatalogParticipantIdForPolicySelection() throws EdcClientException {
-        final String catalogParticipantId = "BPN999";
+        final String catalogParticipantId = "BPNL000000000999";
         final CatalogItem catalogItem = createCatalogItem("assetId", catalogParticipantId, "offer-a");
         final List<CatalogItem> catalogItems = List.of(catalogItem);
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(catalogItems);

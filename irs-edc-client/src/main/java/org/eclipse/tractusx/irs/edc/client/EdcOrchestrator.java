@@ -172,11 +172,26 @@ public class EdcOrchestrator {
                                              .filter(StringUtils::isNotBlank)
                                              .findFirst()
                                              .orElse(bpn);
-        return contractNegotiationService.selectCatalogItem(catalogItems, policyBpn)
-                                         .orElseThrow(() -> new EdcClientException(
+        final CatalogItem selectedCatalogItem = contractNegotiationService.selectCatalogItem(catalogItems, policyBpn)
+                                                                          .orElseThrow(() -> new EdcClientException(
                                    "Catalog is empty for endpointAddress '%s' filterKey '%s', filterValue '%s'".formatted(
                                            dspEndpointAddress, JsonLdConfiguration.NAMESPACE_EDC_ID, assetId)));
+        return withConnectorIdFallback(selectedCatalogItem, policyBpn);
 
+    }
+
+    private static CatalogItem withConnectorIdFallback(final CatalogItem catalogItem, final String connectorId) {
+        if (StringUtils.isNotBlank(catalogItem.getConnectorId())) {
+            return catalogItem;
+        }
+        return CatalogItem.builder()
+                          .assetPropId(catalogItem.getAssetPropId())
+                          .itemId(catalogItem.getItemId())
+                          .policy(catalogItem.getPolicy())
+                          .connectorId(connectorId)
+                          .offerId(catalogItem.getOfferId())
+                          .validUntil(catalogItem.getValidUntil())
+                          .build();
     }
 
     /**

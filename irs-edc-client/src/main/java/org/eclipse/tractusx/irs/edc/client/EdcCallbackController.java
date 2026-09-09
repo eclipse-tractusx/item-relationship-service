@@ -1,11 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2026: Volkswagen AG
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022 BOSCH AG
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +56,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("irsEdcClientEdcCallbackController")
 @Hidden
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.CommentSize")
 public class EdcCallbackController {
+
+    private static final int MAX_CALLBACK_VALUE_LENGTH = 255;
+    private static final String INVALID_LOG_VALUE = "<invalid>";
+    private static final String EDR_CALLBACK = "Endpoint Data Reference";
+    private static final String NEGOTIATION_CALLBACK = "Contract Negotiation";
+    private static final String MISSING = "missing";
+    private static final Pattern SAFE_LOG_VALUE_PATTERN = Pattern.compile(
+            "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]{1," + MAX_CALLBACK_VALUE_LENGTH + "}$");
 
     private final EndpointDataReferenceStorage storage;
     private final ContractNegotiationIdStorage storageNegotiationId;
@@ -70,20 +77,25 @@ public class EdcCallbackController {
             final EndpointDataReferenceCallback endpointDataReferenceCallback = StringMapper.mapFromString(
                     endpointDataReference, EndpointDataReferenceCallback.class);
             if (endpointDataReferenceCallback == null) {
-                throw invalidEdrCallback("callback payload");
+                throw invalidCallback(EDR_CALLBACK, MISSING, "callback payload");
             }
             final TransferProcessCallbackPayload payload = Optional.ofNullable(endpointDataReferenceCallback.getPayload())
-                                                                   .orElseThrow(() -> invalidEdrCallback("payload"));
+                                                                   .orElseThrow(
+                                                                           () -> invalidCallback(EDR_CALLBACK, MISSING,
+                                                                                   "payload"));
             final DataAddress dataAddress = Optional.ofNullable(payload.dataAddress())
-                                                    .orElseThrow(() -> invalidEdrCallback("dataAddress"));
+                                                    .orElseThrow(() -> invalidCallback(EDR_CALLBACK, MISSING,
+                                                            "dataAddress"));
             final Properties properties = Optional.ofNullable(dataAddress.properties())
-                                                  .orElseThrow(() -> invalidEdrCallback("dataAddress.properties"));
-            final String contractId = Optional.ofNullable(payload.contractId())
-                                              .filter(StringUtils::isNotBlank)
-                                              .or(() -> Optional.ofNullable(properties.agreementId())
-                                                                .filter(StringUtils::isNotBlank))
-                                              .orElseThrow(() -> invalidEdrCallback(
-                                                      "payload.contractId and dataAddress.properties.agreement_id"));
+                                                  .orElseThrow(() -> invalidCallback(EDR_CALLBACK, MISSING,
+                                                          "dataAddress.properties"));
+            final String contractId = requireValidCallbackIdentifier(
+                    Optional.ofNullable(payload.contractId())
+                            .filter(StringUtils::isNotBlank)
+                            .or(() -> Optional.ofNullable(properties.agreementId()).filter(StringUtils::isNotBlank))
+                            .orElseThrow(() -> invalidCallback(EDR_CALLBACK, MISSING,
+                                    "payload.contractId and dataAddress.properties.agreement_id")),
+                    "payload.contractId or dataAddress.properties.agreement_id", EDR_CALLBACK);
 
             dataReference = EndpointDataReference.Builder.newInstance()
                                                          .contractId(contractId)
@@ -98,10 +110,6 @@ public class EdcCallbackController {
         }
     }
 
-    private static EdcClientException invalidEdrCallback(final String missingField) {
-        return new EdcClientException("Invalid Endpoint Data Reference callback: missing " + missingField);
-    }
-
     private static NegotiationCallbackPayload mapToContractAgreementId(final String endpointNegotiationMapping)
             throws EdcClientException {
         try {
@@ -110,20 +118,22 @@ public class EdcCallbackController {
                                                                                                  endpointNegotiationMapping,
                                                                                                  NegotiationEndpointCallback.class))
                                                                                  .orElseThrow(
-                                                                                         () -> invalidNegotiationCallback(
+                                                                                         () -> invalidCallback(
+                                                                                                 NEGOTIATION_CALLBACK,
+                                                                                                 MISSING,
                                                                                                  "callback payload"));
             final NegotiationCallbackPayload payload = Optional.ofNullable(negotiationEndpointCallback.getPayload())
                                                                .orElseThrow(
-                                                                       () -> invalidNegotiationCallback("payload"));
-            Optional.ofNullable(payload.getContractNegotiationId())
-                    .filter(StringUtils::isNotBlank)
-                    .orElseThrow(() -> invalidNegotiationCallback("payload.contractNegotiationId"));
+                                                                       () -> invalidCallback(NEGOTIATION_CALLBACK,
+                                                                               MISSING, "payload"));
+            requireValidCallbackIdentifier(payload.getContractNegotiationId(), "payload.contractNegotiationId",
+                    NEGOTIATION_CALLBACK);
             final ContractAgreement contractAgreement = Optional.ofNullable(payload.getContractAgreement())
-                                                                .orElseThrow(() -> invalidNegotiationCallback(
+                                                                .orElseThrow(() -> invalidCallback(
+                                                                        NEGOTIATION_CALLBACK, MISSING,
                                                                         "payload.contractAgreement"));
-            Optional.ofNullable(contractAgreement.getContractAgreementId())
-                    .filter(StringUtils::isNotBlank)
-                    .orElseThrow(() -> invalidNegotiationCallback("payload.contractAgreement.id"));
+            requireValidCallbackIdentifier(contractAgreement.getContractAgreementId(), "payload.contractAgreement.id",
+                    NEGOTIATION_CALLBACK);
 
             return payload;
         } catch (JsonParseException e) {
@@ -131,8 +141,24 @@ public class EdcCallbackController {
         }
     }
 
-    private static EdcClientException invalidNegotiationCallback(final String missingField) {
-        return new EdcClientException("Invalid Contract Negotiation callback: missing " + missingField);
+    private static EdcClientException invalidCallback(final String callbackType, final String problem,
+            final String field) {
+        return new EdcClientException("Invalid " + callbackType + " callback: " + problem + " " + field);
+    }
+
+    private static String requireValidCallbackIdentifier(final String value, final String field,
+            final String callbackType) throws EdcClientException {
+        if (StringUtils.isBlank(value)) {
+            throw invalidCallback(callbackType, MISSING, field);
+        }
+        if (!SAFE_LOG_VALUE_PATTERN.matcher(value).matches()) {
+            throw invalidCallback(callbackType, "invalid", field);
+        }
+        return value;
+    }
+
+    private static String safeLogValue(final String value) {
+        return value != null && SAFE_LOG_VALUE_PATTERN.matcher(value).matches() ? value : INVALID_LOG_VALUE;
     }
 
     private static void logCallbackError(final String callbackType, final EdcClientException exception) {
@@ -148,13 +174,13 @@ public class EdcCallbackController {
         try {
             endpointDataReference = mapToEndpointDataReference(endpointDataReferenceCallback);
 
-            log.debug("Received EndpointDataReference with ID {} and endpoint {}", endpointDataReference.getId(),
-                    endpointDataReference.getEndpoint());
+            log.debug("Received EndpointDataReference with ID {} and endpoint {}",
+                    safeLogValue(endpointDataReference.getId()), safeLogValue(endpointDataReference.getEndpoint()));
 
             final String contractAgreementId = endpointDataReference.getContractId();
             storeEdr(contractAgreementId, endpointDataReference);
         } catch (EdcClientException e) {
-            logCallbackError("Endpoint Data Reference", e);
+            logCallbackError(EDR_CALLBACK, e);
         }
     }
 
@@ -164,22 +190,23 @@ public class EdcCallbackController {
             final NegotiationCallbackPayload payload = mapToContractAgreementId(endpointNegotiationCallback);
             final String contractAgreementId = payload.getContractAgreement().getContractAgreementId();
             log.debug("Received Negotiation Callback for negotiationId: '{}' and contractAgreementId: '{}'",
-                    payload.getContractNegotiationId(), contractAgreementId);
+                    safeLogValue(payload.getContractNegotiationId()), safeLogValue(contractAgreementId));
             storeNegotiationId(payload.getContractNegotiationId(), contractAgreementId);
         } catch (EdcClientException e) {
-            logCallbackError("Contract Negotiation", e);
+            logCallbackError(NEGOTIATION_CALLBACK, e);
         }
 
     }
 
     private void storeEdr(final String contractId, final EndpointDataReference dataReference) {
         storage.put(contractId, dataReference);
-        log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractId));
+        log.info("Endpoint Data Reference received and cached for agreement: {}",
+                safeLogValue(Masker.mask(contractId)));
     }
 
     private void storeNegotiationId(final String contractNegotiationId, final String contractAgreementId) {
         storageNegotiationId.put(contractNegotiationId, contractAgreementId);
         log.info("Mapped Contract NegotiationId {} to Contract AgreementId and cached for agreement: {}",
-                contractNegotiationId, Masker.mask(contractAgreementId));
+                safeLogValue(contractNegotiationId), safeLogValue(Masker.mask(contractAgreementId)));
     }
 }
