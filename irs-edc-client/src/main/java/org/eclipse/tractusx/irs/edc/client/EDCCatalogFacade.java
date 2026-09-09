@@ -52,6 +52,7 @@ import org.springframework.stereotype.Component;
 @Component("irsEdcClientEdcCatalogFacade")
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("PMD.CommentSize")
 public class EDCCatalogFacade {
 
     public static final String NAMESPACE_DSPACE_PARTICIPANT_ID = "https://w3id.org/dspace/v0.8/participantId";

@@ -34,6 +34,7 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.edr.ContractAgreement;
 import org.eclipse.tractusx.irs.edc.client.model.edr.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.edr.EndpointDataReferenceCallback;
 import org.eclipse.tractusx.irs.edc.client.model.edr.NegotiationCallbackPayload;
@@ -55,6 +56,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("irsEdcClientEdcCallbackController")
 @Hidden
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.CommentSize")
 public class EdcCallbackController {
 
     private final EndpointDataReferenceStorage storage;
@@ -103,23 +105,25 @@ public class EdcCallbackController {
     private static NegotiationCallbackPayload mapToContractAgreementId(final String endpointNegotiationMapping)
             throws EdcClientException {
         try {
-            final NegotiationEndpointCallback negotiationEndpointCallback = StringMapper.mapFromString(
-                    endpointNegotiationMapping, NegotiationEndpointCallback.class);
-            if (negotiationEndpointCallback == null) {
-                throw invalidNegotiationCallback("callback payload");
-            }
+            final NegotiationEndpointCallback negotiationEndpointCallback = Optional.ofNullable(
+                                                                                         StringMapper.mapFromString(
+                                                                                                 endpointNegotiationMapping,
+                                                                                                 NegotiationEndpointCallback.class))
+                                                                                 .orElseThrow(
+                                                                                         () -> invalidNegotiationCallback(
+                                                                                                 "callback payload"));
             final NegotiationCallbackPayload payload = Optional.ofNullable(negotiationEndpointCallback.getPayload())
                                                                .orElseThrow(
                                                                        () -> invalidNegotiationCallback("payload"));
-            if (StringUtils.isBlank(payload.getContractNegotiationId())) {
-                throw invalidNegotiationCallback("payload.contractNegotiationId");
-            }
-            if (payload.getContractAgreement() == null) {
-                throw invalidNegotiationCallback("payload.contractAgreement");
-            }
-            if (StringUtils.isBlank(payload.getContractAgreement().getContractAgreementId())) {
-                throw invalidNegotiationCallback("payload.contractAgreement.id");
-            }
+            Optional.ofNullable(payload.getContractNegotiationId())
+                    .filter(StringUtils::isNotBlank)
+                    .orElseThrow(() -> invalidNegotiationCallback("payload.contractNegotiationId"));
+            final ContractAgreement contractAgreement = Optional.ofNullable(payload.getContractAgreement())
+                                                                .orElseThrow(() -> invalidNegotiationCallback(
+                                                                        "payload.contractAgreement"));
+            Optional.ofNullable(contractAgreement.getContractAgreementId())
+                    .filter(StringUtils::isNotBlank)
+                    .orElseThrow(() -> invalidNegotiationCallback("payload.contractAgreement.id"));
 
             return payload;
         } catch (JsonParseException e) {

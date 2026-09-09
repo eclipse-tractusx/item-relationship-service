@@ -62,7 +62,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service("irsEdcClientContractNegotiationService")
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.CommentSize" })
 @RequiredArgsConstructor
 public class ContractNegotiationService {
 
