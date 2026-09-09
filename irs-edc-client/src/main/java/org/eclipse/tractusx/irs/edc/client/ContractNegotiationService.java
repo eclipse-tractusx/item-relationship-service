@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2022,2024
+ *       2026: Volkswagen AG
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
@@ -23,9 +24,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -70,6 +73,33 @@ public class ContractNegotiationService {
     private final EdcControlPlaneClient edcControlPlaneClient;
     private final PolicyCheckerService policyCheckerService;
     private final EdcConfiguration config;
+
+    /**
+     * Selects one contract offer deterministically. An accepted, active policy is preferred. If none exists, an
+     * accepted but expired offer is returned before an unsupported offer so that negotiation retains the existing
+     * policy-specific error handling.
+     *
+     * @param catalogItems contract offers for the same asset
+     * @param bpn          provider BPN used to resolve accepted policies
+     * @return the selected contract offer, or empty if no offers were supplied
+     */
+    public Optional<CatalogItem> selectCatalogItem(final List<CatalogItem> catalogItems, final String bpn) {
+        final List<CatalogItem> sortedCatalogItems = catalogItems.stream()
+                                                                 .filter(catalogItem -> StringUtils.isNotBlank(
+                                                                         catalogItem.getOfferId()))
+                                                                 .sorted(Comparator.comparing(CatalogItem::getOfferId))
+                                                                 .toList();
+        final List<CatalogItem> acceptedCatalogItems = sortedCatalogItems.stream()
+                                                                         .filter(catalogItem -> policyCheckerService.isValid(
+                                                                                 catalogItem.getPolicy(), bpn))
+                                                                         .toList();
+
+        return acceptedCatalogItems.stream()
+                                   .filter(catalogItem -> !policyCheckerService.isExpired(catalogItem.getPolicy(), bpn))
+                                   .findFirst()
+                                   .or(() -> acceptedCatalogItems.stream().findFirst())
+                                   .or(() -> sortedCatalogItems.stream().findFirst());
+    }
 
     public TransferProcessResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
             final EndpointDataReferenceStatus endpointDataReferenceStatus, final String bpn)
@@ -256,4 +286,3 @@ public class ContractNegotiationService {
     }
 
 }
-

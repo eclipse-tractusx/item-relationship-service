@@ -19,8 +19,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus.VALID;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +34,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
@@ -155,16 +160,20 @@ public class EdcOrchestrator {
      * @param dspEndpointAddress The address of the endpoint to retrieve the catalog item from.
      * @param assetId            The unique identifier of the asset for which the catalog item is required.
      * @param bpn                The business partner number associated with the catalog item.
-     * @return The first matching catalog item found for the given asset ID and BPN.
+     * @return A matching catalog item with a deterministically selected policy for the given asset ID and BPN.
      * @throws EdcClientException If an error occurs while retrieving the catalog item.
      */
     public CatalogItem getCatalogItem(final String dspEndpointAddress, final String assetId, final String bpn)
             throws EdcClientException {
         final List<CatalogItem> catalogItems = getCatalogItems(dspEndpointAddress, JsonLdConfiguration.NAMESPACE_EDC_ID,
                 assetId, bpn);
-        return catalogItems.stream()
-                           .findFirst()
-                           .orElseThrow(() -> new EdcClientException(
+        final String policyBpn = catalogItems.stream()
+                                             .map(CatalogItem::getConnectorId)
+                                             .filter(StringUtils::isNotBlank)
+                                             .findFirst()
+                                             .orElse(bpn);
+        return contractNegotiationService.selectCatalogItem(catalogItems, policyBpn)
+                                         .orElseThrow(() -> new EdcClientException(
                                    "Catalog is empty for endpointAddress '%s' filterKey '%s', filterValue '%s'".formatted(
                                            dspEndpointAddress, JsonLdConfiguration.NAMESPACE_EDC_ID, assetId)));
 
@@ -238,7 +247,19 @@ public class EdcOrchestrator {
      */
     public List<CompletableFuture<EndpointDataReference>> getEndpointDataReferences(final String endpointAddress,
             final List<CatalogItem> catalogItems) {
-        return catalogItems.stream().map(catalogItem -> {
+        final List<CatalogItem> selectedCatalogItems = catalogItems.stream()
+                                                                   .filter(EdcOrchestrator::hasCatalogIdentifiers)
+                                                                   .sorted(comparing(CatalogItem::getItemId)
+                                                                           .thenComparing(CatalogItem::getOfferId))
+                                                                   .collect(groupingBy(CatalogItem::getItemId,
+                                                                           LinkedHashMap::new, toList()))
+                                                                   .values()
+                                                                   .stream()
+                                                                   .map(items -> contractNegotiationService.selectCatalogItem(
+                                                                           items, items.get(0).getConnectorId())
+                                                                                                           .orElseThrow())
+                                                                   .toList();
+        return selectedCatalogItems.stream().map(catalogItem -> {
             try {
                 return getEndpointDataReference(endpointAddress, catalogItem);
             } catch (EdcClientException e) {
@@ -248,6 +269,14 @@ public class EdcOrchestrator {
                 return CompletableFuture.<EndpointDataReference>failedFuture(e);
             }
         }).toList();
+    }
+
+    private static boolean hasCatalogIdentifiers(final CatalogItem catalogItem) {
+        if (StringUtils.isBlank(catalogItem.getItemId()) || StringUtils.isBlank(catalogItem.getOfferId())) {
+            log.warn("Skipping catalog item because itemId or offerId is missing");
+            return false;
+        }
+        return true;
     }
 
     private CompletableFuture<EndpointDataReference> negotiateEndpointDataReference(final String dspEndpointAddress,
@@ -262,9 +291,18 @@ public class EdcOrchestrator {
         ongoingNegotiationStorage.addToOngoingNegotiations(storageId, completableFuture);
 
         completableFuture.whenCompleteAsync((endpointDataReference, throwable) -> {
-            log.info("Completed waiting for EndpointDataReference. Storing EDR and removing from ongoing negotiations");
-            endpointDataReferenceCacheService.putEndpointDataReferenceIntoStorage(storageId, endpointDataReference);
-            ongoingNegotiationStorage.removeFromOngoingNegotiations(storageId);
+            try {
+                if (throwable == null && endpointDataReference != null) {
+                    log.info("Completed waiting for EndpointDataReference. Storing EDR");
+                    endpointDataReferenceCacheService.putEndpointDataReferenceIntoStorage(storageId,
+                            endpointDataReference);
+                } else {
+                    final String causeType = throwable == null ? "<none>" : throwable.getClass().getName();
+                    log.warn("EndpointDataReference retrieval failed. Skipping cache update. causeType={}", causeType);
+                }
+            } finally {
+                ongoingNegotiationStorage.removeFromOngoingNegotiations(storageId);
+            }
         }, executorService);
 
         return completableFuture;

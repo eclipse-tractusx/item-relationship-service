@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2022,2024
+ *       2026: Volkswagen AG
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
@@ -28,8 +29,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -146,6 +149,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void setUp() {
         when(config.getControlplane().getRequestTtl()).thenReturn(Duration.ofMinutes(10));
         when(config.getSubmodel().getRequestTtl()).thenReturn(Duration.ofMinutes(10));
+        lenient().when(contractNegotiationService.selectCatalogItem(anyList(), any()))
+                 .thenAnswer(invocation -> {
+                     final List<CatalogItem> catalogItems = invocation.getArgument(0);
+                     return catalogItems.stream().findFirst();
+                 });
         final ExecutorService fixedThreadPoolExecutorService = Executors.newFixedThreadPool(2);
         final EdcOrchestrator edcOrchestrator = new EdcOrchestrator(config, contractNegotiationService, pollingService,
                 catalogFacade, endpointDataReferenceCacheService, contractNegotiationIdStorage, fixedThreadPoolExecutorService,
@@ -427,7 +435,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String assetId = "asset-id";
         final String storageId = assetId + ENDPOINT_ADDRESS + PROVIDER_SUFFIX;
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
-                List.of(CatalogItem.builder().itemId(assetId).build()));
+                List.of(CatalogItem.builder().itemId(assetId).offerId("offer-id").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 TransferProcessResponse.builder().contractId(agreementId).build());
@@ -489,7 +497,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String assetId = "asset-id";
         final String storageId = assetId + ENDPOINT_ADDRESS + PROVIDER_SUFFIX;
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
-                List.of(CatalogItem.builder().itemId(assetId).build()));
+                List.of(CatalogItem.builder().itemId(assetId).offerId("offer-id").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 TransferProcessResponse.builder().contractId(agreementId).build());
@@ -517,7 +525,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String assetId = "asset-id";
         final String storageId = assetId + ENDPOINT_ADDRESS + PROVIDER_SUFFIX;
         when(catalogFacade.fetchCatalogByFilter(any(), eq(EDC_TYPE), eq(DATA_CORE_DIGITAL_TWIN_REGISTRY),
-                any())).thenReturn(List.of(CatalogItem.builder().itemId(assetId).build()));
+                any())).thenReturn(List.of(CatalogItem.builder().itemId(assetId).offerId("offer-id").build()));
 
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
@@ -547,7 +555,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String assetId = "registry-asset-id";
         final String storageId = assetId + ENDPOINT_ADDRESS + PROVIDER_SUFFIX;
         when(catalogFacade.fetchCatalogByFilter(any(), eq(DCT_TYPE_ID), eq(TAXONOMY_DIGITAL_TWIN_REGISTRY),
-                any())).thenReturn(List.of(CatalogItem.builder().itemId(assetId).build()));
+                any())).thenReturn(List.of(CatalogItem.builder().itemId(assetId).offerId("offer-id").build()));
 
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 

@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2022,2024
+ *       2026: Volkswagen AG
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
@@ -35,6 +36,7 @@ import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.catalog.spi.Dataset;
@@ -56,24 +58,20 @@ public class EDCCatalogFacade {
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
 
-    private static CatalogItem createCatalogItem(final Catalog pageableCatalog, final Dataset dataset) {
-        final int maxNumberOfOffers = 1;
-        if (dataset.getOffers().size() > maxNumberOfOffers) {
-            log.warn("Catalog Offer contains more than one Policy. Using the first one");
-        }
-        final Map.Entry<String, Policy> stringPolicyEntry = dataset.getOffers()
-                                                                   .entrySet()
-                                                                   .stream()
-                                                                   .findFirst()
-                                                                   .orElseThrow();
-        final var builder = CatalogItem.builder()
-                                       .itemId(pageableCatalog.getId())
-                                       .offerId(stringPolicyEntry.getKey())
-                                       .assetPropId(dataset.getId())
-                                       .policy(stringPolicyEntry.getValue())
-                                       .connectorId(getParticipantId(pageableCatalog));
-
-        return builder.build();
+    private static List<CatalogItem> createCatalogItems(final Catalog pageableCatalog, final Dataset dataset) {
+        return dataset.getOffers()
+                      .entrySet()
+                      .stream()
+                      .filter(EDCCatalogFacade::hasOfferId)
+                      .sorted(Map.Entry.comparingByKey())
+                      .map(offer -> CatalogItem.builder()
+                                               .itemId(pageableCatalog.getId())
+                                               .offerId(offer.getKey())
+                                               .assetPropId(dataset.getId())
+                                               .policy(offer.getValue())
+                                               .connectorId(getParticipantId(pageableCatalog))
+                                               .build())
+                      .toList();
     }
 
     private static String getParticipantId(final Catalog catalog) {
@@ -100,22 +98,40 @@ public class EDCCatalogFacade {
     }
 
     private static List<CatalogItem> mapToCatalogItems(final Catalog catalog) {
-        return emptyIfNull(catalog.getDatasets()).stream().map(dataset -> {
-            final Map.Entry<String, Policy> offer = dataset.getOffers().entrySet().stream().findFirst().orElseThrow();
-            final Policy policy = offer.getValue()
-                                       .toBuilder()
-                                       .assigner(getParticipantId(catalog))
-                                       .target(dataset.getId())
-                                       .build();
+        return emptyIfNull(catalog.getDatasets()).stream()
+                                                 .flatMap(dataset -> dataset.getOffers()
+                                                                                .entrySet()
+                                                                                .stream()
+                                                                                .filter(EDCCatalogFacade::hasOfferId)
+                                                                                .sorted(Map.Entry.comparingByKey())
+                                                                                .map(offer -> mapCatalogItem(catalog,
+                                                                                        dataset, offer)))
+                                                 .toList();
+    }
 
-            return CatalogItem.builder()
-                              .itemId(dataset.getId())
-                              .assetPropId(dataset.getId())
-                              .offerId(offer.getKey())
-                              .policy(policy)
-                              .connectorId(getParticipantId(catalog))
-                              .build();
-        }).toList();
+    private static boolean hasOfferId(final Map.Entry<String, Policy> offer) {
+        if (StringUtils.isBlank(offer.getKey())) {
+            log.warn("Skipping catalog policy without an offer id");
+            return false;
+        }
+        return true;
+    }
+
+    private static CatalogItem mapCatalogItem(final Catalog catalog, final Dataset dataset,
+            final Map.Entry<String, Policy> offer) {
+        final Policy policy = offer.getValue()
+                                   .toBuilder()
+                                   .assigner(getParticipantId(catalog))
+                                   .target(dataset.getId())
+                                   .build();
+
+        return CatalogItem.builder()
+                          .itemId(dataset.getId())
+                          .assetPropId(dataset.getId())
+                          .offerId(offer.getKey())
+                          .policy(policy)
+                          .connectorId(getParticipantId(catalog))
+                          .build();
     }
 
     /**
@@ -155,7 +171,7 @@ public class EDCCatalogFacade {
         }
 
         log.info("Search for offer for asset id: {}", target);
-        return datasets.stream().map(dataset -> createCatalogItem(pageableCatalog, dataset)).toList();
+        return datasets.stream().flatMap(dataset -> createCatalogItems(pageableCatalog, dataset).stream()).toList();
     }
 
     /**

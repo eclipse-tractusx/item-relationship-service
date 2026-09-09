@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2022,2024
+ *       2026: Volkswagen AG
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
  *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
@@ -26,10 +27,13 @@ package org.eclipse.tractusx.irs.edc.client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.edc.policy.model.Permission;
@@ -76,6 +80,62 @@ class ContractNegotiationServiceTest {
     private static CatalogItem createCatalogItem(final String assetId, final String offerId) {
         final Policy policy = createPolicy(assetId);
         return CatalogItem.builder().itemId(assetId).policy(policy).assetPropId(assetId).offerId(offerId).build();
+    }
+
+    @Test
+    void shouldSelectAcceptedActiveOffer() {
+        final String bpn = "BPNL000000000001";
+        final CatalogItem rejectedOffer = createCatalogItem("assetId", "offer-a");
+        final CatalogItem acceptedOffer = createCatalogItem("assetId", "offer-b");
+        when(policyCheckerService.isValid(same(rejectedOffer.getPolicy()), eq(bpn))).thenReturn(false);
+        when(policyCheckerService.isValid(same(acceptedOffer.getPolicy()), eq(bpn))).thenReturn(true);
+        when(policyCheckerService.isExpired(same(acceptedOffer.getPolicy()), eq(bpn))).thenReturn(false);
+
+        assertThat(testee.selectCatalogItem(List.of(rejectedOffer, acceptedOffer), bpn)).contains(acceptedOffer);
+    }
+
+    @Test
+    void shouldSelectAcceptedExpiredOfferBeforeRejectedOffer() {
+        final String bpn = "BPNL000000000001";
+        final CatalogItem rejectedOffer = createCatalogItem("assetId", "offer-a");
+        final CatalogItem expiredOffer = createCatalogItem("assetId", "offer-b");
+        when(policyCheckerService.isValid(same(rejectedOffer.getPolicy()), eq(bpn))).thenReturn(false);
+        when(policyCheckerService.isValid(same(expiredOffer.getPolicy()), eq(bpn))).thenReturn(true);
+        when(policyCheckerService.isExpired(same(expiredOffer.getPolicy()), eq(bpn))).thenReturn(true);
+
+        assertThat(testee.selectCatalogItem(List.of(rejectedOffer, expiredOffer), bpn)).contains(expiredOffer);
+    }
+
+    @Test
+    void shouldSelectAcceptedOffersDeterministically() {
+        final String bpn = "BPNL000000000001";
+        final CatalogItem secondOffer = createCatalogItem("assetId", "offer-b");
+        final CatalogItem firstOffer = createCatalogItem("assetId", "offer-a");
+        when(policyCheckerService.isValid(any(), eq(bpn))).thenReturn(true);
+        when(policyCheckerService.isExpired(any(), eq(bpn))).thenReturn(false);
+
+        assertThat(testee.selectCatalogItem(List.of(secondOffer, firstOffer), bpn)).contains(firstOffer);
+    }
+
+    @Test
+    void shouldSelectRejectedOffersDeterministically() {
+        final String bpn = "BPNL000000000001";
+        final CatalogItem secondOffer = createCatalogItem("assetId", "offer-b");
+        final CatalogItem firstOffer = createCatalogItem("assetId", "offer-a");
+        when(policyCheckerService.isValid(any(), eq(bpn))).thenReturn(false);
+
+        assertThat(testee.selectCatalogItem(List.of(secondOffer, firstOffer), bpn)).contains(firstOffer);
+    }
+
+    @Test
+    void shouldIgnoreOfferWithoutId() {
+        final String bpn = "BPNL000000000001";
+        final CatalogItem invalidOffer = createCatalogItem("assetId", null);
+        final CatalogItem validOffer = createCatalogItem("assetId", "offer-a");
+        when(policyCheckerService.isValid(same(validOffer.getPolicy()), eq(bpn))).thenReturn(true);
+        when(policyCheckerService.isExpired(same(validOffer.getPolicy()), eq(bpn))).thenReturn(false);
+
+        assertThat(testee.selectCatalogItem(List.of(invalidOffer, validOffer), bpn)).contains(validOffer);
     }
 
     @Test
