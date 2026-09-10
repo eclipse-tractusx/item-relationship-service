@@ -3640,6 +3640,9 @@ If a Contract Offer does not match any of the IDs store in Policy Store, the con
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>The catalog facade maps every contract offer of a dataset to a separate catalog item. For single-asset lookups, EdcOrchestrator selects one offer in deterministic offer-ID order. For list-based EDR retrieval, it first groups the offers by asset and selects one offer per asset. An accepted and non-expired policy is preferred. If no such offer exists, an accepted but expired offer is selected before an unsupported offer so that policy validation reports the applicable policy error. Offers without the identifiers required for negotiation are ignored.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_policy_store">Policy Store</h4>
@@ -3830,20 +3833,17 @@ If more than one id is present for a globalAssetId, IRS will use the first of th
 <div class="sect4">
 <h5 id="_edc">EDC</h5>
 <div class="paragraph">
-<p>EndpointDataReferenceStorage is in-memory local storage that holds records (EndpointDataReferences) by either assetId or contractAgreementId.</p>
+<p>EndpointDataReferenceStorage holds Endpoint Data References either in local memory or Redis, depending on the configuration. EDR callbacks are correlated by contract agreement ID. The callback reads this ID from <code>payload.contractId</code> and falls back to <code>dataAddress.properties.agreement_id</code> when necessary. In EDR management mode, the separate negotiation callback maps the contract negotiation ID to the contract agreement ID first.</p>
 </div>
 <div class="paragraph">
-<p>When EDC gets EndpointDataReference describing endpoint serving data it uses EndpointDataReferenceStorage and query it by assetId.
-This allows reuse of already existing EndpointDataReference if it is present, valid, and it&#8217;s token is not expired, rather than starting whole new contract negotiation process.</p>
+<p>After a successful retrieval, EdcOrchestrator caches the EDR under a key composed of the asset ID and DSP endpoint. This allows an existing EDR to be reused when it is present, valid and its token is not expired. Failed or empty EDR retrievals are not added to this cache.</p>
 </div>
 <div class="paragraph">
-<p>In case token is expired the process is also shortened.
-We don&#8217;t have to start new contract negotiation process, since we can obtain required contractAgreementId from present authCode.
-This improves request processing time.</p>
+<p>In classic negotiation mode, an expired EDR can reuse its contract agreement ID for a new transfer without starting another contract negotiation. EDR management mode does not use this shortcut and starts a new contract negotiation when the cached EDR has expired.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/discovery-process-edc.svg" alt="discovery process edc" width="1253" height="535">
+<img src="architecture-constraints/discovery-process-edc.svg" alt="discovery process edc" width="1747" height="832">
 </div>
 </div>
 </div>
@@ -5063,7 +5063,7 @@ For more information see:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-24 15:21:58 UTC
+Last updated 2026-09-10 08:24:46 UTC
 </div>
 </div>
 </body>

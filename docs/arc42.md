@@ -1331,6 +1331,8 @@ If the validation fails, the IRS sends a HTTP 400 response and indicates the pro
 IDs of so-called "Rahmenverträgen" or Framework-Agreements can be added to the IRS Policy Store to be accepted by the IRS.
 If a Contract Offer does not match any of the IDs store in Policy Store, the contract offer will be declined and no data will be consumed.
 
+The catalog facade maps every contract offer of a dataset to a separate catalog item. For single-asset lookups, EdcOrchestrator selects one offer in deterministic offer-ID order. For list-based EDR retrieval, it first groups the offers by asset and selects one offer per asset. An accepted and non-expired policy is preferred. If no such offer exists, an accepted but expired offer is selected before an unsupported offer so that policy validation reports the applicable policy error. Offers without the identifiers required for negotiation are ignored.
+
 ### Policy Store
 
 The IRS gives its users the ability to manage, create and delete complex policies containing permissions and constraints in order to obtain the most precise control over access and use of data received from the edc provider.
@@ -1425,14 +1427,11 @@ If more than one id is present for a globalAssetId, IRS will use the first of th
 
 #### EDC
 
-EndpointDataReferenceStorage is in-memory local storage that holds records (EndpointDataReferences) by either assetId or contractAgreementId.
+EndpointDataReferenceStorage holds Endpoint Data References either in local memory or Redis, depending on the configuration. EDR callbacks are correlated by contract agreement ID. The callback reads this ID from `payload.contractId` and falls back to `dataAddress.properties.agreement_id` when necessary. In EDR management mode, the separate negotiation callback maps the contract negotiation ID to the contract agreement ID first.
 
-When EDC gets EndpointDataReference describing endpoint serving data it uses EndpointDataReferenceStorage and query it by assetId.
-This allows reuse of already existing EndpointDataReference if it is present, valid, and it’s token is not expired, rather than starting whole new contract negotiation process.
+After a successful retrieval, EdcOrchestrator caches the EDR under a key composed of the asset ID and DSP endpoint. This allows an existing EDR to be reused when it is present, valid and its token is not expired. Failed or empty EDR retrievals are not added to this cache.
 
-In case token is expired the process is also shortened.
-We don’t have to start new contract negotiation process, since we can obtain required contractAgreementId from present authCode.
-This improves request processing time.
+In classic negotiation mode, an expired EDR can reuse its contract agreement ID for a new transfer without starting another contract negotiation. EDR management mode does not use this shortcut and starts a new contract negotiation when the cached EDR has expired.
 
 ```bash
 

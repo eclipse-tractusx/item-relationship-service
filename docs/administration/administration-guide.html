@@ -1957,7 +1957,7 @@ Keep the values for these settings safe and do not publish them!
 <p>Create a contract definition that links the notification asset to those policies so partner IRS instances can discover and negotiate the offer.</p>
 </li>
 <li>
-<p>Register the DTR, PURIS and Industry Core accepted policies described below in the IRS Policy Store through <code>POST /irs/policies</code>. The offered contract policy must satisfy an active accepted policy; otherwise the recursive sender rejects the catalog offer.</p>
+<p>Register the DTR, PURIS and Industry Core accepted policies described below in the IRS Policy Store through <code>POST /irs/policies</code>. A consumed contract offer must satisfy an active accepted policy.</p>
 </li>
 <li>
 <p>Store the local chain opening grant for every asset that the participant may process under the opening. Leaf participants use an empty <code>allowedBpnlSet</code>.</p>
@@ -1972,6 +1972,9 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div class="paragraph">
 <p>The provider offer and the consumer&#8217;s accepted policy configuration must use compatible constraints. The current IRS policy matcher uses the <code><a href="https://w3id.org/catenax/policy/" class="bare">https://w3id.org/catenax/policy/</a></code> namespace and represents each <code>rightOperand</code> as a single string.</p>
+</div>
+<div class="paragraph">
+<p>If the notification catalog query returns multiple assets or multiple contract offers for one asset, the recursive sender evaluates all complete offers. It selects one accepted, non-expired offer deterministically by asset ID and offer ID. Rejected or expired offers are never negotiated. If offers are returned but none contains all required catalog fields, the sender reports <code>CATALOG_REQUEST_FAILED</code>. If complete offers exist but none is accepted and non-expired, it reports <code>NOTIFICATION_POLICY_REJECTED</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_provider_edc_policy_and_contract_definition">Provider EDC policy and contract definition</h4>
@@ -2610,7 +2613,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-24 15:21:58 UTC
+Last updated 2026-09-10 08:24:46 UTC
 </div>
 </div>
 </body>

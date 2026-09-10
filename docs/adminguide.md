@@ -944,12 +944,14 @@ Each participant acts as an EDC provider for incoming recursive notifications an
 2. Publish the recursive notification asset in the participant’s provider EDC with `dct:type`, `cx-common:version`, the IRS notification endpoint and the regular IRS API key shown above.
 3. Create an access policy and contract policy for the notification asset that are compatible with the current IRS policy matcher. The access policy controls catalog visibility; the contract policy defines the permitted use of the endpoint.
 4. Create a contract definition that links the notification asset to those policies so partner IRS instances can discover and negotiate the offer.
-5. Register the DTR, PURIS and Industry Core accepted policies described below in the IRS Policy Store through `POST /irs/policies`. The offered contract policy must satisfy an active accepted policy; otherwise the recursive sender rejects the catalog offer.
+5. Register the DTR, PURIS and Industry Core accepted policies described below in the IRS Policy Store through `POST /irs/policies`. A consumed contract offer must satisfy an active accepted policy.
 6. Store the local chain opening grant for every asset that the participant may process under the opening. Leaf participants use an empty `allowedBpnlSet`.
 7. Verify that each direct partner can discover an offer with `dct:type=https://w3id.org/catenax/taxonomy#RecursiveIrsNotificationApi` and `cx-common:version=1.0` and that its policy is accepted.
 8. Start the root job only after the notification routes, policies, contract definitions and local grants are available on all participating tiers.
 
 The provider offer and the consumer’s accepted policy configuration must use compatible constraints. The current IRS policy matcher uses the `https://w3id.org/catenax/policy/` namespace and represents each `rightOperand` as a single string.
+
+If the notification catalog query returns multiple assets or multiple contract offers for one asset, the recursive sender evaluates all complete offers. It selects one accepted, non-expired offer deterministically by asset ID and offer ID. Rejected or expired offers are never negotiated. If offers are returned but none contains all required catalog fields, the sender reports `CATALOG_REQUEST_FAILED`. If complete offers exist but none is accepted and non-expired, it reports `NOTIFICATION_POLICY_REJECTED`.
 
 #### Provider EDC policy and contract definition
 
