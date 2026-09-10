@@ -29,6 +29,12 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   - `bitnami/minio` image to `quay.io/minio/minio`
 - Publish the updated IRS Maven libraries as version 3.2.0 ([#1607](https://github.com/eclipse-tractusx/sig-release/issues/1607))
 
+Chore:
+
+- #1035 bump jruby from 9.4.2.0 to 9.4.12.1 (docs)
+- #1035 bump nimbus-jose-jwt from 9.37.3 to 9.37.4 (irs)
+- #1035 bump netty-handler from 4.1.118 to 4.1.137 (irs)
+
 ## [7.0.1] - 2025-05-16
 ### Fixed
 - adjusted dependencies in actions and poms to prevent vulnerabilities

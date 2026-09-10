@@ -56,7 +56,7 @@ maven/mavencentral/com.networknt/json-schema-validator/1.4.0, Apache-2.0 AND Uni
 maven/mavencentral/com.nimbusds/content-type/2.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.nimbusds/content-type/2.3, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.nimbusds/lang-tag/1.7, Apache-2.0, approved, clearlydefined
-maven/mavencentral/com.nimbusds/nimbus-jose-jwt/9.37.3, Apache-2.0, approved, #11701
+maven/mavencentral/com.nimbusds/nimbus-jose-jwt/9.37.4, Apache-2.0, approved, #11701
 maven/mavencentral/com.nimbusds/nimbus-jose-jwt/9.40, Apache-2.0, approved, #15156
 maven/mavencentral/com.nimbusds/oauth2-oidc-sdk/11.18, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.nimbusds/oauth2-oidc-sdk/9.43.6, Apache-2.0, approved, clearlydefined
@@ -149,8 +149,8 @@ maven/mavencentral/io.micrometer/micrometer-registry-prometheus/1.11.4, Apache-2
 maven/mavencentral/io.minio/minio/8.5.9, Apache-2.0, approved, #9097
 maven/mavencentral/io.netty.incubator/netty-incubator-transport-classes-io_uring/0.0.21.Final, Apache-2.0, approved, #9622
 maven/mavencentral/io.netty.incubator/netty-incubator-transport-native-io_uring/0.0.21.Final, GPL-2.0-only WITH Linux-syscall-note OR MIT AND Apache-2.0 AND MIT, approved, #9649
-maven/mavencentral/io.netty/netty-buffer/4.1.118.Final, Apache-2.0, approved, CQ21842
 maven/mavencentral/io.netty/netty-buffer/4.1.119.Final, Apache-2.0, approved, CQ21842
+maven/mavencentral/io.netty/netty-buffer/4.1.137.Final, Apache-2.0, approved, CQ21842
 maven/mavencentral/io.netty/netty-codec-dns/4.1.112.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-codec-dns/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-codec-http/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
@@ -160,22 +160,22 @@ maven/mavencentral/io.netty/netty-codec-http2/4.1.119.Final, Apache-2.0 AND BSD-
 maven/mavencentral/io.netty/netty-codec-mqtt/4.1.119.Final, Apache-2.0 OR LicenseRef-Public-Domain OR BSD-2-Clause OR MIT, approved, CQ15280
 maven/mavencentral/io.netty/netty-codec-socks/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-codec-socks/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
-maven/mavencentral/io.netty/netty-codec/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-codec/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
-maven/mavencentral/io.netty/netty-common/4.1.118.Final, Apache-2.0 AND MIT AND CC0-1.0, approved, CQ21843
+maven/mavencentral/io.netty/netty-codec/4.1.137.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-common/4.1.119.Final, Apache-2.0 AND MIT AND CC0-1.0, approved, CQ21843
+maven/mavencentral/io.netty/netty-common/4.1.137.Final, Apache-2.0 AND MIT AND CC0-1.0, approved, CQ21843
 maven/mavencentral/io.netty/netty-handler-proxy/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-handler-proxy/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
-maven/mavencentral/io.netty/netty-handler/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-handler/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
+maven/mavencentral/io.netty/netty-handler/4.1.137.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-resolver-dns-classes-macos/4.1.112.Final, Apache-2.0, approved, #6367
 maven/mavencentral/io.netty/netty-resolver-dns-classes-macos/4.1.119.Final, Apache-2.0, approved, #6367
 maven/mavencentral/io.netty/netty-resolver-dns-native-macos/4.1.112.Final, Apache-2.0, approved, #7004
 maven/mavencentral/io.netty/netty-resolver-dns-native-macos/4.1.119.Final, Apache-2.0, approved, #7004
 maven/mavencentral/io.netty/netty-resolver-dns/4.1.112.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-resolver-dns/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
-maven/mavencentral/io.netty/netty-resolver/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-resolver/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
+maven/mavencentral/io.netty/netty-resolver/4.1.137.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-tcnative-boringssl-static/2.0.70.Final, Apache-2.0 OR LicenseRef-Public-Domain OR BSD-2-Clause OR MIT, approved, CQ15280
 maven/mavencentral/io.netty/netty-tcnative-classes/2.0.70.Final, Apache-2.0, approved, #23398
 maven/mavencentral/io.netty/netty-transport-classes-epoll/4.1.118.Final, Apache-2.0, approved, #6366
@@ -186,10 +186,10 @@ maven/mavencentral/io.netty/netty-transport-native-epoll/4.1.118.Final, Apache-2
 maven/mavencentral/io.netty/netty-transport-native-epoll/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-transport-native-kqueue/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-transport-native-kqueue/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
-maven/mavencentral/io.netty/netty-transport-native-unix-common/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-transport-native-unix-common/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
-maven/mavencentral/io.netty/netty-transport/4.1.118.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
+maven/mavencentral/io.netty/netty-transport-native-unix-common/4.1.137.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-transport/4.1.119.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
+maven/mavencentral/io.netty/netty-transport/4.1.137.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.opentelemetry/opentelemetry-api/1.32.0, Apache-2.0, approved, #11682
 maven/mavencentral/io.opentelemetry/opentelemetry-api/1.43.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.opentelemetry/opentelemetry-context/1.32.0, Apache-2.0, approved, #11683
