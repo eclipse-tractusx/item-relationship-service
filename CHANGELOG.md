@@ -17,6 +17,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 
 - #1033 Handle multiple catalog offers and EDR agreement IDs correctly
+- #1036 Avoid 500 on rejection response failures
 - #1063 commons-beanutils:commons-beanutils 1.9.4 to 1.11.0 to fix CVE-2025-48734
 - ci:
   - update dependabot to create one PR per package manager to fix security vulnerabilities ([pr#1015](https://github.com/eclipse-tractusx/item-relationship-service/pull/1015))
