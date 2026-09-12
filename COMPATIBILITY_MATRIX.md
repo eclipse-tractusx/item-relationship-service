@@ -6,46 +6,51 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 
 ## [7.1.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/7.1.0) - 2026-09-16
 
-| Dependency                                                                                                                               | Version                      | Helm       | Comments                                      |
-|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|------------|-----------------------------------------------|
-| EDC                                                                                                                                      | 0.10.0-rc1                   | 0.10.0-rc1 | REST connection                               |
-| Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1      | REST connection                               |
-| DTR                                                                                                                                      | 0.12.0                       | 0.12.0     | REST connection                               |
-| Discovery Finder                                                                                                                         | 0.2.5                        | -          | REST connection                               |
-| MinIO                                                                                                                                    | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                                               |
-| Redis                                                                                                                                    | 7.4.2-debian-12-r9           | 20.11.4    | Optional endpoint data reference store        |
-| Helm                                                                                                                                     | 3.9.3+                       | -          | Minimum version                               |
-| Kubernetes                                                                                                                               | [ 1.28; 1.29; 1.30 ]         | -          | -                                             |
-| [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built)         | [ 2.0.0; 3.0.0 ]             | -          | Model version                                 |
-| [SingleLevelBomAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_planned)     | [ 2.0.0; 3.0.0 ]             | -          | Recursive path requires 3.0.0                 |
-| [SingleLevelBomAsSpecified](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_specified) | 2.0.0                        | -          | Model version                                 |
-| [SingleLevelUsageAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_built)     | 3.0.0                        | -          | Model version                                 |
-| [SingleLevelUsageAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_planned) | 2.0.0                        | -          | Model version                                 |
-| [PartTypeInformation](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.part_type_information)               | 1.0.0                        | -          | Recursive material metadata                   |
-| ItemStockAnonymized                                                                                                                      | 1.0.0                        | -          | Recursive PURIS payload                       |
-| DeliveryInformationAnonymized                                                                                                            | 1.0.0                        | -          | Recursive PURIS payload                       |
-| PlannedProductionOutputAnonymized                                                                                                        | 1.0.0                        | -          | Recursive PURIS payload                       |
+| Dependency                                                                                                                               | Version                      | Helm    | Comments                               |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ------- | -------------------------------------- |
+| EDC                                                                                                                                      | 0.10.0-rc1                   | 0.12.2  | REST connection                        |
+| Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1   | REST connection                        |
+| DTR                                                                                                                                      | 0.12.0                       | 0.12.0  | REST connection                        |
+| Discovery Finder                                                                                                                         | 0.2.5                        | -       | REST connection                        |
+| MinIO                                                                                                                                    | RELEASE.2022-11-11T03-44-20Z | 5.0.1   |                                        |
+| Redis                                                                                                                                    | 7.4.2-debian-12-r9           | 20.11.4 | Optional endpoint data reference store |
+| Helm                                                                                                                                     | 3.9.3+                       | -       | Minimum version                        |
+| Kubernetes                                                                                                                               | [ 1.28; 1.29; 1.30 ]         | -       | -                                      |
+| [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built)         | [ 2.0.0; 3.0.0 ]             | -       | Model version                          |
+| [SingleLevelBomAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_planned)     | [ 2.0.0; 3.0.0 ]             | -       | Recursive path requires 3.0.0          |
+| [SingleLevelBomAsSpecified](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_specified) | 2.0.0                        | -       | Model version                          |
+| [SingleLevelUsageAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_built)     | 3.0.0                        | -       | Model version                          |
+| [SingleLevelUsageAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_planned) | 2.0.0                        | -       | Model version                          |
+| [PartTypeInformation](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.part_type_information)               | 1.0.0                        | -       | Recursive material metadata            |
+| ItemStockAnonymized                                                                                                                      | 1.0.0                        | -       | Recursive PURIS payload                |
+| DeliveryInformationAnonymized                                                                                                            | 1.0.0                        | -       | Recursive PURIS payload                |
+| PlannedProductionOutputAnonymized                                                                                                        | 1.0.0                        | -       | Recursive PURIS payload                |
+
+> [!warning]
+>
+> The irs can be used with 0.12.x tractus-x connector but only when relying on cx policy profile for 24.05.
+>
 
 ## [6.0.1](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/6.0.1)- 2025-02-14
 
-| Dependency                                                                                                                               | Version                      | Helm  | Comments        |
-|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
-| EDC                                                                                                                                      | 0.10.0-rc1                   | 0.10.0-rc1   |                 |
-| Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1 | REST connection |
-| DTR                                                                                                                                      | 0.5.0                        | 0.5.3 | REST connection |
-| Discovery Finder                                                                                                                         | 0.2.5                        | -     | REST connection |
-| Minio                                                                                                                                    | RELEASE.2022-11-11T03-44-20Z | 5.0.1 |                 |
-| Helm                                                                                                                                     | 3.9.3                        | -     | -               |
-| Kubernetes                                                                                                                               | [ 1.28; 1.29; 1.30 ]         | -     | -               |
-| [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built)         | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
-| [SingleLevelBomAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_planned)     | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
-| [SingleLevelBomAsSpecified](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_specified) | 2.0.0                        | -     | Model version   |
-| [SingleLevelUsageAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_built)     | 3.0.0                        | -     | Model version   |
-| [SingleLevelUsageAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_planned) | 2.0.0                        | -     | Model version   |
+| Dependency                                                                                                                               | Version                      | Helm       | Comments        |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------- | --------------- |
+| EDC                                                                                                                                      | 0.10.0-rc1                   | 0.10.0-rc1 |                 |
+| Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1      | REST connection |
+| DTR                                                                                                                                      | 0.5.0                        | 0.5.3      | REST connection |
+| Discovery Finder                                                                                                                         | 0.2.5                        | -          | REST connection |
+| Minio                                                                                                                                    | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
+| Helm                                                                                                                                     | 3.9.3                        | -          | -               |
+| Kubernetes                                                                                                                               | [ 1.28; 1.29; 1.30 ]         | -          | -               |
+| [SingleLevelBomAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built)         | [ 2.0.0; 3.0.0 ]             | -          | Model version   |
+| [SingleLevelBomAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_planned)     | [ 2.0.0; 3.0.0 ]             | -          | Model version   |
+| [SingleLevelBomAsSpecified](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_specified) | 2.0.0                        | -          | Model version   |
+| [SingleLevelUsageAsBuilt](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_built)     | 3.0.0                        | -          | Model version   |
+| [SingleLevelUsageAsPlanned](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_planned) | 2.0.0                        | -          | Model version   |
 ## [6.0.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/6.0.0)- 2025-02-13
 
 | Dependency                                                                                                                               | Version                      | Helm  | Comments        |
-|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                                                                                                                                      | 0.7.7                        | 0.7.7 |                 |
 | Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                                                                                                                                      | 0.5.0                        | 0.5.3 | REST connection |
@@ -63,7 +68,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 ## [CATENA-X Release 24.08](https://eclipse-tractusx.github.io/CHANGELOG/) - [5.4.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.4.0) - 2024-07-22
 
 | Dependency                                                                                                                               | Version                      | Helm  | Comments        |
-|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                                                                                                                                      | 0.7.3                        | 0.7.3 |                 |
 | Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                                                                                                                                      | 0.5.0                        | 0.5.3 | REST connection |
@@ -80,7 +85,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 ## [5.3.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.3.0) - 2024-07-15
 
 | Dependency                                                                                                                               | Version                      | Helm  | Comments        |
-|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                                                                                                                                      | 0.7.3                        | 0.7.3 |                 |
 | Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                                                                                                                                      | 0.5.0                        | 0.5.3 | REST connection |
@@ -97,7 +102,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 ## [5.2.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.2.0) - 2024-07-05
 
 | Dependency                                                                                                                               | Version                      | Helm  | Comments        |
-|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|-------|-----------------|
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                                                                                                                                      | 0.7.1                        | 0.7.1 |                 |
 | Semantics Hub                                                                                                                            | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                                                                                                                                      | 0.4.1                        | 0.4.9 | REST connection |
@@ -114,7 +119,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 ## [CATENA-X Release 24.05](https://eclipse-tractusx.github.io/CHANGELOG/) - [5.1.3](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.1.3) - 2024-05-17
 
 | Dependency                | Version                      | Helm  | Comments        |
-|---------------------------|------------------------------|-------|-----------------|
+| ------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                       | 0.7.1                        | 0.7.1 |                 |
 | Semantics Hub             | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                       | 0.4.1                        | 0.4.9 | REST connection |
@@ -130,7 +135,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 ## [5.1.2](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.1.2) - 2024-05-13
 
 | Dependency                | Version                      | Helm  | Comments        |
-|---------------------------|------------------------------|-------|-----------------|
+| ------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                       | 0.7.0                        | 0.7.0 |                 |
 | Semantics Hub             | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                       | 0.4.1                        | 0.4.9 | REST connection |
@@ -146,7 +151,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 ## [5.1.1](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.1.1) - 2024-05-08
 
 | Dependency                | Version                      | Helm  | Comments        |
-|---------------------------|------------------------------|-------|-----------------|
+| ------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                       | 0.7.0                        | 0.7.0 |                 |
 | Semantics Hub             | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                       | 0.4.1                        | 0.4.9 | REST connection |
@@ -162,170 +167,170 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 ## [5.1.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.1.0) - 2024-05-06
 
 | Dependency                | Version                      | Helm  | Comments        |
-|---------------------------|------------------------------|-------|-----------------|
+| ------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                       | 0.7.0                        | 0.7.0 |                 |
 | Semantics Hub             | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                       | 0.4.1                        | 0.4.9 | REST connection |
 | Discovery Finder          | 0.2.5                        | -     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1 |                 |
-| Helm                      | 3.9.3                        | -     | -               | 
+| Helm                      | 3.9.3                        | -     | -               |
 | Kubernetes                | 1.29                         | -     | -               |
-| SingleLevelBomAsBuilt     | [ 2.0.0; 3.0.0 ]             | -     | Model version   | 
-| SingleLevelBomAsPlanned   | [ 2.0.0; 3.0.0 ]             | -     | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -     | Model version   | 
-| SingleLevelUsageAsBuilt   | 3.0.0                        | -     | Model version   | 
+| SingleLevelBomAsBuilt     | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
+| SingleLevelBomAsPlanned   | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -     | Model version   |
+| SingleLevelUsageAsBuilt   | 3.0.0                        | -     | Model version   |
 
 ## [5.0.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.0.0) - 2024-04-16
 
 | Dependency                | Version                      | Helm  | Comments        |
-|---------------------------|------------------------------|-------|-----------------|
+| ------------------------- | ---------------------------- | ----- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3 |                 |
 | MIW                       | 0.1.0                        | 0.1.0 | REST connection |
 | Semantics Hub             | 0.3.1                        | 0.2.1 | REST connection |
 | DTR                       | 0.4.1                        | 0.4.9 | REST connection |
 | Discovery Finder          | 0.2.5                        | -     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1 |                 |
-| Helm                      | 3.9.3                        | -     | -               | 
+| Helm                      | 3.9.3                        | -     | -               |
 | Kubernetes                | 1.29                         | -     | -               |
-| SingleLevelBomAsBuilt     | [ 2.0.0; 3.0.0 ]             | -     | Model version   | 
-| SingleLevelBomAsPlanned   | [ 2.0.0; 3.0.0 ]             | -     | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -     | Model version   | 
-| SingleLevelUsageAsBuilt   | 3.0.0                        | -     | Model version   | 
+| SingleLevelBomAsBuilt     | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
+| SingleLevelBomAsPlanned   | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -     | Model version   |
+| SingleLevelUsageAsBuilt   | 3.0.0                        | -     | Model version   |
 
 ## [4.9.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.9.0) - 2024-04-03
 
 | Dependency                | Version                      | Helm       | Comments        |
-|---------------------------|------------------------------|------------|-----------------|
+| ------------------------- | ---------------------------- | ---------- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
 | MIW                       | 0.1.0                        | 0.1.0      | REST connection |
 | Semantics Hub             | 0.1.29                       | v0.2.11-M1 | REST connection |
 | DTR                       | 0.4.1                        | 0.4.9      | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
-| Helm                      | 3.9.3                        | -          | -               | 
+| Helm                      | 3.9.3                        | -          | -               |
 | Kubernetes                | 1.29                         | -          | -               |
-| SingleLevelBomAsBuilt     | 3.0.0                        | -          | Model version   | 
-| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
-| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
+| SingleLevelBomAsBuilt     | 3.0.0                        | -          | Model version   |
+| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   |
+| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   |
 
 ## [4.8.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.8.0) - 2024-03-18
 
 | Dependency                | Version                      | Helm       | Comments        |
-|---------------------------|------------------------------|------------|-----------------|
+| ------------------------- | ---------------------------- | ---------- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
 | MIW                       | 0.1.0                        | 0.1.0      | REST connection |
 | Semantics Hub             | 0.1.29                       | v0.2.11-M1 | REST connection |
 | DTR                       | 0.3.14-M1                    | 0.3.22     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
-| Helm                      | 3.9.3                        | -          | -               | 
+| Helm                      | 3.9.3                        | -          | -               |
 | Kubernetes                | 1.29                         | -          | -               |
-| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
-| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
+| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   |
+| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   |
 
 ## [4.7.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.7.0) - 2024-03-04
 
 | Dependency                | Version                      | Helm       | Comments        |
-|---------------------------|------------------------------|------------|-----------------|
+| ------------------------- | ---------------------------- | ---------- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
 | MIW                       | 0.1.0                        | 0.1.0      | REST connection |
 | Semantics Hub             | 0.1.29                       | v0.2.11-M1 | REST connection |
 | DTR                       | 0.3.14-M1                    | 0.3.22     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
-| Helm                      | 3.2.0                        | -          | -               | 
-| Kubernetes                | 1.19                         | -          | -               | 
-| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
-| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
+| Helm                      | 3.2.0                        | -          | -               |
+| Kubernetes                | 1.19                         | -          | -               |
+| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   |
+| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   |
 
 ## [4.6.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.6.0) - 2024-02-20
 
 | Dependency                | Version                      | Helm       | Comments        |
-|---------------------------|------------------------------|------------|-----------------|
+| ------------------------- | ---------------------------- | ---------- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
 | MIW                       | 0.1.0                        | 0.1.0      | REST connection |
 | Semantics Hub             | 0.1.29                       | v0.2.11-M1 | REST connection |
 | DTR                       | 0.3.14-M1                    | 0.3.22     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
-| Helm                      | 3.2.0                        | -          | -               | 
-| Kubernetes                | 1.19                         | -          | -               | 
-| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
-| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
+| Helm                      | 3.2.0                        | -          | -               |
+| Kubernetes                | 1.19                         | -          | -               |
+| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   |
+| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   |
 
 ## [CATENA-X Release 24.03](https://eclipse-tractusx.github.io/CHANGELOG#2403---2024-03-08) - [4.5.2](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.5.2) - 2024-02-22
 
 | Dependency                | Version                      | Helm       | Comments        |
-|---------------------------|------------------------------|------------|-----------------|
+| ------------------------- | ---------------------------- | ---------- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
 | MIW                       | 0.1.0                        | 0.1.0      | REST connection |
 | Semantics Hub             | 0.1.29                       | v0.2.11-M1 | REST connection |
 | DTR                       | 0.3.14-M1                    | 0.3.22     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
-| Helm                      | 3.2.0                        | -          | -               | 
-| Kubernetes                | 1.19                         | -          | -               | 
-| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
-| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
+| Helm                      | 3.2.0                        | -          | -               |
+| Kubernetes                | 1.19                         | -          | -               |
+| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   |
+| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   |
 
 ## [4.2.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.2.0) - 2023-11-28
 
 | Dependency                | Version                      | Helm       | Comments        |
-|---------------------------|------------------------------|------------|-----------------|
+| ------------------------- | ---------------------------- | ---------- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
 | MIW                       | 0.1.0                        | 0.1.0      | REST connection |
 | Semantics Hub             | 0.1.29                       | v0.2.11-M1 | REST connection |
 | DTR                       | 0.3.14-M1                    | 0.3.22     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
-| Helm                      | 3.2.0                        | -          | -               | 
-| Kubernetes                | 1.19                         | -          | -               | 
-| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
-| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
+| Helm                      | 3.2.0                        | -          | -               |
+| Kubernetes                | 1.19                         | -          | -               |
+| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   |
+| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   |
 
 ## [4.1.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.1.0) - 2023-11-15
 
 | Dependency                | Version                      | Helm       | Comments        |
-|---------------------------|------------------------------|------------|-----------------|
+| ------------------------- | ---------------------------- | ---------- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
 | MIW                       | 0.1.0                        | 0.1.0      | REST connection |
 | Semantics Hub             | 0.1.29                       | v0.2.11-M1 | REST connection |
 | DTR                       | 0.3.14-M1                    | 0.3.22     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
-| Helm                      | 3.2.0                        | -          | -               | 
-| Kubernetes                | 1.19                         | -          | -               | 
-| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
-| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
+| Helm                      | 3.2.0                        | -          | -               |
+| Kubernetes                | 1.19                         | -          | -               |
+| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   |
+| SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   |
 
 ## [CATENA-X Release 23.12](https://eclipse-tractusx.github.io/CHANGELOG#2312---2023-12-08) - [4.0.2](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.0.2) - 2023-11-20
 
 | Dependency                | Version                      | Helm       | Comments        |
-|---------------------------|------------------------------|------------|-----------------|
+| ------------------------- | ---------------------------- | ---------- | --------------- |
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
 | MIW                       | 0.1.0                        | 0.1.0      | REST connection |
 | Semantics Hub             | 0.1.29                       | v0.2.11-M1 | REST connection |
 | DTR                       | 0.3.14-M1                    | 0.3.22     | REST connection |
 | Minio                     | RELEASE.2022-11-11T03-44-20Z | 5.0.1      |                 |
-| Helm                      | 3.2.0                        | -          | -               | 
-| Kubernetes                | 1.19                         | -          | -               | 
-| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   | 
-| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
+| Helm                      | 3.2.0                        | -          | -               |
+| Kubernetes                | 1.19                         | -          | -               |
+| SingleLevelBomAsBuilt     | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsPlanned   | 2.0.0                        | -          | Model version   |
+| SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   |
 | SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   |
 
 ## NOTICE

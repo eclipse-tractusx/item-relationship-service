@@ -1,0 +1,18 @@
+[#_migration]
+= Migration Guide
+:icons: font
+:icon-set: fas
+
+This guide has been introduced in 26.09 to cover migration needs based on *chart versions* for the irs. Only the delta is between versions is mentioned.
+
+== 7.0.x to 7.1.x
+
+No Migration is needed. Only an experimental feature for PURIS has been added introducing a new IRS recursive. The changes are minor and don't affect existing functionality. Please refer to the link:../arc42/index.adoc[arc42] and link:recursive-irs.adoc[admin guide section] for further details.
+
+== NOTICE
+
+This work is licensed under the https://www.apache.org/licenses/LICENSE-2.0[Apache-2.0].
+
+- SPDX-License-Identifier: Apache-2.0
+- SPDX-FileCopyrightText: Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+- Source URL: https://github.com/eclipse-tractusx/item-relationship-service
