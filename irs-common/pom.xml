@@ -99,11 +99,9 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- https://github.com/Cofinity-X/traceability-foss/security/code-scanning/274 -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>4.1.137.Final</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>

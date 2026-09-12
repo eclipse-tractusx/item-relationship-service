@@ -7,6 +7,7 @@ include::installation.adoc[leveloffset=+1]
 include::configuration.adoc[leveloffset=+1]
 include::recursive-irs.adoc[leveloffset=+1]
 include::troubleshooting.adoc[leveloffset=+1]
+include::migration.adoc[leveloffset=+1]
 
 == NOTICE
 
@@ -19,4 +20,5 @@ This work is licensed under the https://www.apache.org/licenses/LICENSE-2.0[Apac
 - SPDX-FileCopyrightText: 2022 ISTOS GmbH
 - SPDX-FileCopyrightText: 2021 Contributors to the Eclipse Foundation
 - SPDX-FileCopyrightText: 2026 Volkswagen AG
+- SPDX-FileCopyrightText: Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
 - Source URL: https://github.com/eclipse-tractusx/item-relationship-service

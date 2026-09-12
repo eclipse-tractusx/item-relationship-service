@@ -35,7 +35,7 @@ jobs:
       pull-requests: write
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Validate that workflow inputs are SemVer strings
         run: |
@@ -126,12 +126,12 @@ jobs:
           sed -i '0,/version: ${{ env.SEMVER_PATTERN_SED }}/s//version: ${{ inputs.irs-version }}/' ${{ env.OPENAPI_SPEC_PATH }}
 
       - name: Update Chart.yaml appVersion
-        uses: mikefarah/yq@v4.44.3
+        uses: mikefarah/yq@c14f446382944492701b16c1ddb48bb9dbe683e3 # v4.53.6
         with:
           cmd: yq -i eval '.appVersion = "${{ inputs.irs-version }}"' ${{ env.HELM_CHART_PATH }}/Chart.yaml
 
       - name: Update Chart.yaml version
-        uses: mikefarah/yq@v4.44.3
+        uses: mikefarah/yq@c14f446382944492701b16c1ddb48bb9dbe683e3 # v4.53.6
         with:
           cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' ${{ env.HELM_CHART_PATH }}/Chart.yaml
 
@@ -146,7 +146,7 @@ jobs:
           echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Update docs and Helm chart for release
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           commit-message: 'chore(docs): updated docs and Helm chart for IRS release ${{ inputs.irs-version }}'
           branch: action/update-for-release-${{ inputs.irs-version }}
