@@ -32,6 +32,13 @@ Chore:
 - #1035 bump jruby from 9.4.2.0 to 9.4.12.1 (docs)
 - #1035 bump nimbus-jose-jwt from 9.37.3 to 9.37.4 (irs)
 - #1035 bump netty-handler from 4.1.118 to 4.1.137 (irs)
+- #1037 bump Spring Boot from 3.4.4 to 3.5.16 (irs)
+- #1037 bump tomcat-embed from 11.0.6 to 10.1.59 (irs)
+- #1037 bump netty from 4.1.119.Final to 4.1.137.Final (irs)
+- #1037 bump minio from 8.5.9 to 8.6.0 (irs)
+- #1037 bump bouncycastle from 1.78 to 1.79 (irs)
+- #1037 bump PyJWT from 2.6.0 to 2.13.0 (demo)
+- #1037 pin GitHub Actions to commit SHAs and bump to latest version (ci)
 
 ## [7.0.1] - 2025-05-16
 ### Fixed
