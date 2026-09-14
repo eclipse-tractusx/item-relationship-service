@@ -35,8 +35,8 @@ import org.testcontainers.utility.Base58;
 public class MinioContainer extends GenericContainer<MinioContainer> {
 
     private static final int DEFAULT_PORT = 9000;
-    private static final String DEFAULT_IMAGE = "minio/minio";
-    private static final String DEFAULT_TAG = "edge";
+    private static final String DEFAULT_IMAGE = "quay.io/minio/minio";
+    private static final String DEFAULT_TAG = "RELEASE.2022-11-11T03-44-20Z";
 
     private static final String MINIO_ACCESS_KEY = "MINIO_ACCESS_KEY";
     private static final String MINIO_SECRET_KEY = "MINIO_SECRET_KEY";

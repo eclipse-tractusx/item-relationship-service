@@ -34,14 +34,14 @@ jobs:
     runs-on: "${{ github.repository == 'eclipse-tractusx/item-relationship-service' && 'tractusx-runner' || 'ubuntu-latest' }}"
     permissions: write-all
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: setup env
         id: setup-env
         uses: ./.github/actions/setup-umbrella-env
 
       - name: Setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: 3.10.7
           cache: 'pip'
@@ -77,7 +77,7 @@ jobs:
           sed "s/access_tok.*:s = '.*'//g" tavern-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > result.xml
 
       - name: Publish Tavern Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.19.0
+        uses: EnricoMi/publish-unit-test-result-action@d0a4676d0e0b938bc201470d88276b7c74c712b3 # v2.24.0
         if: always()
         with:
           files: |
@@ -108,7 +108,7 @@ jobs:
           sed "s/access_tok.*:s = '.*'//g" tavern-ess-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > ess-result.xml
 
       - name: Publish Tavern Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.19.0
+        uses: EnricoMi/publish-unit-test-result-action@d0a4676d0e0b938bc201470d88276b7c74c712b3 # v2.24.0
         if: always()
         with:
           files: |

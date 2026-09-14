@@ -23,7 +23,7 @@ description: "Retrieves the IRS logs and uploads them as artifact"
 runs:
   using: composite
   steps:
-    - uses: azure/setup-kubectl@v3
+    - uses: azure/setup-kubectl@829323503d1be3d00ca8346e5391ca0b07a9ab0d # v5.1.0
 
     - name: Wait for deployment
       id: deployment-ready
@@ -40,7 +40,7 @@ runs:
 
     - name: Upload pod logs
       if: always() && steps.irs-logs.outcome == 'success'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: irs_logs-logs
         path: irs_logs.txt

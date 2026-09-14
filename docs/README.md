@@ -9,7 +9,6 @@ The IRS documentation is build and published by the GitHub workflow [Lint and Pu
 In order to build the documentation locally for testing adjustments to the documentation
 the script [build-docs-locally.sh](build-docs-locally.sh) can be used.
 
-
 ### Source Layout
 
 | Folder                     | Description                                                                                                                                                                                                                                      |
