@@ -265,9 +265,9 @@ maven/mavencentral/org.aspectj/aspectjweaver/1.9.25.1, Apache-2.0 AND BSD-3-Clau
 maven/mavencentral/org.assertj/assertj-core/3.27.7, Apache-2.0, approved, #17980
 maven/mavencentral/org.awaitility/awaitility/4.2.0, Apache-2.0, approved, #14178
 maven/mavencentral/org.awaitility/awaitility/4.2.2, Apache-2.0, approved, #14178
-maven/mavencentral/org.bouncycastle/bcpkix-jdk18on/1.79, MIT, approved, #16962
-maven/mavencentral/org.bouncycastle/bcprov-jdk18on/1.79, MIT AND CC0-1.0, approved, #16964
-maven/mavencentral/org.bouncycastle/bcutil-jdk18on/1.79, MIT, approved, #16965
+maven/mavencentral/org.bouncycastle/bcpkix-jdk18on/1.84, MIT, approved, #27142
+maven/mavencentral/org.bouncycastle/bcprov-jdk18on/1.84, MIT AND CC0-1.0, approved, #27143
+maven/mavencentral/org.bouncycastle/bcutil-jdk18on/1.84, MIT, approved, #27144
 maven/mavencentral/org.ccil.cowan.tagsoup/tagsoup/1.2.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.eclipse.edc/api-core/0.6.0, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/asset-api/0.6.0, Apache-2.0, approved, technology.edc
