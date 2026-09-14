@@ -1,0 +1,13 @@
+# Residual CVEs in base image eclipse-temurin:25-jre-alpine (Alpine 3.24)
+# These are in base packages not directly used by the IRS application.
+# Dependabot will auto-update the pinned digest when a new build is published.
+# Re-review: 2026-12-14 or when dependabot bumps the digest, whichever comes first.
+
+# openssl 3.5.7-r0 — fixed version 3.5.8-r0 not yet available in Alpine 3.24
+# QUIC server unbounded memory DoS; IRS API is HTTP-only, low real risk
+CVE-2026-14456
+
+# libexpat 2.8.3-r0 — fixed version 2.8.4-r0 not yet available in Alpine 3.24
+# XML parsing DoS/memory corruption; expat is a base lib not used by the JVM directly
+CVE-2026-76956
+CVE-2026-76957

@@ -47,8 +47,8 @@ COPY irs-testdata-upload irs-testdata-upload
 RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET -am -DskipTests
 
 
-# Copy the jar and build image
-FROM eclipse-temurin:24-jre-alpine AS irs-api
+# Copy the jar and build image, alpine version 3.24
+FROM eclipse-temurin:25-jre-alpine@sha256:3137541deb3cac6626b5d9a4a2187bc0d6a34312f858bd2c67dd01e732e6b682 AS irs-api
 
 WORKDIR /app
 
@@ -59,4 +59,4 @@ USER 10000:3000
 ENTRYPOINT ["java", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]
 
 HEALTHCHECK --interval=5m --timeout=3s \
-  CMD curl -f http://localhost:4004/actuator/health || exit 1
+  CMD wget --spider -q http://localhost:4004/actuator/health || exit 1
