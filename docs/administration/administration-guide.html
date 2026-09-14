@@ -696,6 +696,11 @@ pre.rouge {
 <li><a href="#_troubleshooting_faq">Troubleshooting FAQ</a></li>
 </ul>
 </li>
+<li><a href="#_migration">Migration Guide</a>
+<ul class="sectlevel2">
+<li><a href="#_7_0_x_to_7_1_x">7.0.x to 7.1.x</a></li>
+</ul>
+</li>
 <li><a href="#_notice">NOTICE</a></li>
 </ul>
 </div>
@@ -2575,6 +2580,20 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_migration">Migration Guide</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide has been introduced in 26.09 to cover migration needs based on <strong>chart versions</strong> for the irs. Only the delta is between versions is mentioned.</p>
+</div>
+<div class="sect2">
+<h3 id="_7_0_x_to_7_1_x">7.0.x to 7.1.x</h3>
+<div class="paragraph">
+<p>No Migration is needed. Only an experimental feature for PURIS has been added introducing a new IRS recursive. The changes are minor and don&#8217;t affect existing functionality. Please refer to the <a href="../arc42/index.adoc">arc42</a> and <a href="recursive-irs.adoc">admin guide section</a> for further details.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_notice">NOTICE</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -2604,6 +2623,9 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 <p>SPDX-FileCopyrightText: 2026 Volkswagen AG</p>
 </li>
 <li>
+<p>SPDX-FileCopyrightText: Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)</p>
+</li>
+<li>
 <p>Source URL: <a href="https://github.com/eclipse-tractusx/item-relationship-service" class="bare">https://github.com/eclipse-tractusx/item-relationship-service</a></p>
 </li>
 </ul>
@@ -2613,7 +2635,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-09-10 17:41:18 UTC
+Last updated 2026-09-14 06:50:03 UTC
 </div>
 </div>
 </body>

@@ -1311,6 +1311,14 @@ It can also happen if the persistent volume claim is deleted / recreated.
 
 Currently, the IRS only supports one version of the Job model at a time. This means that if the Job model is changed in a newer IRS version, old models stored in minio will no longer be supported and returned from IRS endpoints. The IRS application will work as usual, old versions of Job can stay in Minio and don’t need to be removed - the IRS will simply ignore them. If you want to clear the minio from old models, the only way to achieve that is to delete them all and register new Jobs.
 
+## Migration Guide
+
+This guide has been introduced in 26.09 to cover migration needs based on **chart versions** for the irs. Only the delta is between versions is mentioned.
+
+### 7.0.x to 7.1.x
+
+No Migration is needed. Only an experimental feature for PURIS has been added introducing a new IRS recursive. The changes are minor and don’t affect existing functionality. Please refer to the [arc42](../arc42/index.adoc) and [admin guide section](recursive-irs.adoc) for further details.
+
 ### NOTICE
 
 This work is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
@@ -1322,4 +1330,5 @@ This work is licensed under the [Apache-2.0](https://www.apache.org/licenses/LIC
 * SPDX-FileCopyrightText: 2022 ISTOS GmbH
 * SPDX-FileCopyrightText: 2021 Contributors to the Eclipse Foundation
 * SPDX-FileCopyrightText: 2026 Volkswagen AG
+* SPDX-FileCopyrightText: Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
 * Source URL: <https://github.com/eclipse-tractusx/item-relationship-service>

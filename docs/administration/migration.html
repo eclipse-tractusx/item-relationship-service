@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Quality requirements</title>
+<title>Migration Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,13 +437,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article toc2 toc-left">
+<body id="_migration" class="article toc2 toc-left">
 <div id="header">
-<h1>Quality requirements</h1>
+<h1>Migration Guide</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_quality_scenarios">Quality Scenarios</a></li>
+<li><a href="#_7_0_x_to_7_1_x">7.0.x to 7.1.x</a></li>
 </ul>
 </div>
 </div>
@@ -451,57 +451,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The quality scenarios in this section depict the fundamental quality goals as well as other required quality properties. They allow the evaluation of decision alternatives.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Quality attribute</strong>: A characteristic of software, or a generic term applying to quality factors, quality subfactors, or metric values.</p>
-</li>
-<li>
-<p><strong>Quality factor</strong>: A management-oriented attribute of software that contributes to its quality.</p>
-</li>
-<li>
-<p><strong>Quality subfactor</strong>: A decomposition of a quality factor or quality subfactor to its technical components.</p>
-</li>
-<li>
-<p><strong>Metric value</strong>: A metric output or an element that is from the range of a metric.</p>
-</li>
-<li>
-<p><strong>Software quality metric</strong>: A function whose inputs are software data and whose output is a single numerical value that can be interpreted as the degree to which software possesses a given attribute that affects its quality.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Source</strong>: IEEE standard 1061 "Standard for a Software Quality Metrics Methodology"</p>
+<p>This guide has been introduced in 26.09 to cover migration needs based on <strong>chart versions</strong> for the irs. Only the delta is between versions is mentioned.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_quality_scenarios">Quality Scenarios</h2>
+<h2 id="_7_0_x_to_7_1_x">7.0.x to 7.1.x</h2>
 <div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">ID</th>
-<th class="tableblock halign-left valign-top">Scenario</th>
-<th class="tableblock halign-left valign-top">Implementation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DS01</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Any data consumption via the IRS checks if data offers are done according to "Use Case Rahmenbedingungen".</p>
-<p class="tableblock">IRS provides a configuration capability for the "Rahmenbedingungs ID" to be used in a given scenario / deployment.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"PolicyCheckerService is used to check defined Usage Policies according to the "Rahmenbedingungsbedingungen" which is obligatory for data consumption.</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>No Migration is needed. Only an experimental feature for PURIS has been added introducing a new IRS recursive. The changes are minor and don&#8217;t affect existing functionality. Please refer to the <a href="../arc42/index.adoc">arc42</a> and <a href="recursive-irs.adoc">admin guide section</a> for further details.</p>
+</div>
 </div>
 </div>
 </div>
