@@ -1581,6 +1581,8 @@ Tavern Tests are located in [local/testing/api-tests](https://github.com/eclipse
 The recursive integration tests under `irs-api/src/test/java/org/eclipse/tractusx/irs/recursive/e2e` start multiple IRS instances with Testcontainers-backed external systems.
 They are useful entry points for understanding the complete recursive choreography.
 
+Recursive Cucumber end-to-end tests are located in [irs-recursive.feature](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features/irs-recursive.feature) and cover complete results, grant filtering, missing grants and expired jobs in a configured multi-tier environment.
+
 ### Umbrella
 
 The [umbrella chart](https://github.com/eclipse-tractusx/tractus-x-umbrella) provides a pre-configured catena-x network which includes all necessary components for the IRS to work.
