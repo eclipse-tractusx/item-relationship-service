@@ -8,6 +8,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## [7.1.0] - 2026-09-15
+
 ## [7.1.0] - 2026-09-16
 
 ### Added
@@ -907,6 +909,7 @@ Chore:
 
 
 [Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/7.1.0...HEAD
+[7.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/7.1.0...7.1.0
 [7.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/7.0.1...7.1.0
 [7.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.1...7.0.1
 [6.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...6.0.1
