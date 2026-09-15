@@ -1,21 +1,22 @@
 #
-#  Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-#  Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2026 Volkswagen AG
+# Copyright (c) 2021 Contributors to the Eclipse Foundation
 #
-#  See the NOTICE file(s) distributed with this work for additional
-#  information regarding copyright ownership.
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
 #
-#  This program and the accompanying materials are made available under the
-#  terms of the Apache License, Version 2.0 which is available at
-#  https://www.apache.org/licenses/LICENSE-2.0
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0.
 #
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#  License for the specific language governing permissions and limitations
-#  under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 #
-#  SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
 #
 ---
 name: IRS Cucumber Integration Test execution
@@ -33,6 +34,30 @@ inputs:
   executionFilter:
     description: "JUnit5 filter for feature file annotations"
     required: true
+  recursiveRootUrl:
+    description: "Base URL of the root IRS instance of the recursive chain"
+    required: false
+    default: ""
+  recursiveRootBpnl:
+    description: "BPNL of the root instance of the recursive chain"
+    required: false
+    default: ""
+  recursiveRootAllowedBpnls:
+    description: "BPNLs of the direct successors of the root instance, comma separated"
+    required: false
+    default: ""
+  recursiveRootGlobalAssetId:
+    description: "globalAssetId of the root material of the recursive chain"
+    required: false
+    default: ""
+  recursiveOpeningId:
+    description: "Chain opening identifier, identical on all instances of the chain"
+    required: false
+    default: ""
+  recursiveUseCase:
+    description: "Recursive use case, defaults to the anonymized PURIS bundle"
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -65,6 +90,12 @@ runs:
           ADMIN_USER_API_KEY: ${{ inputs.adminUserApiKey }}
           ISSUE_FILTER: ${{ inputs.executionFilter }}
           CUCUMBER_PUBLISH_TOKEN: ${{ inputs.cucumberPublishToken }}
+          RECURSIVE_ROOT_URL: ${{ inputs.recursiveRootUrl }}
+          RECURSIVE_ROOT_BPNL: ${{ inputs.recursiveRootBpnl }}
+          RECURSIVE_ROOT_ALLOWED_BPNLS: ${{ inputs.recursiveRootAllowedBpnls }}
+          RECURSIVE_ROOT_GLOBAL_ASSET_ID: ${{ inputs.recursiveRootGlobalAssetId }}
+          RECURSIVE_OPENING_ID: ${{ inputs.recursiveOpeningId }}
+          RECURSIVE_USE_CASE: ${{ inputs.recursiveUseCase }}
         # workaround replacement since injecting the token via environment variable does not work
         run: |
           sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java

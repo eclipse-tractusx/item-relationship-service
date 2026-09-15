@@ -67,4 +67,10 @@ jobs:
       executionFilter:  ${{ github.event.inputs.executionFilter || '!Ignore& !INACTIVE & IRS & INT' }}
       # JIRA filter 10001: project = CXTM AND labels = "INT" AND labels = "IRS" AND status = Ready AND testType = Cucumber
       exportFilter: ${{ github.event.inputs.exportFilter || '10001' }}
+      recursiveRootUrl: ${{ vars.RECURSIVE_ROOT_URL }}
+      recursiveRootBpnl: ${{ vars.RECURSIVE_ROOT_BPNL }}
+      recursiveRootAllowedBpnls: ${{ vars.RECURSIVE_ROOT_ALLOWED_BPNLS }}
+      recursiveRootGlobalAssetId: ${{ vars.RECURSIVE_ROOT_GLOBAL_ASSET_ID }}
+      recursiveOpeningId: ${{ vars.RECURSIVE_OPENING_ID }}
+      recursiveUseCase: ${{ vars.RECURSIVE_USE_CASE }}
 

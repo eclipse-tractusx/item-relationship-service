@@ -13,6 +13,36 @@ on:
       executionFilter:
         required: true
         type: string
+      recursiveRootUrl:
+        description: "Base URL of the root IRS instance of the recursive chain"
+        required: false
+        type: string
+        default: ""
+      recursiveRootBpnl:
+        description: "BPNL of the root instance of the recursive chain"
+        required: false
+        type: string
+        default: ""
+      recursiveRootAllowedBpnls:
+        description: "BPNLs of the direct successors of the root instance, comma separated"
+        required: false
+        type: string
+        default: ""
+      recursiveRootGlobalAssetId:
+        description: "globalAssetId of the root material of the recursive chain"
+        required: false
+        type: string
+        default: ""
+      recursiveOpeningId:
+        description: "Chain opening identifier, identical on all instances of the chain"
+        required: false
+        type: string
+        default: ""
+      recursiveUseCase:
+        description: "Recursive use case, defaults to the anonymized PURIS bundle"
+        required: false
+        type: string
+        default: ""
 
 jobs:
 
@@ -41,6 +71,12 @@ jobs:
           ADMIN_USER_API_KEY: ${{ secrets.adminUserApiKey }}
           ISSUE_FILTER: ${{ inputs.executionFilter }}
           CUCUMBER_PUBLISH_TOKEN: ${{ secrets.cucumberPublishToken }}
+          RECURSIVE_ROOT_URL: ${{ inputs.recursiveRootUrl }}
+          RECURSIVE_ROOT_BPNL: ${{ inputs.recursiveRootBpnl }}
+          RECURSIVE_ROOT_ALLOWED_BPNLS: ${{ inputs.recursiveRootAllowedBpnls }}
+          RECURSIVE_ROOT_GLOBAL_ASSET_ID: ${{ inputs.recursiveRootGlobalAssetId }}
+          RECURSIVE_OPENING_ID: ${{ inputs.recursiveOpeningId }}
+          RECURSIVE_USE_CASE: ${{ inputs.recursiveUseCase }}
         run: |
           # workaround replacement since injecting the token via environment variable does not work
           sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
