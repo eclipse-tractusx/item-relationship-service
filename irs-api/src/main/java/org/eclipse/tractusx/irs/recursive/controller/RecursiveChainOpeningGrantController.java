@@ -71,31 +71,44 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "Recursive Chain Opening Grants",
      description = "Grant storage and lookup for recursive chain openings")
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })
+@SuppressWarnings("PMD.ExcessiveImports")
 public class RecursiveChainOpeningGrantController {
+
+    private static final String GRANTS_TAG = "Recursive Chain Opening Grants";
+    private static final String API_KEY_SCHEME = "api_key";
+    private static final String ERROR_EXAMPLE_NAME = "error";
+    private static final String UNAUTHORIZED_EXAMPLE_REF = "#/components/examples/error-response-401";
+
+    private static final String BAD_REQUEST_CODE = "400";
+    private static final String UNAUTHORIZED_CODE = "401";
+    private static final String FORBIDDEN_CODE = "403";
+    private static final String INTERNAL_ERROR_CODE = "500";
+    private static final String UNAVAILABLE_CODE = "503";
+    private static final String INTERNAL_ERROR_DESC = "Unexpected recursive IRS error";
+    private static final String UNAVAILABLE_DESC = "Recursive persistence unavailable";
 
     private final RecursiveChainOpeningGrantService chainOpeningGrantService;
 
     @Operation(operationId = "registerRecursiveChainOpeningGrant", summary = "Register a chain opening grant",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Recursive Chain Opening Grants" },
+               security = @SecurityRequirement(name = API_KEY_SCHEME), tags = { GRANTS_TAG },
                description = "Stores a grant that authorizes recursive traversal for a specific chain opening. "
                        + "The grant key (openingId + globalAssetId + requesterBpn + useCase) is taken from the "
                        + "request body; several grants may exist per openingId, one per requested material and "
                        + "requesting partner. Only the configured PURIS recursive use case is accepted.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Grant registered"),
-                            @ApiResponse(responseCode = "400",
+                            @ApiResponse(responseCode = BAD_REQUEST_CODE,
                                          description = "Invalid grant payload",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                            @ApiResponse(responseCode = UNAUTHORIZED_CODE, description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "error",
-                                                                                        ref = "#/components/examples/error-response-401"))
+                                                              examples = @ExampleObject(name = ERROR_EXAMPLE_NAME,
+                                                                                        ref = UNAUTHORIZED_EXAMPLE_REF))
                                          }),
-                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                            @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
@@ -118,12 +131,12 @@ public class RecursiveChainOpeningGrantController {
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "500", description = "Unexpected recursive IRS error",
+                            @ApiResponse(responseCode = INTERNAL_ERROR_CODE, description = INTERNAL_ERROR_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "503", description = "Recursive persistence unavailable",
+                            @ApiResponse(responseCode = UNAVAILABLE_CODE, description = UNAVAILABLE_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
@@ -143,23 +156,23 @@ public class RecursiveChainOpeningGrantController {
     }
 
     @Operation(operationId = "listRecursiveChainOpeningGrants", summary = "List chain opening grants",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Recursive Chain Opening Grants" },
+               security = @SecurityRequirement(name = API_KEY_SCHEME), tags = { GRANTS_TAG },
                description = "Admin query endpoint for chain opening grants. By default only currently valid grants "
                        + "are returned; set validOnly=false to include expired and not-yet-valid grants.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Grant list returned",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE) }),
-                            @ApiResponse(responseCode = "400", description = "Invalid grant filter",
+                            @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Invalid grant filter",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                            @ApiResponse(responseCode = UNAUTHORIZED_CODE, description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "error",
-                                                                                        ref = "#/components/examples/error-response-401"))
+                                                              examples = @ExampleObject(name = ERROR_EXAMPLE_NAME,
+                                                                                        ref = UNAUTHORIZED_EXAMPLE_REF))
                                          }),
-                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                            @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
@@ -170,12 +183,12 @@ public class RecursiveChainOpeningGrantController {
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "500", description = "Unexpected recursive IRS error",
+                            @ApiResponse(responseCode = INTERNAL_ERROR_CODE, description = INTERNAL_ERROR_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "503", description = "Recursive persistence unavailable",
+                            @ApiResponse(responseCode = UNAVAILABLE_CODE, description = UNAVAILABLE_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
@@ -206,25 +219,25 @@ public class RecursiveChainOpeningGrantController {
     }
 
     @Operation(operationId = "replaceRecursiveChainOpeningGrant", summary = "Replace a chain opening grant",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Recursive Chain Opening Grants" },
+               security = @SecurityRequirement(name = API_KEY_SCHEME), tags = { GRANTS_TAG },
                description = "Replaces a grant identified by the grant key (openingId + globalAssetId "
                        + "+ requesterBpn + useCase) in the request body. The stored grant keeps its original "
                        + "createdAt timestamp and receives a fresh updatedAt. Only the configured PURIS recursive "
                        + "use case is accepted.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Grant replaced"),
-                            @ApiResponse(responseCode = "400",
+                            @ApiResponse(responseCode = BAD_REQUEST_CODE,
                                          description = "Invalid grant payload",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                            @ApiResponse(responseCode = UNAUTHORIZED_CODE, description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "error",
-                                                                                        ref = "#/components/examples/error-response-401"))
+                                                              examples = @ExampleObject(name = ERROR_EXAMPLE_NAME,
+                                                                                        ref = UNAUTHORIZED_EXAMPLE_REF))
                                          }),
-                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                            @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
@@ -240,12 +253,12 @@ public class RecursiveChainOpeningGrantController {
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "500", description = "Unexpected recursive IRS error",
+                            @ApiResponse(responseCode = INTERNAL_ERROR_CODE, description = INTERNAL_ERROR_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "503", description = "Recursive persistence unavailable",
+                            @ApiResponse(responseCode = UNAVAILABLE_CODE, description = UNAVAILABLE_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
@@ -260,20 +273,20 @@ public class RecursiveChainOpeningGrantController {
     }
 
     @Operation(operationId = "deleteRecursiveChainOpeningGrant", summary = "Delete a chain opening grant",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Recursive Chain Opening Grants" })
+               security = @SecurityRequirement(name = API_KEY_SCHEME), tags = { GRANTS_TAG })
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Grant deleted"),
-                            @ApiResponse(responseCode = "400", description = "Invalid grant key",
+                            @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Invalid grant key",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                            @ApiResponse(responseCode = UNAUTHORIZED_CODE, description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "error",
-                                                                                        ref = "#/components/examples/error-response-401"))
+                                                              examples = @ExampleObject(name = ERROR_EXAMPLE_NAME,
+                                                                                        ref = UNAUTHORIZED_EXAMPLE_REF))
                                          }),
-                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                            @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
@@ -283,12 +296,12 @@ public class RecursiveChainOpeningGrantController {
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "500", description = "Unexpected recursive IRS error",
+                            @ApiResponse(responseCode = INTERNAL_ERROR_CODE, description = INTERNAL_ERROR_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
                                          }),
-                            @ApiResponse(responseCode = "503", description = "Recursive persistence unavailable",
+                            @ApiResponse(responseCode = UNAVAILABLE_CODE, description = UNAVAILABLE_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(
                                                                       implementation = RecursiveErrorResponse.class))
