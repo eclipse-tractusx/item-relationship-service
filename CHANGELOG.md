@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Changed
+
+- Refactor recursive EDC notification delivery, extract shared constants for grant API annotations and remove redundant PMD suppressions ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
+
 ## [7.1.0] - 2026-09-16
 
 ### Added
