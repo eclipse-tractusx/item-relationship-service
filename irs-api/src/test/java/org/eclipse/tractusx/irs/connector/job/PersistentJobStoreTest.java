@@ -1,9 +1,9 @@
 /********************************************************************************
  * Copyright (c) 2022 ZF Friedrichshafen AG
  * Copyright (c) 2022 ISTOS GmbH
- * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- * Copyright (c) 2022,2023 BOSCH AG
- * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2023 BOSCH AG
+ * Copyright (c) 2025 Contributors to the Eclipse Foundation
  * Copyright (c) 2026 Volkswagen AG
  *
  * See the NOTICE file(s) distributed with this work for additional
