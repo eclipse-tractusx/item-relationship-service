@@ -1,21 +1,22 @@
 #
-#  Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-#  Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2026 Volkswagen AG
+# Copyright (c) 2021 Contributors to the Eclipse Foundation
 #
-#  See the NOTICE file(s) distributed with this work for additional
-#  information regarding copyright ownership.
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
 #
-#  This program and the accompanying materials are made available under the
-#  terms of the Apache License, Version 2.0 which is available at
-#  https://www.apache.org/licenses/LICENSE-2.0
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0.
 #
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#  License for the specific language governing permissions and limitations
-#  under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 #
-#  SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
 #
 ---
 name: IRS Cucumber Integration Test execution
@@ -33,20 +34,44 @@ inputs:
   executionFilter:
     description: "JUnit5 filter for feature file annotations"
     required: true
+  recursiveRootUrl:
+    description: "Base URL of the root IRS instance of the recursive chain"
+    required: false
+    default: ""
+  recursiveRootBpnl:
+    description: "BPNL of the root instance of the recursive chain"
+    required: false
+    default: ""
+  recursiveRootAllowedBpnls:
+    description: "BPNLs of the direct successors of the root instance, comma separated"
+    required: false
+    default: ""
+  recursiveRootGlobalAssetId:
+    description: "globalAssetId of the root material of the recursive chain"
+    required: false
+    default: ""
+  recursiveOpeningId:
+    description: "Chain opening identifier, identical on all instances of the chain"
+    required: false
+    default: ""
+  recursiveUseCase:
+    description: "Recursive use case, defaults to the anonymized PURIS bundle"
+    required: false
+    default: ""
 
 runs:
   using: composite
   steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Cache maven packages
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -65,6 +90,12 @@ runs:
           ADMIN_USER_API_KEY: ${{ inputs.adminUserApiKey }}
           ISSUE_FILTER: ${{ inputs.executionFilter }}
           CUCUMBER_PUBLISH_TOKEN: ${{ inputs.cucumberPublishToken }}
+          RECURSIVE_ROOT_URL: ${{ inputs.recursiveRootUrl }}
+          RECURSIVE_ROOT_BPNL: ${{ inputs.recursiveRootBpnl }}
+          RECURSIVE_ROOT_ALLOWED_BPNLS: ${{ inputs.recursiveRootAllowedBpnls }}
+          RECURSIVE_ROOT_GLOBAL_ASSET_ID: ${{ inputs.recursiveRootGlobalAssetId }}
+          RECURSIVE_OPENING_ID: ${{ inputs.recursiveOpeningId }}
+          RECURSIVE_USE_CASE: ${{ inputs.recursiveUseCase }}
         # workaround replacement since injecting the token via environment variable does not work
         run: |
           sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
@@ -72,7 +103,7 @@ runs:
           mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
 
       - name: Publish Cucumber Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.19.0
+        uses: EnricoMi/publish-unit-test-result-action@d0a4676d0e0b938bc201470d88276b7c74c712b3 # v2.24.0
         if: always()
         with:
           files: |
@@ -90,7 +121,7 @@ runs:
 
       - name: Find previous comment in PR
         if: always() && github.event_name == 'pull_request'
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
         id: find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -99,7 +130,7 @@ runs:
 
       - name: Create or update comment in PR
         if: always() && github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -108,6 +139,6 @@ runs:
 
       - name: Upload Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: 'irs-cucumber-tests/target/report.html'

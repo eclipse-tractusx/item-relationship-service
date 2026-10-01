@@ -14,6 +14,7 @@ skipReleaseChecks:
   - "docs/src/docs/administration/configuration.adoc"
   - "docs/src/docs/administration/installation.adoc"
   - "docs/src/docs/administration/irs-spring-config.adoc"
+  - "docs/src/docs/administration/migration.adoc"
   - "docs/src/docs/administration/recursive-irs.adoc"
   - "docs/src/docs/administration/system-overview.adoc"
   - "docs/src/docs/administration/troubleshooting.adoc"

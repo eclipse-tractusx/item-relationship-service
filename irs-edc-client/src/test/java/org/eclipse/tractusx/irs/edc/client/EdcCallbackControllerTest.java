@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022 BOSCH AG
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +24,8 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -49,13 +51,13 @@ class EdcCallbackControllerTest {
                     "at": 1714645750814,
                     "payload": {
                         "assetId": "urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad",
-                        "contractId": "testContractId",
+                        "contractId": "consumerContractId",
                         "dataAddress": {
                             "properties": {
                                 "process_id": "testid",
                                 "https://w3id.org/edc/v0.0.1/ns/endpoint": "test",
                                 "asset_id": "urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad",
-                                "agreement_id": "testContractId",
+                                "agreement_id": "providerContractId",
                                 "https://w3id.org/edc/v0.0.1/ns/authorization": "testToken"
                             }
                         }
@@ -63,7 +65,7 @@ class EdcCallbackControllerTest {
                 }
                 """;
         final String expectedId = "testid";
-        final String expectedContractId = "testContractId";
+        final String expectedContractId = "consumerContractId";
         final String expectedEndpoint = "test";
         final String expectedAuthKey = "Authorization";
         final String expectedAuthCode = "testToken";
@@ -72,13 +74,139 @@ class EdcCallbackControllerTest {
         testee.receiveEdcCallback(ref);
 
         // assert
-        final var result = storage.get("testContractId");
+        final var result = storage.get(expectedContractId);
         assertThat(result).isNotNull().isPresent();
         assertThat(result.get().getId()).isEqualTo(expectedId);
         assertThat(result.get().getContractId()).isEqualTo(expectedContractId);
         assertThat(result.get().getEndpoint()).isEqualTo(expectedEndpoint);
         assertThat(result.get().getAuthKey()).isEqualTo(expectedAuthKey);
         assertThat(result.get().getAuthCode()).isEqualTo(expectedAuthCode);
+        assertThat(storage.get("providerContractId")).isEmpty();
+    }
+
+    @Test
+    void shouldUseProviderContractIdWhenConsumerContractIdIsMissing() {
+        final String ref = """
+                {
+                    "payload": {
+                        "assetId": "urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad",
+                        "dataAddress": {
+                            "properties": {
+                                "process_id": "testid",
+                                "https://w3id.org/edc/v0.0.1/ns/endpoint": "test",
+                                "agreement_id": "providerContractId",
+                                "https://w3id.org/edc/v0.0.1/ns/authorization": "testToken"
+                            }
+                        }
+                    }
+                }
+                """;
+
+        testee.receiveEdcCallback(ref);
+
+        final Optional<EndpointDataReference> result = storage.get("providerContractId");
+        assertThat(result).isPresent();
+        assertThat(result.get().getContractId()).isEqualTo("providerContractId");
+    }
+
+    @Test
+    void shouldNotStoreEdrWithoutContractId() {
+        final EndpointDataReferenceStorage endpointDataReferenceStorage = mock(EndpointDataReferenceStorage.class);
+        final String ref = """
+                {
+                    "payload": {
+                        "assetId": "urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad",
+                        "dataAddress": {
+                            "properties": {
+                                "process_id": "testid",
+                                "https://w3id.org/edc/v0.0.1/ns/endpoint": "test",
+                                "https://w3id.org/edc/v0.0.1/ns/authorization": "testToken"
+                            }
+                        }
+                    }
+                }
+                """;
+
+        new EdcCallbackController(endpointDataReferenceStorage, contractNegotiationIdStorage).receiveEdcCallback(ref);
+
+        verifyNoInteractions(endpointDataReferenceStorage);
+    }
+
+    @Test
+    void shouldNotStoreEdrWithUnsafeContractId() {
+        final EndpointDataReferenceStorage endpointDataReferenceStorage = mock(EndpointDataReferenceStorage.class);
+        final String ref = """
+                {
+                    "payload": {
+                        "contractId": "contractId\\nforged-log-entry",
+                        "dataAddress": {
+                            "properties": {
+                                "process_id": "testid",
+                                "https://w3id.org/edc/v0.0.1/ns/endpoint": "test",
+                                "https://w3id.org/edc/v0.0.1/ns/authorization": "testToken"
+                            }
+                        }
+                    }
+                }
+                """;
+
+        new EdcCallbackController(endpointDataReferenceStorage, contractNegotiationIdStorage).receiveEdcCallback(ref);
+
+        verifyNoInteractions(endpointDataReferenceStorage);
+    }
+
+    @Test
+    void shouldNotStoreNullCallbackPayload() {
+        final EndpointDataReferenceStorage endpointDataReferenceStorage = mock(EndpointDataReferenceStorage.class);
+
+        new EdcCallbackController(endpointDataReferenceStorage, contractNegotiationIdStorage).receiveEdcCallback(
+                "null");
+
+        verifyNoInteractions(endpointDataReferenceStorage);
+    }
+
+    @Test
+    void shouldNotStoreNullNegotiationCallbackPayload() {
+        final ContractNegotiationIdStorage negotiationIdStorage = mock(ContractNegotiationIdStorage.class);
+
+        new EdcCallbackController(storage, negotiationIdStorage).receiveNegotiationsCallback("null");
+
+        verifyNoInteractions(negotiationIdStorage);
+    }
+
+    @Test
+    void shouldNotStoreNegotiationWithoutContractAgreement() {
+        final ContractNegotiationIdStorage negotiationIdStorage = mock(ContractNegotiationIdStorage.class);
+        final String callback = """
+                {
+                    "payload": {
+                        "contractNegotiationId": "negotiationId"
+                    }
+                }
+                """;
+
+        new EdcCallbackController(storage, negotiationIdStorage).receiveNegotiationsCallback(callback);
+
+        verifyNoInteractions(negotiationIdStorage);
+    }
+
+    @Test
+    void shouldNotStoreNegotiationWithOversizedIdentifier() {
+        final ContractNegotiationIdStorage negotiationIdStorage = mock(ContractNegotiationIdStorage.class);
+        final String callback = """
+                {
+                    "payload": {
+                        "contractNegotiationId": "%s",
+                        "contractAgreement": {
+                            "id": "contractAgreementId"
+                        }
+                    }
+                }
+                """.formatted("a".repeat(256));
+
+        new EdcCallbackController(storage, negotiationIdStorage).receiveNegotiationsCallback(callback);
+
+        verifyNoInteractions(negotiationIdStorage);
     }
 
     @Test

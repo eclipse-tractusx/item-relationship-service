@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022 BOSCH AG
+ * Copyright (c) 2026 Volkswagen AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,9 +34,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.policy.model.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
@@ -154,5 +157,67 @@ class EDCCatalogFacadeTest {
         assertThat(catalogPolicy.getAssigner()).isEqualTo(providerBpn);
         assertThat(catalogPolicy.getTarget()).isEqualTo(assetId);
 
+    }
+
+    @Test
+    void shouldMapEveryOfferOfDataset() {
+        final String assetId = "testTarget";
+        final String connectorUrl = "testConnector";
+        final String providerBpn = "BPN000123456";
+        final String filterKey = "filterKey";
+        final Policy firstPolicy = Policy.Builder.newInstance().type(PolicyType.OFFER).build();
+        final Policy secondPolicy = Policy.Builder.newInstance().type(PolicyType.OFFER).build();
+        final Dataset dataset = Dataset.Builder.newInstance()
+                                               .id(assetId)
+                                               .offer("offer-b", secondPolicy)
+                                               .offer("offer-a", firstPolicy)
+                                               .build();
+        final Catalog catalog = Catalog.Builder.newInstance()
+                                               .dataset(dataset)
+                                               .properties(Map.of(
+                                                       EDCCatalogFacade.NAMESPACE_DSPACE_PARTICIPANT_ID, providerBpn))
+                                               .build();
+        when(controlPlaneClient.getCatalogWithFilter(connectorUrl, filterKey, assetId, providerBpn)).thenReturn(
+                catalog);
+
+        final List<CatalogItem> catalogItems = edcCatalogFacade.fetchCatalogByFilter(connectorUrl, filterKey, assetId,
+                providerBpn);
+
+        assertThat(catalogItems).extracting(CatalogItem::getOfferId).containsExactly("offer-a", "offer-b");
+        assertThat(catalogItems).allSatisfy(catalogItem -> {
+            assertThat(catalogItem.getItemId()).isEqualTo(assetId);
+            assertThat(catalogItem.getAssetPropId()).isEqualTo(assetId);
+            assertThat(catalogItem.getConnectorId()).isEqualTo(providerBpn);
+            assertThat(catalogItem.getPolicy().getAssigner()).isEqualTo(providerBpn);
+            assertThat(catalogItem.getPolicy().getTarget()).isEqualTo(assetId);
+        });
+    }
+
+    @Test
+    void shouldIgnoreOffersWithoutId() {
+        final String assetId = "testTarget";
+        final String connectorUrl = "testConnector";
+        final String providerBpn = "BPN000123456";
+        final String filterKey = "filterKey";
+        final Policy policy = Policy.Builder.newInstance().type(PolicyType.OFFER).build();
+        final Map<String, Policy> offers = new HashMap<>();
+        offers.put(null, policy);
+        offers.put("", policy);
+        offers.put("offer-a", policy);
+        final Dataset dataset = mock(Dataset.class);
+        when(dataset.getId()).thenReturn(assetId);
+        when(dataset.getOffers()).thenReturn(offers);
+        final Catalog catalog = Catalog.Builder.newInstance()
+                                               .dataset(dataset)
+                                               .properties(Map.of(
+                                                       EDCCatalogFacade.NAMESPACE_DSPACE_PARTICIPANT_ID, providerBpn))
+                                               .build();
+        when(controlPlaneClient.getCatalogWithFilter(connectorUrl, filterKey, assetId, providerBpn)).thenReturn(
+                catalog);
+
+        final List<CatalogItem> catalogItems = edcCatalogFacade.fetchCatalogByFilter(connectorUrl, filterKey, assetId,
+                providerBpn);
+
+        assertThat(catalogItems).extracting(CatalogItem::getOfferId).containsExactly("offer-a");
     }
 }

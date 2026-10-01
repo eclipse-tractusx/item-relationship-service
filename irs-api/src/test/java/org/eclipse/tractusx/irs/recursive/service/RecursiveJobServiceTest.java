@@ -1092,6 +1092,32 @@ class RecursiveJobServiceTest {
     }
 
     @Test
+    void shouldKeepGrantRejectionControlledWhenResponseDeliveryFails() {
+        recursiveProperties.setLocalBpnl("BPNL0000BELF0001");
+        final AtomicInteger responseAttempts = new AtomicInteger();
+        notificationSender = new RecursiveNotificationSender() {
+            @Override
+            public void sendRequest(final String receiverBpnl, final RecursiveNotificationMessage message) {
+                // Rejected requests never create child requests.
+            }
+
+            @Override
+            public void sendResponse(final String receiverBpnl, final RecursiveNotificationMessage message) {
+                responseAttempts.incrementAndGet();
+                throw new RecursiveNotificationDeliveryException(
+                        RecursiveNotificationDeliveryFailureReason.NOTIFICATION_POLICY_REJECTED,
+                        "008420a8-6cec-487e-b255-29ff370fdf34", "notification policy rejected", null);
+            }
+        };
+
+        final boolean accepted = jobService.handleNotification(incomingRequest(UUID.randomUUID().toString()));
+
+        assertThat(accepted).isFalse();
+        assertThat(responseAttempts).hasValue(1);
+        assertThat(jobService.getAllJobs()).isEmpty();
+    }
+
+    @Test
     void shouldRejectIncomingNotificationRequestWithoutExpectedResponseBy() {
         recursiveProperties.setLocalBpnl("BPNL0000BELF0001");
         final RecursiveNotificationMessage notification = RecursiveNotificationMessage.builder()

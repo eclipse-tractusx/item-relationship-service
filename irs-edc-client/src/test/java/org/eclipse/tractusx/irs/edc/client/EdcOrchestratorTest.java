@@ -23,7 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -113,6 +117,11 @@ class EdcOrchestratorTest {
         orchestrator = new EdcOrchestrator(config, contractNegotiationService, pollingService, catalogFacade,
                 endpointDataReferenceStorage, contractNegotiationIdStorage, fixedThreadPoolExecutorService, ongoingNegotiationStorage);
         when(config.getSubmodel().getRequestTtl()).thenReturn(Duration.ofSeconds(5));
+        lenient().when(contractNegotiationService.selectCatalogItem(anyList(), anyString()))
+                 .thenAnswer(invocation -> {
+                     final List<CatalogItem> catalogItems = invocation.getArgument(0);
+                     return catalogItems.stream().findFirst();
+                 });
         ongoingNegotiationStorage.getOngoingNegotiations()
                                  .forEach(ongoingNegotiationStorage::removeFromOngoingNegotiations);
     }
@@ -157,6 +166,36 @@ class EdcOrchestratorTest {
         // Act & Assert
         assertThatThrownBy(() -> orchestrator.getCatalogItem(ENDPOINT_ADDRESS, "assetId", BPN)).isInstanceOf(
                 EdcClientException.class).hasMessageContaining("Error retrieving catalog items.");
+    }
+
+    @Test
+    void shouldUseRequestedBpnWhenCatalogParticipantIdIsMissing() throws EdcClientException {
+        final CatalogItem rejectedOffer = createCatalogItem("assetId", null, "offer-a");
+        final CatalogItem acceptedOffer = createCatalogItem("assetId", null, "offer-b");
+        final List<CatalogItem> catalogItems = List.of(rejectedOffer, acceptedOffer);
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(catalogItems);
+        when(contractNegotiationService.selectCatalogItem(catalogItems, BPN)).thenReturn(Optional.of(acceptedOffer));
+
+        final CatalogItem selectedOffer = orchestrator.getCatalogItem(ENDPOINT_ADDRESS, "assetId", BPN);
+
+        assertThat(selectedOffer).isNotSameAs(acceptedOffer);
+        assertThat(selectedOffer).usingRecursiveComparison().ignoringFields("connectorId").isEqualTo(acceptedOffer);
+        assertThat(selectedOffer.getConnectorId()).isEqualTo(BPN);
+        assertThat(acceptedOffer.getConnectorId()).isNull();
+        verify(contractNegotiationService).selectCatalogItem(catalogItems, BPN);
+    }
+
+    @Test
+    void shouldUseCatalogParticipantIdForPolicySelection() throws EdcClientException {
+        final String catalogParticipantId = "BPNL000000000999";
+        final CatalogItem catalogItem = createCatalogItem("assetId", catalogParticipantId, "offer-a");
+        final List<CatalogItem> catalogItems = List.of(catalogItem);
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(catalogItems);
+        when(contractNegotiationService.selectCatalogItem(catalogItems, catalogParticipantId)).thenReturn(
+                Optional.of(catalogItem));
+
+        assertThat(orchestrator.getCatalogItem(ENDPOINT_ADDRESS, "assetId", BPN)).isSameAs(catalogItem);
+        verify(contractNegotiationService).selectCatalogItem(catalogItems, catalogParticipantId);
     }
 
     @Test
@@ -207,6 +246,10 @@ class EdcOrchestratorTest {
         assertThatThrownBy(throwingCallable).isInstanceOf(ExecutionException.class)
                                             .hasCauseInstanceOf(EdcClientException.class)
                                             .hasMessageContaining(negotiationExceptionMessage);
+        final String storageId = catalogItem.getItemId() + ENDPOINT_ADDRESS;
+        await().atMost(Duration.ofSeconds(1))
+               .until(() -> !ongoingNegotiationStorage.isNegotiationOngoing(storageId));
+        verify(endpointDataReferenceStorage, never()).putEndpointDataReferenceIntoStorage(eq(storageId), any());
     }
 
     @Test
@@ -423,6 +466,27 @@ class EdcOrchestratorTest {
     }
 
     @Test
+    void shouldNegotiateOnlyOneOfferPerAsset()
+            throws TransferProcessException, UsagePolicyExpiredException, UsagePolicyPermissionException,
+            ContractNegotiationException {
+        final CatalogItem firstAssetOffer = createCatalogItem("asset-1", BPN, "offer-a");
+        final CatalogItem duplicateAssetOffer = createCatalogItem("asset-1", BPN, "offer-b");
+        final CatalogItem secondAssetOffer = createCatalogItem("asset-2", BPN, "offer-c");
+        prepareContractNegotiation(firstAssetOffer, NEGOTIATION_TIME);
+        prepareContractNegotiation(secondAssetOffer, NEGOTIATION_TIME);
+
+        final List<CompletableFuture<EndpointDataReference>> endpointDataReferences = orchestrator.getEndpointDataReferences(
+                ENDPOINT_ADDRESS, List.of(duplicateAssetOffer, secondAssetOffer, firstAssetOffer));
+
+        assertThat(endpointDataReferences).hasSize(2);
+        assertThat(endpointDataReferences).allSatisfy(CompletableFuture::join);
+        verify(contractNegotiationService).negotiate(eq(ENDPOINT_ADDRESS), eq(firstAssetOffer), any(), eq(BPN));
+        verify(contractNegotiationService).negotiate(eq(ENDPOINT_ADDRESS), eq(secondAssetOffer), any(), eq(BPN));
+        verify(contractNegotiationService, times(2)).negotiate(eq(ENDPOINT_ADDRESS), any(CatalogItem.class), any(),
+                eq(BPN));
+    }
+
+    @Test
     void shouldReuseOngoingNegotiationsWithMultipleThreads()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
@@ -521,7 +585,10 @@ class EdcOrchestratorTest {
     }
 
     protected static CatalogItem createCatalogItem(final String assetId, final String bpn) {
-        final String offerId = UUID.randomUUID().toString();
+        return createCatalogItem(assetId, bpn, UUID.randomUUID().toString());
+    }
+
+    private static CatalogItem createCatalogItem(final String assetId, final String bpn, final String offerId) {
         final Policy policy = null;
         final Instant validUntil = Instant.now().plus(Duration.ofMinutes(2));
         return CatalogItem.builder()

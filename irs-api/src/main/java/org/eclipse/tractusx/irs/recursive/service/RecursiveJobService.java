@@ -408,13 +408,13 @@ public class RecursiveJobService {
                     hdr.getMessageId());
         } catch (final RecursiveChainOpeningGrantInactiveException e) {
             log.warn("Grant rejected for incoming recursive request");
-            sendRejectionResponse(msg, RecursiveTombstones.chain(cnt.getAspects(),
+            sendRejectionResponseQuietly(msg, RecursiveTombstones.chain(cnt.getAspects(),
                     RecursiveTombstoneReason.CHAIN_OPENING_REJECTED,
                     "The recursive chain opening grant was rejected."));
             return false;
         } catch (final IllegalArgumentException e) {
             log.warn("Incoming recursive request rejected");
-            sendRejectionResponse(msg, RecursiveTombstones.chain(cnt.getAspects(),
+            sendRejectionResponseQuietly(msg, RecursiveTombstones.chain(cnt.getAspects(),
                     RecursiveTombstoneReason.CHILD_BRANCH_FAILED,
                     "The recursive partner request was invalid."));
             return false;
@@ -640,12 +640,18 @@ public class RecursiveJobService {
         }
     }
 
-    private void sendRejectionResponse(final RecursiveNotificationMessage request,
+    private void sendRejectionResponseQuietly(final RecursiveNotificationMessage request,
             final RecursiveTombstone rejection) {
         final RecursiveNotificationMessage.Header requestHeader = request.getHeader();
         final RecursiveNotificationMessage response = RecursiveNotificationFactory.rejectionResponse(
                 request, rejection, localBpnl(), now());
-        notificationSender.sendResponse(requestHeader.getSenderBpnl(), response);
+        try {
+            notificationSender.sendResponse(requestHeader.getSenderBpnl(), response);
+        } catch (final RecursiveNotificationDeliveryException exception) {
+            log.warn("Could not deliver recursive rejection response for messageId={}: reason={} errorRef={}",
+                    RecursiveLogValue.of(requestHeader.getMessageId()), exception.getReason(),
+                    RecursiveLogValue.of(exception.getErrorRef()));
+        }
     }
 
     private void markAcceptedJobFailed(final RecursiveJobState acceptedState, final Exception exception) {
