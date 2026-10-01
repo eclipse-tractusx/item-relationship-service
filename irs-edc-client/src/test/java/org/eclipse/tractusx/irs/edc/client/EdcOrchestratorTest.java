@@ -1,6 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Volkswagen AG
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
