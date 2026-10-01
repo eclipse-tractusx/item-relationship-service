@@ -12,6 +12,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Refactor recursive EDC notification delivery, extract shared constants for grant API annotations and remove redundant PMD suppressions ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
 - Update Bouncy Castle from 1.84 to 1.85 ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
+- Update Jackson from 2.21.4 to 2.21.7 and the pinned `eclipse-temurin:25-jre-alpine` base image (Alpine 3.24.2) to fix the Trivy findings, remove the resolved `.trivyignore` entries ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
 
 ## [7.1.0] - 2026-09-16
 
