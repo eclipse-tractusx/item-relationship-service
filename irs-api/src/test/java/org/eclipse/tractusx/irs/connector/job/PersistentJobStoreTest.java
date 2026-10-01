@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022,2023 BOSCH AG
  * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 Volkswagen AG
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -427,12 +427,14 @@ class PersistentJobStoreTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenDeleteJobByIllegalId() {
+    void shouldThrowExceptionWhenDeleteJobFailsInBlobStore() throws BlobPersistenceException {
         // Arrange
-        final var illegalId = faker.lorem().characters(5000);
+        sut.create(job);
+        final var ex = new BlobPersistenceException("test", new RuntimeException());
+        doThrow(ex).when(blobStoreSpy).delete(anyString(), anyList());
 
         // Act+Assert
-        assertThatExceptionOfType(JobException.class).isThrownBy(() -> sut.deleteJob(illegalId));
+        assertThatExceptionOfType(JobException.class).isThrownBy(() -> sut.deleteJob(job.getJobIdString()));
     }
 
     @Test
