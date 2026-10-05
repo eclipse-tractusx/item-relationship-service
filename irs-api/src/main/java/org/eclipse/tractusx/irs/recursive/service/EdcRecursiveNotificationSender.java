@@ -113,40 +113,18 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
      * The detailed log lines (partner, endpoint, step) are local-only diagnostics; the thrown
      * exception carries just the reason code and errorRef.
      */
-    @SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.CyclomaticComplexity" })
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private void sendViaConnector(final String connectorEndpoint, final String receiverBpnl,
             final RecursiveNotificationMessage message, final RecursiveNotificationType notificationType,
             final String errorRef) {
-        final String dspEndpointAddress;
-        try {
-            dspEndpointAddress = appendProviderSuffix(connectorEndpoint);
-        } catch (final URISyntaxException exception) {
-            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CONNECTOR_ENDPOINT_INVALID, errorRef,
-                    notificationType, receiverBpnl, connectorEndpoint, exception);
-        }
-
-        final List<CatalogItem> catalogItems;
-        try {
-            catalogItems = edcOrchestrator.getCatalogItems(dspEndpointAddress, notificationAssetQuery(), receiverBpnl);
-        } catch (final EdcClientException exception) {
-            throw deliveryFailure(classifyCatalogFailure(exception), errorRef, notificationType, receiverBpnl,
-                    connectorEndpoint, exception);
-        }
+        final String dspEndpointAddress = resolveDspEndpointAddress(connectorEndpoint, errorRef, notificationType,
+                receiverBpnl);
+        final List<CatalogItem> catalogItems = requestCatalogItems(dspEndpointAddress, errorRef, notificationType,
+                receiverBpnl, connectorEndpoint);
         final CatalogItem catalogItem = selectCatalogItem(catalogItems, errorRef, notificationType, receiverBpnl,
                 connectorEndpoint);
-
-        final EndpointDataReference endpointDataReference;
-        try {
-            endpointDataReference = edcOrchestrator.getEndpointDataReference(dspEndpointAddress, catalogItem)
-                    .get(edcConfiguration.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
-        } catch (final InterruptedException exception) {
-            Thread.currentThread().interrupt();
-            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CONTRACT_NEGOTIATION_FAILED, errorRef,
-                    notificationType, receiverBpnl, connectorEndpoint, exception);
-        } catch (final EdcClientException | ExecutionException | TimeoutException exception) {
-            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CONTRACT_NEGOTIATION_FAILED, errorRef,
-                    notificationType, receiverBpnl, connectorEndpoint, exception);
-        }
+        final EndpointDataReference endpointDataReference = negotiateEndpointDataReference(dspEndpointAddress,
+                catalogItem, errorRef, notificationType, receiverBpnl, connectorEndpoint);
 
         final EdcNotificationResponse response;
         try {
@@ -163,11 +141,32 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
                 RecursiveLogValue.of(receiverBpnl), RecursiveLogValue.of(catalogItem.getItemId()));
     }
 
-    private RecursiveNotificationDeliveryFailureReason classifyCatalogFailure(final EdcClientException exception) {
-        if (RecursiveFailureReasonMapper.policyReason(exception).isPresent()) {
-            return RecursiveNotificationDeliveryFailureReason.NOTIFICATION_POLICY_REJECTED;
+    private String resolveDspEndpointAddress(final String connectorEndpoint, final String errorRef,
+            final RecursiveNotificationType notificationType, final String receiverBpnl) {
+        final String providerSuffix = edcConfiguration.getControlplane().getProviderSuffix();
+        if (connectorEndpoint.endsWith(providerSuffix)) {
+            return connectorEndpoint;
         }
-        return RecursiveNotificationDeliveryFailureReason.CATALOG_REQUEST_FAILED;
+        try {
+            return UriPathJoiner.appendPath(connectorEndpoint, providerSuffix);
+        } catch (final URISyntaxException exception) {
+            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CONNECTOR_ENDPOINT_INVALID, errorRef,
+                    notificationType, receiverBpnl, connectorEndpoint, exception);
+        }
+    }
+
+    private List<CatalogItem> requestCatalogItems(final String dspEndpointAddress, final String errorRef,
+            final RecursiveNotificationType notificationType, final String receiverBpnl,
+            final String connectorEndpoint) {
+        try {
+            return edcOrchestrator.getCatalogItems(dspEndpointAddress, notificationAssetQuery(), receiverBpnl);
+        } catch (final EdcClientException exception) {
+            final RecursiveNotificationDeliveryFailureReason reason =
+                    RecursiveFailureReasonMapper.policyReason(exception).isPresent()
+                            ? RecursiveNotificationDeliveryFailureReason.NOTIFICATION_POLICY_REJECTED
+                            : RecursiveNotificationDeliveryFailureReason.CATALOG_REQUEST_FAILED;
+            throw deliveryFailure(reason, errorRef, notificationType, receiverBpnl, connectorEndpoint, exception);
+        }
     }
 
     private CatalogItem selectCatalogItem(final List<CatalogItem> catalogItems, final String errorRef,
@@ -194,6 +193,22 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
                 .orElseThrow(() -> deliveryFailure(
                         RecursiveNotificationDeliveryFailureReason.NOTIFICATION_POLICY_REJECTED, errorRef,
                         notificationType, receiverBpnl, connectorEndpoint, null));
+    }
+
+    private EndpointDataReference negotiateEndpointDataReference(final String dspEndpointAddress,
+            final CatalogItem catalogItem, final String errorRef, final RecursiveNotificationType notificationType,
+            final String receiverBpnl, final String connectorEndpoint) {
+        try {
+            return edcOrchestrator.getEndpointDataReference(dspEndpointAddress, catalogItem)
+                    .get(edcConfiguration.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
+        } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CONTRACT_NEGOTIATION_FAILED, errorRef,
+                    notificationType, receiverBpnl, connectorEndpoint, exception);
+        } catch (final EdcClientException | ExecutionException | TimeoutException exception) {
+            throw deliveryFailure(RecursiveNotificationDeliveryFailureReason.CONTRACT_NEGOTIATION_FAILED, errorRef,
+                    notificationType, receiverBpnl, connectorEndpoint, exception);
+        }
     }
 
     private boolean isCompleteCatalogItem(final CatalogItem catalogItem) {
@@ -231,13 +246,5 @@ public class EdcRecursiveNotificationSender implements RecursiveNotificationSend
                 "Failed to send " + notificationType + " notification (reason=" + reason + ", errorRef=" + errorRef
                         + ")",
                 cause);
-    }
-
-    private String appendProviderSuffix(final String connectorEndpoint) throws URISyntaxException {
-        final String providerSuffix = edcConfiguration.getControlplane().getProviderSuffix();
-        if (connectorEndpoint.endsWith(providerSuffix)) {
-            return connectorEndpoint;
-        }
-        return UriPathJoiner.appendPath(connectorEndpoint, providerSuffix);
     }
 }

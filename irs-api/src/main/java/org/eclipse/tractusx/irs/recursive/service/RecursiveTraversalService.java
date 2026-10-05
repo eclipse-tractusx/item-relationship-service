@@ -122,7 +122,6 @@ public class RecursiveTraversalService {
      * treated as leaf nodes. Present but unsupported BOM versions, missing endpoints and
      * registry or EDC failures are converted into controlled recursive traversal errors.
      */
-    @SuppressWarnings("PMD.CyclomaticComplexity")
     private static TraversalResult resolveTraversalViaIrsClients(
             final DigitalTwinRegistryService digitalTwinRegistryService,
             final EdcSubmodelFacade submodelFacade,

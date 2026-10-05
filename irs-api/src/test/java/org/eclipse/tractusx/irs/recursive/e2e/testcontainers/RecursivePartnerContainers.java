@@ -23,7 +23,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
- * Isolated MinIO and Redis containers for one recursive IRS partner.
+ * Isolated blob store and Redis containers for one recursive IRS partner.
  */
 public final class RecursivePartnerContainers implements AutoCloseable {
 
@@ -31,7 +31,6 @@ public final class RecursivePartnerContainers implements AutoCloseable {
     private static final String SECRET_KEY = "minio123";
     private static final DockerImageName REDIS_IMAGE = DockerImageName.parse("redis:7.4.2");
     public static final int REDIS_PORT = 6379;
-    public static final int MINIO_CONSOLE_PORT = 9001;
 
     private final String partnerId;
     private final MinioContainer minio;
@@ -40,10 +39,6 @@ public final class RecursivePartnerContainers implements AutoCloseable {
     private RecursivePartnerContainers(final String partnerId) {
         this.partnerId = partnerId;
         minio = new MinioContainer(new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY));
-        minio.withEnv("MINIO_ROOT_USER", ACCESS_KEY);
-        minio.withEnv("MINIO_ROOT_PASSWORD", SECRET_KEY);
-        minio.withCommand("server", "/data", "--console-address", ":" + MINIO_CONSOLE_PORT);
-        minio.addExposedPort(MINIO_CONSOLE_PORT);
         redis = new GenericContainer<>(REDIS_IMAGE).withExposedPorts(REDIS_PORT);
     }
 
@@ -68,10 +63,6 @@ public final class RecursivePartnerContainers implements AutoCloseable {
 
     public String minioEndpoint() {
         return "http://" + minio.getHostAddress();
-    }
-
-    public String minioConsoleEndpoint() {
-        return "http://" + minio.getHost() + ":" + minio.getMappedPort(MINIO_CONSOLE_PORT);
     }
 
     public String minioAccessKey() {

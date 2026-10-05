@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 ZF Friedrichshafen AG
+ * Copyright (c) 2022 ISTOS GmbH
+ * Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2022 BOSCH AG
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 Volkswagen AG
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,37 +30,41 @@ import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.utility.Base58;
 
 /**
- * Testcontainer for MinIO
+ * SeaweedFS-backed S3 test container without credential validation.
  */
 public class MinioContainer extends GenericContainer<MinioContainer> {
 
-    private static final int DEFAULT_PORT = 9000;
-    private static final String DEFAULT_IMAGE = "quay.io/minio/minio";
-    private static final String DEFAULT_TAG = "RELEASE.2022-11-11T03-44-20Z";
-
-    private static final String MINIO_ACCESS_KEY = "MINIO_ACCESS_KEY";
-    private static final String MINIO_SECRET_KEY = "MINIO_SECRET_KEY";
+    private static final int DEFAULT_PORT = 8333;
+    private static final String DEFAULT_IMAGE = "chrislusf/seaweedfs";
+    private static final String DEFAULT_TAG = "4.48";
 
     private static final String DEFAULT_STORAGE_DIRECTORY = "/data";
-    private static final String HEALTH_ENDPOINT = "/minio/health/ready";
+    /** Keeps the sparse volume files small. */
+    private static final String VOLUME_SIZE_LIMIT_MB = "64";
+    /**
+     * Unlimited volume count. A small shared limit can prevent additional test buckets from allocating volumes.
+     */
+    private static final String MAX_VOLUMES = "0";
+
+    private static final String READY_ENDPOINT = "/";
+    private static final int READY_STATUS_CODE = 200;
     private static final int CONTAINER_ID_LENGTH = 6;
 
     public MinioContainer(final CredentialsProvider credentials) {
         this(DEFAULT_IMAGE + ":" + DEFAULT_TAG, credentials);
     }
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     public MinioContainer(final String image, final CredentialsProvider credentials) {
         super(image == null ? DEFAULT_IMAGE + ":" + DEFAULT_TAG : image);
-        withNetworkAliases("minio-" + Base58.randomString(CONTAINER_ID_LENGTH));
+        withNetworkAliases("blobstore-" + Base58.randomString(CONTAINER_ID_LENGTH));
         addExposedPort(DEFAULT_PORT);
-        if (credentials != null) {
-            withEnv(MINIO_ACCESS_KEY, credentials.getAccessKey());
-            withEnv(MINIO_SECRET_KEY, credentials.getSecretKey());
-        }
-        withCommand("server", DEFAULT_STORAGE_DIRECTORY);
+        withCommand("server", "-s3", "-dir=" + DEFAULT_STORAGE_DIRECTORY,
+                "-master.volumeSizeLimitMB=" + VOLUME_SIZE_LIMIT_MB, "-volume.max=" + MAX_VOLUMES);
         withMinimumRunningDuration(Duration.ofSeconds(2));
         setWaitStrategy(new HttpWaitStrategy().forPort(DEFAULT_PORT)
-                                              .forPath(HEALTH_ENDPOINT)
+                                              .forPath(READY_ENDPOINT)
+                                              .forStatusCode(READY_STATUS_CODE)
                                               .withStartupTimeout(Duration.ofMinutes(2)));
     }
 
@@ -69,7 +73,7 @@ public class MinioContainer extends GenericContainer<MinioContainer> {
     }
 
     /**
-     * Credential provider for MinIO
+     * Credentials used by the tests to connect to the blob store.
      */
     public static class CredentialsProvider {
         private final String accessKey;

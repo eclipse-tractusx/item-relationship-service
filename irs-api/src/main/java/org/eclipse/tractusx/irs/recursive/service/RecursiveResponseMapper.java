@@ -88,7 +88,6 @@ final class RecursiveResponseMapper {
                     .orElseGet(List::of);
     }
 
-    @SuppressWarnings("PMD.NullAssignment")
     private static JobErrorDetails toJobException(final RecursiveJobState state) {
         if (state.getState() != RecursiveJobPhase.FAILED) {
             return null;
