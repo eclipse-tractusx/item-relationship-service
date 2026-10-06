@@ -14,6 +14,12 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Update Bouncy Castle from 1.84 to 1.85 ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
 - Update Jackson from 2.21.4 to 2.21.7 and the pinned `eclipse-temurin:25-jre-alpine` base image (Alpine 3.24.2) to fix the Trivy findings, remove the resolved `.trivyignore` entries ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
 - Use SeaweedFS 4.48 for S3-compatible blob-store test containers ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
+- Extract recursive child response handling from `RecursiveJobService` into `RecursiveChildResponseProcessor` and remove the `CyclomaticComplexity` PMD suppression ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
+
+### Fixed
+
+- Remove the duplicate `junit-jupiter-engine` dependency in `irs-load-tests`, which fails the Docker image build with Maven 3.10 ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
+- Remove the unused `jsoup` dependency to fix CVE-2026-75140 and add CVE-2026-47884 (`spring-webmvc`, fixed only in Spring Framework 7) to `.trivyignore` ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
 
 ## [7.1.0] - 2026-09-16
 

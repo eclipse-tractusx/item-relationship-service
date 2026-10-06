@@ -21,7 +21,6 @@ package org.eclipse.tractusx.irs.recursive.service;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,13 +69,14 @@ import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
  * </ol>
  *
  * <p>Request normalization and deadlines live in {@link RecursiveRequestFactory}, result building
- * in {@link RecursiveResultAggregator}, deadline/timeout termination in {@link RecursiveJobExpiry}
- * and all state mutations are serialized per job through {@link RecursiveJobRepository}.
+ * in {@link RecursiveResultAggregator}, child responses in {@link RecursiveChildResponseProcessor},
+ * deadline/timeout termination in {@link RecursiveJobExpiry} and all state mutations are serialized
+ * per job through {@link RecursiveJobRepository}.
  * Notifications to partners are always sent outside the job lock.</p>
  */
 @Slf4j
-@SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.CyclomaticComplexity", "PMD.ExcessiveImports",
-                    "PMD.GodClass", "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.ExcessiveImports", "PMD.GodClass",
+                    "PMD.TooManyMethods" })
 public class RecursiveJobService {
 
     private final RecursiveChainOpeningGrantService grantService;
@@ -84,6 +84,7 @@ public class RecursiveJobService {
     private final RecursiveJobRepository repository;
     private final RecursiveRequestFactory requestFactory;
     private final RecursiveJobExpiry jobExpiry;
+    private final RecursiveChildResponseProcessor childResponseProcessor;
 
     private final Executor recursiveJobExecutor;
     private final RecursiveNotificationSender notificationSender;
@@ -115,6 +116,8 @@ public class RecursiveJobService {
         this.requestFactory = new RecursiveRequestFactory(recursiveProperties, clock);
         this.jobExpiry = new RecursiveJobExpiry(repository, () -> resultAggregator, this::now,
                 this::sendParentResponseQuietly);
+        this.childResponseProcessor = new RecursiveChildResponseProcessor(repository, resultAggregator, this::now,
+                this::localBpnl, this::sendParentResponseQuietly);
     }
 
     /**
@@ -161,7 +164,7 @@ public class RecursiveJobService {
 
         return message.getContent().getType() == RecursiveNotificationType.REQUEST
                 ? handleRequest(message)
-                : handleResponse(message);
+                : childResponseProcessor.handleResponse(message);
     }
 
     /**
@@ -173,12 +176,7 @@ public class RecursiveJobService {
      * @return true when the response belongs to a known child branch
      */
     public boolean rejectInvalidCorrelatedResponse(final String senderBpnl, final String relatedMessageId) {
-        final Optional<CorrelatedChildResponse> correlated = correlateToChildResponse(relatedMessageId, senderBpnl);
-        if (correlated.isEmpty()) {
-            return false;
-        }
-        recordInvalidChildResponse(correlated.get());
-        return true;
+        return childResponseProcessor.rejectInvalidCorrelatedResponse(senderBpnl, relatedMessageId);
     }
 
     /**
@@ -226,10 +224,7 @@ public class RecursiveJobService {
                 || state.getDeadline() != null && now().isAfter(state.getDeadline())) {
             return false;
         }
-        if (state.getUseCase() == null
-                || state.getBomLifecycle() == null
-                || state.getAspects() == null
-                || state.getUseCase().selectAspectIds(state.getBomLifecycle(), state.getAspects()).isEmpty()) {
+        if (!hasValidAspectSelection(state)) {
             markAcceptedJobFailed(state, new IllegalArgumentException("Invalid recursive use-case selection"));
             return true;
         }
@@ -238,6 +233,13 @@ public class RecursiveJobService {
             case AWAITING_CHILDREN -> resendUnansweredChildRequests(state);
             default -> false;
         };
+    }
+
+    private static boolean hasValidAspectSelection(final RecursiveJobState state) {
+        return state.getUseCase() != null
+                && state.getBomLifecycle() != null
+                && state.getAspects() != null
+                && !state.getUseCase().selectAspectIds(state.getBomLifecycle(), state.getAspects()).isEmpty();
     }
 
     private boolean resumeAcceptedJob(final RecursiveJobState state) {
@@ -422,74 +424,6 @@ public class RecursiveJobService {
         return true;
     }
 
-    private boolean handleResponse(final RecursiveNotificationMessage msg) {
-        final RecursiveNotificationMessage.Header hdr = msg.getHeader();
-        final RecursiveNotificationMessage.Content cnt = msg.getContent();
-        log.info("RESPONSE from={} relatedMessageId={} status={}", RecursiveLogValue.of(hdr.getSenderBpnl()),
-                RecursiveLogValue.of(hdr.getRelatedMessageId()), cnt.getStatus());
-
-        final Optional<CorrelatedChildResponse> correlated = correlateToChildResponse(msg);
-        if (correlated.isEmpty()) {
-            log.warn("Cannot correlate response msgId={} relMsgId={}", RecursiveLogValue.of(hdr.getMessageId()),
-                    RecursiveLogValue.of(hdr.getRelatedMessageId()));
-            throw new RecursiveNotificationValidationException("Recursive response cannot be correlated.");
-        }
-
-        if (!matchesExpectedJob(msg, correlated.get().state())) {
-            recordInvalidChildResponse(correlated.get());
-            return false;
-        }
-
-        final RecursiveJobState correlatedState = correlated.get().state();
-        final String childRequestMessageId = correlated.get().childBranch().getMessageId();
-        final Optional<RecursiveJobState> updated = repository.updateIfNotTerminal(correlatedState.getJobId(),
-                correlatedState, current -> {
-                    return applyChildResponse(current, childRequestMessageId, cnt.getStatus(), cnt.getResult());
-                });
-        if (updated.isEmpty()) {
-            log.warn("Response from {} for jobId={} not applied (terminal or unexpected)",
-                    RecursiveLogValue.of(hdr.getSenderBpnl()),
-                    RecursiveLogValue.of(correlatedState.getJobId().toString()));
-            return false;
-        }
-
-        final RecursiveJobState state = updated.get();
-        log.info("Job {} -> {} ({}/{} responses)", RecursiveLogValue.of(state.getJobId().toString()),
-                state.getState(),
-                answeredChildBranches(state), state.expectedChildResponseCount());
-
-        if (RecursiveJobRepository.isTerminal(state)) {
-            sendParentResponseQuietly(state);
-        }
-        return true;
-    }
-
-    private void recordInvalidChildResponse(final CorrelatedChildResponse correlated) {
-        final RecursiveJobState state = correlated.state();
-        final String childRequestMessageId = correlated.childBranch().getMessageId();
-        final Optional<RecursiveJobState> updated = repository.updateIfNotTerminal(state.getJobId(), state,
-                current -> applyChildResponse(current, childRequestMessageId, RecursiveResponseStatus.FAILED,
-                        invalidChildResponseResult(current)));
-
-        log.warn("Rejected invalid recursive response for jobId={}, childRequest={}",
-                RecursiveLogValue.of(state.getJobId().toString()), RecursiveLogValue.of(childRequestMessageId));
-        updated.filter(RecursiveJobRepository::isTerminal).ifPresent(this::sendParentResponseQuietly);
-    }
-
-    private RecursiveJobResult invalidChildResponseResult(final RecursiveJobState state) {
-        final RecursiveTombstone tombstone = RecursiveTombstones.childBranch(state.getAspects(),
-                RecursiveTombstoneReason.CHILD_RESPONSE_INVALID,
-                "A child recursive response did not match the notification contract.");
-        return RecursiveJobResult.builder()
-                                 .resultStatus(RecursiveResultStatus.FAILED)
-                                 .useCase(state.getUseCase())
-                                 .bomLifecycle(state.getBomLifecycle())
-                                 .requestedAspects(state.getAspects())
-                                 .childItems(List.of())
-                                 .tombstones(List.of(tombstone))
-                                 .build();
-    }
-
     /**
      * Marks child requests as failed after delivery to all candidate connector endpoints failed.
      */
@@ -512,7 +446,7 @@ public class RecursiveJobService {
                             changed = true;
                         }
                     }
-                    return changed ? applyChildBranches(current, branches) : null;
+                    return changed ? childResponseProcessor.applyChildBranches(current, branches) : null;
                 });
 
         updated.filter(RecursiveJobRepository::isTerminal).ifPresent(this::sendParentResponseQuietly);
@@ -530,56 +464,6 @@ public class RecursiveJobService {
                                                              .EDC_NOTIFICATION_FAILED)
                                                      .errorRef(UUID.randomUUID().toString())
                                                      .build();
-    }
-
-    /**
-     * Applies a child response to the job and, when the job becomes terminal, attaches the
-     * aggregated result.
-     */
-    private RecursiveJobState applyChildResponse(final RecursiveJobState current, final String childRequestMessageId,
-            final RecursiveResponseStatus status, final RecursiveJobResult payload) {
-        final List<RecursiveChildBranch> branches = new ArrayList<>();
-        boolean changed = false;
-        for (final RecursiveChildBranch childBranch : current.getChildBranches()) {
-            if (Objects.equals(childBranch.getMessageId(), childRequestMessageId)) {
-                if (childBranch.getStatus() != null) {
-                    return null;
-                }
-                branches.add(childBranch.toBuilder().status(status).responsePayload(payload).build());
-                changed = true;
-                continue;
-            }
-            branches.add(childBranch);
-        }
-        return changed ? applyChildBranches(current, branches) : null;
-    }
-
-    private RecursiveJobState applyChildBranches(final RecursiveJobState current,
-            final List<RecursiveChildBranch> branches) {
-        final RecursiveJobPhase nextPhase = answeredChildBranches(branches) < current.expectedChildResponseCount()
-                ? RecursiveJobPhase.AWAITING_CHILDREN
-                : RecursiveJobPhase.COMPLETED;
-        RecursiveJobState updated = current.toBuilder()
-                .lastModifiedOn(now())
-                .state(nextPhase)
-                .childBranches(List.copyOf(branches))
-                .build();
-
-        if (RecursiveJobRepository.isTerminal(updated)) {
-            final RecursiveJobResult aggregated = resultAggregator.aggregate(updated, List.of(), null);
-            updated = updated.toBuilder().result(aggregated).build();
-        }
-        return updated;
-    }
-
-    private int answeredChildBranches(final RecursiveJobState state) {
-        return answeredChildBranches(state.getChildBranches());
-    }
-
-    private int answeredChildBranches(final List<RecursiveChildBranch> branches) {
-        return (int) branches.stream()
-                .filter(childBranch -> childBranch.getStatus() != null)
-                .count();
     }
 
     @SuppressWarnings("PMD.UseConcurrentHashMap")
@@ -675,40 +559,6 @@ public class RecursiveJobService {
         failed.ifPresent(this::sendParentResponseQuietly);
     }
 
-    private Optional<CorrelatedChildResponse> correlateToChildResponse(final RecursiveNotificationMessage message) {
-        if (message == null || message.getHeader() == null) {
-            return Optional.empty();
-        }
-        return correlateToChildResponse(message.getHeader().getRelatedMessageId(),
-                message.getHeader().getSenderBpnl());
-    }
-
-    private Optional<CorrelatedChildResponse> correlateToChildResponse(final String relatedMessageId,
-            final String senderBpnl) {
-        if (relatedMessageId == null || senderBpnl == null) {
-            return Optional.empty();
-        }
-        return repository.findJobIdByChildRequestMessageId(relatedMessageId)
-                         .flatMap(repository::findById)
-                         .flatMap(state -> findChildBranch(state, relatedMessageId, senderBpnl)
-                                 .map(childBranch -> new CorrelatedChildResponse(state, childBranch)));
-    }
-
-    private boolean matchesExpectedJob(final RecursiveNotificationMessage message,
-            final RecursiveJobState state) {
-        final RecursiveNotificationMessage.Header header = message.getHeader();
-        final RecursiveNotificationMessage.Content content = message.getContent();
-        return Objects.equals(header.getReceiverBpnl(), localBpnl())
-                && Objects.equals(content.getOpeningId(), state.getOpeningId())
-                && Objects.equals(content.getUseCase(), state.getUseCase())
-                && content.getBomLifecycle() == state.getBomLifecycle()
-                && containsSameAspects(content.getAspects(), state.getAspects());
-    }
-
-    private boolean containsSameAspects(final List<String> actual, final List<String> expected) {
-        return actual != null && expected != null && new HashSet<>(actual).equals(new HashSet<>(expected));
-    }
-
     private Set<String> selectGrantedChildPartners(final List<RecursiveBomChild> bomChildren,
             final RecursiveChainOpeningGrant grant) {
         final Set<String> bomPartners = traversalService.extractPartnerBpnls(bomChildren);
@@ -747,18 +597,6 @@ public class RecursiveJobService {
                             .filter(RecursiveChildBranch::isSendNotification)
                             .filter(childBranch -> childBranch.getStatus() == null)
                             .toList();
-    }
-
-    private Optional<RecursiveChildBranch> findChildBranch(final RecursiveJobState state,
-            final String relatedMessageId, final String senderBpnl) {
-        return state.getChildBranches().stream()
-                    .filter(childBranch -> Objects.equals(childBranch.getMessageId(), relatedMessageId))
-                    .filter(childBranch -> Objects.equals(childBranch.getPartnerBpnl(), senderBpnl))
-                    .findFirst();
-    }
-
-    private record CorrelatedChildResponse(RecursiveJobState state,
-                                           RecursiveChildBranch childBranch) {
     }
 
     private ZonedDateTime now() {
