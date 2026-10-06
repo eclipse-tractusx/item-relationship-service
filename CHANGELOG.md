@@ -19,6 +19,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Fixed
 
 - Remove the duplicate `junit-jupiter-engine` dependency in `irs-load-tests`, which fails the Docker image build with Maven 3.10 ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
+- Remove the unused `jsoup` dependency to fix CVE-2026-75140 and add CVE-2026-47884 (`spring-webmvc`, fixed only in Spring Framework 7) to `.trivyignore` ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
 
 ## [7.1.0] - 2026-09-16
 

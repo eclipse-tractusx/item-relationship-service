@@ -1,2 +1,7 @@
 # Trivy ignore list for the irs-api image scan (.github/workflows/trivy-image-scan.yml).
 # The scan fails on any HIGH or CRITICAL finding that is not listed here.
+
+# spring-webmvc 6.2.19: fixed only in Spring Framework 7.0.9, no fix available in the 6.2 line.
+# Affects XsltView, which the IRS does not use.
+# Re-review with the upgrade to Spring Framework 7.
+CVE-2026-47884

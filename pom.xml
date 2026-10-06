@@ -88,7 +88,6 @@
         <okio-jvm.version>3.5.0</okio-jvm.version>
         <bc-jdk18on.version>1.85</bc-jdk18on.version>
         <wiremock-standalone.version>3.12.1</wiremock-standalone.version>
-        <jsoup.version>1.17.2</jsoup.version>
         <json-schema-validator.version>1.4.0</json-schema-validator.version>
         <commons-io.version>2.16.1</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>

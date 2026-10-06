@@ -153,12 +153,6 @@
             <artifactId>json-schema-validator</artifactId>
             <version>${json-schema-validator.version}</version>
         </dependency>
-        <!-- Update jsoup manually to avoid a vulnerability; can be removed after jsonschemafriend updates their dependency -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>${jsoup.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
