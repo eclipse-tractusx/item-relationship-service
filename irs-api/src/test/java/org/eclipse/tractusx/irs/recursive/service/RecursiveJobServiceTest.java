@@ -620,6 +620,27 @@ class RecursiveJobServiceTest {
     }
 
     @Test
+    void shouldIgnoreSecondResponseForAnsweredChildBranch() {
+        final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
+        jobService = newJobService((globalAssetId, bpnl, bomLifecycle) -> List.of(
+                bomChild("urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001"),
+                bomChild("urn:uuid:22222222-2222-2222-2222-222222222222", "BPNL0000BELF0001")));
+        notificationSender = recordingSender(sentRequests);
+        grantStore.store(validGrant());
+        final UUID jobId = jobService.startJob(validRequest());
+        final RecursiveNotificationMessage answeredRequest = sentRequests.get(0);
+
+        assertThat(jobService.handleNotification(childResponse(answeredRequest, RecursiveResponseStatus.COMPLETED,
+                childResult(answeredRequest.getContent().getGlobalAssetId())))).isTrue();
+        assertThat(jobService.handleNotification(childResponse(answeredRequest, RecursiveResponseStatus.FAILED,
+                null))).isFalse();
+
+        final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
+        assertThat(status.getJob().getState()).isEqualTo(JobState.RUNNING);
+        assertChildProgress(status, 1, 1, 0);
+    }
+
+    @Test
     void shouldKeepValidSiblingBranchWhenBomChildGlobalAssetIdIsInvalid() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
         final String validChildId = "urn:uuid:22222222-2222-2222-2222-222222222222";

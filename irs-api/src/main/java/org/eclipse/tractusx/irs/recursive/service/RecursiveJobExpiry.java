@@ -21,7 +21,6 @@ package org.eclipse.tractusx.irs.recursive.service;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
@@ -53,9 +52,9 @@ import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
 class RecursiveJobExpiry {
 
     private final RecursiveJobRepository repository;
-    private final Supplier<RecursiveResultAggregator> resultAggregator;
+    private final RecursiveResultAggregator resultAggregator;
     private final Supplier<ZonedDateTime> now;
-    private final Consumer<RecursiveJobState> parentResponder;
+    private final RecursiveParentResponder parentResponder;
 
     /**
      * Completes non-terminal jobs whose job or child response deadline expired.
@@ -91,7 +90,7 @@ class RecursiveJobExpiry {
                     final RecursiveJobState deadlineExceededState = current.toBuilder()
                             .childBranches(branchesWithTimeouts(current))
                             .build();
-                    final RecursiveJobResult result = resultAggregator.get().aggregate(
+                    final RecursiveJobResult result = resultAggregator.aggregate(
                             deadlineExceededState, List.of(deadlineTombstone),
                             RecursiveResultStatus.FAILED);
                     return deadlineExceededState.toBuilder()
@@ -106,7 +105,7 @@ class RecursiveJobExpiry {
         failed.ifPresent(state -> {
             log.warn("Recursive job {} failed because its deadline expired: {}",
                     RecursiveLogValue.of(state.getJobId().toString()), state.getDeadline());
-            parentResponder.accept(state);
+            parentResponder.sendParentResponseQuietly(state);
         });
         return failed.isPresent();
     }
@@ -128,7 +127,7 @@ class RecursiveJobExpiry {
                                   .childBranches(branchesWithTimeouts(current))
                                   .build();
                     return timedOutState.toBuilder()
-                            .result(resultAggregator.get().aggregate(timedOutState, List.of(), null))
+                            .result(resultAggregator.aggregate(timedOutState, List.of(), null))
                             .build();
                 });
 
@@ -136,7 +135,7 @@ class RecursiveJobExpiry {
             log.warn("Recursive job {} completed with timed out child responses: {}",
                     RecursiveLogValue.of(state.getJobId().toString()),
                     statusCount(state, RecursiveResponseStatus.TIMED_OUT));
-            parentResponder.accept(state);
+            parentResponder.sendParentResponseQuietly(state);
         });
         return completed.isPresent();
     }

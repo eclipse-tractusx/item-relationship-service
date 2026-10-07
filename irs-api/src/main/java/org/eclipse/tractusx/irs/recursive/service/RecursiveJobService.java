@@ -20,10 +20,7 @@ package org.eclipse.tractusx.irs.recursive.service;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -43,7 +40,6 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveJobRequest;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobResult;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobState;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobStatusResponse;
-import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationDeliveryFailureReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationMessage;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationType;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveResultStatus;
@@ -69,25 +65,28 @@ import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
  * </ol>
  *
  * <p>Request normalization and deadlines live in {@link RecursiveRequestFactory}, result building
- * in {@link RecursiveResultAggregator}, child responses in {@link RecursiveChildResponseProcessor},
- * deadline/timeout termination in {@link RecursiveJobExpiry} and all state mutations are serialized
- * per job through {@link RecursiveJobRepository}.
+ * in {@link RecursiveResultAggregator}, child requests in {@link RecursiveChildRequestDispatcher},
+ * child responses in {@link RecursiveChildResponseProcessor}, responses to the parent in
+ * {@link RecursiveParentResponder}, deadline/timeout termination in
+ * {@link RecursiveJobExpiry}, restart recovery in {@link RecursiveJobRecovery} and all state
+ * mutations are serialized per job through {@link RecursiveJobRepository}.
  * Notifications to partners are always sent outside the job lock.</p>
  */
 @Slf4j
-@SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.ExcessiveImports", "PMD.GodClass",
-                    "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.TooManyMethods" })
 public class RecursiveJobService {
 
     private final RecursiveChainOpeningGrantService grantService;
     private final RecursiveTraversalService traversalService;
     private final RecursiveJobRepository repository;
     private final RecursiveRequestFactory requestFactory;
+    private final RecursiveParentResponder parentResponder;
     private final RecursiveJobExpiry jobExpiry;
+    private final RecursiveJobRecovery jobRecovery;
     private final RecursiveChildResponseProcessor childResponseProcessor;
+    private final RecursiveChildRequestDispatcher childRequestDispatcher;
 
     private final Executor recursiveJobExecutor;
-    private final RecursiveNotificationSender notificationSender;
     private final RecursiveSubmodelCollector submodelCollector;
 
     private final RecursiveResultAggregator resultAggregator = new RecursiveResultAggregator();
@@ -106,7 +105,7 @@ public class RecursiveJobService {
         this.traversalService = Objects.requireNonNull(traversalService, "traversalService must not be null");
         this.repository = new RecursiveJobRepository(
                 Objects.requireNonNull(jobStateStore, "jobStateStore must not be null"));
-        this.notificationSender = Objects.requireNonNull(notificationSender, "notificationSender must not be null");
+        Objects.requireNonNull(notificationSender, "notificationSender must not be null");
         this.submodelCollector = Objects.requireNonNull(submodelCollector, "submodelCollector must not be null");
         this.recursiveProperties = Objects.requireNonNull(recursiveProperties,
                 "recursiveProperties must not be null");
@@ -114,10 +113,14 @@ public class RecursiveJobService {
                 "recursiveJobExecutor must not be null");
         this.clock = Objects.requireNonNull(clock, "clock must not be null");
         this.requestFactory = new RecursiveRequestFactory(recursiveProperties, clock);
-        this.jobExpiry = new RecursiveJobExpiry(repository, () -> resultAggregator, this::now,
-                this::sendParentResponseQuietly);
+        this.parentResponder = new RecursiveParentResponder(notificationSender, this::now, this::localBpnl);
+        this.jobExpiry = new RecursiveJobExpiry(repository, resultAggregator, this::now, parentResponder);
         this.childResponseProcessor = new RecursiveChildResponseProcessor(repository, resultAggregator, this::now,
-                this::localBpnl, this::sendParentResponseQuietly);
+                this::localBpnl, parentResponder);
+        this.childRequestDispatcher = new RecursiveChildRequestDispatcher(repository, notificationSender, this::now,
+                childResponseProcessor::applyChildBranches, parentResponder);
+        this.jobRecovery = new RecursiveJobRecovery(repository, grantService, recursiveJobExecutor, this::now,
+                this::processAcceptedJob, childRequestDispatcher, this::markAcceptedJobFailed);
     }
 
     /**
@@ -189,93 +192,12 @@ public class RecursiveJobService {
     }
 
     /**
-     * Resumes jobs that a pod restart left in a non-terminal phase, instead of letting them
-     * idle until their deadline expires.
-     *
-     * <ul>
-     *   <li>{@code GRANT_CHECKED}: the async BOM resolution was lost - the grant
-     *       is re-validated and processing restarts. A grant that disappeared in the meantime
-     *       (e.g. wiped grant store) fails the job with CHAIN_OPENING_REJECTED.</li>
-     *   <li>{@code AWAITING_CHILDREN}: child requests without a recorded response are sent
-     *       again. Re-sending is idempotent - children dedupe by messageId, and children whose
-     *       job already finished answer a duplicate REQUEST by re-sending their response.</li>
-     *   <li>Jobs past their deadline are left to the timeout sweeper.</li>
-     * </ul>
+     * Resumes jobs that a pod restart left in a non-terminal phase.
      *
      * @return number of jobs whose processing was resumed
      */
     public int recoverOpenJobs() {
-        int resumed = 0;
-        for (final RecursiveJobState state : repository.findAll()) {
-            try {
-                if (resumeJob(state)) {
-                    resumed++;
-                }
-            } catch (final RuntimeException e) {
-                log.warn("Could not resume recursive job {} after restart: causeType={}",
-                        RecursiveLogValue.of(state.getJobId().toString()), e.getClass().getName());
-            }
-        }
-        return resumed;
-    }
-
-    private boolean resumeJob(final RecursiveJobState state) {
-        if (RecursiveJobRepository.isTerminal(state)
-                || state.getDeadline() != null && now().isAfter(state.getDeadline())) {
-            return false;
-        }
-        if (!hasValidAspectSelection(state)) {
-            markAcceptedJobFailed(state, new IllegalArgumentException("Invalid recursive use-case selection"));
-            return true;
-        }
-        return switch (state.getState()) {
-            case GRANT_CHECKED -> resumeAcceptedJob(state);
-            case AWAITING_CHILDREN -> resendUnansweredChildRequests(state);
-            default -> false;
-        };
-    }
-
-    private static boolean hasValidAspectSelection(final RecursiveJobState state) {
-        return state.getUseCase() != null
-                && state.getBomLifecycle() != null
-                && state.getAspects() != null
-                && !state.getUseCase().selectAspectIds(state.getBomLifecycle(), state.getAspects()).isEmpty();
-    }
-
-    private boolean resumeAcceptedJob(final RecursiveJobState state) {
-        final RecursiveChainOpeningGrant grant;
-        try {
-            grant = grantService.getActiveGrant(state.getOpeningId(), state.getUseCase(),
-                    state.getRequesterBpnl(), state.getGlobalAssetId());
-        } catch (final RecursiveChainOpeningGrantInactiveException e) {
-            log.warn("Grant no longer valid while resuming recursive job {}",
-                    RecursiveLogValue.of(state.getJobId().toString()));
-            markAcceptedJobFailed(state, e);
-            return true;
-        }
-        log.info("Resuming recursive job {} in phase {} after restart",
-                RecursiveLogValue.of(state.getJobId().toString()),
-                state.getState());
-        recursiveJobExecutor.execute(() -> processAcceptedJob(grant, state));
-        return true;
-    }
-
-    private boolean resendUnansweredChildRequests(final RecursiveJobState state) {
-        // Past the child response deadline the job belongs to the timeout sweeper - a re-send would distort its result.
-        if (state.getChildResponseDeadline() != null && now().isAfter(state.getChildResponseDeadline())) {
-            return false;
-        }
-        final List<RecursiveChildBranch> unanswered = state.getChildBranches().stream()
-                .filter(RecursiveChildBranch::isSendNotification)
-                .filter(childBranch -> childBranch.getStatus() == null)
-                .toList();
-        if (unanswered.isEmpty()) {
-            return false;
-        }
-        log.info("Resuming recursive job {} after restart: re-sending {} unanswered child request(s)",
-                RecursiveLogValue.of(state.getJobId().toString()), unanswered.size());
-        recursiveJobExecutor.execute(() -> sendChildRequests(state, unanswered));
-        return true;
+        return jobRecovery.recoverOpenJobs();
     }
 
     private UUID createJob(final RecursiveJobRequest request, final boolean isRootJob,
@@ -296,7 +218,8 @@ public class RecursiveJobService {
             // Duplicate REQUEST on a finished job -> resend the terminal response, the parent may have restarted.
             repository.findById(existing.get())
                       .filter(state -> !isRootJob && RecursiveJobRepository.isTerminal(state))
-                      .ifPresent(state -> recursiveJobExecutor.execute(() -> sendParentResponseQuietly(state)));
+                      .ifPresent(state -> recursiveJobExecutor.execute(
+                              () -> parentResponder.sendParentResponseQuietly(state)));
             return existing.get();
         }
 
@@ -319,6 +242,7 @@ public class RecursiveJobService {
         return jobId;
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private void processAcceptedJob(final RecursiveChainOpeningGrant grant, final RecursiveJobState acceptedState) {
         try {
             final RecursiveTraversalService.TraversalResult traversal = traversalService.resolve(
@@ -364,10 +288,10 @@ public class RecursiveJobService {
                     RecursiveLogValue.of(grantedChildPartners.toString()));
 
             if (!sendableChildBranches.isEmpty()) {
-                sendChildRequests(targetState, sendableChildBranches);
+                childRequestDispatcher.sendChildRequests(targetState, sendableChildBranches);
             }
             if (phase == RecursiveJobPhase.COMPLETED) {
-                sendParentResponseQuietly(targetState);
+                parentResponder.sendParentResponseQuietly(targetState);
             }
         } catch (final Exception e) {
             markAcceptedJobFailed(acceptedState, e);
@@ -410,132 +334,18 @@ public class RecursiveJobService {
                     hdr.getMessageId());
         } catch (final RecursiveChainOpeningGrantInactiveException e) {
             log.warn("Grant rejected for incoming recursive request");
-            sendRejectionResponseQuietly(msg, RecursiveTombstones.chain(cnt.getAspects(),
+            parentResponder.sendRejectionResponseQuietly(msg, RecursiveTombstones.chain(cnt.getAspects(),
                     RecursiveTombstoneReason.CHAIN_OPENING_REJECTED,
                     "The recursive chain opening grant was rejected."));
             return false;
         } catch (final IllegalArgumentException e) {
             log.warn("Incoming recursive request rejected");
-            sendRejectionResponseQuietly(msg, RecursiveTombstones.chain(cnt.getAspects(),
+            parentResponder.sendRejectionResponseQuietly(msg, RecursiveTombstones.chain(cnt.getAspects(),
                     RecursiveTombstoneReason.CHILD_BRANCH_FAILED,
                     "The recursive partner request was invalid."));
             return false;
         }
         return true;
-    }
-
-    /**
-     * Marks child requests as failed after delivery to all candidate connector endpoints failed.
-     */
-    private void recordChildDeliveryFailures(final RecursiveJobState state,
-            final Map<String, RuntimeException> deliveryFailuresByChildRequestMessageId) {
-        final Optional<RecursiveJobState> updated = repository.updateIfNotTerminal(state.getJobId(), state,
-                current -> {
-                    final List<RecursiveChildBranch> branches = new ArrayList<>();
-                    boolean changed = false;
-                    for (final RecursiveChildBranch childBranch : current.getChildBranches()) {
-                        final RuntimeException deliveryFailure =
-                                deliveryFailuresByChildRequestMessageId.get(childBranch.getMessageId());
-                        if (deliveryFailure == null || childBranch.getStatus() != null) {
-                            branches.add(childBranch);
-                        } else {
-                            branches.add(childBranch.toBuilder()
-                                    .status(RecursiveResponseStatus.FAILED)
-                                    .deliveryFailure(classifyDeliveryFailure(deliveryFailure))
-                                    .build());
-                            changed = true;
-                        }
-                    }
-                    return changed ? childResponseProcessor.applyChildBranches(current, branches) : null;
-                });
-
-        updated.filter(RecursiveJobRepository::isTerminal).ifPresent(this::sendParentResponseQuietly);
-    }
-
-    private RecursiveChildBranch.DeliveryFailure classifyDeliveryFailure(final RuntimeException failure) {
-        if (failure instanceof RecursiveNotificationDeliveryException delivery) {
-            return RecursiveChildBranch.DeliveryFailure.builder()
-                                                         .reason(delivery.getReason())
-                                                         .errorRef(delivery.getErrorRef())
-                                                         .build();
-        }
-        return RecursiveChildBranch.DeliveryFailure.builder()
-                                                     .reason(RecursiveNotificationDeliveryFailureReason
-                                                             .EDC_NOTIFICATION_FAILED)
-                                                     .errorRef(UUID.randomUUID().toString())
-                                                     .build();
-    }
-
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
-    private void sendChildRequests(final RecursiveJobState state, final List<RecursiveChildBranch> childBranches) {
-        final Map<String, RuntimeException> deliveryFailuresByChildRequestMessageId = new LinkedHashMap<>();
-        for (final RecursiveChildBranch childBranch : childBranches) {
-            if (!childBranch.isSendNotification()) {
-                continue;
-            }
-            final RecursiveNotificationMessage notification =
-                    RecursiveNotificationFactory.childRequest(state, childBranch, now());
-
-            repository.registerChildRequestMessageId(childBranch.getMessageId(), state.getJobId());
-
-            log.info("-> CHILD_REQUEST to {} childAsset={}",
-                    RecursiveLogValue.of(childBranch.getPartnerBpnl()),
-                    RecursiveLogValue.of(childBranch.getChildGlobalAssetId()));
-            try {
-                notificationSender.sendRequest(childBranch.getPartnerBpnl(), notification);
-            } catch (final RuntimeException e) {
-                deliveryFailuresByChildRequestMessageId.put(childBranch.getMessageId(), e);
-                log.warn("Could not send recursive child request for jobId={}, childRequest={}: causeType={}",
-                        RecursiveLogValue.of(state.getJobId().toString()),
-                        RecursiveLogValue.of(childBranch.getMessageId()),
-                        e.getClass().getName());
-            }
-        }
-        if (!deliveryFailuresByChildRequestMessageId.isEmpty()) {
-            recordChildDeliveryFailures(state, deliveryFailuresByChildRequestMessageId);
-        }
-    }
-
-    private void sendParentResponse(final RecursiveJobState state) {
-        final List<String> responseAspects = RecursiveResponseMapper.selectedAspectIds(state);
-        final RecursiveJobResult externalResult = RecursiveResponseMapper.toExternalResult(state.getResult(),
-                state.getUseCase(), state.getBomLifecycle(), responseAspects);
-        final RecursiveResponseStatus status = state.getState() == RecursiveJobPhase.COMPLETED
-                ? RecursiveResponseStatus.COMPLETED : RecursiveResponseStatus.FAILED;
-
-        final RecursiveNotificationMessage full = RecursiveNotificationFactory.parentResponse(
-                state, localBpnl(), status, externalResult, responseAspects, now());
-
-        log.info("= PARENT_RESPONSE ({}) to {} for jobId={}", status,
-                RecursiveLogValue.of(state.getRequesterBpnl()), RecursiveLogValue.of(state.getJobId().toString()));
-        notificationSender.sendResponse(state.getRequesterBpnl(), full);
-    }
-
-    /** Sends the terminal result to the parent; root jobs have no parent and send nothing. */
-    private void sendParentResponseQuietly(final RecursiveJobState state) {
-        if (state.isRootJob()) {
-            return;
-        }
-        try {
-            sendParentResponse(state);
-        } catch (final RuntimeException e) {
-            log.warn("Could not send recursive response to parent for job {}: causeType={}",
-                    RecursiveLogValue.of(state.getJobId().toString()), e.getClass().getName());
-        }
-    }
-
-    private void sendRejectionResponseQuietly(final RecursiveNotificationMessage request,
-            final RecursiveTombstone rejection) {
-        final RecursiveNotificationMessage.Header requestHeader = request.getHeader();
-        final RecursiveNotificationMessage response = RecursiveNotificationFactory.rejectionResponse(
-                request, rejection, localBpnl(), now());
-        try {
-            notificationSender.sendResponse(requestHeader.getSenderBpnl(), response);
-        } catch (final RecursiveNotificationDeliveryException exception) {
-            log.warn("Could not deliver recursive rejection response for messageId={}: reason={} errorRef={}",
-                    RecursiveLogValue.of(requestHeader.getMessageId()), exception.getReason(),
-                    RecursiveLogValue.of(exception.getErrorRef()));
-        }
     }
 
     private void markAcceptedJobFailed(final RecursiveJobState acceptedState, final Exception exception) {
@@ -556,7 +366,7 @@ public class RecursiveJobService {
                                 RecursiveResultStatus.FAILED))
                         .build());
 
-        failed.ifPresent(this::sendParentResponseQuietly);
+        failed.ifPresent(parentResponder::sendParentResponseQuietly);
     }
 
     private Set<String> selectGrantedChildPartners(final List<RecursiveBomChild> bomChildren,

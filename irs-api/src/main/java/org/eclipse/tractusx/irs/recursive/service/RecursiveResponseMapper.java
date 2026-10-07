@@ -78,6 +78,10 @@ final class RecursiveResponseMapper {
                                .build();
     }
 
+    /**
+     * Returns the canonical aspect IDs of the job's selection, or an empty list when the stored
+     * selection is incomplete or invalid for its use case.
+     */
     /* package */ static List<String> selectedAspectIds(final RecursiveJobState state) {
         if (state.getUseCase() == null || state.getBomLifecycle() == null || state.getAspects() == null) {
             return List.of();
