@@ -15,6 +15,8 @@
         <properties>
             <!-- We're logging info and up always anyway -->
             <property name="logLevels" value="trace,debug" />
+            <!-- PMD requires one guard method per log level, in the same order -->
+            <property name="guardsMethods" value="isTraceEnabled,isDebugEnabled" />
         </properties>
     </rule>
     <rule ref="category/java/codestyle.xml">

@@ -174,8 +174,10 @@ public class EdcCallbackController {
         try {
             endpointDataReference = mapToEndpointDataReference(endpointDataReferenceCallback);
 
-            log.debug("Received EndpointDataReference with ID {} and endpoint {}",
-                    safeLogValue(endpointDataReference.getId()), safeLogValue(endpointDataReference.getEndpoint()));
+            if (log.isDebugEnabled()) {
+                log.debug("Received EndpointDataReference with ID {} and endpoint {}",
+                        safeLogValue(endpointDataReference.getId()), safeLogValue(endpointDataReference.getEndpoint()));
+            }
 
             final String contractAgreementId = endpointDataReference.getContractId();
             storeEdr(contractAgreementId, endpointDataReference);
@@ -189,8 +191,10 @@ public class EdcCallbackController {
         try {
             final NegotiationCallbackPayload payload = mapToContractAgreementId(endpointNegotiationCallback);
             final String contractAgreementId = payload.getContractAgreement().getContractAgreementId();
-            log.debug("Received Negotiation Callback for negotiationId: '{}' and contractAgreementId: '{}'",
-                    safeLogValue(payload.getContractNegotiationId()), safeLogValue(contractAgreementId));
+            if (log.isDebugEnabled()) {
+                log.debug("Received Negotiation Callback for negotiationId: '{}' and contractAgreementId: '{}'",
+                        safeLogValue(payload.getContractNegotiationId()), safeLogValue(contractAgreementId));
+            }
             storeNegotiationId(payload.getContractNegotiationId(), contractAgreementId);
         } catch (EdcClientException e) {
             logCallbackError(NEGOTIATION_CALLBACK, e);

@@ -86,7 +86,9 @@ public final class DateUtils {
             return true;
         } catch (DateTimeParseException e) {
             // ignore, trying next format below
-            log.trace(e.getMessage(), e);
+            if (log.isTraceEnabled()) {
+                log.trace(e.getMessage(), e);
+            }
         }
 
         try {
@@ -94,14 +96,18 @@ public final class DateUtils {
             return true;
         } catch (DateTimeParseException e) {
             // ignore, trying next format below
-            log.trace(e.getMessage(), e);
+            if (log.isTraceEnabled()) {
+                log.trace(e.getMessage(), e);
+            }
         }
 
         try {
             OffsetDateTime.parse(referenceDateString, DateTimeFormatter.ISO_DATE_TIME);
             return false;
         } catch (DateTimeParseException e) {
-            log.trace(e.getMessage(), e);
+            if (log.isTraceEnabled()) {
+                log.trace(e.getMessage(), e);
+            }
             throw new IllegalArgumentException("Invalid date format: " + referenceDateString, e);
         }
     }

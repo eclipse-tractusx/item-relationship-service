@@ -117,7 +117,7 @@ public final class IncidentValidation {
 
     private static String getAspectTypeFromJob(final Jobs job, final AspectType aspectType)
             throws AspectTypeNotFoundException {
-        log.debug("Searching for AspectType '{}'", aspectType.toString());
+        log.debug("Searching for AspectType '{}'", aspectType);
         return StringMapper.mapToString(job.getSubmodels()
                                            .stream()
                                            .filter(submodel -> submodel.getAspectType().endsWith(aspectType.toString()))

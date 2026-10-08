@@ -74,7 +74,9 @@ public class JsonValidatorService {
             log.debug("Validation was successful");
             return ValidationResult.builder().valid(true).build();
         } else {
-            log.debug("Validation failed with {} errors", errors.size());
+            if (log.isDebugEnabled()) {
+                log.debug("Validation failed with {} errors", errors.size());
+            }
             return ValidationResult.builder().valid(false).validationErrors(errors).build();
         }
     }
