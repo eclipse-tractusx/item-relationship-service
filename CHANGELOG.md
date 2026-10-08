@@ -14,8 +14,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Update Bouncy Castle from 1.84 to 1.85 ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
 - Update Jackson from 2.21.4 to 2.21.7 and the pinned `eclipse-temurin:25-jre-alpine` base image (Alpine 3.24.2) to fix the Trivy findings, remove the resolved `.trivyignore` entries ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
 - Use SeaweedFS 4.48 for S3-compatible blob-store test containers ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
-- Extract recursive child response handling from `RecursiveJobService` into `RecursiveChildResponseProcessor` and remove the `CyclomaticComplexity` PMD suppression ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
-- Extract restart recovery, responses to the parent and child request dispatch from `RecursiveJobService` into `RecursiveJobRecovery`, `RecursiveParentResponder` and `RecursiveChildRequestDispatcher` and remove the `GodClass` and class-level `AvoidCatchingGenericException` PMD suppressions ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
+- Extract recursive child response handling from `RecursiveJobService` into `RecursiveChildResponseProcessor` and remove the `CyclomaticComplexity` PMD suppression ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
+- Extract restart recovery, responses to the parent and child request dispatch from `RecursiveJobService` into `RecursiveJobRecovery`, `RecursiveParentResponder` and `RecursiveChildRequestDispatcher` and remove the `GodClass` and class-level `AvoidCatchingGenericException` PMD suppressions ([#1046](https://github.com/eclipse-tractusx/item-relationship-service/pull/1046))
 - Ignore CVE-2026-47884 (`spring-webmvc`) in `.trivyignore`: the fix is only available in Spring Framework 7 and the IRS does not use `XsltView` ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
 
 ### Fixed
