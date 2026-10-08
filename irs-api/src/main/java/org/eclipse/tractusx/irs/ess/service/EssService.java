@@ -110,9 +110,11 @@ public class EssService {
 
             final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
                                                                               .orElse(SupplyChainImpacted.UNKNOWN);
-            log.debug("Received answer for Notification with id '{}' and investigation result '{}'.",
-                    originalNotificationId, supplyChainImpacted);
-            log.debug("Unanswered notifications left: '{}'", job.getUnansweredNotifications());
+            if (log.isDebugEnabled()) {
+                log.debug("Received answer for Notification with id '{}' and investigation result '{}'.",
+                        originalNotificationId, supplyChainImpacted);
+                log.debug("Unanswered notifications left: '{}'", job.getUnansweredNotifications());
+            }
             final UUID jobId = job.getJobSnapshot().getJob().getId();
 
             if (job.getUnansweredNotifications().isEmpty()) {
@@ -128,8 +130,10 @@ public class EssService {
 
     private Jobs updateState(final BpnInvestigationJob investigationJob) {
         final Jobs jobSnapshot = investigationJob.getJobSnapshot();
-        log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotifications());
-        log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
+        if (log.isDebugEnabled()) {
+            log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotifications());
+            log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
+        }
 
         final JobState jobState = updateJobState(investigationJob);
 

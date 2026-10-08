@@ -241,14 +241,18 @@ public class ContractNegotiationService {
         final NegotiationRequest request = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
                 catalogItem);
 
-        log.debug("Setting EDR token callback to {}", config.getCallbackUrl());
+        if (log.isDebugEnabled()) {
+            log.debug("Setting EDR token callback to {}", config.getCallbackUrl());
+        }
         final CallbackAddress transferCallbackAddress = CallbackAddress.Builder.newInstance()
                                                                        .uri(config.getCallbackUrl())
                                                                        .events(Set.of(
                                                                                EVENT_TRANSFER_PROCESS_STARTED))
                                                                        .build();
 
-        log.debug("Setting EDR negotiation callback to {}", config.getNegotiationCallbackUrl());
+        if (log.isDebugEnabled()) {
+            log.debug("Setting EDR negotiation callback to {}", config.getNegotiationCallbackUrl());
+        }
         final CallbackAddress negotiationCallbackAddress = CallbackAddress.Builder.newInstance()
                                                                        .uri(config.getNegotiationCallbackUrl())
                                                                        .events(Set.of(

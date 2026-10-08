@@ -27,6 +27,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.RelationshipSubmodel;
 import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
@@ -218,6 +220,28 @@ class RecursiveTraversalServiceTest {
                 .isInstanceOfSatisfying(RecursiveExternalCallException.class, exception ->
                         assertThat(exception.getReason()).isEqualTo("BOM_SUBMODEL_ENDPOINT_MISSING"));
         verifyNoInteractions(submodelFacade);
+    }
+
+    @Test
+    void shouldReportUnparsableDateInBomPayloadAsParseError() throws Exception {
+        final Endpoint endpoint = endpoint("id=bom-asset;dspEndpoint=http://partner-edc");
+        final String payload = """
+                {"catenaXId":"%s","childItems":[{"catenaXId":"%s","createdOn":"not-a-date"}]}
+                """.formatted(PARENT_ASSET_ID, CHILD_ASSET_ID);
+        when(digitalTwinRegistryService.fetchShell(any()))
+                .thenReturn(Optional.of(new Shell("agreement-id", shellDescriptor)));
+        when(shellDescriptor.getSubmodelDescriptors())
+                .thenReturn(List.of(descriptor(SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0, endpoint)));
+        when(submodelFacade.getSubmodelPayload(eq("http://partner-edc"), eq("http://dataplane/submodel"),
+                eq("bom-asset"), eq(LOCAL_BPNL)))
+                .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor("agreement-id", payload));
+        final RecursiveTraversalService service = new RecursiveTraversalService(digitalTwinRegistryService,
+                submodelFacade, new JsonUtil());
+
+        assertThatThrownBy(() -> service.resolve(PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED))
+                .isInstanceOf(JsonParseException.class)
+                .hasMessageContaining("Invalid date/time format")
+                .hasRootCauseInstanceOf(DateTimeParseException.class);
     }
 
     private Endpoint endpoint(final String subprotocolBody) {

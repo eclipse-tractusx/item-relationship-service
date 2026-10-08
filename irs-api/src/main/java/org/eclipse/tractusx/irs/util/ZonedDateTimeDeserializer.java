@@ -49,13 +49,14 @@ public class ZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
             return ZonedDateTime.parse(value, DateTimeFormatter.ISO_ZONED_DATE_TIME);
         } catch (DateTimeParseException e) {
             // Fallback to a date-only format and assign a default time and time zone
-            log.debug(value + " is not a valid ISO-8601 date/time format, trying date-only format", e);
+            log.debug("{} is not a valid ISO-8601 date/time format, trying date-only format", value, e);
             try {
                 return ZonedDateTime.parse(value + "T00:00:00Z", DateTimeFormatter.ISO_DATE_TIME);
             } catch (DateTimeParseException fallbackException) {
-                log.debug("Failed to parse " + value + " as a date-only format", fallbackException);
-                throw (JsonMappingException)
-                context.weirdStringException(value, ZonedDateTime.class, "Invalid date/time format").initCause(fallbackException).initCause(e);
+                log.debug("Failed to parse {} as a date-only format", value, fallbackException);
+                fallbackException.addSuppressed(e);
+                throw (JsonMappingException) context.weirdStringException(value, ZonedDateTime.class,
+                        "Invalid date/time format").initCause(fallbackException);
             }
         }
     }

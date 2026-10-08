@@ -280,7 +280,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                                          edr))))
                                                                  .toList();
 
-        log.debug("Created {} futures", shellsFuture.size());
+        if (log.isDebugEnabled()) {
+            log.debug("Created {} futures", shellsFuture.size());
+        }
 
         return resultFinder.getFastestResult(shellsFuture);
     }

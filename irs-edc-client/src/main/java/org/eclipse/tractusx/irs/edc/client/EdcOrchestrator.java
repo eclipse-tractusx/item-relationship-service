@@ -138,7 +138,9 @@ public class EdcOrchestrator {
             catalogItemsFuture = CompletableFuture.supplyAsync(() -> {
                 final List<CatalogItem> contractOffers = catalogLookup.get();
 
-                log.debug("Retrieved catalog items: '{}'", StringMapper.mapToString(contractOffers));
+                if (log.isDebugEnabled()) {
+                    log.debug("Retrieved catalog items: '{}'", StringMapper.mapToString(contractOffers));
+                }
                 stopWatchOnEdcTask(stopWatch);
                 return contractOffers;
 
