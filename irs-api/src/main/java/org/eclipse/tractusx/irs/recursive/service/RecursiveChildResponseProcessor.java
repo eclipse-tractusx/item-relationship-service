@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
@@ -50,6 +49,9 @@ import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
  * or request fields do not match the job fails its child branch. Once every expected branch is
  * answered, the job completes with the aggregated result and the response to its own parent is
  * sent outside the job lock.</p>
+ *
+ * <p>The branch update in {@link #applyChildBranches} is also the transition for child requests
+ * that could not be delivered, so that every answered branch completes the job the same way.</p>
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -59,8 +61,16 @@ class RecursiveChildResponseProcessor {
     private final RecursiveResultAggregator resultAggregator;
     private final Supplier<ZonedDateTime> now;
     private final Supplier<String> localBpnl;
-    private final Consumer<RecursiveJobState> parentResponder;
+    private final RecursiveParentResponder parentResponder;
 
+    /**
+     * Applies a child response to its job.
+     *
+     * @param msg the RESPONSE notification of a child partner
+     * @return true when the response was applied, false when it was rejected as invalid or arrived
+     *         for an answered branch or a finished job
+     * @throws RecursiveNotificationValidationException when no child request matches the response
+     */
     /* package */ boolean handleResponse(final RecursiveNotificationMessage msg) {
         final RecursiveNotificationMessage.Header hdr = msg.getHeader();
         final RecursiveNotificationMessage.Content cnt = msg.getContent();
@@ -83,9 +93,8 @@ class RecursiveChildResponseProcessor {
         final RecursiveJobState correlatedState = correlated.get().state();
         final String childRequestMessageId = correlated.get().childBranch().getMessageId();
         final Optional<RecursiveJobState> updated = repository.updateIfNotTerminal(correlatedState.getJobId(),
-                correlatedState, current -> {
-                    return applyChildResponse(current, childRequestMessageId, cnt.getStatus(), cnt.getResult());
-                });
+                correlatedState,
+                current -> applyChildResponse(current, childRequestMessageId, cnt.getStatus(), cnt.getResult()));
         if (updated.isEmpty()) {
             log.warn("Response from {} for jobId={} not applied (terminal or unexpected)",
                     RecursiveLogValue.of(hdr.getSenderBpnl()),
@@ -99,7 +108,7 @@ class RecursiveChildResponseProcessor {
                 answeredChildBranches(state.getChildBranches()), state.expectedChildResponseCount());
 
         if (RecursiveJobRepository.isTerminal(state)) {
-            parentResponder.accept(state);
+            parentResponder.sendParentResponseQuietly(state);
         }
         return true;
     }
@@ -151,7 +160,7 @@ class RecursiveChildResponseProcessor {
 
         log.warn("Rejected invalid recursive response for jobId={}, childRequest={}",
                 RecursiveLogValue.of(state.getJobId().toString()), RecursiveLogValue.of(childRequestMessageId));
-        updated.filter(RecursiveJobRepository::isTerminal).ifPresent(parentResponder);
+        updated.filter(RecursiveJobRepository::isTerminal).ifPresent(parentResponder::sendParentResponseQuietly);
     }
 
     private RecursiveJobResult invalidChildResponseResult(final RecursiveJobState state) {
