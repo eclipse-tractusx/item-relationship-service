@@ -10,8 +10,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 
-- Add the missing `guardsMethods` to the PMD rule `GuardLogStatement`, which failed with a processing error on every file and was never evaluated, and resolve the `debug` and `trace` log statements it reports ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
-- Report an unparsable date in a JSON payload as `Invalid date/time format` instead of the misleading `Can't overwrite cause` error raised by `ZonedDateTimeDeserializer` ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
+- Add the missing `guardsMethods` to the PMD rule `GuardLogStatement`, which failed with a processing error on every file and was never evaluated, and resolve the `debug` and `trace` log statements it reports ([#1047](https://github.com/eclipse-tractusx/item-relationship-service/pull/1047))
+- Report an unparsable date in a JSON payload as `Invalid date/time format` instead of the misleading `Can't overwrite cause` error raised by `ZonedDateTimeDeserializer` ([#1047](https://github.com/eclipse-tractusx/item-relationship-service/pull/1047))
 - Refactor recursive EDC notification delivery, extract shared constants for grant API annotations and remove redundant PMD suppressions ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
 - Update Bouncy Castle from 1.84 to 1.85 ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
 - Update Jackson from 2.21.4 to 2.21.7 and the pinned `eclipse-temurin:25-jre-alpine` base image (Alpine 3.24.2) to fix the Trivy findings, remove the resolved `.trivyignore` entries ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
