@@ -62,6 +62,23 @@ final class RecursiveFailureReasonMapper {
         return RecursiveTombstoneReason.CHILD_BRANCH_FAILED;
     }
 
+    /**
+     * Derives the external-safe reason for a failed request of a local aspect.
+     *
+     * @param exception the failure thrown while collecting a local aspect
+     * @return external-safe recursive tombstone reason
+     */
+    /* package */ static RecursiveTombstoneReason localAspectFailureReason(final Exception exception) {
+        final Optional<RecursiveTombstoneReason> policyReason = policyReason(exception);
+        if (policyReason.isPresent()) {
+            return policyReason.get();
+        }
+        if (exception instanceof RecursiveExternalCallException externalCallException) {
+            return RecursiveTombstoneReason.fromInternalReason(externalCallException.getReason());
+        }
+        return RecursiveTombstoneReason.LOCAL_ASPECT_REQUEST_FAILED;
+    }
+
     private static boolean containsAny(final String value, final String... candidates) {
         return Stream.of(candidates).anyMatch(value::contains);
     }
