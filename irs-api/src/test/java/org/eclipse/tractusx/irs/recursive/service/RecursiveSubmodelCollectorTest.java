@@ -19,6 +19,7 @@
 package org.eclipse.tractusx.irs.recursive.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -46,6 +47,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChildItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -123,6 +125,46 @@ class RecursiveSubmodelCollectorTest {
                 .containsExactlyInAnyOrder(
                         RecursiveTombstoneReason.PART_TYPE_INFORMATION_REQUEST_FAILED,
                         RecursiveTombstoneReason.LOCAL_ASPECT_REQUEST_FAILED);
+    }
+
+    @Test
+    void shouldReportMetadataAndAspectFailuresWhenShellLookupFails() throws Exception {
+        final RecursiveSubmodelCollector collector = newCollector();
+        when(digitalTwinRegistryService.fetchShell(any()))
+                .thenThrow(new RegistryServiceException("registry unreachable"));
+
+        final RecursiveChildItem result = collector.collect(GLOBAL_ASSET_ID, LOCAL_BPNL,
+                List.of(ITEM_STOCK_ANONYMIZED));
+
+        verifyNoInteractions(submodelFacade);
+        assertThat(result.getMaterialNumber()).isNull();
+        assertThat(result.getMaterialName()).isNull();
+        assertThat(result.getItems()).isEmpty();
+        assertThat(result.getTombstones()).extracting("reason", "detail")
+                .containsExactly(
+                        tuple(RecursiveTombstoneReason.PART_TYPE_INFORMATION_REQUEST_FAILED,
+                                "Part type information could not be retrieved."),
+                        tuple(RecursiveTombstoneReason.LOCAL_ASPECT_REQUEST_FAILED, "registry unreachable"));
+    }
+
+    @Test
+    void shouldReportMetadataAndAspectAsNotAvailableWhenShellIsMissing() throws Exception {
+        final RecursiveSubmodelCollector collector = newCollector();
+        when(digitalTwinRegistryService.fetchShell(any())).thenReturn(Optional.empty());
+
+        final RecursiveChildItem result = collector.collect(GLOBAL_ASSET_ID, LOCAL_BPNL,
+                List.of(ITEM_STOCK_ANONYMIZED));
+
+        verifyNoInteractions(submodelFacade);
+        assertThat(result.getMaterialNumber()).isNull();
+        assertThat(result.getMaterialName()).isNull();
+        assertThat(result.getItems()).isEmpty();
+        assertThat(result.getTombstones()).extracting("reason", "detail")
+                .containsExactly(
+                        tuple(RecursiveTombstoneReason.PART_TYPE_INFORMATION_NOT_AVAILABLE,
+                                "Part type information is not available on the digital twin."),
+                        tuple(RecursiveTombstoneReason.LOCAL_ASPECT_NOT_AVAILABLE,
+                                "No digital twin shell found for requested aspect."));
     }
 
     @Test
@@ -223,7 +265,7 @@ class RecursiveSubmodelCollectorTest {
     void shouldKeepMaterialMetadataWhenAspectDescriptorFails() throws Exception {
         final RecursiveSubmodelCollector collector = newCollector();
         final SubmodelDescriptor partType = descriptor("PartTypeInformation",
-                RecursiveSubmodelCollector.PART_TYPE_INFORMATION_SEMANTIC_ID,
+                RecursivePartTypeInformationReader.PART_TYPE_INFORMATION_SEMANTIC_ID,
                 "part-type-asset", FIRST_DSP);
         final SubmodelDescriptor unreadableAspect = mock(SubmodelDescriptor.class);
         when(unreadableAspect.getSemanticId()).thenThrow(new IllegalStateException("descriptor cannot be read"));
@@ -258,7 +300,7 @@ class RecursiveSubmodelCollectorTest {
         final SubmodelDescriptor itemStock = descriptorWithoutDspEndpoint("ItemStockAnonymized", ITEM_STOCK_ANONYMIZED,
                 "item-stock-asset");
         final SubmodelDescriptor partType = descriptorWithoutDspEndpoint("PartTypeInformation",
-                RecursiveSubmodelCollector.PART_TYPE_INFORMATION_SEMANTIC_ID, "part-type-asset");
+                RecursivePartTypeInformationReader.PART_TYPE_INFORMATION_SEMANTIC_ID, "part-type-asset");
         when(digitalTwinRegistryService.fetchShell(any())).thenReturn(Optional.of(new Shell("contract-agreement",
                 AssetAdministrationShellDescriptor.builder()
                         .submodelDescriptors(List.of(partType, itemStock))
@@ -283,7 +325,7 @@ class RecursiveSubmodelCollectorTest {
         final SubmodelDescriptor itemStock = descriptor("ItemStockAnonymized", ITEM_STOCK_ANONYMIZED,
                 "item-stock-asset", dspEndpoints);
         final SubmodelDescriptor partType = descriptor("PartTypeInformation",
-                RecursiveSubmodelCollector.PART_TYPE_INFORMATION_SEMANTIC_ID,
+                RecursivePartTypeInformationReader.PART_TYPE_INFORMATION_SEMANTIC_ID,
                 "part-type-asset", dspEndpoints);
         return new Shell("contract-agreement", AssetAdministrationShellDescriptor.builder()
                 .submodelDescriptors(List.of(partType, itemStock))
