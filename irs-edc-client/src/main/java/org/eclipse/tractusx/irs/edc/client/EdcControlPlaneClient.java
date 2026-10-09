@@ -24,15 +24,21 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
+import org.eclipse.tractusx.irs.edc.client.model.DSPVersionParamsRequest;
+import org.eclipse.tractusx.irs.edc.client.model.DSPVersionParamsResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
@@ -54,7 +60,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @Service("irsEdcClientEdcControlPlaneClient")
-@SuppressWarnings({ "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.ExcessiveImports" })
 public class EdcControlPlaneClient {
 
     public static final String STATUS_FINALIZED = "FINALIZED";
@@ -68,6 +74,8 @@ public class EdcControlPlaneClient {
     private final AsyncPollingService pollingService;
     private final EdcConfiguration config;
     private final EdcTransformer edcTransformer;
+    
+    private final Map<String, DSPVersionParamsCacheEntry> dspVersionParamsCache = new ConcurrentHashMap<>();
 
     public EdcControlPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate,
             final AsyncPollingService pollingService, final EdcConfiguration config,
@@ -98,12 +106,28 @@ public class EdcControlPlaneClient {
         final var endpoint = getControlplaneEndpoint();
         final var url = endpoint.getData() + endpoint.getCatalog();
 
-        final String requestJson = edcTransformer.transformCatalogRequestToJson(requestBody).toString();
+        final CatalogRequest updatedCatalogRequest = updateCatalogRequest(requestBody);
+        final String requestJson = edcTransformer.transformCatalogRequestToJson(updatedCatalogRequest).toString();
         log.info("Requesting catalog with payload: {}", requestJson);
         final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.POST,
                 new HttpEntity<>(requestJson, headers()), String.class);
         final String catalog = getResponseBody(response);
         return edcTransformer.transformCatalog(catalog, StandardCharsets.UTF_8);
+    }
+
+    private CatalogRequest updateCatalogRequest(final CatalogRequest requestBody) {
+        final DSPVersionParamsResponse dspVersionParams = getDSPVersionParams(requestBody.getCounterPartyAddress(), requestBody.getCounterPartyId());
+
+        if (dspVersionParams == null) {
+            return requestBody;
+        }
+
+        return CatalogRequest.Builder.newInstance()
+                .querySpec(requestBody.getQuerySpec())
+                .counterPartyAddress(dspVersionParams.counterPartyAddress())
+                .counterPartyId(dspVersionParams.counterPartyId())
+                .protocol(dspVersionParams.protocol())
+                .build();
     }
 
     private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit,
@@ -136,7 +160,8 @@ public class EdcControlPlaneClient {
         final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getContractNegotiation();
 
-        final String jsonObject = edcTransformer.transformNegotiationRequestToJson(request).toString();
+        final NegotiationRequest updatedNegotiationRequest = updateNegotiationRequestWithDspParams(request);
+        final String jsonObject = edcTransformer.transformNegotiationRequestToJson(updatedNegotiationRequest).toString();
 
         return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
                               .getBody();
@@ -194,11 +219,36 @@ public class EdcControlPlaneClient {
     }
 
     /* package */ Response startTransferProcess(final TransferProcessRequest request) {
-        final String jsonObject = edcTransformer.transformTransferProcessRequestToJson(request).toString();
         final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getTransferProcess();
+
+        final TransferProcessRequest updatedRequest = updateTransferProcessRequest(request);
+        final String jsonObject = edcTransformer.transformTransferProcessRequestToJson(updatedRequest).toString();
+        
         return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
                               .getBody();
+    }
+
+    private TransferProcessRequest updateTransferProcessRequest(final TransferProcessRequest request) {
+        final DSPVersionParamsResponse dspVersionParams = getDSPVersionParams(request.getCounterPartyAddress(), request.getConnectorId());
+
+        if (dspVersionParams == null) {
+            return request;
+        }
+
+        return TransferProcessRequest.builder()
+                .connectorId(dspVersionParams.counterPartyId())
+                .protocol(dspVersionParams.protocol())
+                .counterPartyAddress(dspVersionParams.counterPartyAddress())
+                .dataDestination(request.getDataDestination())
+                .assetId(request.getAssetId())
+                .transferType(request.getTransferType())
+                .contractId(request.getContractId())
+                .managedResources(request.isManagedResources())
+                .privateProperties(request.getPrivateProperties())
+                .properties(request.getProperties())
+                .callbackAddresses(request.getCallbackAddresses())
+                .build();
     }
 
     /* package */ CompletableFuture<TransferProcessResponse> getTransferProcess(final Response transferProcessId) {
@@ -272,9 +322,54 @@ public class EdcControlPlaneClient {
         final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getEdrManagement();
 
-        final String jsonObject = edcTransformer.transformNegotiationRequestToJson(request).toString();
+        final NegotiationRequest updatedRequest = updateNegotiationRequestWithDspParams(request);
+        final String jsonObject = edcTransformer.transformNegotiationRequestToJson(updatedRequest).toString();
 
         return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
                               .getBody();
     }
+
+    private NegotiationRequest updateNegotiationRequestWithDspParams(final NegotiationRequest request) {
+        final DSPVersionParamsResponse dspVersionParams = getDSPVersionParams(request.getCounterPartyAddress(), request.getCounterPartyId());
+
+        if (dspVersionParams == null) {
+            return request;
+        }
+
+        return NegotiationRequest.builder()
+                                 .contractOffer(request.getContractOffer())
+                                 .callbackAddresses(request.getCallbackAddresses())
+                                 .protocol(dspVersionParams.protocol())
+                                 .counterPartyAddress(dspVersionParams.counterPartyAddress())
+                                 .counterPartyId(dspVersionParams.counterPartyId())
+                                 .build();
+    }
+
+    public DSPVersionParamsResponse getDSPVersionParams(final String providerEdcUrl, final String providerBpnl) {
+        if (getControlplaneEndpoint().getDspVersionParams() == null || providerEdcUrl == null || providerBpnl == null) {
+            return null;
+        }
+
+        if (dspVersionParamsCache.containsKey(providerBpnl)
+                && dspVersionParamsCache.get(providerBpnl).updated().plus(1, ChronoUnit.DAYS).isAfter(Instant.now())) {
+            return dspVersionParamsCache.get(providerBpnl).response();
+        }
+
+        final String managementUrl = getControlplaneEndpoint().getData();
+        final String url = managementUrl + getControlplaneEndpoint().getDspVersionParams();
+
+        final DSPVersionParamsRequest request = new DSPVersionParamsRequest(providerEdcUrl, providerBpnl);
+        final String requestBody = edcTransformer.transformDspVersionParamsRequestToJson(request).toString();
+
+        final DSPVersionParamsResponse response = edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers()), DSPVersionParamsResponse.class)
+                              .getBody();
+        
+        dspVersionParamsCache.put(providerBpnl, new DSPVersionParamsCacheEntry(response, Instant.now()));
+        
+        return response;
+    }
+
+    private record DSPVersionParamsCacheEntry(DSPVersionParamsResponse response, Instant updated) {
+    }
+
 }

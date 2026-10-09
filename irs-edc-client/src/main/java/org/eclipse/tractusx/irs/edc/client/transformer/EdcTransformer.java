@@ -69,6 +69,7 @@ import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.edc.transform.spi.TransformerContext;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
+import org.eclipse.tractusx.irs.edc.client.model.DSPVersionParamsRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.edr.DataAddress;
@@ -93,6 +94,7 @@ public class EdcTransformer {
     private final TransformerContext transformerContext;
     private final JsonObjectFromAssetTransformer jsonObjectFromAssetTransformer;
     private final JsonObjectToIrsPolicyTransformer jsonObjectToIrsPolicyTransformer;
+    private final JsonObjectFromDspVersionParamsRequestTransformer jsonObjectFromDspVersionParamsRequestTransformer;
 
     public EdcTransformer(@Qualifier(JSON_LD_OBJECT_MAPPER) final ObjectMapper objectMapper,
             final TitaniumJsonLd titaniumJsonLd, final TypeTransformerRegistry typeTransformerRegistry) {
@@ -114,6 +116,7 @@ public class EdcTransformer {
         jsonObjectFromQuerySpecTransformer = new JsonObjectFromQuerySpecTransformer(jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
         jsonObjectFromAssetTransformer = new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper);
+        jsonObjectFromDspVersionParamsRequestTransformer = new JsonObjectFromDspVersionParamsRequestTransformer(jsonBuilderFactory);
 
         // JSON to Object
         typeTransformerRegistry.register(jsonObjectToCatalogTransformer);
@@ -153,7 +156,9 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectFromDataServiceTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromCriterionTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromDataAddressTransformer(jsonBuilderFactory));
+        typeTransformerRegistry.register(jsonObjectFromDspVersionParamsRequestTransformer);
         typeTransformerRegistry.register(new JsonObjectFromCallbackAddressTransformer(jsonBuilderFactory));
+
     }
 
     public Catalog transformCatalog(final String jsonString, final Charset charset) {
@@ -215,5 +220,9 @@ public class EdcTransformer {
         final Result<JsonObject> expand;
         expand = expandJsonLd(jsonString, charset);
         return jsonObjectToDataAddressTransformer.transform(expand.getContent(), transformerContext);
+    }
+
+    public JsonObject transformDspVersionParamsRequestToJson(final DSPVersionParamsRequest request) {
+        return jsonObjectFromDspVersionParamsRequestTransformer.transform(request, transformerContext);
     }
 }
