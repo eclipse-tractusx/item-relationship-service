@@ -18,7 +18,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Use SeaweedFS 4.48 for S3-compatible blob-store test containers ([#1044](https://github.com/eclipse-tractusx/item-relationship-service/pull/1044))
 - Extract recursive child response handling from `RecursiveJobService` into `RecursiveChildResponseProcessor` and remove the `CyclomaticComplexity` PMD suppression ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
 - Extract restart recovery, responses to the parent and child request dispatch from `RecursiveJobService` into `RecursiveJobRecovery`, `RecursiveParentResponder` and `RecursiveChildRequestDispatcher` and remove the `GodClass` and class-level `AvoidCatchingGenericException` PMD suppressions ([#1046](https://github.com/eclipse-tractusx/item-relationship-service/pull/1046))
+- Extract submodel payload retrieval and part type information reading from `RecursiveSubmodelCollector` into `RecursiveSubmodelFetcher` and `RecursivePartTypeInformationReader` and remove the `GodClass`, `TooManyMethods`, `ExcessiveImports` and class-level `AvoidCatchingGenericException` PMD suppressions ([#1048](https://github.com/eclipse-tractusx/item-relationship-service/pull/1048))
 - Ignore CVE-2026-47884 (`spring-webmvc`) in `.trivyignore`: the fix is only available in Spring Framework 7 and the IRS does not use `XsltView` ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
+- Ignore CVE-2026-47890 (`spring-webmvc`) in `.trivyignore`: the fix is only available in Spring Framework 7 and the IRS does not send view fragments over Server-Sent Events ([#1048](https://github.com/eclipse-tractusx/item-relationship-service/pull/1048))
 
 ### Fixed
 
