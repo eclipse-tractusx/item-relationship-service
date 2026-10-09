@@ -5,3 +5,8 @@
 # Affects XsltView, which the IRS does not use.
 # Re-review with the upgrade to Spring Framework 7.
 CVE-2026-47884
+
+# spring-webmvc 6.2.19: fixed in Spring Framework 7.0.9, the 6.2.20 fix is not available as open source.
+# Affects view fragments sent over Server-Sent Events, which the IRS does not use.
+# Re-review with the upgrade to Spring Framework 7.
+CVE-2026-47890
