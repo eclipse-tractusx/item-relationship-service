@@ -50,7 +50,8 @@ public enum OperatorType {
     ISPARTOF("isPartOf", "Is part of"),
     ISONEOF("isOneOf", "Is one of"),
     ISALLOF("isAllOf", "Is all of"),
-    ISNONEOF("isNoneOf", "Is none of");
+    ISNONEOF("isNoneOf", "Is none of"),
+    ISANYOF("isAnyOf", "Is any of");
 
     private final String code;
     private final String label;

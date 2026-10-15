@@ -95,14 +95,16 @@ class EdcPolicyDefinitionServiceTest {
                         		"@type": "Policy",
                         		"odrl:permission": [
                         			{
-                        				"odrl:action": "use",
+                        				"odrl:action": "USE",
                         				"odrl:constraint": {
                         					"@type": "AtomicConstraint",
                         					"odrl:or": [],
                         					"odrl:and": [
                         						{
                         							"@type": "Constraint",
-                        							"odrl:leftOperand": "PURPOSE",
+                        							"odrl:leftOperand": {
+                        							    "@id": "PURPOSE"
+                        							},
                         							"odrl:rightOperand": "ID 3.1 Trace",
                         							"odrl:operator": {
                         								"@id": "odrl:eq"

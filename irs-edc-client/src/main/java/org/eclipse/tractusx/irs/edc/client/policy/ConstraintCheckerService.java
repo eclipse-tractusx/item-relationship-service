@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
@@ -101,9 +102,16 @@ public class ConstraintCheckerService {
                                         .atomicConstraint(atomicConstraint)
                                         .leftExpressionValue(acceptedConstraint.getLeftOperand())
                                         .rightExpressionValue(acceptedConstraint.getRightOperand())
-                                        .expectedOperator(Operator.valueOf(
-                                                acceptedConstraint.getOperator().getOperatorType().name()))
+                                        .expectedOperator(toOperator(
+                                                acceptedConstraint.getOperator().getOperatorType()))
                                         .build()
                                         .isValid();
+    }
+
+    private Operator toOperator(final OperatorType operatorType) {
+        return Arrays.stream(Operator.values())
+                .filter(operator -> operator.getOdrlRepresentation().endsWith(operatorType.getCode()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Operator " + operatorType.getCode() + "is not supported"));
     }
 }
