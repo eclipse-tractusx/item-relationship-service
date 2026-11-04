@@ -94,12 +94,16 @@ public class RecursiveJobRequest {
     private String requesterBpn;
 
     /**
-     * Time-to-live as ISO 8601 duration.
-     * Defaults to configured {@code irs.recursive.timeout.defaultJobTtl} if null.
+     * Positive time-to-live as ISO 8601 duration, capped at the configured maximum.
+     * Uses {@code irs.recursive.timeout.defaultJobTtl} when omitted or null.
      */
-    @Schema(description = "Job time-to-live as ISO 8601 duration, e.g. PT30M. Defaults to "
-            + "irs.recursive.timeout.defaultJobTtl and is capped at maxJobTtl. Each hop passes the "
-            + "remaining budget minus a safety buffer to the child as the child response deadline.")
+    @Schema(description = "Root-job time-to-live as a positive ISO 8601 duration, e.g. PT30M. Omitted or null values "
+            + "use irs.recursive.timeout.defaultJobTtl. Empty, malformed, zero and negative durations return 400. "
+            + "Positive durations shorter than the safety buffer are accepted. Root TTLs above "
+            + "maxJobTtl are capped; inherited partner deadlines are not. Child requests use the job deadline minus "
+            + "the safety buffer only when more time remains than the buffer; "
+            + "otherwise they use the unchanged job deadline.",
+            nullable = true)
     @Pattern(regexp = RecursivePatternStore.OPTIONAL_SAFE_SINGLE_LINE_STRING,
              message = "ttl must not contain control or line separator characters")
     private String ttl;

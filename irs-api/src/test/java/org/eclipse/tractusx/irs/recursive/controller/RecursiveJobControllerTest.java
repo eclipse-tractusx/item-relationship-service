@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,6 +57,9 @@ import org.eclipse.tractusx.irs.recursive.store.RecursiveJobStateStore;
 import org.eclipse.tractusx.irs.recursive.store.RecursiveStoreException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +72,7 @@ class RecursiveJobControllerTest {
     private RecursiveChainOpeningGrantStore grantStore;
     private Map<UUID, RecursiveJobState> jobs;
     private Map<String, UUID> messageIds;
+    private RecursiveProperties properties;
     private MockMvc mockMvc;
     private RecursiveExceptionHandler exceptionHandler;
 
@@ -78,7 +83,7 @@ class RecursiveJobControllerTest {
         grantStore = new InMemoryRecursiveChainOpeningGrantStore();
         final RecursiveChainOpeningGrantService grantService = new RecursiveChainOpeningGrantService(grantStore);
         final RecursiveTraversalService traversalService = mock(RecursiveTraversalService.class);
-        final RecursiveProperties properties = new RecursiveProperties();
+        properties = new RecursiveProperties();
         properties.setLocalBpnl(ATLAS_BPNL);
         final RecursiveJobService jobService = new RecursiveJobService(grantService, traversalService,
                 newJobStateStore(), mock(RecursiveNotificationSender.class), mock(RecursiveSubmodelCollector.class),
@@ -155,6 +160,55 @@ class RecursiveJobControllerTest {
         assertThat(jobs).isEmpty();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = { "", " ", "30Minuten", "PT0S", "-PT1S", "PT999999999999999999999S" })
+    void shouldReturnBadRequestWithoutCreatingJobWhenTtlIsInvalid(final String ttl) throws Exception {
+        grantStore.store(validGrant());
+
+        mockMvc.perform(post("/irs/recursive/jobs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "openingId": "opening-42",
+                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
+                                  "ttl": "%s"
+                                }
+                                """.formatted(ttl)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.code").value(RecursiveErrorCode.INVALID_REQUEST.name()))
+                .andExpect(jsonPath("$.message").value("Invalid recursive request."))
+                .andExpect(jsonPath("$.errorRef").isNotEmpty());
+
+        assertThat(jobs).isEmpty();
+        assertThat(messageIds).isEmpty();
+    }
+
+    @Test
+    void shouldReturnBadRequestWithoutCreatingJobWhenTtlExceedsDeadlineRange() throws Exception {
+        properties.getTimeout().setMaxJobTtl(Duration.parse("PT1000000000000000H"));
+        grantStore.store(validGrant());
+
+        mockMvc.perform(post("/irs/recursive/jobs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "openingId": "opening-42",
+                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
+                                  "ttl": "PT1000000000000000H"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.code").value(RecursiveErrorCode.INVALID_REQUEST.name()))
+                .andExpect(jsonPath("$.errorRef").isNotEmpty());
+
+        assertThat(jobs).isEmpty();
+        assertThat(messageIds).isEmpty();
+    }
+
     @Test
     void shouldReturnUnprocessableEntityNamingUnknownAndSupportedAspects() {
         grantStore.store(validGrant());
@@ -184,6 +238,29 @@ class RecursiveJobControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getJobId()).isNotNull();
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = "null")
+    void shouldUseDefaultTtlWhenOmittedOrNull(final String ttlJson) throws Exception {
+        grantStore.store(validGrant());
+
+        mockMvc.perform(post("/irs/recursive/jobs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "openingId": "opening-42",
+                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b"%s
+                                }
+                                """.formatted(ttlJson == null ? "" : ", \"ttl\": " + ttlJson)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.jobId").isNotEmpty());
+
+        assertThat(jobs.values()).singleElement().satisfies(state ->
+                assertThat(Duration.between(state.getCreatedOn(), state.getDeadline()))
+                        .isEqualTo(Duration.ofMinutes(30)));
     }
 
     @Test

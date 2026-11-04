@@ -127,6 +127,8 @@ public class RecursiveNotificationMessage {
         @Pattern(regexp = RecursivePatternStore.SAFE_SINGLE_LINE_STRING,
                  message = "expectedResponseBy must not contain control or line separator characters")
         @Schema(description = "REQUEST only. ISO 8601 timestamp by which the child should respond. "
+                + "New requests require a future timestamp. Repeated requests with a known messageId use the existing "
+                + "job even after the timestamp has passed. "
                 + "Must be omitted for RESPONSE messages.")
         private String expectedResponseBy;
 

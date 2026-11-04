@@ -226,6 +226,8 @@ public class RecursiveJobService {
         final RecursiveChainOpeningGrant grant = grantService.getActiveGrant(
                 prepared.openingId(), prepared.useCase(), prepared.requesterBpnl(), prepared.globalAssetId());
 
+        validateNewChildDeadline(prepared);
+
         final UUID jobId = UUID.randomUUID();
         final RecursiveJobState state = prepared.toState(jobId);
         repository.saveNew(state);
@@ -240,6 +242,12 @@ public class RecursiveJobService {
             markAcceptedJobFailed(state, e);
         }
         return jobId;
+    }
+
+    private void validateNewChildDeadline(final PreparedRecursiveJob prepared) {
+        if (!prepared.rootJob() && !prepared.deadline().isAfter(now())) {
+            throw new IllegalArgumentException("expectedResponseBy must be in the future for a new partner request");
+        }
     }
 
     @SuppressWarnings("PMD.AvoidCatchingGenericException")

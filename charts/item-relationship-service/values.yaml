@@ -117,13 +117,13 @@ recursive:
   # -- Optional BPNL override for recursive requests and responses. Defaults to the IRS instance value from `bpn`.
   localBpnl:
   timeout:
-    # -- Default lifetime of a recursive job when a request does not provide an explicit deadline. ISO-8601 duration.
+    # -- Default root-job TTL when request ttl is omitted or null; positive and no greater than maxJobTtl. ISO-8601 duration.
     defaultJobTtl: PT30M
-    # -- Maximum accepted lifetime of a recursive job. Longer requested deadlines are capped to this value. ISO-8601 duration.
+    # -- Maximum root-job TTL; does not limit deadlines received from partners. Must be positive. ISO-8601 duration.
     maxJobTtl: PT2H
-    # -- Safety buffer subtracted from the job deadline before waiting for child responses stops. ISO-8601 duration.
+    # -- Buffer for child responses; subtracted only when more time remains than the buffer. Must be nonnegative. ISO-8601 duration.
     childResponseSafetyBuffer: PT60S
-    # -- Interval used by the recursive timeout monitor to check for expired jobs and child response deadlines. ISO-8601 duration.
+    # -- Interval for expiry checks; at least 1 ms and must fit in a Java long when converted to milliseconds. ISO-8601 duration.
     timeoutCheckInterval: PT30S
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!

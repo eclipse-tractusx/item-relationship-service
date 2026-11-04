@@ -24,6 +24,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Fixed
 
+- Reject invalid recursive job TTLs and expired new child requests, preserve duplicate-request responses, and validate recursive timeout configuration at startup ([#1742](https://github.com/eclipse-tractusx/sig-release/issues/1742))
 - Remove the duplicate `junit-jupiter-engine` dependency in `irs-load-tests`, which fails the Docker image build with Maven 3.10 ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
 - Remove the unused `jsoup` dependency to fix CVE-2026-75140 ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
 
