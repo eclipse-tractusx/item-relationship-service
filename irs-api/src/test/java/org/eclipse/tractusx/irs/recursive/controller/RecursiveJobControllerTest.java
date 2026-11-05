@@ -58,7 +58,6 @@ import org.eclipse.tractusx.irs.recursive.store.RecursiveStoreException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -240,10 +239,8 @@ class RecursiveJobControllerTest {
         assertThat(response.getBody().getJobId()).isNotNull();
     }
 
-    @ParameterizedTest
-    @NullSource
-    @ValueSource(strings = "null")
-    void shouldUseDefaultTtlWhenOmittedOrNull(final String ttlJson) throws Exception {
+    @Test
+    void shouldUseDefaultTtlWhenOmitted() throws Exception {
         grantStore.store(validGrant());
 
         mockMvc.perform(post("/irs/recursive/jobs")
@@ -252,9 +249,31 @@ class RecursiveJobControllerTest {
                                 {
                                   "openingId": "opening-42",
                                   "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
-                                  "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b"%s
+                                  "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b"
                                 }
-                                """.formatted(ttlJson == null ? "" : ", \"ttl\": " + ttlJson)))
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.jobId").isNotEmpty());
+
+        assertThat(jobs.values()).singleElement().satisfies(state ->
+                assertThat(Duration.between(state.getCreatedOn(), state.getDeadline()))
+                        .isEqualTo(Duration.ofMinutes(30)));
+    }
+
+    @Test
+    void shouldUseDefaultTtlWhenExplicitlyNull() throws Exception {
+        grantStore.store(validGrant());
+
+        mockMvc.perform(post("/irs/recursive/jobs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "openingId": "opening-42",
+                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
+                                  "ttl": null
+                                }
+                                """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.jobId").isNotEmpty());
 

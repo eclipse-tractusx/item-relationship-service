@@ -121,7 +121,7 @@ recursive:
     defaultJobTtl: PT30M
     # -- Maximum root-job TTL; does not limit deadlines received from partners. Must be positive. ISO-8601 duration.
     maxJobTtl: PT2H
-    # -- Buffer for child responses; subtracted only when more time remains than the buffer. Must be nonnegative. ISO-8601 duration.
+    # -- Buffer for child responses; subtracted only when more time remains than the buffer. Must be non-negative. ISO-8601 duration.
     childResponseSafetyBuffer: PT60S
     # -- Interval for expiry checks; at least 1 ms and must fit in a Java long when converted to milliseconds. ISO-8601 duration.
     timeoutCheckInterval: PT30S
