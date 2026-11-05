@@ -24,6 +24,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Fixed
 
+- Configure Docker Buildx to use the local HTTP registry in Helm chart tests ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))
 - Update Guava to 33.7.2-jre and Snappy to 1.1.10.9, refresh the pinned Temurin runtime image and update Expat to address the reported Trivy vulnerabilities ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))
 - Reject invalid recursive job TTLs and expired new child requests, preserve duplicate-request responses, and validate recursive timeout configuration at startup ([#1742](https://github.com/eclipse-tractusx/sig-release/issues/1742))
 - Remove the duplicate `junit-jupiter-engine` dependency in `irs-load-tests`, which fails the Docker image build with Maven 3.10 ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
