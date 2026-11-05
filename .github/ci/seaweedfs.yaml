@@ -5,6 +5,36 @@ metadata:
   name: storage-test
 ---
 apiVersion: v1
+kind: LimitRange
+metadata:
+  name: storage-test
+  namespace: storage-test
+spec:
+  limits:
+    - type: Container
+      max:
+        cpu: "1"
+        memory: 1Gi
+    - type: PersistentVolumeClaim
+      max:
+        storage: 1Gi
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: storage-test
+  namespace: storage-test
+spec:
+  hard:
+    pods: "2"
+    requests.cpu: 200m
+    requests.memory: 512Mi
+    limits.cpu: "2"
+    limits.memory: 2Gi
+    persistentvolumeclaims: "1"
+    requests.storage: 1Gi
+---
+apiVersion: v1
 kind: Secret
 metadata:
   name: seaweedfs-s3
@@ -60,9 +90,9 @@ spec:
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsUser: 10000
+        runAsGroup: 3000
+        fsGroup: 3000
         seccompProfile:
           type: RuntimeDefault
       containers:
@@ -97,6 +127,12 @@ spec:
             tcpSocket:
               port: s3
             periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: s3
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
           resources:
             requests:
               cpu: 100m
