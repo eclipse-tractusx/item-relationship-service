@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'charts/item-relationship-service/**'
+      - '.github/ci/**'
+      - '.github/workflows/helm-upgrade.yaml'
   workflow_dispatch:
 
 jobs:
@@ -31,13 +33,30 @@ jobs:
           helm repo add grafana https://grafana.github.io/helm-charts
           helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service
 
+      - name: Set up test storage
+        run: |
+          kubectl apply -f .github/ci/seaweedfs.yaml
+          kubectl rollout status deployment/seaweedfs -n storage-test --timeout=180s
+
       - name: Run helm install
         # Install latest released item-relationship-service version
         run: |
-          helm install irs irs/item-relationship-service --set bpn=BPNL000000000000
+          helm install irs irs/item-relationship-service --set bpn=BPNL000000000000 \
+            --values .github/ci/seaweedfs-values.yaml --wait
+
+      - name: Verify installed chart
+        run: |
+          helm test irs
+          bash .github/ci/check-seaweedfs.sh prepare
 
       - name: Run helm upgrade
         # Upgrade the installed item-relationship-service version with the locally available charts
         run: |
           helm dependency update charts/item-relationship-service
-          helm upgrade irs charts/item-relationship-service --set bpn=BPNL000000000000
+          helm upgrade irs charts/item-relationship-service --set bpn=BPNL000000000000 \
+            --values .github/ci/seaweedfs-values.yaml --wait
+
+      - name: Verify upgraded chart and stored data
+        run: |
+          helm test irs
+          bash .github/ci/check-seaweedfs.sh verify

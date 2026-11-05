@@ -1,0 +1,12 @@
+---
+minio:
+  enabled: false
+
+blobstore:
+  persistence:
+    storeType: MINIO
+    minio:
+      endpoint: http://seaweedfs.storage-test.svc.cluster.local:8333
+      # Fixed credentials for isolated Helm CI only.
+      accessKey: irs-ci-access
+      secretKey: irs-ci-secret-key

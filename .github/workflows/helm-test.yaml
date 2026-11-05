@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'charts/**'
+      - '.github/ci/**'
+      - '.github/workflows/helm-test.yaml'
   workflow_dispatch:
     inputs:
       node_image:
@@ -63,17 +65,15 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # v2.6.1
 
-      - name: Run chart-testing (list-changed)
-        id: list-changed
-        run: |
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
-          if [[ -n "$changed" ]]; then
-             echo "::set-output name=changed::true"
-          fi
-
       - name: Run chart-testing (lint)
         run: |
-          ct lint --validate-maintainers=false --check-version-increment=false --target-branch ${{ github.event.repository.default_branch }}
+          ct lint --charts charts/item-relationship-service --validate-maintainers=false --check-version-increment=false
+
+      - name: Set up test storage
+        run: |
+          kubectl apply -f .github/ci/seaweedfs.yaml
+          kubectl rollout status deployment/seaweedfs -n storage-test --timeout=180s
+          bash .github/ci/check-seaweedfs.sh prepare
 
       - name: Run chart-testing (install)
         run: |
@@ -81,5 +81,7 @@ jobs:
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo add grafana https://grafana.github.io/helm-charts
-          ct install --charts charts/item-relationship-service --helm-extra-set-args "--set=image.tag=testing --set=image.repository=kind-registry:5000/irs-api --set=bpn=BPNL000000000000"
-        if: steps.list-changed.outputs.changed == 'true'
+          ct install --charts charts/item-relationship-service --helm-extra-set-args "--values .github/ci/seaweedfs-values.yaml --set=image.tag=testing --set=image.repository=kind-registry:5000/irs-api --set=bpn=BPNL000000000000"
+
+      - name: Verify test storage
+        run: bash .github/ci/check-seaweedfs.sh verify
