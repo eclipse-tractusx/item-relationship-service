@@ -343,13 +343,13 @@ recursive:
   # -- Optional BPNL override for recursive requests and responses. Defaults to the IRS instance value from `bpn`.
   localBpnl:
   timeout:
-    # -- Default lifetime of a recursive job when a request does not provide an explicit deadline. ISO-8601 duration.
+    # -- Default root-job TTL when request ttl is omitted or null; positive and no greater than maxJobTtl. ISO-8601 duration.
     defaultJobTtl: PT30M
-    # -- Maximum accepted lifetime of a recursive job. Longer requested deadlines are capped to this value. ISO-8601 duration.
+    # -- Maximum root-job TTL; does not limit deadlines received from partners. Must be positive. ISO-8601 duration.
     maxJobTtl: PT2H
-    # -- Safety buffer subtracted from the job deadline before waiting for child responses stops. ISO-8601 duration.
+    # -- Buffer for child responses; subtracted only when more time remains than the buffer. Must be non-negative. ISO-8601 duration.
     childResponseSafetyBuffer: PT60S
-    # -- Interval used by the recursive timeout monitor to check for expired jobs and child response deadlines. ISO-8601 duration.
+    # -- Interval for expiry checks; at least 1 ms and must fit in a Java long when converted to milliseconds. ISO-8601 duration.
     timeoutCheckInterval: PT30S
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
@@ -932,9 +932,11 @@ recursive:
 
 Set `recursive.localBpnl` only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property `irs.recursive.localBpnl`, or the environment variable `IRS_RECURSIVE_LOCAL_BPNL`, remains required. The value identifies the local IRS instance when it sends recursive partner notifications.
 
-`recursive.timeout.defaultJobTtl` defines the runtime of a root job when the start request does not provide an explicit TTL. For stable productive usage the default of `PT30M` gives slow partners enough time to answer. For short-lived test or demo scenarios `PT5M` can be used if the involved submodel providers and EDC negotiations are expected to answer quickly.
+For a root job, omitted or null `ttl` uses `recursive.timeout.defaultJobTtl` (`PT30M`). An explicit `ttl` must be a positive ISO-8601 duration; empty, malformed, zero and negative values return HTTP 400. A positive TTL can be shorter than the safety buffer. `recursive.timeout.maxJobTtl` (`PT2H`) caps requested root TTLs, and the effective TTL is added to the job creation time.
 
-`recursive.timeout.maxJobTtl` caps requested TTL values. `recursive.timeout.childResponseSafetyBuffer` is subtracted from the current tier’s job deadline to determine when waiting for direct child responses stops. The remaining time is reserved for local aggregation and, for a non-root job, sending the response upstream before the local hard deadline is reached.
+A partner job inherits `header.expectedResponseBy` as its hard deadline; the root TTL maximum does not cap it. New partner requests require a future deadline. A repeated request with a known `messageId` uses the existing job even after that deadline has passed; a terminal response may be resent.
+
+`recursive.timeout.childResponseSafetyBuffer` (`PT60S`) is subtracted from a job’s deadline for direct child responses only when more time remains at creation than the buffer. Otherwise the child-response deadline stays equal to the job deadline. `recursive.timeout.timeoutCheckInterval` (`PT30S`) controls expiry checks. Configuration requires positive default and maximum TTLs with the default no greater than the maximum, a nonnegative buffer, and an interval of at least 1 ms that fits in a Java long when converted to milliseconds.
 
 ### Partner setup
 

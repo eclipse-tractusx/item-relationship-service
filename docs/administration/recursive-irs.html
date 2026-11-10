@@ -1040,10 +1040,13 @@ pre.rouge {
 <p>Set <code>recursive.localBpnl</code> only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property <code>irs.recursive.localBpnl</code>, or the environment variable <code>IRS_RECURSIVE_LOCAL_BPNL</code>, remains required. The value identifies the local IRS instance when it sends recursive partner notifications.</p>
 </div>
 <div class="paragraph">
-<p><code>recursive.timeout.defaultJobTtl</code> defines the runtime of a root job when the start request does not provide an explicit TTL. For stable productive usage the default of <code>PT30M</code> gives slow partners enough time to answer. For short-lived test or demo scenarios <code>PT5M</code> can be used if the involved submodel providers and EDC negotiations are expected to answer quickly.</p>
+<p>For a root job, omitted or null <code>ttl</code> uses <code>recursive.timeout.defaultJobTtl</code> (<code>PT30M</code>). An explicit <code>ttl</code> must be a positive ISO-8601 duration; empty, malformed, zero and negative values return HTTP 400. A positive TTL can be shorter than the safety buffer. <code>recursive.timeout.maxJobTtl</code> (<code>PT2H</code>) caps requested root TTLs, and the effective TTL is added to the job creation time.</p>
 </div>
 <div class="paragraph">
-<p><code>recursive.timeout.maxJobTtl</code> caps requested TTL values. <code>recursive.timeout.childResponseSafetyBuffer</code> is subtracted from the current tier&#8217;s job deadline to determine when waiting for direct child responses stops. The remaining time is reserved for local aggregation and, for a non-root job, sending the response upstream before the local hard deadline is reached.</p>
+<p>A partner job inherits <code>header.expectedResponseBy</code> as its hard deadline; the root TTL maximum does not cap it. New partner requests require a future deadline. A repeated request with a known <code>messageId</code> uses the existing job even after that deadline has passed; a terminal response may be resent.</p>
+</div>
+<div class="paragraph">
+<p><code>recursive.timeout.childResponseSafetyBuffer</code> (<code>PT60S</code>) is subtracted from a job&#8217;s deadline for direct child responses only when more time remains at creation than the buffer. Otherwise the child-response deadline stays equal to the job deadline. <code>recursive.timeout.timeoutCheckInterval</code> (<code>PT30S</code>) controls expiry checks. Configuration requires positive default and maximum TTLs with the default no greater than the maximum, a nonnegative buffer, and an interval of at least 1 ms that fits in a Java long when converted to milliseconds.</p>
 </div>
 </div>
 </div>
@@ -1641,7 +1644,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-09-15 14:32:05 UTC
+Last updated 2026-11-10 10:29:35 UTC
 </div>
 </div>
 </body>
