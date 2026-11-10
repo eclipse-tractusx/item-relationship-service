@@ -5,6 +5,9 @@
             <PatternLayout
                     pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %encode{%msg}%n%throwable"/>
         </Console>
+        <Console name="Audit" target="SYSTEM_OUT">
+            <PatternLayout pattern="AUDIT %d{ISO8601} %encode{%msg}{CRLF} trace_id=%X{traceId}%n"/>
+        </Console>
     </Appenders>
 
     <Loggers>
@@ -13,6 +16,10 @@
         </Root>
 
         <Logger name="org.eclipse.tractusx.irs" level="info"/>
+        <!-- Audit lines (children .recursive and .policystore), enabled per operator via logging.level -->
+        <Logger name="org.eclipse.tractusx.irs.audit" level="off" additivity="false">
+            <AppenderRef ref="Audit"/>
+        </Logger>
         <Logger name="org.eclipse.tractusx.edc" level="debug"/>
         <Logger name="org.eclipse.tractusx.ess" level="info"/>
         <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>

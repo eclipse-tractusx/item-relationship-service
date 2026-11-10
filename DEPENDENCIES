@@ -1,3 +1,4 @@
+maven/mavencentral/aopalliance/aopalliance/1.0, LicenseRef-Public-Domain, approved, CQ2918
 maven/mavencentral/ch.qos.logback/logback-classic/1.5.34, EPL-1.0 AND LGPL-2.1-only, approved, #18704
 maven/mavencentral/ch.qos.logback/logback-core/1.5.34, EPL-1.0 AND LGPL-2.1-only, approved, #15210
 maven/mavencentral/com.aayushatharva.brotli4j/brotli4j/1.11.0, Apache-2.0, approved, clearlydefined
@@ -141,11 +142,14 @@ maven/mavencentral/io.github.resilience4j/resilience4j-spring-boot3/2.1.0, Apach
 maven/mavencentral/io.github.resilience4j/resilience4j-spring6/2.1.0, Apache-2.0, approved, #10915
 maven/mavencentral/io.github.resilience4j/resilience4j-timelimiter/2.1.0, Apache-2.0, approved, #10166
 maven/mavencentral/io.lettuce/lettuce-core/6.6.0.RELEASE, MIT, approved, clearlydefined
+maven/mavencentral/io.micrometer/context-propagation/1.1.4, Apache-2.0, approved, #26109
 maven/mavencentral/io.micrometer/micrometer-commons/1.15.12, Apache-2.0 AND (Apache-2.0 AND MIT), approved, #23144
 maven/mavencentral/io.micrometer/micrometer-core/1.15.12, Apache-2.0 AND (Apache-2.0 AND MIT), approved, #23142
 maven/mavencentral/io.micrometer/micrometer-jakarta9/1.15.12, Apache-2.0, approved, #23028
 maven/mavencentral/io.micrometer/micrometer-observation/1.15.12, Apache-2.0, approved, #23139
 maven/mavencentral/io.micrometer/micrometer-registry-prometheus/1.15.12, Apache-2.0, approved, #22210
+maven/mavencentral/io.micrometer/micrometer-tracing-bridge-otel/1.5.12, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.micrometer/micrometer-tracing/1.5.12, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.minio/minio/8.6.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.netty.incubator/netty-incubator-transport-classes-io_uring/0.0.21.Final, Apache-2.0, approved, #9622
 maven/mavencentral/io.netty.incubator/netty-incubator-transport-native-io_uring/0.0.21.Final, GPL-2.0-only WITH Linux-syscall-note OR MIT AND Apache-2.0 AND MIT, approved, #9649
@@ -185,10 +189,15 @@ maven/mavencentral/io.netty/netty-transport-native-kqueue/4.1.118.Final, Apache-
 maven/mavencentral/io.netty/netty-transport-native-kqueue/4.1.137.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-transport-native-unix-common/4.1.137.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
 maven/mavencentral/io.netty/netty-transport/4.1.137.Final, Apache-2.0 AND BSD-3-Clause AND MIT, approved, CQ20926
-maven/mavencentral/io.opentelemetry/opentelemetry-api/1.32.0, Apache-2.0, approved, #11682
+maven/mavencentral/io.opentelemetry.semconv/opentelemetry-semconv/1.32.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.opentelemetry/opentelemetry-api/1.49.0, Apache-2.0, approved, #23689
-maven/mavencentral/io.opentelemetry/opentelemetry-context/1.32.0, Apache-2.0, approved, #11683
 maven/mavencentral/io.opentelemetry/opentelemetry-context/1.49.0, Apache-2.0, approved, #23684
+maven/mavencentral/io.opentelemetry/opentelemetry-extension-trace-propagators/1.49.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.opentelemetry/opentelemetry-sdk-common/1.49.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.opentelemetry/opentelemetry-sdk-logs/1.49.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.opentelemetry/opentelemetry-sdk-metrics/1.49.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.opentelemetry/opentelemetry-sdk-trace/1.49.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.opentelemetry/opentelemetry-sdk/1.49.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.pebbletemplates/pebble/3.2.1, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/io.projectreactor.netty/reactor-netty-core/1.0.48, Apache-2.0, approved, #9687
 maven/mavencentral/io.projectreactor.netty/reactor-netty-core/1.2.18, Apache-2.0, approved, #23393

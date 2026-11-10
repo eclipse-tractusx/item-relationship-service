@@ -23,6 +23,9 @@ import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -46,6 +49,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveErrorResponse;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveUseCase;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveChainOpeningGrantNotFoundException;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveChainOpeningGrantService;
+import org.eclipse.tractusx.irs.recursive.util.RecursiveAuditLogger;
 import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
 import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 import org.springframework.http.HttpStatus;
@@ -151,6 +155,7 @@ public class RecursiveChainOpeningGrantController {
                 RecursiveLogValue.of(grant.getGlobalAssetId()), RecursiveLogValue.of(grant.getRequesterBpn()),
                 RecursiveLogValue.of(grant.getUseCase().name()));
         final RecursiveChainOpeningGrant storedGrant = chainOpeningGrantService.registerGrant(grant);
+        auditGrant("CREATE_GRANT", storedGrant);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(storedGrant);
     }
@@ -269,6 +274,7 @@ public class RecursiveChainOpeningGrantController {
     public ResponseEntity<RecursiveChainOpeningGrant> replaceGrant(
             final @Valid @RequestBody RecursiveChainOpeningGrant grant) {
         final RecursiveChainOpeningGrant storedGrant = chainOpeningGrantService.replaceGrant(grant);
+        auditGrant("PUT_GRANT", storedGrant);
         return ResponseEntity.ok(storedGrant);
     }
 
@@ -330,8 +336,26 @@ public class RecursiveChainOpeningGrantController {
             @NotNull
             final @RequestParam(name = "useCase") RecursiveUseCase useCase) {
         if (chainOpeningGrantService.deleteGrant(openingId, globalAssetId, requesterBpn, useCase)) {
+            RecursiveAuditLogger.LOG.info("action=DELETE_GRANT openingId={} globalAssetId={} requesterBpn={} useCase={}",
+                    RecursiveLogValue.of(openingId), RecursiveLogValue.of(globalAssetId),
+                    RecursiveLogValue.of(requesterBpn), useCase.name());
             return ResponseEntity.noContent().build();
         }
         throw new RecursiveChainOpeningGrantNotFoundException();
+    }
+
+    private static void auditGrant(final String action, final RecursiveChainOpeningGrant grant) {
+        RecursiveAuditLogger.LOG.info("action={} openingId={} globalAssetId={} requesterBpn={} useCase={} allowedBpnls={} "
+                        + "validFrom={} validTo={}", action, RecursiveLogValue.of(grant.getOpeningId()),
+                RecursiveLogValue.of(grant.getGlobalAssetId()), RecursiveLogValue.of(grant.getRequesterBpn()),
+                grant.getUseCase().name(),
+                auditBpnls(grant.getAllowedBpnlSet()),
+                RecursiveLogValue.of(Objects.toString(grant.getValidFrom(), null)),
+                RecursiveLogValue.of(Objects.toString(grant.getValidTo(), null)));
+    }
+
+    private static String auditBpnls(final Set<String> bpnls) {
+        return bpnls == null ? RecursiveLogValue.of(null)
+                : bpnls.stream().map(RecursiveLogValue::of).sorted().collect(Collectors.joining(",", "[", "]"));
     }
 }
