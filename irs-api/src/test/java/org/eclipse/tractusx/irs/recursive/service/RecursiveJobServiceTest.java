@@ -20,6 +20,8 @@ package org.eclipse.tractusx.irs.recursive.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.recursive.RecursiveTestConstants.ATLAS_BPNL;
+import static org.eclipse.tractusx.irs.recursive.RecursiveTestConstants.BELFAST_BPNL;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -74,6 +76,8 @@ import org.eclipse.tractusx.irs.recursive.store.RecursiveChainOpeningGrantStore;
 import org.eclipse.tractusx.irs.recursive.store.RecursiveJobStateStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class RecursiveJobServiceTest {
 
@@ -1044,14 +1048,17 @@ class RecursiveJobServiceTest {
                         RecursiveTombstoneReason.CHILD_RESPONSE_TIMEOUT);
     }
 
-    @Test
-    void shouldHandleIncomingNotificationRequest() {
-        recursiveProperties.setLocalBpnl("BPNL0000BELF0001");
+    @ParameterizedTest
+    @ValueSource(strings = { "2026-11-03T12:10:00Z", "2026-11-03T13:10:00+01:00",
+            "2026-11-03T07:10:00-05:00" })
+    void shouldHandleIncomingNotificationRequest(final String expectedResponseBy) {
+        clock.set(Clock.fixed(Instant.parse("2026-11-03T12:00:00Z"), ZoneOffset.UTC));
+        recursiveProperties.setLocalBpnl(BELFAST_BPNL);
         final RecursiveNotificationMessage notification = RecursiveNotificationMessage.builder()
                 .header(notificationHeader(UUID.randomUUID().toString())
-                        .senderBpnl("BPNL0000ATLS0001")
-                        .receiverBpnl("BPNL0000BELF0001")
-                        .expectedResponseBy(Instant.now().plus(Duration.ofMinutes(10)).toString())
+                        .senderBpnl(ATLAS_BPNL)
+                        .receiverBpnl(BELFAST_BPNL)
+                        .expectedResponseBy(expectedResponseBy)
                         .build())
                 .content(RecursiveNotificationMessage.Content.builder()
                         .type(RecursiveNotificationType.REQUEST)
@@ -1065,9 +1072,41 @@ class RecursiveJobServiceTest {
 
         grantStore.store(childGrant());
 
-        jobService.handleNotification(notification);
+        assertThat(jobService.handleNotification(notification)).isTrue();
 
         assertThat(jobService.getAllJobs()).hasSize(1);
+        assertThat(jobs.values()).singleElement().satisfies(state ->
+                assertThat(state.getDeadline().toInstant()).isEqualTo(Instant.parse("2026-11-03T12:10:00Z")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "2026-11-03T11:59:59Z", "2026-11-03T12:00:00Z",
+            "2026-11-03T13:00:00+01:00", "2026-11-03T07:00:00-05:00", "-999999999-01-01T00:00:00Z" })
+    void shouldRejectExpiredNewChildRequestWithoutSchedulingJob(final String expectedResponseBy) {
+        clock.set(Clock.fixed(Instant.parse("2026-11-03T12:00:00Z"), ZoneOffset.UTC));
+        recursiveProperties.setLocalBpnl(BELFAST_BPNL);
+        grantStore.store(childGrant());
+        final List<Runnable> queuedTasks = new ArrayList<>();
+        recursiveJobExecutor = queuedTasks::add;
+        final List<RecursiveNotificationMessage> sentResponses = new ArrayList<>();
+        notificationSender = recordingResponseSender(sentResponses);
+        final RecursiveNotificationMessage notification =
+                incomingRequest(UUID.randomUUID().toString(), expectedResponseBy);
+
+        assertThat(jobService.handleNotification(notification)).isFalse();
+
+        assertThat(jobs).isEmpty();
+        assertThat(messageIds).isEmpty();
+        assertThat(queuedTasks).isEmpty();
+        assertThat(sentResponses).singleElement().satisfies(response -> {
+            assertThat(response.getHeader().getRelatedMessageId())
+                    .isEqualTo(notification.getHeader().getMessageId());
+            assertThat(response.getHeader().getReceiverBpnl()).isEqualTo(notification.getHeader().getSenderBpnl());
+            assertThat(response.getContent().getStatus()).isEqualTo(RecursiveResponseStatus.FAILED);
+            assertThat(response.getContent().getResult().getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
+            assertThat(response.getContent().getResult().getTombstones()).singleElement().satisfies(tombstone ->
+                    assertThat(tombstone.getReason()).isEqualTo(RecursiveTombstoneReason.CHILD_BRANCH_FAILED));
+        });
     }
 
     @Test
@@ -1163,13 +1202,15 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldIgnoreDuplicateNotification() {
-        recursiveProperties.setLocalBpnl("BPNL0000BELF0001");
+        recursiveProperties.setLocalBpnl(BELFAST_BPNL);
+        final List<Runnable> queuedTasks = new ArrayList<>();
+        recursiveJobExecutor = queuedTasks::add;
         final String messageId = UUID.randomUUID().toString();
 
         final RecursiveNotificationMessage notification = RecursiveNotificationMessage.builder()
                 .header(notificationHeader(messageId)
-                        .senderBpnl("BPNL0000ATLS0001")
-                        .receiverBpnl("BPNL0000BELF0001")
+                        .senderBpnl(ATLAS_BPNL)
+                        .receiverBpnl(BELFAST_BPNL)
                         .expectedResponseBy(Instant.now().plus(Duration.ofMinutes(10)).toString())
                         .build())
                 .content(RecursiveNotificationMessage.Content.builder()
@@ -1185,9 +1226,12 @@ class RecursiveJobServiceTest {
         grantStore.store(childGrant());
 
         jobService.handleNotification(notification);
-        jobService.handleNotification(notification); // duplicate
+        clock.set(Clock.fixed(Instant.parse(notification.getHeader().getExpectedResponseBy()).plusSeconds(1),
+                ZoneOffset.UTC));
+        assertThat(jobService.handleNotification(notification)).isTrue();
 
-        assertThat(jobService.getAllJobs()).hasSize(1); // only one job
+        assertThat(jobService.getAllJobs()).hasSize(1);
+        assertThat(queuedTasks).hasSize(1);
     }
 
     @Test
@@ -1323,40 +1367,37 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldResendParentResponseForDuplicateRequestOnTerminalChildJob() {
-        recursiveProperties.setLocalBpnl("BPNL0000BELF0001");
+        recursiveProperties.setLocalBpnl(BELFAST_BPNL);
         final List<RecursiveNotificationMessage> sentResponses = new ArrayList<>();
-        notificationSender = new RecursiveNotificationSender() {
-            @Override
-            public void sendRequest(final String receiverBpnl, final RecursiveNotificationMessage message) {
-                // leaf job sends no child requests
-            }
-
-            @Override
-            public void sendResponse(final String receiverBpnl, final RecursiveNotificationMessage message) {
-                sentResponses.add(message);
-            }
-        };
+        notificationSender = recordingResponseSender(sentResponses);
         grantStore.store(childGrant());
         final String messageId = UUID.randomUUID().toString();
+        final RecursiveNotificationMessage request = incomingRequest(messageId);
 
-        jobService.handleNotification(incomingRequest(messageId));
+        assertThat(jobService.handleNotification(request)).isTrue();
         assertThat(sentResponses).hasSize(1);
 
-        // The parent retries after a restart: the child answers the duplicate with its result
-        // again instead of leaving the parent waiting for the timeout.
-        jobService.handleNotification(incomingRequest(messageId));
+        clock.set(Clock.fixed(Instant.parse(request.getHeader().getExpectedResponseBy()).plusSeconds(1),
+                ZoneOffset.UTC));
+        assertThat(jobService.handleNotification(request)).isTrue();
 
         assertThat(jobService.getAllJobs()).hasSize(1);
         assertThat(sentResponses).hasSize(2);
         assertThat(sentResponses.get(1).getHeader().getRelatedMessageId()).isEqualTo(messageId);
+        assertThat(sentResponses.get(1).getContent().getResult())
+                .isEqualTo(sentResponses.get(0).getContent().getResult());
     }
 
     private RecursiveNotificationMessage incomingRequest(final String messageId) {
+        return incomingRequest(messageId, Instant.now().plus(Duration.ofMinutes(10)).toString());
+    }
+
+    private RecursiveNotificationMessage incomingRequest(final String messageId, final String expectedResponseBy) {
         return RecursiveNotificationMessage.builder()
                 .header(notificationHeader(messageId)
-                        .senderBpnl("BPNL0000ATLS0001")
-                        .receiverBpnl("BPNL0000BELF0001")
-                        .expectedResponseBy(Instant.now().plus(Duration.ofMinutes(10)).toString())
+                        .senderBpnl(ATLAS_BPNL)
+                        .receiverBpnl(BELFAST_BPNL)
+                        .expectedResponseBy(expectedResponseBy)
                         .build())
                 .content(RecursiveNotificationMessage.Content.builder()
                         .type(RecursiveNotificationType.REQUEST)
@@ -1410,6 +1451,21 @@ class RecursiveJobServiceTest {
             @Override
             public void sendResponse(final String receiverBpnl, final RecursiveNotificationMessage message) {
                 // not needed for root job
+            }
+        };
+    }
+
+    private RecursiveNotificationSender recordingResponseSender(
+            final List<RecursiveNotificationMessage> sentResponses) {
+        return new RecursiveNotificationSender() {
+            @Override
+            public void sendRequest(final String receiverBpnl, final RecursiveNotificationMessage message) {
+                throw new AssertionError("Unexpected child request");
+            }
+
+            @Override
+            public void sendResponse(final String receiverBpnl, final RecursiveNotificationMessage message) {
+                sentResponses.add(message);
             }
         };
     }

@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.recursive;
 public final class RecursiveTestConstants {
 
     public static final String ATLAS_BPNL = "BPNL0000ATLS0001";
+    public static final String BELFAST_BPNL = "BPNL0000BELF0001";
     public static final String REMOTE_BPNL = "BPNL00000000015G";
 
     private RecursiveTestConstants() {

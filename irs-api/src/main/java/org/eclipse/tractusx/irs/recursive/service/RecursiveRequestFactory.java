@@ -19,6 +19,7 @@
 package org.eclipse.tractusx.irs.recursive.service;
 
 import java.time.Clock;
+import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
@@ -30,7 +31,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.recursive.config.RecursiveProperties;
@@ -47,7 +47,6 @@ import org.eclipse.tractusx.irs.recursive.util.RecursiveGlobalAssetId;
  * resolution (TTL for root jobs, inherited {@code expectedResponseBy} for
  * child jobs) and message-id handling.
  */
-@Slf4j
 @RequiredArgsConstructor
 class RecursiveRequestFactory {
 
@@ -136,27 +135,33 @@ class RecursiveRequestFactory {
             }
             return inheritedDeadline;
         }
-        return creationTime.plus(effectiveJobTtl(request.getTtl()));
+        final Duration ttl = effectiveJobTtl(request.getTtl());
+        try {
+            return creationTime.plus(ttl);
+        } catch (final DateTimeException | ArithmeticException e) {
+            throw new IllegalArgumentException("ttl exceeds the supported deadline range", e);
+        }
     }
 
     private Duration effectiveJobTtl(final String ttl) {
         final RecursiveProperties.Timeout timeout = properties.getTimeout();
         Duration requestedTtl = timeout.getDefaultJobTtl();
-        if (ttl != null && !ttl.isBlank()) {
+        if (ttl != null) {
             try {
                 requestedTtl = Duration.parse(ttl);
-            } catch (final DateTimeParseException e) {
-                log.warn("Could not parse recursive job ttl, using {}", timeout.getDefaultJobTtl());
-                requestedTtl = timeout.getDefaultJobTtl();
+            } catch (final DateTimeParseException | ArithmeticException e) {
+                throw new IllegalArgumentException("ttl must be a positive ISO-8601 duration", e);
+            }
+            if (requestedTtl.isZero() || requestedTtl.isNegative()) {
+                throw new IllegalArgumentException("ttl must be a positive ISO-8601 duration");
             }
         }
         return requestedTtl.compareTo(timeout.getMaxJobTtl()) > 0 ? timeout.getMaxJobTtl() : requestedTtl;
     }
 
     private ZonedDateTime childResponseDeadline(final ZonedDateTime deadline, final ZonedDateTime referenceTime) {
-        final ZonedDateTime bufferedDeadline =
-                deadline.minus(properties.getTimeout().getChildResponseSafetyBuffer());
-        return bufferedDeadline.isAfter(referenceTime) ? bufferedDeadline : deadline;
+        final Duration buffer = properties.getTimeout().getChildResponseSafetyBuffer();
+        return Duration.between(referenceTime, deadline).compareTo(buffer) > 0 ? deadline.minus(buffer) : deadline;
     }
 
     /**

@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Clock;
+import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -32,24 +34,116 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveJobRequest;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class RecursiveRequestFactoryTest {
 
     private static final String GLOBAL_ASSET_ID = "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b";
     private static final String LOCAL_BPNL = "BPNL0000LOCAL001";
+    private static final ZonedDateTime NOW = ZonedDateTime.parse("2026-01-01T00:00:00Z");
     private static final RecursiveUseCase USE_CASE = RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE;
     private static final String ITEM_STOCK_ANONYMIZED =
             RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId();
     private static final String DELIVERY_INFORMATION_ANONYMIZED =
             RecursiveAspect.DELIVERY_INFORMATION_ANONYMIZED.getSemanticId();
 
+    private RecursiveProperties properties;
     private RecursiveRequestFactory factory;
 
     @BeforeEach
     void setUp() {
-        final RecursiveProperties properties = new RecursiveProperties();
+        properties = new RecursiveProperties();
         properties.setLocalBpnl(LOCAL_BPNL);
-        factory = new RecursiveRequestFactory(properties, Clock.systemUTC());
+        properties.getTimeout().setDefaultJobTtl(Duration.ofMinutes(45));
+        factory = new RecursiveRequestFactory(properties, Clock.fixed(NOW.toInstant(), NOW.getZone()));
+    }
+
+    @Test
+    void rootJobUsesConfiguredDefaultWhenTtlIsMissing() {
+        final RecursiveJobRequest request = RecursiveJobRequest.builder()
+                .useCase(USE_CASE)
+                .globalAssetId(GLOBAL_ASSET_ID)
+                .build();
+
+        final RecursiveRequestFactory.PreparedRecursiveJob prepared = factory.prepare(request, true, null, null);
+
+        assertThat(prepared.createdOn()).isEqualTo(NOW);
+        assertThat(prepared.deadline()).isEqualTo(NOW.plusMinutes(45));
+        assertThat(prepared.childResponseDeadline()).isEqualTo(NOW.plusMinutes(44));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "PT15M", "PT1S", "PT0.000000001S" })
+    void rootJobAcceptsPositiveTtl(final String ttl) {
+        final RecursiveJobRequest request = RecursiveJobRequest.builder()
+                .useCase(USE_CASE)
+                .globalAssetId(GLOBAL_ASSET_ID)
+                .ttl(ttl)
+                .build();
+
+        final RecursiveRequestFactory.PreparedRecursiveJob prepared = factory.prepare(request, true, null, null);
+
+        assertThat(prepared.deadline()).isEqualTo(NOW.plus(Duration.parse(ttl)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "PT3H", "PT1000000000000000H" })
+    void rootJobCapsLargeTtlBeforeCalculatingDeadline(final String ttl) {
+        final RecursiveJobRequest request = RecursiveJobRequest.builder()
+                .useCase(USE_CASE)
+                .globalAssetId(GLOBAL_ASSET_ID)
+                .ttl(ttl)
+                .build();
+
+        final RecursiveRequestFactory.PreparedRecursiveJob prepared = factory.prepare(request, true, null, null);
+
+        assertThat(prepared.deadline()).isEqualTo(NOW.plusHours(2));
+        assertThat(prepared.childResponseDeadline()).isEqualTo(NOW.plusHours(2).minusMinutes(1));
+    }
+
+    @Test
+    void rootJobRejectsDefaultTtlBeyondSupportedDeadlineRange() {
+        final Duration oversizedTtl = Duration.parse("PT1000000000000000H");
+        properties.getTimeout().setDefaultJobTtl(oversizedTtl);
+        properties.getTimeout().setMaxJobTtl(oversizedTtl);
+        final RecursiveJobRequest request = RecursiveJobRequest.builder()
+                .useCase(USE_CASE)
+                .globalAssetId(GLOBAL_ASSET_ID)
+                .build();
+
+        assertThatThrownBy(() -> factory.prepare(request, true, null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("ttl exceeds the supported deadline range")
+                .hasCauseInstanceOf(DateTimeException.class);
+    }
+
+    @Test
+    void shortTtlUsesUnbufferedChildDeadline() {
+        final RecursiveJobRequest request = RecursiveJobRequest.builder()
+                .useCase(USE_CASE)
+                .globalAssetId(GLOBAL_ASSET_ID)
+                .ttl("PT0.000000001S")
+                .build();
+
+        final RecursiveRequestFactory.PreparedRecursiveJob prepared = factory.prepare(request, true, null, null);
+
+        assertThat(prepared.childResponseDeadline()).isEqualTo(prepared.deadline());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "", " ", "\t", "not-a-duration", "PT0S", "-PT1S",
+            "PT999999999999999999999999999999999S" })
+    void rootJobRejectsInvalidTtl(final String ttl) {
+        final RecursiveJobRequest request = RecursiveJobRequest.builder()
+                .useCase(USE_CASE)
+                .globalAssetId(GLOBAL_ASSET_ID)
+                .ttl(ttl)
+                .build();
+
+        assertThatThrownBy(() -> factory.prepare(request, true, null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("ttl must be a positive ISO-8601 duration");
     }
 
     @Test
@@ -70,17 +164,21 @@ class RecursiveRequestFactoryTest {
 
     @Test
     void childRequestKeepsParentRequesterBpn() {
+        final ZonedDateTime inheritedDeadline = NOW.plusMinutes(10);
         final RecursiveJobRequest request = RecursiveJobRequest.builder()
                 .openingId("opening-42")
                 .useCase(USE_CASE)
                 .globalAssetId(GLOBAL_ASSET_ID)
                 .requesterBpn("BPNL0000PARENT01")
+                .ttl("not-a-duration")
                 .build();
 
         final RecursiveRequestFactory.PreparedRecursiveJob prepared =
-                factory.prepare(request, false, ZonedDateTime.now().plusMinutes(10), "parent-msg-id");
+                factory.prepare(request, false, inheritedDeadline, "parent-msg-id");
 
         assertThat(prepared.requesterBpnl()).isEqualTo("BPNL0000PARENT01");
+        assertThat(prepared.deadline()).isEqualTo(inheritedDeadline);
+        assertThat(prepared.childResponseDeadline()).isEqualTo(inheritedDeadline.minusMinutes(1));
     }
 
     @Test

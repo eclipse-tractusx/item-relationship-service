@@ -21,7 +21,9 @@ package org.eclipse.tractusx.irs.recursive.config;
 import java.time.Duration;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
@@ -56,6 +58,7 @@ public class RecursiveProperties {
      * Deadline and timeout settings for recursive jobs.
      */
     @Valid
+    @NotNull
     private Timeout timeout = new Timeout();
 
     /**
@@ -64,25 +67,57 @@ public class RecursiveProperties {
     @Data
     public static class Timeout {
 
+        private static final Duration MAX_CHECK_INTERVAL_EXCLUSIVE = Duration.ofMillis(Long.MAX_VALUE).plusMillis(1);
+
         /**
          * Default TTL for root requests when no TTL is provided.
          */
+        @NotNull
         private Duration defaultJobTtl = Duration.ofMinutes(DEFAULT_JOB_TTL_MINUTES);
 
         /**
          * Upper bound for accepted root request TTLs.
          */
+        @NotNull
         private Duration maxJobTtl = Duration.ofHours(MAX_JOB_TTL_HOURS);
 
         /**
          * Buffer subtracted before forwarding the deadline to a child IRS.
          */
+        @NotNull
         private Duration childResponseSafetyBuffer = Duration.ofSeconds(CHILD_RESPONSE_SAFETY_BUFFER_SECONDS);
 
         /**
          * How often the timeout monitor checks waiting recursive jobs.
          */
+        @NotNull
         private Duration timeoutCheckInterval = Duration.ofSeconds(TIMEOUT_CHECK_INTERVAL_SECONDS);
+
+        @AssertTrue(message = "defaultJobTtl must be positive")
+        public boolean isDefaultJobTtlPositive() {
+            return defaultJobTtl == null || defaultJobTtl.compareTo(Duration.ZERO) > 0;
+        }
+
+        @AssertTrue(message = "maxJobTtl must be positive")
+        public boolean isMaxJobTtlPositive() {
+            return maxJobTtl == null || maxJobTtl.compareTo(Duration.ZERO) > 0;
+        }
+
+        @AssertTrue(message = "defaultJobTtl must not exceed maxJobTtl")
+        public boolean isDefaultJobTtlWithinMaxJobTtl() {
+            return defaultJobTtl == null || maxJobTtl == null || defaultJobTtl.compareTo(maxJobTtl) <= 0;
+        }
+
+        @AssertTrue(message = "childResponseSafetyBuffer must not be negative")
+        public boolean isChildResponseSafetyBufferNonNegative() {
+            return childResponseSafetyBuffer == null || !childResponseSafetyBuffer.isNegative();
+        }
+
+        @AssertTrue(message = "timeoutCheckInterval must be at least 1 ms and fit in a long as milliseconds")
+        public boolean isTimeoutCheckIntervalUsable() {
+            return timeoutCheckInterval == null || timeoutCheckInterval.compareTo(Duration.ofMillis(1)) >= 0
+                    && timeoutCheckInterval.compareTo(MAX_CHECK_INTERVAL_EXCLUSIVE) < 0;
+        }
     }
 
 }

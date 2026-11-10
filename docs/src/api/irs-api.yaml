@@ -2831,7 +2831,9 @@ components:
         expectedResponseBy:
           type: string
           description: REQUEST only. ISO 8601 timestamp by which the child should
-            respond. Must be omitted for RESPONSE messages.
+            respond. New requests require a future timestamp. Repeated requests with a known messageId use the existing
+            job even after the timestamp has passed.
+            Must be omitted for RESPONSE messages.
           pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
         messageId:
           type: string
@@ -3530,10 +3532,12 @@ components:
           pattern: "^(?:BPNL[0-9A-Za-z]{12})?$"
         ttl:
           type: string
-          description: "Job time-to-live as ISO 8601 duration, e.g. PT30M. Defaults\
-            \ to irs.recursive.timeout.defaultJobTtl and is capped at maxJobTtl. Each\
-            \ hop passes the remaining budget minus a safety buffer to the child\
-            \ as the child response deadline."
+          nullable: true
+          description: "Root-job time-to-live as a positive ISO 8601 duration, e.g. PT30M. Omitted or null values\
+            \ use irs.recursive.timeout.defaultJobTtl. Empty, malformed, zero and negative durations return 400.\
+            \ Positive durations shorter than the safety buffer are accepted. Root TTLs above\
+            \ maxJobTtl are capped; inherited partner deadlines are not. Child requests use the job deadline minus\
+            \ the safety buffer only when more time remains than the buffer; otherwise they use the unchanged job deadline."
           pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]*$"
         useCase:
           type: string
