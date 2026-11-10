@@ -576,7 +576,7 @@ The Policy Store is shared by the recursive and the regular IRS, because its pol
 
 The previous state of a grant is the preceding line with the same `openingId`, `globalAssetId`, `requesterBpn` and `useCase`. Rejected calls, read-only calls and calls stopped by authentication or authorization are not audited; rejected calls remain visible in the regular log with their `errorRef`. A missing value is written as `<null>`. Values of the recursive API pass the same sanitizing as all recursive log values (`<invalid>` for a value with control characters); line breaks are encoded in every audit line. Audit lines contain no policy content, no notification payloads and no API keys.
 
-Each line starts with the fixed prefix `AUDIT ` without color codes and ends with the trace ID of the call:
+Each line starts with the fixed prefix `AUDIT` and a space, without color codes, and ends with the trace ID of the call:
 
 [source]
 ----
@@ -584,7 +584,7 @@ AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetI
 AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
 ----
 
-A log collector can route lines that start with `AUDIT ` to a separate audit storage.
+A log collector can route lines that start with this prefix to a separate audit storage.
 
 === Correlation with the caller
 
