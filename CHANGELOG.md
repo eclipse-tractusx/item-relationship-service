@@ -10,7 +10,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Added
 
-- Add an optional audit log for grant changes, job starts and incoming notifications of the recursive API, enabled through the log level of `org.eclipse.tractusx.irs.audit`, and take over the trace ID of an incoming W3C `traceparent` header with Micrometer Tracing ([#1051](https://github.com/eclipse-tractusx/item-relationship-service/pull/1051))
+- Add an optional audit log for grant changes, job starts and incoming notifications of the recursive API, enabled through the log level of `org.eclipse.tractusx.irs.audit` or the Helm value `auditLog.enabled`, and take over the trace ID of an incoming W3C `traceparent` header with Micrometer Tracing ([#1051](https://github.com/eclipse-tractusx/item-relationship-service/pull/1051))
 - Add audit lines for changes in the Policy Store (`CREATE_POLICY`, `UPDATE_POLICY`, `DELETE_POLICY`, `REMOVE_POLICY_BPNL`), enabled through the same log level ([#1051](https://github.com/eclipse-tractusx/item-relationship-service/pull/1051))
 
 ### Changed
