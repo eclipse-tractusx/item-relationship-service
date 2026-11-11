@@ -28,6 +28,8 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveErrorResponse;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationMessage;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveNotificationResponse;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveNotificationReceiver;
+import org.eclipse.tractusx.irs.recursive.util.RecursiveAuditLogger;
+import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
 import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -110,6 +112,14 @@ public class RecursiveNotificationController {
                             + "for REQUEST and RESPONSE field rules.",
                     content = @Content(schema = @Schema(implementation = RecursiveNotificationMessage.class)))
             @RequestBody final JsonNode payload) {
-        return ResponseEntity.ok(notificationReceiver.receive(edcBpnl, payload));
+        final RecursiveNotificationResponse response = notificationReceiver.receive(edcBpnl, payload);
+        RecursiveAuditLogger.LOG.info(
+                "action=RECEIVE_NOTIFICATION senderBpn={} messageId={} relatedMessageId={} type={} openingId={} "
+                        + "status={}", RecursiveLogValue.of(edcBpnl), RecursiveLogValue.of(response.getMessageId()),
+                RecursiveLogValue.of(payload.path("header").path("relatedMessageId").asText(null)),
+                RecursiveLogValue.of(payload.path("content").path("type").asText(null)),
+                RecursiveLogValue.of(payload.path("content").path("openingId").asText(null)),
+                RecursiveLogValue.of(response.getStatus()));
+        return ResponseEntity.ok(response);
     }
 }
