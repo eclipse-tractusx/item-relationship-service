@@ -335,13 +335,10 @@ public class RecursiveChainOpeningGrantController {
             @Parameter(description = "Recursive use case.", example = "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE")
             @NotNull
             final @RequestParam(name = "useCase") RecursiveUseCase useCase) {
-        if (chainOpeningGrantService.deleteGrant(openingId, globalAssetId, requesterBpn, useCase)) {
-            RecursiveAuditLogger.LOG.info("action=DELETE_GRANT openingId={} globalAssetId={} requesterBpn={} useCase={}",
-                    RecursiveLogValue.of(openingId), RecursiveLogValue.of(globalAssetId),
-                    RecursiveLogValue.of(requesterBpn), useCase.name());
-            return ResponseEntity.noContent().build();
-        }
-        throw new RecursiveChainOpeningGrantNotFoundException();
+        final RecursiveChainOpeningGrant deletedGrant = chainOpeningGrantService.deleteGrant(openingId, globalAssetId,
+                requesterBpn, useCase).orElseThrow(RecursiveChainOpeningGrantNotFoundException::new);
+        auditGrant("DELETE_GRANT", deletedGrant);
+        return ResponseEntity.noContent().build();
     }
 
     private static void auditGrant(final String action, final RecursiveChainOpeningGrant grant) {

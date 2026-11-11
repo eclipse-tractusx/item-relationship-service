@@ -278,8 +278,11 @@ class RecursiveChainOpeningGrantServiceTest {
     void shouldDeleteGrantByFullKey() {
         store.store(validGrant());
 
-        assertThat(service.deleteGrant(OPENING_ID, PLAIN_GLOBAL_ASSET_ID, REQUESTER_BPN, USE_CASE)).isTrue();
-        assertThat(service.deleteGrant(OPENING_ID, GLOBAL_ASSET_ID, REQUESTER_BPN, USE_CASE)).isFalse();
+        assertThat(service.deleteGrant(OPENING_ID, PLAIN_GLOBAL_ASSET_ID, REQUESTER_BPN, USE_CASE))
+                .get()
+                .extracting(RecursiveChainOpeningGrant::getGlobalAssetId)
+                .isEqualTo(GLOBAL_ASSET_ID);
+        assertThat(service.deleteGrant(OPENING_ID, GLOBAL_ASSET_ID, REQUESTER_BPN, USE_CASE)).isEmpty();
     }
 
     @Test
@@ -290,7 +293,7 @@ class RecursiveChainOpeningGrantServiceTest {
                 REQUESTER_BPN, USE_CASE);
         when(grantStore.find(key)).thenReturn(java.util.Optional.empty());
 
-        assertThat(grantService.deleteGrant(OPENING_ID, GLOBAL_ASSET_ID, REQUESTER_BPN, USE_CASE)).isFalse();
+        assertThat(grantService.deleteGrant(OPENING_ID, GLOBAL_ASSET_ID, REQUESTER_BPN, USE_CASE)).isEmpty();
         verify(grantStore, never()).remove(key);
     }
 

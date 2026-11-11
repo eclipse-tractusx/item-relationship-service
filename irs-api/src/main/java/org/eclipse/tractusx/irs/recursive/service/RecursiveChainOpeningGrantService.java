@@ -183,12 +183,13 @@ public class RecursiveChainOpeningGrantService {
                 .toList();
     }
 
-    public boolean deleteGrant(final String openingId, final String globalAssetId, final String requesterBpn,
-            final RecursiveUseCase useCase) {
+    public Optional<RecursiveChainOpeningGrant> deleteGrant(final String openingId, final String globalAssetId,
+            final String requesterBpn, final RecursiveUseCase useCase) {
         final String canonicalGlobalAssetId = RecursiveGlobalAssetId.canonicalize(globalAssetId);
         final RecursiveChainOpeningGrantKey key = new RecursiveChainOpeningGrantKey(openingId, canonicalGlobalAssetId,
                 requesterBpn, useCase);
-        return grantStore.find(key).isPresent() && grantStore.remove(key);
+        final Optional<RecursiveChainOpeningGrant> grant = grantStore.find(key);
+        return grant.isPresent() && grantStore.remove(key) ? grant : Optional.empty();
     }
 
     private RecursiveChainOpeningGrant normalizeGrant(final RecursiveChainOpeningGrant grant) {
