@@ -512,16 +512,35 @@ Chain opening grants are stored separately in the `irs-chain-opening-grants` con
 
 == Audit log
 
-A grant replacement overwrites the stored grant and a deletion removes it. To make such changes traceable, the recursive API and the Policy Store can write one audit line per successful state-changing call. The lines are written by the logger `org.eclipse.tractusx.irs.audit.recursive` below the parent logger `org.eclipse.tractusx.irs.audit`, which is switched off by default. Enable it through the log level, for example in the Helm values:
+*DISCLAIMER:* THE AUDIT LOG IS ONLY AVAILABLE FOR THE RECURSIVE IRS AND THE POLICY STORE. ALL OTHER APIS, FOR EXAMPLE THE REGULAR JOB API (`/irs/jobs`, `/irs/orders`, `/irs/ess/orders`) AND THE ESS API (`/ess`), ARE NOT AUDITED.
+
+A grant replacement overwrites the stored grant and a deletion removes it. To make such changes traceable, the recursive API and the Policy Store can write one audit line per successful state-changing call. The audit log is switched off by default. Enable it in the Helm values:
 
 [source,yaml]
 ----
-env:
-  - name: LOGGING_LEVEL_ORG_ECLIPSE_TRACTUSX_IRS_AUDIT
-    value: INFO
+auditLog:
+  enabled: true
 ----
 
-Outside the Helm chart, use the Spring property `logging.level.org.eclipse.tractusx.irs.audit=INFO`. Setting the level of a child logger switches only that part. The level can also be changed at runtime through the actuator loggers endpoint on the management port, using the admin API key:
+The chart then sets the log level `INFO` for the logger `org.eclipse.tractusx.irs.audit` through the environment variable `LOGGING_LEVEL_ORG_ECLIPSE_TRACTUSX_IRS_AUDIT`, also with `config.override`. Two child loggers write the lines:
+
+* `org.eclipse.tractusx.irs.audit.recursive` for the recursive API
+* `org.eclipse.tractusx.irs.audit.policystore` for the Policy Store
+
+Both inherit the level of the parent logger `org.eclipse.tractusx.irs.audit`, so `auditLog.enabled` switches both. To enable only one part, set the level of its child logger instead, for example through `config.content`:
+
+[source,yaml]
+----
+config:
+  content:
+    logging:
+      level:
+        org.eclipse.tractusx.irs.audit.policystore: INFO
+----
+
+All audit lines are written at level `INFO`, so only two levels are relevant: `OFF` (default) writes no audit lines, `INFO` writes all of them. `DEBUG` and `TRACE` behave like `INFO`; `WARN`, `ERROR` and `FATAL` behave like `OFF`.
+
+Outside the Helm chart, use the Spring property `logging.level.org.eclipse.tractusx.irs.audit=INFO`. The level can also be changed at runtime through the actuator loggers endpoint on the management port, using the admin API key:
 
 [source,bash]
 ----
@@ -545,7 +564,7 @@ curl -X POST "<management-url>/actuator/loggers/org.eclipse.tractusx.irs.audit" 
 
 | `DELETE /irs/recursive/chain-openings/grants`
 | `DELETE_GRANT`
-| `openingId`, `globalAssetId`, `requesterBpn`, `useCase` of the deleted grant
+| `openingId`, `globalAssetId`, `requesterBpn`, `useCase`, `allowedBpnls`, `validFrom`, `validTo` of the deleted grant
 
 | `POST /irs/recursive/jobs`
 | `START_JOB`
@@ -572,9 +591,9 @@ curl -X POST "<management-url>/actuator/loggers/org.eclipse.tractusx.irs.audit" 
 | `policyId`, `businessPartnerNumber`
 |===
 
-The Policy Store is shared by the recursive and the regular IRS, because its policies decide which partner offers are accepted. Its lines are written by the child logger `org.eclipse.tractusx.irs.audit.policystore`; the recursive lines by `org.eclipse.tractusx.irs.audit.recursive`.
+The Policy Store is shared by the recursive and the regular IRS, because its policies decide which partner offers are accepted. Its changes are therefore audited as well.
 
-The previous state of a grant is the preceding line with the same `openingId`, `globalAssetId`, `requesterBpn` and `useCase`. Rejected calls, read-only calls and calls stopped by authentication or authorization are not audited; rejected calls remain visible in the regular log with their `errorRef`. A missing value is written as `<null>`. Values of the recursive API pass the same sanitizing as all recursive log values (`<invalid>` for a value with control characters); line breaks are encoded in every audit line. Audit lines contain no policy content, no notification payloads and no API keys.
+The previous state of a grant is the preceding line with the same `openingId`, `globalAssetId`, `requesterBpn` and `useCase`. Grant lines carry the `globalAssetId` in its stored form `urn:uuid:<uuid>`, also when a call passes a plain UUID. Rejected calls, read-only calls and calls stopped by authentication or authorization are not audited; rejected calls remain visible in the regular log with their `errorRef`. A missing value is written as `<null>`. Values of the recursive API pass the same sanitizing as all recursive log values (`<invalid>` for a value with control characters); line breaks are encoded in every audit line. Audit lines contain no policy content, no notification payloads and no API keys.
 
 Each line starts with the fixed prefix `AUDIT` and a space, without color codes, and ends with the trace ID of the call:
 
