@@ -3,6 +3,7 @@
 #       2022: ISTOS GmbH
 #       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
 #       2022,2023: BOSCH AG
+# Copyright (c) 2026 Volkswagen AG
 # Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
@@ -102,6 +103,10 @@ spec:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: redisPassword
+            {{- end }}
+            {{- if .Values.auditLog.enabled }}
+            - name: LOGGING_LEVEL_ORG_ECLIPSE_TRACTUSX_IRS_AUDIT
+              value: "INFO"
             {{- end }}
             {{- if .Values.env }}
             {{- include "common.tplvalues.render" (dict "value" .Values.env "context" $) | nindent 12 }}

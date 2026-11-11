@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Added
+
+- Add `auditLog.enabled` to switch on the audit log of the recursive API and the Policy Store ([#1051](https://github.com/eclipse-tractusx/item-relationship-service/pull/1051))
+
 ## [9.1.0] - 2026-09-16
 
 ### Added
