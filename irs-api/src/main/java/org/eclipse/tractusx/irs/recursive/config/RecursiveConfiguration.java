@@ -29,6 +29,8 @@ import java.util.concurrent.Executors;
 import jakarta.validation.Validator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.context.ContextExecutorService;
+import io.micrometer.context.ContextSnapshotFactory;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
@@ -142,7 +144,9 @@ public class RecursiveConfiguration {
     @Bean(name = "recursiveJobExecutor", destroyMethod = "shutdown")
     public ExecutorService recursiveJobExecutor(
             @Value("${irs.job.recursive.threadCount:${irs.job.cached.threadCount:5}}") final int threadCount) {
-        return Executors.newFixedThreadPool(threadCount);
+        // Tasks keep the trace context of the submitting request, so calls to partners carry its trace ID.
+        return ContextExecutorService.wrap(Executors.newFixedThreadPool(threadCount),
+                ContextSnapshotFactory.builder().build());
     }
 
     @Bean

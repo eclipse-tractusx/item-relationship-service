@@ -31,6 +31,7 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveJobRequest;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobStartResponse;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobStatusResponse;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveJobService;
+import org.eclipse.tractusx.irs.recursive.util.RecursiveAuditLogger;
 import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -102,6 +103,9 @@ public class RecursiveJobController {
         log.info("POST /irs/recursive/jobs - openingId={}, useCase={}",
                 RecursiveLogValue.of(request.getOpeningId()), RecursiveLogValue.of(request.getUseCase().name()));
         final UUID jobId = jobService.startJob(request);
+        RecursiveAuditLogger.LOG.info("action=START_JOB jobId={} openingId={} globalAssetId={} useCase={}", jobId,
+                RecursiveLogValue.of(request.getOpeningId()), RecursiveLogValue.of(request.getGlobalAssetId()),
+                request.getUseCase().name());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(RecursiveJobStartResponse.builder().jobId(jobId).build());
     }

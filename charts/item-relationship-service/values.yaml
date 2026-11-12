@@ -127,6 +127,9 @@ recursive:
     childResponseSafetyBuffer: PT60S
     # -- Interval for expiry checks; at least 1 ms and must fit in a Java long when converted to milliseconds. ISO-8601 duration.
     timeoutCheckInterval: PT30S
+auditLog:
+  # -- Writes one audit line per successful state-changing call of the recursive API and the Policy Store by setting the log level INFO for the logger org.eclipse.tractusx.irs.audit. If false, the chart sets no level and the default OFF applies.
+  enabled: false
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
 ingress:

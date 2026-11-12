@@ -66,6 +66,8 @@ import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.eclipse.tractusx.irs.policystore.validators.BusinessPartnerNumberListValidator;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
 import org.eclipse.tractusx.irs.policystore.validators.ValidPolicyId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -106,6 +108,10 @@ public class PolicyStoreController {
     public static final String POLICY_API_TAG = "Policy Store API";
     public static final String API_KEY = "api_key";
     public static final int MAX_AUTOCOMPLETE_LIMIT = 100;
+
+    /** Audit lines of policy changes; level and appender come from the parent logger in log4j2.xml. */
+    private static final Logger AUDIT_LOG = LoggerFactory.getLogger("org.eclipse.tractusx.irs.audit.policystore");
+    private static final String NULL_VALUE = "<null>";
 
     private final PolicyStoreService service;
 
@@ -161,6 +167,9 @@ public class PolicyStoreController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Policy was not registered");
         }
 
+        AUDIT_LOG.info("action=CREATE_POLICY policyId={} businessPartnerNumber={} validUntil={}",
+                registeredPolicy.getPolicyId(), auditValue(request.businessPartnerNumber()),
+                auditValue(request.validUntil()));
         return CreatePoliciesResponse.fromPolicy(registeredPolicy);
     }
 
@@ -392,6 +401,7 @@ public class PolicyStoreController {
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void deleteAllowedPolicy(@ValidPolicyId @PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
+        AUDIT_LOG.info("action=DELETE_POLICY policyId={}", policyId);
     }
 
     @Operation(operationId = "removeAllowedPolicyFromBpnl",
@@ -425,6 +435,7 @@ public class PolicyStoreController {
             @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") //
             @PathVariable("bpnl") final String bpnl) {
         service.deletePolicyForEachBpn(policyId, List.of(bpnl));
+        AUDIT_LOG.info("action=REMOVE_POLICY_BPNL policyId={} businessPartnerNumber={}", policyId, bpnl);
     }
 
     @Operation(operationId = "updateAllowedPolicy", summary = "Updates existing policies.",
@@ -462,6 +473,17 @@ public class PolicyStoreController {
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void updateAllowedPolicy(@Valid @RequestBody final UpdatePolicyRequest request) {
         service.updatePolicies(request);
+        AUDIT_LOG.info("action=UPDATE_POLICY policyIds={} businessPartnerNumbers={} validUntil={}",
+                auditList(request.policyIds()), auditList(request.businessPartnerNumbers()),
+                auditValue(request.validUntil()));
+    }
+
+    private static String auditValue(final Object value) {
+        return value == null ? NULL_VALUE : value.toString();
+    }
+
+    private static String auditList(final List<String> values) {
+        return values == null ? NULL_VALUE : "[" + String.join(",", values) + "]";
     }
 
 }

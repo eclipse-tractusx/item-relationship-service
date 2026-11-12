@@ -523,6 +523,111 @@ Adjust the MinIO alias, bucket name and retention value to the target environmen
 
 Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.
 
+== Audit log
+
+*DISCLAIMER:* THE AUDIT LOG IS ONLY AVAILABLE FOR THE RECURSIVE IRS AND THE POLICY STORE. ALL OTHER APIS, FOR EXAMPLE THE REGULAR JOB API (`/irs/jobs`, `/irs/orders`, `/irs/ess/orders`) AND THE ESS API (`/ess`), ARE NOT AUDITED.
+
+A grant replacement overwrites the stored grant and a deletion removes it. To make such changes traceable, the recursive API and the Policy Store can write one audit line per successful state-changing call. The audit log is switched off by default. Enable it in the Helm values:
+
+[source,yaml]
+----
+auditLog:
+  enabled: true
+----
+
+The chart then sets the log level `INFO` for the logger `org.eclipse.tractusx.irs.audit` through the environment variable `LOGGING_LEVEL_ORG_ECLIPSE_TRACTUSX_IRS_AUDIT`, also with `config.override`. Two child loggers write the lines:
+
+* `org.eclipse.tractusx.irs.audit.recursive` for the recursive API
+* `org.eclipse.tractusx.irs.audit.policystore` for the Policy Store
+
+Both inherit the level of the parent logger `org.eclipse.tractusx.irs.audit`, so `auditLog.enabled` switches both. To enable only one part, set the level of its child logger instead, for example through `config.content`:
+
+[source,yaml]
+----
+config:
+  content:
+    logging:
+      level:
+        org.eclipse.tractusx.irs.audit.policystore: INFO
+----
+
+All audit lines are written at level `INFO`, so only two levels are relevant: `OFF` (default) writes no audit lines, `INFO` writes all of them. `DEBUG` and `TRACE` behave like `INFO`; `WARN`, `ERROR` and `FATAL` behave like `OFF`.
+
+Outside the Helm chart, use the Spring property `logging.level.org.eclipse.tractusx.irs.audit=INFO`. The level can also be changed at runtime through the actuator loggers endpoint on the management port, using the admin API key:
+
+[source,bash]
+----
+curl -X POST "<management-url>/actuator/loggers/org.eclipse.tractusx.irs.audit" \
+  -H "X-API-KEY: <admin-api-key>" -H "Content-Type: application/json" \
+  -d '{"configuredLevel":"INFO"}'
+----
+
+=== Audited calls
+
+[cols="2,2,4"]
+|===
+| Endpoint | `action` | Fields
+
+| `POST /irs/recursive/chain-openings/grants`
+| `CREATE_GRANT`
+.2+| `openingId`, `globalAssetId`, `requesterBpn`, `useCase`, `allowedBpnls`, `validFrom`, `validTo` of the stored grant
+
+| `PUT /irs/recursive/chain-openings/grants`
+| `PUT_GRANT`
+
+| `DELETE /irs/recursive/chain-openings/grants`
+| `DELETE_GRANT`
+| `openingId`, `globalAssetId`, `requesterBpn`, `useCase`, `allowedBpnls`, `validFrom`, `validTo` of the deleted grant
+
+| `POST /irs/recursive/jobs`
+| `START_JOB`
+| `jobId`, `openingId`, `globalAssetId`, `useCase`
+
+| `POST /irs/recursive/notifications`
+| `RECEIVE_NOTIFICATION`
+| `senderBpn` (from the `edc-bpn` header), `messageId`, `relatedMessageId`, `type`, `openingId`, `status` of the response (`ACCEPTED` or `REJECTED`)
+
+| `POST /irs/policies`
+| `CREATE_POLICY`
+| `policyId`, `businessPartnerNumber`, `validUntil`
+
+| `PUT /irs/policies`
+| `UPDATE_POLICY`
+| `policyIds`, `businessPartnerNumbers`, `validUntil`
+
+| `DELETE /irs/policies/{policyId}`
+| `DELETE_POLICY`
+| `policyId`
+
+| `DELETE /irs/policies/{policyId}/bpnl/{bpnl}`
+| `REMOVE_POLICY_BPNL`
+| `policyId`, `businessPartnerNumber`
+|===
+
+The Policy Store is shared by the recursive and the regular IRS, because its policies decide which partner offers are accepted. Its changes are therefore audited as well.
+
+The previous state of a grant is the preceding line with the same `openingId`, `globalAssetId`, `requesterBpn` and `useCase`. Grant lines carry the `globalAssetId` in its stored form `urn:uuid:<uuid>`, also when a call passes a plain UUID. Rejected calls, read-only calls and calls stopped by authentication or authorization are not audited; rejected calls remain visible in the regular log with their `errorRef`. A missing value is written as `<null>`. Values of the recursive API pass the same sanitizing as all recursive log values (`<invalid>` for a value with control characters); line breaks are encoded in every audit line. Audit lines contain no policy content, no notification payloads and no API keys.
+
+Each line starts with the fixed prefix `AUDIT` and a space, without color codes, and ends with the trace ID of the call:
+
+[source]
+----
+AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=<null> validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
+AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
+----
+
+A log collector can route lines that start with this prefix to a separate audit storage.
+
+=== Correlation with the caller
+
+The IRS knows only the API key, not the person behind a call. A gateway in front of the IRS can log the user and pass a W3C Trace Context header `traceparent: 00-<trace-id>-<parent-id>-<flags>`. The IRS takes over the trace ID through Spring Boot tracing (Micrometer Tracing with the OpenTelemetry bridge), and the audit line ends with the same `trace_id=<trace-id>`, which joins it with the gateway's line. Without a header, or with an invalid one, the IRS starts a new trace and the line carries a new random trace ID. No spans are exported, and the regular log lines are unchanged.
+
+Outgoing HTTP calls of the IRS carry the trace context as `traceparent`, also from the recursive job processing and towards partner connectors. A partner that logs this header can relate its processing to the call that started the job.
+
+The trace ID comes from the incoming header and is not tamper-proof. The identity of the caller must come from the gateway's own audit line, and the correlation is only reliable if the IRS can be reached through the gateway alone.
+
+Notifications from partners arrive through the EDC data plane and do not come from the gateway. Their lines are joined with the sender's logs through `messageId`, `relatedMessageId` and `openingId`; the sender is identified by `senderBpn`.
+
 == Result model
 
 The recursive result separates technical job execution from the business result.
