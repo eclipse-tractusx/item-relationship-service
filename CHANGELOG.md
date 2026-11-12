@@ -10,6 +10,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 
+- Disable recursive IRS by default and require explicit activation with `irs.recursive.enabled` or Helm `recursive.enabled`, without affecting iterative IRS or ESS ([#1024](https://github.com/eclipse-tractusx/item-relationship-service/issues/1024))
 - Add the missing `guardsMethods` to the PMD rule `GuardLogStatement`, which failed with a processing error on every file and was never evaluated, and resolve the `debug` and `trace` log statements it reports ([#1047](https://github.com/eclipse-tractusx/item-relationship-service/pull/1047))
 - Report an unparsable date in a JSON payload as `Invalid date/time format` instead of the misleading `Can't overwrite cause` error raised by `ZonedDateTimeDeserializer` ([#1047](https://github.com/eclipse-tractusx/item-relationship-service/pull/1047))
 - Refactor recursive EDC notification delivery, extract shared constants for grant API annotations and remove redundant PMD suppressions ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))

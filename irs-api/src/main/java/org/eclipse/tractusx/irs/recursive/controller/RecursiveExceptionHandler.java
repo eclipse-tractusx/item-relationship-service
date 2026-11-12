@@ -41,6 +41,7 @@ import org.eclipse.tractusx.irs.recursive.service.RecursiveUnsupportedAspectExce
 import org.eclipse.tractusx.irs.recursive.store.RecursiveStoreException;
 import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 /** Maps synchronous recursive API failures to a common external response. */
 @Slf4j
+@ConditionalOnProperty(prefix = "irs.recursive", name = "enabled", havingValue = "true")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = {
     RecursiveJobController.class,

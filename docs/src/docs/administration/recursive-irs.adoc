@@ -207,12 +207,25 @@ For the complete notification request and response contract, see the https://ecl
 
 == Required configuration
 
-Each IRS instance must have a local BPNL for the recursive path. The Helm chart uses the existing `bpn` value by default and supports `recursive.localBpnl` as an explicit override:
+`irs.recursive.enabled` defaults to `false`. Outside Helm, set `IRS_RECURSIVE_ENABLED=true` to enable the recursive path. In Helm, set `recursive.enabled: true`; omitting the value keeps it disabled. This switch is evaluated at startup and requires an application restart.
+
+Deployments using recursive IRS must explicitly enable it when upgrading.
+
+The deployed IRS image must support `irs.recursive.enabled`.
+
+With Helm `config.override: true`, set `irs.recursive.enabled` in `config.content` because the generated application configuration is not used.
+
+When disabled, recursive job, chain opening grant and notification endpoints are not available, and recursive background processing does not run. Recursive-only BPNL, timeout and persistence configuration is not required. Shared iterative IRS and ESS configuration and behavior remain unchanged.
+
+Disabling does not delete stored recursive jobs or chain opening grants. When enabled again, IRS processes stored jobs according to its startup recovery rules. Job deadlines continue to apply while the recursive path is disabled. Blob-store retention remains in effect.
+
+When enabled, each IRS instance must have a local BPNL for the recursive path. The Helm chart uses the existing `bpn` value by default and supports `recursive.localBpnl` as an explicit override:
 
 [source,yaml]
 ----
 bpn: <LOCAL_BPNL>
 recursive:
+  enabled: true
   # Optional. Omit this value to reuse bpn.
   localBpnl:
   timeout:
@@ -222,7 +235,7 @@ recursive:
     timeoutCheckInterval: PT30S
 ----
 
-Set `recursive.localBpnl` only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property `irs.recursive.localBpnl`, or the environment variable `IRS_RECURSIVE_LOCAL_BPNL`, remains required. The value identifies the local IRS instance when it sends recursive partner notifications.
+Set `recursive.localBpnl` only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property `irs.recursive.localBpnl`, or the environment variable `IRS_RECURSIVE_LOCAL_BPNL`, is required when recursive IRS is enabled. The value identifies the local IRS instance when it sends recursive partner notifications.
 
 For a root job, omitted or null `ttl` uses `recursive.timeout.defaultJobTtl` (`PT30M`). An explicit `ttl` must be a positive ISO-8601 duration; empty, malformed, zero and negative values return HTTP 400. A positive TTL can be shorter than the safety buffer. `recursive.timeout.maxJobTtl` (`PT2H`) caps requested root TTLs, and the effective TTL is added to the job creation time.
 

@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Added
+
+- Add `recursive.enabled` (default `false`) to enable the recursive IRS module at startup ([#1024](https://github.com/eclipse-tractusx/item-relationship-service/issues/1024))
+
 ## [9.1.0] - 2026-09-16
 
 ### Added

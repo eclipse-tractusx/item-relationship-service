@@ -51,7 +51,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-                properties = { "digitalTwinRegistry.type=central" })
+                properties = { "digitalTwinRegistry.type=central", "irs.recursive.enabled=true" })
 @ActiveProfiles(profiles = { "test", "local" })
 @Import(TestConfig.class)
 class RecursiveEndpointSecurityTest extends ControllerTest {

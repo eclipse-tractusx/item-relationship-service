@@ -20,6 +20,9 @@
 minio:
   enabled: false
 
+recursive:
+  enabled: true
+
 blobstore:
   persistence:
     storeType: MINIO

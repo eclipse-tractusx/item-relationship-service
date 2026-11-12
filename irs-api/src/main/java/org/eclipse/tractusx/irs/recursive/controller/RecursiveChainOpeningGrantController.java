@@ -48,6 +48,7 @@ import org.eclipse.tractusx.irs.recursive.service.RecursiveChainOpeningGrantNotF
 import org.eclipse.tractusx.irs.recursive.service.RecursiveChainOpeningGrantService;
 import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
 import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,6 +67,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
+@ConditionalOnProperty(prefix = "irs.recursive", name = "enabled", havingValue = "true")
 @Validated
 @RequestMapping("/irs/recursive/chain-openings/grants")
 @RequiredArgsConstructor

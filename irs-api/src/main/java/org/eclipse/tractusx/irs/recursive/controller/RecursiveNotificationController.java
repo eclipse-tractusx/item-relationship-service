@@ -38,6 +38,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -58,6 +59,7 @@ import org.springframework.web.bind.annotation.RestController;
  * with type {@code cx-taxo:RecursiveIrsNotificationApi} and version {@code 1.0}.</p>
  */
 @RestController
+@ConditionalOnProperty(prefix = "irs.recursive", name = "enabled", havingValue = "true")
 @Validated
 @RequestMapping("/irs/recursive")
 @RequiredArgsConstructor
