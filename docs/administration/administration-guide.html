@@ -685,6 +685,7 @@ pre.rouge {
 <li><a href="#_required_configuration">Required configuration</a></li>
 <li><a href="#_partner_setup">Partner setup</a></li>
 <li><a href="#_persistence_and_cleanup">Persistence and cleanup</a></li>
+<li><a href="#_audit_log">Audit log</a></li>
 <li><a href="#_result_model">Result model</a></li>
 <li><a href="#_troubleshooting">Troubleshooting</a></li>
 <li><a href="#_known_limitations">Known limitations</a></li>
@@ -810,7 +811,26 @@ You can define the URLs as well as most of the secrets yourself.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="na">server</span><span class="pi">:</span>
+<pre class="rouge highlight"><code data-lang="yaml"><span class="c1">#</span>
+<span class="c1"># Copyright (c) 2022 Contributors to the Eclipse Foundation</span>
+<span class="c1"># Copyright (c) 2026 Volkswagen AG</span>
+<span class="c1">#</span>
+<span class="c1"># See the NOTICE file(s) distributed with this work for additional</span>
+<span class="c1"># information regarding copyright ownership.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Apache License, Version 2.0 which is available at</span>
+<span class="c1"># https://www.apache.org/licenses/LICENSE-2.0.</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an "AS IS" BASIS, WITHOUT</span>
+<span class="c1"># WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c1"># License for the specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+<span class="c1">#</span>
+<span class="na">server</span><span class="pi">:</span>
   <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span> <span class="c1"># The port the main application API listens on</span>
   <span class="na">trustedPort</span><span class="pi">:</span> <span class="s">${SERVER_TRUSTED_PORT:}</span> <span class="c1"># The port used for the unsecured, internal API - if empty, the main port is used</span>
 
@@ -883,7 +903,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <span class="na">irs</span><span class="pi">:</span> <span class="c1"># Application config</span>
   <span class="na">apiUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_API_URL:http://localhost:8080}"</span> <span class="c1"># Public URL of the application, used in Swagger UI</span>
   <span class="na">recursive</span><span class="pi">:</span>
-    <span class="na">localBpnl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_LOCAL_BPNL:}</span> <span class="c1"># Mandatory BPNL of this IRS instance; startup fails when blank or not a BPNL.</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_ENABLED:false}</span>
+    <span class="na">localBpnl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_LOCAL_BPNL:}</span> <span class="c1"># Required when recursive IRS is enabled; must be a valid BPNL.</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">defaultJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_DEFAULT_JOB_TTL:PT30M}</span>
       <span class="na">maxJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_MAX_JOB_TTL:PT2H}</span>
@@ -1088,6 +1109,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">completed</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PT24H"</span>
 <span class="na">bpn</span><span class="pi">:</span>  <span class="c1"># BPN for this IRS instance; only users with this BPN are allowed to access the API</span>
 <span class="na">recursive</span><span class="pi">:</span>
+  <span class="c1"># -- Enable recursive IRS endpoints and workers at startup. Requires a restart to change.</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
   <span class="c1"># -- Optional BPNL override for recursive requests and responses. Defaults to the IRS instance value from `bpn`.</span>
   <span class="na">localBpnl</span><span class="pi">:</span>
   <span class="na">timeout</span><span class="pi">:</span>
@@ -1099,6 +1122,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">childResponseSafetyBuffer</span><span class="pi">:</span> <span class="s">PT60S</span>
     <span class="c1"># -- Interval for expiry checks; at least 1 ms and must fit in a Java long when converted to milliseconds. ISO-8601 duration.</span>
     <span class="na">timeoutCheckInterval</span><span class="pi">:</span> <span class="s">PT30S</span>
+<span class="na">auditLog</span><span class="pi">:</span>
+  <span class="c1"># -- Writes one audit line per successful state-changing call of the recursive API and the Policy Store by setting the log level INFO for the logger org.eclipse.tractusx.irs.audit. If false, the chart sets no level and the default OFF applies.</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
 <span class="na">apiKeyAdmin</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-admin&gt; Admin auth key, Should be changed!</span>
 <span class="na">apiKeyRegular</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-regular&gt; View auth key, Should be changed!</span>
 <span class="na">ingress</span><span class="pi">:</span>
@@ -1307,8 +1333,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">fsGroup</span><span class="pi">:</span> <span class="m">2000</span>  <span class="c1"># Group id of the persistent volume mount for the container</span>
 
   <span class="na">environment</span><span class="pi">:</span>
-    <span class="na">MINIO_PROMETHEUS_JOB_ID</span><span class="pi">:</span> <span class="s">minio-actuator</span>
-    <span class="na">MINIO_PROMETHEUS_URL</span><span class="pi">:</span> <span class="s">http://prometheus:9090</span></code></pre>
+    <span class="na">MINIO_PROMETHEUS_JOB_ID</span><span class="pi">:</span> <span class="s">minio-actuator</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1917,12 +1942,31 @@ Keep the values for these settings safe and do not publish them!
 <div class="sect2">
 <h3 id="_required_configuration">Required configuration</h3>
 <div class="paragraph">
-<p>Each IRS instance must have a local BPNL for the recursive path. The Helm chart uses the existing <code>bpn</code> value by default and supports <code>recursive.localBpnl</code> as an explicit override:</p>
+<p><code>irs.recursive.enabled</code> defaults to <code>false</code>. Outside Helm, set <code>IRS_RECURSIVE_ENABLED=true</code> to enable the recursive path. In Helm, set <code>recursive.enabled: true</code>; omitting the value keeps it disabled. This switch is evaluated at startup and requires an application restart.</p>
+</div>
+<div class="paragraph">
+<p>Deployments using recursive IRS must explicitly enable it when upgrading.</p>
+</div>
+<div class="paragraph">
+<p>The deployed IRS image must support <code>irs.recursive.enabled</code>.</p>
+</div>
+<div class="paragraph">
+<p>With Helm <code>config.override: true</code>, set <code>irs.recursive.enabled</code> in <code>config.content</code> because the generated application configuration is not used.</p>
+</div>
+<div class="paragraph">
+<p>When disabled, recursive job, chain opening grant and notification endpoints are not available, and recursive background processing does not run. Recursive-only BPNL, timeout and persistence configuration is not required. Shared iterative IRS and ESS configuration and behavior remain unchanged.</p>
+</div>
+<div class="paragraph">
+<p>Disabling does not delete stored recursive jobs or chain opening grants. When enabled again, IRS processes stored jobs according to its startup recovery rules. Job deadlines continue to apply while the recursive path is disabled. Blob-store retention remains in effect.</p>
+</div>
+<div class="paragraph">
+<p>When enabled, each IRS instance must have a local BPNL for the recursive path. The Helm chart uses the existing <code>bpn</code> value by default and supports <code>recursive.localBpnl</code> as an explicit override:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="yaml"><span class="na">bpn</span><span class="pi">:</span> <span class="s">&lt;LOCAL_BPNL&gt;</span>
 <span class="na">recursive</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
   <span class="c1"># Optional. Omit this value to reuse bpn.</span>
   <span class="na">localBpnl</span><span class="pi">:</span>
   <span class="na">timeout</span><span class="pi">:</span>
@@ -1933,7 +1977,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 </div>
 <div class="paragraph">
-<p>Set <code>recursive.localBpnl</code> only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property <code>irs.recursive.localBpnl</code>, or the environment variable <code>IRS_RECURSIVE_LOCAL_BPNL</code>, remains required. The value identifies the local IRS instance when it sends recursive partner notifications.</p>
+<p>Set <code>recursive.localBpnl</code> only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property <code>irs.recursive.localBpnl</code>, or the environment variable <code>IRS_RECURSIVE_LOCAL_BPNL</code>, is required when recursive IRS is enabled. The value identifies the local IRS instance when it sends recursive partner notifications.</p>
 </div>
 <div class="paragraph">
 <p>For a root job, omitted or null <code>ttl</code> uses <code>recursive.timeout.defaultJobTtl</code> (<code>PT30M</code>). An explicit <code>ttl</code> must be a positive ISO-8601 duration; empty, malformed, zero and negative values return HTTP 400. A positive TTL can be shorter than the safety buffer. <code>recursive.timeout.maxJobTtl</code> (<code>PT2H</code>) caps requested root TTLs, and the effective TTL is added to the job creation time.</p>
@@ -2266,6 +2310,155 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div class="paragraph">
 <p>Chain opening grants are stored separately in the <code>irs-chain-opening-grants</code> container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_audit_log">Audit log</h3>
+<div class="paragraph">
+<p><strong>DISCLAIMER:</strong> THE AUDIT LOG IS ONLY AVAILABLE FOR THE RECURSIVE IRS AND THE POLICY STORE. ALL OTHER APIS, FOR EXAMPLE THE REGULAR JOB API (<code>/irs/jobs</code>, <code>/irs/orders</code>, <code>/irs/ess/orders</code>) AND THE ESS API (<code>/ess</code>), ARE NOT AUDITED.</p>
+</div>
+<div class="paragraph">
+<p>A grant replacement overwrites the stored grant and a deletion removes it. To make such changes traceable, the recursive API and the Policy Store can write one audit line per successful state-changing call. The audit log is switched off by default. Enable it in the Helm values:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">auditLog</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The chart then sets the log level <code>INFO</code> for the logger <code>org.eclipse.tractusx.irs.audit</code> through the environment variable <code>LOGGING_LEVEL_ORG_ECLIPSE_TRACTUSX_IRS_AUDIT</code>, also with <code>config.override</code>. Two child loggers write the lines:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.eclipse.tractusx.irs.audit.recursive</code> for the recursive API</p>
+</li>
+<li>
+<p><code>org.eclipse.tractusx.irs.audit.policystore</code> for the Policy Store</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both inherit the level of the parent logger <code>org.eclipse.tractusx.irs.audit</code>, so <code>auditLog.enabled</code> switches both. To enable only one part, set the level of its child logger instead, for example through <code>config.content</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">config</span><span class="pi">:</span>
+  <span class="na">content</span><span class="pi">:</span>
+    <span class="na">logging</span><span class="pi">:</span>
+      <span class="na">level</span><span class="pi">:</span>
+        <span class="na">org.eclipse.tractusx.irs.audit.policystore</span><span class="pi">:</span> <span class="s">INFO</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All audit lines are written at level <code>INFO</code>, so only two levels are relevant: <code>OFF</code> (default) writes no audit lines, <code>INFO</code> writes all of them. <code>DEBUG</code> and <code>TRACE</code> behave like <code>INFO</code>; <code>WARN</code>, <code>ERROR</code> and <code>FATAL</code> behave like <code>OFF</code>.</p>
+</div>
+<div class="paragraph">
+<p>Outside the Helm chart, use the Spring property <code>logging.level.org.eclipse.tractusx.irs.audit=INFO</code>. The level can also be changed at runtime through the actuator loggers endpoint on the management port, using the admin API key:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">curl <span class="nt">-X</span> POST <span class="s2">"&lt;management-url&gt;/actuator/loggers/org.eclipse.tractusx.irs.audit"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"X-API-KEY: &lt;admin-api-key&gt;"</span> <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="s1">'{"configuredLevel":"INFO"}'</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_audited_calls">Audited calls</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Endpoint</th>
+<th class="tableblock halign-left valign-top"><code>action</code></th>
+<th class="tableblock halign-left valign-top">Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /irs/recursive/chain-openings/grants</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CREATE_GRANT</code></p></td>
+<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock"><code>openingId</code>, <code>globalAssetId</code>, <code>requesterBpn</code>, <code>useCase</code>, <code>allowedBpnls</code>, <code>validFrom</code>, <code>validTo</code> of the stored grant</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PUT /irs/recursive/chain-openings/grants</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PUT_GRANT</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE /irs/recursive/chain-openings/grants</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE_GRANT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>openingId</code>, <code>globalAssetId</code>, <code>requesterBpn</code>, <code>useCase</code>, <code>allowedBpnls</code>, <code>validFrom</code>, <code>validTo</code> of the deleted grant</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /irs/recursive/jobs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>START_JOB</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code>, <code>openingId</code>, <code>globalAssetId</code>, <code>useCase</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /irs/recursive/notifications</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>RECEIVE_NOTIFICATION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>senderBpn</code> (from the <code>edc-bpn</code> header), <code>messageId</code>, <code>relatedMessageId</code>, <code>type</code>, <code>openingId</code>, <code>status</code> of the response (<code>ACCEPTED</code> or <code>REJECTED</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /irs/policies</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CREATE_POLICY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>policyId</code>, <code>businessPartnerNumber</code>, <code>validUntil</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PUT /irs/policies</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UPDATE_POLICY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>policyIds</code>, <code>businessPartnerNumbers</code>, <code>validUntil</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE /irs/policies/{policyId}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE_POLICY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>policyId</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE /irs/policies/{policyId}/bpnl/{bpnl}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>REMOVE_POLICY_BPNL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>policyId</code>, <code>businessPartnerNumber</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Policy Store is shared by the recursive and the regular IRS, because its policies decide which partner offers are accepted. Its changes are therefore audited as well.</p>
+</div>
+<div class="paragraph">
+<p>The previous state of a grant is the preceding line with the same <code>openingId</code>, <code>globalAssetId</code>, <code>requesterBpn</code> and <code>useCase</code>. Grant lines carry the <code>globalAssetId</code> in its stored form <code>urn:uuid:&lt;uuid&gt;</code>, also when a call passes a plain UUID. Rejected calls, read-only calls and calls stopped by authentication or authorization are not audited; rejected calls remain visible in the regular log with their <code>errorRef</code>. A missing value is written as <code>&lt;null&gt;</code>. Values of the recursive API pass the same sanitizing as all recursive log values (<code>&lt;invalid&gt;</code> for a value with control characters); line breaks are encoded in every audit line. Audit lines contain no policy content, no notification payloads and no API keys.</p>
+</div>
+<div class="paragraph">
+<p>Each line starts with the fixed prefix <code>AUDIT</code> and a space, without color codes, and ends with the trace ID of the call:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=&lt;null&gt; validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
+AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A log collector can route lines that start with this prefix to a separate audit storage.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_correlation_with_the_caller">Correlation with the caller</h4>
+<div class="paragraph">
+<p>The IRS knows only the API key, not the person behind a call. A gateway in front of the IRS can log the user and pass a W3C Trace Context header <code>traceparent: 00-&lt;trace-id&gt;-&lt;parent-id&gt;-&lt;flags&gt;</code>. The IRS takes over the trace ID through Spring Boot tracing (Micrometer Tracing with the OpenTelemetry bridge), and the audit line ends with the same <code>trace_id=&lt;trace-id&gt;</code>, which joins it with the gateway&#8217;s line. Without a header, or with an invalid one, the IRS starts a new trace and the line carries a new random trace ID. No spans are exported, and the regular log lines are unchanged.</p>
+</div>
+<div class="paragraph">
+<p>Outgoing HTTP calls of the IRS carry the trace context as <code>traceparent</code>, also from the recursive job processing and towards partner connectors. A partner that logs this header can relate its processing to the call that started the job.</p>
+</div>
+<div class="paragraph">
+<p>The trace ID comes from the incoming header and is not tamper-proof. The identity of the caller must come from the gateway&#8217;s own audit line, and the correlation is only reliable if the IRS can be reached through the gateway alone.</p>
+</div>
+<div class="paragraph">
+<p>Notifications from partners arrive through the EDC data plane and do not come from the gateway. Their lines are joined with the sender&#8217;s logs through <code>messageId</code>, <code>relatedMessageId</code> and <code>openingId</code>; the sender is identified by <code>senderBpn</code>.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2638,7 +2831,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-10 10:29:35 UTC
+Last updated 2026-11-13 15:00:41 UTC
 </div>
 </div>
 </body>

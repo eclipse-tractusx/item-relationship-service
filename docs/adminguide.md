@@ -64,6 +64,25 @@ The OAuth2, MIW and Vault configuration / secrets depend on your setup and might
 The IRS application is configured using the Spring configuration mechanism. The main configuration file is the ``application.yaml``.
 
 ```yaml
+#
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 Volkswagen AG
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 server:
   port: 8080 # The port the main application API listens on
   trustedPort: ${SERVER_TRUSTED_PORT:} # The port used for the unsecured, internal API - if empty, the main port is used
@@ -137,7 +156,8 @@ springdoc: # API docs configuration
 irs: # Application config
   apiUrl: "${IRS_API_URL:http://localhost:8080}" # Public URL of the application, used in Swagger UI
   recursive:
-    localBpnl: ${IRS_RECURSIVE_LOCAL_BPNL:} # Mandatory BPNL of this IRS instance; startup fails when blank or not a BPNL.
+    enabled: ${IRS_RECURSIVE_ENABLED:false}
+    localBpnl: ${IRS_RECURSIVE_LOCAL_BPNL:} # Required when recursive IRS is enabled; must be a valid BPNL.
     timeout:
       defaultJobTtl: ${IRS_RECURSIVE_TIMEOUT_DEFAULT_JOB_TTL:PT30M}
       maxJobTtl: ${IRS_RECURSIVE_TIMEOUT_MAX_JOB_TTL:PT2H}
@@ -340,6 +360,8 @@ job:
     completed: "PT24H"
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 recursive:
+  # -- Enable recursive IRS endpoints and workers at startup. Requires a restart to change.
+  enabled: false
   # -- Optional BPNL override for recursive requests and responses. Defaults to the IRS instance value from `bpn`.
   localBpnl:
   timeout:
@@ -351,6 +373,9 @@ recursive:
     childResponseSafetyBuffer: PT60S
     # -- Interval for expiry checks; at least 1 ms and must fit in a Java long when converted to milliseconds. ISO-8601 duration.
     timeoutCheckInterval: PT30S
+auditLog:
+  # -- Writes one audit line per successful state-changing call of the recursive API and the Policy Store by setting the log level INFO for the logger org.eclipse.tractusx.irs.audit. If false, the chart sets no level and the default OFF applies.
+  enabled: false
 apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
 apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
 ingress:
@@ -560,8 +585,6 @@ minio:
 
   environment:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator
-    MINIO_PROMETHEUS_URL: http://prometheus:9090
-
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -916,11 +939,24 @@ For the complete notification request and response contract, see the [Item Relat
 
 ### Required configuration
 
-Each IRS instance must have a local BPNL for the recursive path. The Helm chart uses the existing `bpn` value by default and supports `recursive.localBpnl` as an explicit override:
+`irs.recursive.enabled` defaults to `false`. Outside Helm, set `IRS_RECURSIVE_ENABLED=true` to enable the recursive path. In Helm, set `recursive.enabled: true`; omitting the value keeps it disabled. This switch is evaluated at startup and requires an application restart.
+
+Deployments using recursive IRS must explicitly enable it when upgrading.
+
+The deployed IRS image must support `irs.recursive.enabled`.
+
+With Helm `config.override: true`, set `irs.recursive.enabled` in `config.content` because the generated application configuration is not used.
+
+When disabled, recursive job, chain opening grant and notification endpoints are not available, and recursive background processing does not run. Recursive-only BPNL, timeout and persistence configuration is not required. Shared iterative IRS and ESS configuration and behavior remain unchanged.
+
+Disabling does not delete stored recursive jobs or chain opening grants. When enabled again, IRS processes stored jobs according to its startup recovery rules. Job deadlines continue to apply while the recursive path is disabled. Blob-store retention remains in effect.
+
+When enabled, each IRS instance must have a local BPNL for the recursive path. The Helm chart uses the existing `bpn` value by default and supports `recursive.localBpnl` as an explicit override:
 
 ```yaml
 bpn: <LOCAL_BPNL>
 recursive:
+  enabled: true
   # Optional. Omit this value to reuse bpn.
   localBpnl:
   timeout:
@@ -930,7 +966,7 @@ recursive:
     timeoutCheckInterval: PT30S
 ```
 
-Set `recursive.localBpnl` only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property `irs.recursive.localBpnl`, or the environment variable `IRS_RECURSIVE_LOCAL_BPNL`, remains required. The value identifies the local IRS instance when it sends recursive partner notifications.
+Set `recursive.localBpnl` only if the recursive path must use a different BPNL than the general IRS instance value. Outside the Helm chart, the corresponding Spring property `irs.recursive.localBpnl`, or the environment variable `IRS_RECURSIVE_LOCAL_BPNL`, is required when recursive IRS is enabled. The value identifies the local IRS instance when it sends recursive partner notifications.
 
 For a root job, omitted or null `ttl` uses `recursive.timeout.defaultJobTtl` (`PT30M`). An explicit `ttl` must be a positive ISO-8601 duration; empty, malformed, zero and negative values return HTTP 400. A positive TTL can be shorter than the safety buffer. `recursive.timeout.maxJobTtl` (`PT2H`) caps requested root TTLs, and the effective TTL is added to the job creation time.
 
@@ -1208,6 +1244,78 @@ mc ilm rule add --expire-days 7 myminio/irs-jobs
 Adjust the MinIO alias, bucket name and retention value to the target environment. Use `-1` to disable expiration. Do not disable expiration for recursive jobs unless another cleanup mechanism is in place. Without a retention policy, recursive job blobs and message correlation blobs remain in MinIO.
 
 Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.
+
+### Audit log
+
+**DISCLAIMER:** THE AUDIT LOG IS ONLY AVAILABLE FOR THE RECURSIVE IRS AND THE POLICY STORE. ALL OTHER APIS, FOR EXAMPLE THE REGULAR JOB API (`/irs/jobs`, `/irs/orders`, `/irs/ess/orders`) AND THE ESS API (`/ess`), ARE NOT AUDITED.
+
+A grant replacement overwrites the stored grant and a deletion removes it. To make such changes traceable, the recursive API and the Policy Store can write one audit line per successful state-changing call. The audit log is switched off by default. Enable it in the Helm values:
+
+```yaml
+auditLog:
+  enabled: true
+```
+
+The chart then sets the log level `INFO` for the logger `org.eclipse.tractusx.irs.audit` through the environment variable `LOGGING_LEVEL_ORG_ECLIPSE_TRACTUSX_IRS_AUDIT`, also with `config.override`. Two child loggers write the lines:
+
+* `org.eclipse.tractusx.irs.audit.recursive` for the recursive API
+* `org.eclipse.tractusx.irs.audit.policystore` for the Policy Store
+
+Both inherit the level of the parent logger `org.eclipse.tractusx.irs.audit`, so `auditLog.enabled` switches both. To enable only one part, set the level of its child logger instead, for example through `config.content`:
+
+```yaml
+config:
+  content:
+    logging:
+      level:
+        org.eclipse.tractusx.irs.audit.policystore: INFO
+```
+
+All audit lines are written at level `INFO`, so only two levels are relevant: `OFF` (default) writes no audit lines, `INFO` writes all of them. `DEBUG` and `TRACE` behave like `INFO`; `WARN`, `ERROR` and `FATAL` behave like `OFF`.
+
+Outside the Helm chart, use the Spring property `logging.level.org.eclipse.tractusx.irs.audit=INFO`. The level can also be changed at runtime through the actuator loggers endpoint on the management port, using the admin API key:
+
+```bash
+curl -X POST "<management-url>/actuator/loggers/org.eclipse.tractusx.irs.audit" \
+  -H "X-API-KEY: <admin-api-key>" -H "Content-Type: application/json" \
+  -d '{"configuredLevel":"INFO"}'
+```
+
+#### Audited calls
+
+ | Endpoint | `action` | Fields |
+ | --- | --- | --- |
+ | `POST /irs/recursive/chain-openings/grants` | `CREATE_GRANT` .2+ | `openingId`, `globalAssetId`, `requesterBpn`, `useCase`, `allowedBpnls`, `validFrom`, `validTo` of the stored grant |
+ | `PUT /irs/recursive/chain-openings/grants` | `PUT_GRANT` | `DELETE /irs/recursive/chain-openings/grants` |
+ | `DELETE_GRANT` | `openingId`, `globalAssetId`, `requesterBpn`, `useCase`, `allowedBpnls`, `validFrom`, `validTo` of the deleted grant | `POST /irs/recursive/jobs` |
+ | `START_JOB` | `jobId`, `openingId`, `globalAssetId`, `useCase` | `POST /irs/recursive/notifications` |
+ | `RECEIVE_NOTIFICATION` | `senderBpn` (from the `edc-bpn` header), `messageId`, `relatedMessageId`, `type`, `openingId`, `status` of the response (`ACCEPTED` or `REJECTED`) | `POST /irs/policies` |
+ | `CREATE_POLICY` | `policyId`, `businessPartnerNumber`, `validUntil` | `PUT /irs/policies` |
+ | `UPDATE_POLICY` | `policyIds`, `businessPartnerNumbers`, `validUntil` | `DELETE /irs/policies/{policyId}` |
+ | `DELETE_POLICY` | `policyId` | `DELETE /irs/policies/{policyId}/bpnl/{bpnl}` |
+
+The Policy Store is shared by the recursive and the regular IRS, because its policies decide which partner offers are accepted. Its changes are therefore audited as well.
+
+The previous state of a grant is the preceding line with the same `openingId`, `globalAssetId`, `requesterBpn` and `useCase`. Grant lines carry the `globalAssetId` in its stored form `urn:uuid:<uuid>`, also when a call passes a plain UUID. Rejected calls, read-only calls and calls stopped by authentication or authorization are not audited; rejected calls remain visible in the regular log with their `errorRef`. A missing value is written as `<null>`. Values of the recursive API pass the same sanitizing as all recursive log values (`<invalid>` for a value with control characters); line breaks are encoded in every audit line. Audit lines contain no policy content, no notification payloads and no API keys.
+
+Each line starts with the fixed prefix `AUDIT` and a space, without color codes, and ends with the trace ID of the call:
+
+```bash
+AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=<null> validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
+AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
+```
+
+A log collector can route lines that start with this prefix to a separate audit storage.
+
+#### Correlation with the caller
+
+The IRS knows only the API key, not the person behind a call. A gateway in front of the IRS can log the user and pass a W3C Trace Context header `traceparent: 00-<trace-id>-<parent-id>-<flags>`. The IRS takes over the trace ID through Spring Boot tracing (Micrometer Tracing with the OpenTelemetry bridge), and the audit line ends with the same `trace_id=<trace-id>`, which joins it with the gateway’s line. Without a header, or with an invalid one, the IRS starts a new trace and the line carries a new random trace ID. No spans are exported, and the regular log lines are unchanged.
+
+Outgoing HTTP calls of the IRS carry the trace context as `traceparent`, also from the recursive job processing and towards partner connectors. A partner that logs this header can relate its processing to the call that started the job.
+
+The trace ID comes from the incoming header and is not tamper-proof. The identity of the caller must come from the gateway’s own audit line, and the correlation is only reliable if the IRS can be reached through the gateway alone.
+
+Notifications from partners arrive through the EDC data plane and do not come from the gateway. Their lines are joined with the sender’s logs through `messageId`, `relatedMessageId` and `openingId`; the sender is identified by `senderBpn`.
 
 ### Result model
 

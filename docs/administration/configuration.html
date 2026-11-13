@@ -710,7 +710,26 @@ You can define the URLs as well as most of the secrets yourself.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="na">server</span><span class="pi">:</span>
+<pre class="rouge highlight"><code data-lang="yaml"><span class="c1">#</span>
+<span class="c1"># Copyright (c) 2022 Contributors to the Eclipse Foundation</span>
+<span class="c1"># Copyright (c) 2026 Volkswagen AG</span>
+<span class="c1">#</span>
+<span class="c1"># See the NOTICE file(s) distributed with this work for additional</span>
+<span class="c1"># information regarding copyright ownership.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Apache License, Version 2.0 which is available at</span>
+<span class="c1"># https://www.apache.org/licenses/LICENSE-2.0.</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an "AS IS" BASIS, WITHOUT</span>
+<span class="c1"># WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c1"># License for the specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+<span class="c1">#</span>
+<span class="na">server</span><span class="pi">:</span>
   <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span> <span class="c1"># The port the main application API listens on</span>
   <span class="na">trustedPort</span><span class="pi">:</span> <span class="s">${SERVER_TRUSTED_PORT:}</span> <span class="c1"># The port used for the unsecured, internal API - if empty, the main port is used</span>
 
@@ -783,7 +802,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <span class="na">irs</span><span class="pi">:</span> <span class="c1"># Application config</span>
   <span class="na">apiUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_API_URL:http://localhost:8080}"</span> <span class="c1"># Public URL of the application, used in Swagger UI</span>
   <span class="na">recursive</span><span class="pi">:</span>
-    <span class="na">localBpnl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_LOCAL_BPNL:}</span> <span class="c1"># Mandatory BPNL of this IRS instance; startup fails when blank or not a BPNL.</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_ENABLED:false}</span>
+    <span class="na">localBpnl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_LOCAL_BPNL:}</span> <span class="c1"># Required when recursive IRS is enabled; must be a valid BPNL.</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">defaultJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_DEFAULT_JOB_TTL:PT30M}</span>
       <span class="na">maxJobTtl</span><span class="pi">:</span> <span class="s">${IRS_RECURSIVE_TIMEOUT_MAX_JOB_TTL:PT2H}</span>
@@ -990,6 +1010,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">completed</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PT24H"</span>
 <span class="na">bpn</span><span class="pi">:</span>  <span class="c1"># BPN for this IRS instance; only users with this BPN are allowed to access the API</span>
 <span class="na">recursive</span><span class="pi">:</span>
+  <span class="c1"># -- Enable recursive IRS endpoints and workers at startup. Requires a restart to change.</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
   <span class="c1"># -- Optional BPNL override for recursive requests and responses. Defaults to the IRS instance value from `bpn`.</span>
   <span class="na">localBpnl</span><span class="pi">:</span>
   <span class="na">timeout</span><span class="pi">:</span>
@@ -1001,6 +1023,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">childResponseSafetyBuffer</span><span class="pi">:</span> <span class="s">PT60S</span>
     <span class="c1"># -- Interval for expiry checks; at least 1 ms and must fit in a Java long when converted to milliseconds. ISO-8601 duration.</span>
     <span class="na">timeoutCheckInterval</span><span class="pi">:</span> <span class="s">PT30S</span>
+<span class="na">auditLog</span><span class="pi">:</span>
+  <span class="c1"># -- Writes one audit line per successful state-changing call of the recursive API and the Policy Store by setting the log level INFO for the logger org.eclipse.tractusx.irs.audit. If false, the chart sets no level and the default OFF applies.</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
 <span class="na">apiKeyAdmin</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-admin&gt; Admin auth key, Should be changed!</span>
 <span class="na">apiKeyRegular</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-regular&gt; View auth key, Should be changed!</span>
 <span class="na">ingress</span><span class="pi">:</span>
@@ -1209,8 +1234,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">fsGroup</span><span class="pi">:</span> <span class="m">2000</span>  <span class="c1"># Group id of the persistent volume mount for the container</span>
 
   <span class="na">environment</span><span class="pi">:</span>
-    <span class="na">MINIO_PROMETHEUS_JOB_ID</span><span class="pi">:</span> <span class="s">minio-actuator</span>
-    <span class="na">MINIO_PROMETHEUS_URL</span><span class="pi">:</span> <span class="s">http://prometheus:9090</span></code></pre>
+    <span class="na">MINIO_PROMETHEUS_JOB_ID</span><span class="pi">:</span> <span class="s">minio-actuator</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1510,7 +1534,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-10 10:29:35 UTC
+Last updated 2026-11-13 15:00:41 UTC
 </div>
 </div>
 </body>
