@@ -29,17 +29,23 @@ data:
   application.yaml: |-
     # Config overriding Spring Boot configuration
     {{- if not .Values.config.override }}
+    {{- $recursive := .Values.recursive | default dict }}
+    {{- $recursiveEnabled := $recursive.enabled | default false }}
     server:
       trustedPort: {{ .Values.service.trustedPort }}
 
     irs:
       recursive:
-        localBpnl: {{ tpl (default "" (default .Values.bpn .Values.recursive.localBpnl)) . | quote }}
+        enabled: {{ $recursiveEnabled }}
+        {{- if $recursiveEnabled }}
+        {{- $timeout := $recursive.timeout | default dict }}
+        localBpnl: {{ tpl (default "" (default .Values.bpn $recursive.localBpnl)) . | quote }}
         timeout:
-          defaultJobTtl: {{ .Values.recursive.timeout.defaultJobTtl | default "PT30M" | quote }}
-          maxJobTtl: {{ .Values.recursive.timeout.maxJobTtl | default "PT2H" | quote }}
-          childResponseSafetyBuffer: {{ .Values.recursive.timeout.childResponseSafetyBuffer | default "PT60S" | quote }}
-          timeoutCheckInterval: {{ .Values.recursive.timeout.timeoutCheckInterval | default "PT30S" | quote }}
+          defaultJobTtl: {{ $timeout.defaultJobTtl | default "PT30M" | quote }}
+          maxJobTtl: {{ $timeout.maxJobTtl | default "PT2H" | quote }}
+          childResponseSafetyBuffer: {{ $timeout.childResponseSafetyBuffer | default "PT60S" | quote }}
+          timeoutCheckInterval: {{ $timeout.timeoutCheckInterval | default "PT30S" | quote }}
+        {{- end }}
       job:
         batch:
           threadCount: {{ .Values.job.batch.threadCount }}
@@ -81,9 +87,11 @@ data:
       policies:
         containerName: {{ ((.Values.blobstore).policies).containerName | default "irs-policy" | quote }}
         daysToLive: {{ ((.Values.blobstore).policies).daysToLive | default -1 | quote }}
+      {{- if $recursiveEnabled }}
       chainOpeningGrants:
         containerName: {{ ((.Values.blobstore).chainOpeningGrants).containerName | default "irs-chain-opening-grants" | quote }}
         daysToLive: {{ ((.Values.blobstore).chainOpeningGrants).daysToLive | default -1 | quote }}
+      {{- end }}
 
     spring:
       security:

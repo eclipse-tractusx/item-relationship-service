@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Profile;
  * Configures the dedicated blob persistence for recursive chain opening grants.
  */
 @Configuration
+@ConditionalOnProperty(prefix = "irs.recursive", name = "enabled", havingValue = "true")
 public class RecursiveChainOpeningGrantConfiguration {
 
     public static final String CHAIN_OPENING_GRANT_BLOB_PERSISTENCE = "chainOpeningGrantPersistence";

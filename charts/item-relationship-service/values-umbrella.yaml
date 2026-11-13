@@ -39,6 +39,7 @@ job:
     threadCount: 5
 bpn: BPNL00000003AZQP
 recursive:
+  enabled: true
   # Reuse the Umbrella BPNL instead of defining a second local identifier.
   localBpnl: "{{ .Values.bpn }}"
   timeout:

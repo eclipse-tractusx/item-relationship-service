@@ -49,7 +49,7 @@ public class RecursiveProperties {
     /**
      * BPNL of the local IRS instance (e.g. BPNL0000ATLS0001 for Atlas).
      */
-    @NotBlank(message = "must be configured because the recursive IRS module is always active")
+    @NotBlank(message = "must be configured when the recursive IRS module is active")
     @Pattern(regexp = RecursivePatternStore.BPNL_STRING,
              message = "must be a BPNL with prefix BPNL and 12 alphanumeric characters")
     private String localBpnl = "";

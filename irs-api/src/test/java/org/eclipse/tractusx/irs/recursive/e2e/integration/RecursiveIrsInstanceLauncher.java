@@ -51,6 +51,7 @@ public final class RecursiveIrsInstanceLauncher {
                 "--spring.main.banner-mode=off",
                 "--server.port=0",
                 "--management.server.port=0",
+                "--irs.recursive.enabled=true",
                 "--irs.recursive.localBpnl=" + bpnl,
                 "--irs.security.api.keys.admin=" + RecursiveIntegrationTestClient.ADMIN_API_KEY,
                 "--irs.security.api.keys.regular=recursive-regular-api-key",

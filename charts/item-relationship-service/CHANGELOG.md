@@ -11,6 +11,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Added
 
 - Add `auditLog.enabled` to switch on the audit log of the recursive API and the Policy Store ([#1051](https://github.com/eclipse-tractusx/item-relationship-service/pull/1051))
+- Add `recursive.enabled` (default `false`) to enable the recursive IRS module at startup ([#1024](https://github.com/eclipse-tractusx/item-relationship-service/issues/1024))
 
 ## [9.1.0] - 2026-09-16
 

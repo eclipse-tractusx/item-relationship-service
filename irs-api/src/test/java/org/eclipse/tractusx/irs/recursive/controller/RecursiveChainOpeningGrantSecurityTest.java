@@ -53,7 +53,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * {@code admin_irs} role, while reading (list) stays available to {@code view_irs}.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-                properties = { "digitalTwinRegistry.type=central" })
+                properties = { "digitalTwinRegistry.type=central", "irs.recursive.enabled=true" })
 @ActiveProfiles(profiles = { "test", "local" })
 @Import(TestConfig.class)
 @ExtendWith({ MockitoExtension.class, SpringExtension.class })
