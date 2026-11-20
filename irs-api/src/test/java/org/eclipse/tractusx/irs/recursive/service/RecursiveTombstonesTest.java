@@ -31,6 +31,8 @@ import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneScope;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Privacy guard for sanitized recursive tombstones: only the allowed reason vocabulary leaves the
@@ -177,5 +179,26 @@ class RecursiveTombstonesTest {
                 "first line\nsecond line");
 
         assertThat(tombstone.getDetail()).isEqualTo("Recursive tombstone reason: CHILD_BRANCH_FAILED");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "BOM_INCOMPLETE, LOCAL_NODE, The BOM is incomplete.",
+            "BOM_SUBMODEL_INVALID, RECURSIVE_CHAIN, The BOM payload is unreadable or has an invalid structure."
+    })
+    void sanitizedBomTombstoneUsesFixedDetail(final RecursiveTombstoneReason reason,
+            final RecursiveTombstoneScope scope, final String expectedDetail) {
+        final RecursiveTombstone raw = RecursiveTombstone.builder()
+                .type(RecursiveTombstoneType.RECURSIVE_TOMBSTONE)
+                .scope(scope)
+                .reason(reason)
+                .retryable(false)
+                .detail("Malformed relationship for Belfast")
+                .occurrences(1)
+                .aspects(List.of())
+                .errorRefs(List.of("4e3bea84-a48f-4319-8380-a50e4d615560"))
+                .build();
+
+        assertThat(RecursiveTombstones.sanitized(raw, List.of()).getDetail()).isEqualTo(expectedDetail);
     }
 }

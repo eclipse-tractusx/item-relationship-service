@@ -149,7 +149,8 @@ public class RecursiveNotificationMessageValidator {
         return Objects.equals(result.getUseCase(), content.getUseCase())
                 && Objects.equals(result.getBomLifecycle(), content.getBomLifecycle())
                 && containsSameAspects(result.getRequestedAspects(), selectedAspects)
-                && isValidTombstones(result.getTombstones(), selectedAspects);
+                && isValidTombstones(result.getTombstones(), selectedAspects)
+                && result.getTombstones().stream().noneMatch(RecursiveTombstones::isIncompleteBomNotice);
     }
 
     private boolean hasValidResultRoot(final RecursiveNotificationMessage.Content content,
@@ -208,7 +209,8 @@ public class RecursiveNotificationMessageValidator {
                 && tombstone.getAspects().stream().allMatch(selectedAspects::contains)
                 && tombstone.getErrorRefs() != null
                 && !tombstone.getErrorRefs().isEmpty()
-                && tombstone.getErrorRefs().stream().allMatch(this::isUuid));
+                && tombstone.getErrorRefs().stream().allMatch(this::isUuid))
+                && RecursiveTombstones.hasValidIncompleteBomNotice(tombstones);
     }
 
     private boolean isTimestamp(final String value) {

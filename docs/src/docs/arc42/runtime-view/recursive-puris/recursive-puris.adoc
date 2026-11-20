@@ -50,7 +50,7 @@ The sequence diagram shows the technical message flow. The following table summa
 
 | 1
 | Root caller
-| Starts a recursive job via `POST /irs/recursive/jobs`.
+| Starts a recursive job via `POST /irs/recursive/jobs` with `ADMIN_IRS`.
 
 | 2
 | IRS
@@ -62,15 +62,15 @@ The sequence diagram shows the technical message flow. The following table summa
 
 | 4
 | IRS
-| Reads the BOM submodel through the EDC submodel access flow and filters direct children by the local chain opening grant. Filtered partners are not exposed to the caller.
+| Reads the BOM through EDC and filters direct children by the local grant. If the grant allows child partners, entries without a valid partner BPNL produce one local `BOM_INCOMPLETE` tombstone.
 
 | 5
 | IRS
-| Creates and persists one direct child branch per valid, grant-allowed BOM child.
+| Creates and persists direct child branches for grant-allowed BOM entries. Malformed entries are marked as failed.
 
 | 6
 | IRS
-| Sends recursive REQUEST notifications to allowed direct children through EDC.
+| Sends recursive REQUEST notifications through EDC only for valid, grant-allowed BOM children.
 
 | 7
 | Child IRS

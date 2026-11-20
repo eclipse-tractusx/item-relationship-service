@@ -31,6 +31,7 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspectItem;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveBomChild;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChildBranch;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveChildItem;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveJobPhase;
@@ -141,6 +142,51 @@ class RecursiveResultAggregatorTest {
             assertThat(child.getTombstones()).singleElement().satisfies(tombstone ->
                     assertThat(tombstone.getReason())
                             .isEqualTo(RecursiveTombstoneReason.BOM_QUANTITY_NOT_AVAILABLE));
+        });
+    }
+
+    @Test
+    void shouldReportMissingQuantityForInvalidBomChildId() {
+        final RecursiveChildBranch child = childRequest("message-1", null).toBuilder()
+                .childGlobalAssetId(null)
+                .sendNotification(false)
+                .status(RecursiveResponseStatus.FAILED)
+                .tombstones(List.of(RecursiveTombstones.childBranch(List.of(ITEM_STOCK_ANONYMIZED),
+                        RecursiveTombstoneReason.BOM_CHILD_GLOBAL_ASSET_ID_INVALID,
+                        "The BOM relationship contains an invalid child global asset id.")))
+                .build();
+
+        final RecursiveJobResult result = aggregate(state(List.of(child)), Map.of());
+
+        assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
+        assertThat(result.getChildItems()).singleElement().satisfies(material ->
+                assertThat(material.getTombstones()).extracting(RecursiveTombstone::getReason)
+                        .containsExactlyInAnyOrder(RecursiveTombstoneReason.BOM_CHILD_GLOBAL_ASSET_ID_INVALID,
+                                RecursiveTombstoneReason.BOM_QUANTITY_NOT_AVAILABLE));
+    }
+
+    @Test
+    void shouldAttachOneIncompleteBomTombstoneToTheAffectedMaterialNode() {
+        final RecursiveBomChild unknown = new RecursiveBomChild(null, null, null);
+        final RecursiveJobState state = state(List.of()).toBuilder()
+                .rootJob(false)
+                .bomChildren(List.of(unknown, unknown))
+                .localNode(node("MNR-1", "Semiconductor", List.of(), List.of()))
+                .build();
+
+        final RecursiveJobResult result = aggregate(state, Map.of());
+
+        assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.PARTIAL);
+        assertThat(result.getTombstones()).isEmpty();
+        assertThat(result.getChildItems()).singleElement().satisfies(material -> {
+            assertThat(material.getMaterialNumber()).isEqualTo("MNR-1");
+            assertThat(material.getChildItems()).isEmpty();
+            assertThat(material.getTombstones()).singleElement().satisfies(tombstone -> {
+                assertThat(tombstone.getReason()).isEqualTo(RecursiveTombstoneReason.BOM_INCOMPLETE);
+                assertThat(tombstone.getScope()).isEqualTo(RecursiveTombstoneScope.LOCAL_NODE);
+                assertThat(tombstone.getOccurrences()).isEqualTo(1);
+                assertThat(tombstone.getErrorRefs()).hasSize(1);
+            });
         });
     }
 

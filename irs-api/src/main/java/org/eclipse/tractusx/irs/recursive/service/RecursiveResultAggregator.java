@@ -49,14 +49,22 @@ class RecursiveResultAggregator {
 
         final List<String> requestedAspects = List.copyOf(selectedAspects.get());
         final List<RecursiveChildItem> directChildren = childItems(state, requestedAspects);
+        final List<RecursiveTombstone> localTombstones = new ArrayList<>(additionalTombstones);
+        if (state.getBomChildren() != null
+                && state.getBomChildren().stream().anyMatch(child -> child.partnerBpnl() == null)) {
+            final RecursiveTombstone tombstone = localTombstone(RecursiveTombstoneReason.BOM_INCOMPLETE,
+                    RecursiveTombstones.BOM_INCOMPLETE_DETAIL);
+            localTombstones.add(tombstone);
+            RecursiveTombstones.logBomFailure(state, tombstone);
+        }
         final List<RecursiveTombstone> rootTombstones;
         final List<RecursiveChildItem> resultChildren;
 
         if (state.isRootJob()) {
             resultChildren = directChildren;
-            rootTombstones = RecursiveResultTreeSanitizer.aggregateTombstones(additionalTombstones);
+            rootTombstones = RecursiveResultTreeSanitizer.aggregateTombstones(localTombstones);
         } else {
-            final RecursiveChildItem localNode = localNode(state, directChildren, additionalTombstones,
+            final RecursiveChildItem localNode = localNode(state, directChildren, localTombstones,
                     requestedAspects);
             resultChildren = List.of(localNode);
             rootTombstones = List.of();
