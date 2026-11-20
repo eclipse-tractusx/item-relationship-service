@@ -52,7 +52,7 @@ class RecursiveJobDeadlineIntegrationTest extends RecursiveIntegrationTestBase {
                 .openingId(OPENING_ID)
                 .useCase(PURIS_USE_CASE)
                 .globalAssetId(ATLAS_ASSET)
-                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                .lifecycle(BomLifecycle.AS_PLANNED)
                 .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                 .requesterBpnl(ATLAS_BPN)
                 .receiverBpnl(ATLAS_BPN)
@@ -63,7 +63,7 @@ class RecursiveJobDeadlineIntegrationTest extends RecursiveIntegrationTestBase {
                 .childResponseDeadline(now.minusSeconds(1))
                 .state(RecursiveJobPhase.GRANT_CHECKED)
                 .rootJob(true)
-                .bomChildren(List.of())
+                .chainRelations(List.of())
                 .childBranches(List.of())
                 .build());
 

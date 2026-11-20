@@ -88,10 +88,10 @@ class ItemStockRecursiveSupplyChainIntegrationTest extends RecursiveIntegrationT
         assertThat(atlasJob.getJob().getAsyncFetchedItems().getCompleted()).isEqualTo(1);
         assertThat(atlasJob.getJob().getAsyncFetchedItems().getRunning()).isZero();
         assertThat(quantities(atlasJob.getResult())).containsExactly(2, 3, 5, 7);
-        final RecursiveChildItem belfastNode = atlasJob.getResult().getChildItems().get(0);
-        final RecursiveChildItem ceresNode = belfastNode.getChildItems().get(0);
-        final RecursiveChildItem deltaNode = ceresNode.getChildItems().get(0);
-        final RecursiveChildItem echoNode = deltaNode.getChildItems().get(0);
+        final RecursiveChildItem belfastNode = atlasJob.getResult().getRelatedItems().get(0);
+        final RecursiveChildItem ceresNode = belfastNode.getRelatedItems().get(0);
+        final RecursiveChildItem deltaNode = ceresNode.getRelatedItems().get(0);
+        final RecursiveChildItem echoNode = deltaNode.getRelatedItems().get(0);
         assertThat(belfastNode.getMaterialNumber()).isEqualTo("MNR-BELFAST");
         assertThat(belfastNode.getMaterialName()).isEqualTo("Material belfast");
         assertThat(belfastNode.getQuantity().getValue()).isEqualTo(1.0);
@@ -99,7 +99,7 @@ class ItemStockRecursiveSupplyChainIntegrationTest extends RecursiveIntegrationT
         assertThat(ceresNode.getMaterialNumber()).isEqualTo("MNR-CERES");
         assertThat(deltaNode.getMaterialNumber()).isEqualTo("MNR-DELTA");
         assertThat(echoNode.getMaterialNumber()).isEqualTo("MNR-ECHO");
-        assertThat(echoNode.getChildItems()).isEmpty();
+        assertThat(echoNode.getRelatedItems()).isEmpty();
         assertThat(tombstones(atlasJob)).isEmpty();
         assertThat(client.jobs(belfast)).hasSize(1);
         assertThat(client.jobs(ceres)).hasSize(1);

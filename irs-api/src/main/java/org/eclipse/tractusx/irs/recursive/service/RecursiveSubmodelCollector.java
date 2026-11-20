@@ -195,7 +195,7 @@ public class RecursiveSubmodelCollector {
                                  .materialName(materialName)
                                  .items(List.copyOf(items))
                                  .tombstones(List.copyOf(tombstones))
-                                 .childItems(List.of())
+                                 .relatedItems(List.of())
                                  .build();
     }
 }

@@ -169,7 +169,7 @@ public class E2ETestStepDefinitionsForRecursiveApi {
         this.jobRequest.put("useCase", chain.getUseCase());
         this.jobRequest.put("globalAssetId", chain.getRootGlobalAssetId());
         // requesterBpn is deliberately omitted: for a root job the service replaces it with its own
-        // recursive.localBpnl. bomLifecycle and aspects are left out as well and are asserted below,
+        // recursive.localBpnl. lifecycle and aspects are left out as well and are asserted below,
         // which keeps the defaults of the use case under test.
     }
 
@@ -218,17 +218,17 @@ public class E2ETestStepDefinitionsForRecursiveApi {
 
     @Then("I check, if the result contains {int} direct child items")
     public void iCheckIfTheResultContainsDirectChildItems(final int childItems) {
-        assertThat(jobStatus.getList("result.childItems")).hasSize(childItems);
+        assertThat(jobStatus.getList("result.relatedItems")).hasSize(childItems);
     }
 
     @Then("I check, if the material tree contains {int} child items in total")
     public void iCheckIfTheTreeContainsChildItemsInTotal(final int childItems) {
-        assertThat(countChildItems(jobStatus.getList("result.childItems"))).isEqualTo(childItems);
+        assertThat(countChildItems(jobStatus.getList("result.relatedItems"))).isEqualTo(childItems);
     }
 
     @Then("I check, if the result was collected for bom lifecycle {string}")
     public void iCheckIfTheResultUsedBomLifecycle(final String bomLifecycle) {
-        assertThat(jobStatus.getString("result.bomLifecycle")).isEqualTo(bomLifecycle);
+        assertThat(jobStatus.getString("result.lifecycle")).isEqualTo(bomLifecycle);
     }
 
     @Then("I check, if the result was collected for {int} aspects")
@@ -244,7 +244,7 @@ public class E2ETestStepDefinitionsForRecursiveApi {
 
     @Then("I check, if the material tree is {int} levels deep")
     public void iCheckIfTheTreeIsLevelsDeep(final int levels) {
-        assertThat(depthOf(jobStatus.getList("result.childItems"))).as("levels below the root material")
+        assertThat(depthOf(jobStatus.getList("result.relatedItems"))).as("levels below the root material")
                                                                    .isEqualTo(levels);
     }
 
@@ -279,7 +279,7 @@ public class E2ETestStepDefinitionsForRecursiveApi {
     @Then("I check, if the result contains a tombstone with reason {string}")
     public void iCheckIfTheResultContainsTombstoneReason(final String reason) {
         final List<String> reasons = new ArrayList<>();
-        collectTombstoneReasons(jobStatus.getList("result.tombstones"), jobStatus.getList("result.childItems"),
+        collectTombstoneReasons(jobStatus.getList("result.tombstones"), jobStatus.getList("result.relatedItems"),
                 reasons);
         assertThat(reasons).as("tombstone reasons in the whole result").contains(reason);
     }
@@ -287,7 +287,7 @@ public class E2ETestStepDefinitionsForRecursiveApi {
     @Then("I check, if the result contains no tombstones")
     public void iCheckIfTheResultContainsNoTombstones() {
         final List<String> reasons = new ArrayList<>();
-        collectTombstoneReasons(jobStatus.getList("result.tombstones"), jobStatus.getList("result.childItems"),
+        collectTombstoneReasons(jobStatus.getList("result.tombstones"), jobStatus.getList("result.relatedItems"),
                 reasons);
         assertThat(reasons).as("tombstone reasons in the whole result").isEmpty();
     }
@@ -313,13 +313,13 @@ public class E2ETestStepDefinitionsForRecursiveApi {
 
     @SuppressWarnings("unchecked")
     private void forEachMaterial(final Consumer<Map<String, Object>> check) {
-        final List<Map<String, Object>> roots = jobStatus.getList("result.childItems");
+        final List<Map<String, Object>> roots = jobStatus.getList("result.relatedItems");
         assertThat(roots).as("materials below the root").isNotEmpty();
         final Deque<Map<String, Object>> pending = new ArrayDeque<>(roots);
         while (!pending.isEmpty()) {
             final Map<String, Object> material = pending.pop();
             check.accept(material);
-            final List<Map<String, Object>> children = (List<Map<String, Object>>) material.get("childItems");
+            final List<Map<String, Object>> children = (List<Map<String, Object>>) material.get("relatedItems");
             if (children != null) {
                 pending.addAll(children);
             }
@@ -332,7 +332,7 @@ public class E2ETestStepDefinitionsForRecursiveApi {
             return 0;
         }
         return 1 + childItems.stream()
-                             .mapToInt(child -> depthOf((List<Map<String, Object>>) child.get("childItems")))
+                             .mapToInt(child -> depthOf((List<Map<String, Object>>) child.get("relatedItems")))
                              .max()
                              .orElse(0);
     }
@@ -346,7 +346,7 @@ public class E2ETestStepDefinitionsForRecursiveApi {
         if (childItems != null) {
             for (final Map<String, Object> childItem : childItems) {
                 collectTombstoneReasons((List<Map<String, Object>>) childItem.get("tombstones"),
-                        (List<Map<String, Object>>) childItem.get("childItems"), reasons);
+                        (List<Map<String, Object>>) childItem.get("relatedItems"), reasons);
             }
         }
     }
@@ -358,7 +358,7 @@ public class E2ETestStepDefinitionsForRecursiveApi {
         }
         int count = childItems.size();
         for (final Map<String, Object> childItem : childItems) {
-            count += countChildItems((List<Map<String, Object>>) childItem.get("childItems"));
+            count += countChildItems((List<Map<String, Object>>) childItem.get("relatedItems"));
         }
         return count;
     }

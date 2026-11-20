@@ -2,7 +2,7 @@
 
 *IMPORTANT:* THIS IS AN EXPERIMENTAL FEATURE INTRODUCED WITH APP VERSION 7.1.0 AND CHART VERSION 9.1.0.
 
-The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` use case with `asPlanned` BOM traversal and anonymized PURIS aspect models.
+The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the `PURIS_ANONYMIZED_RECURSIVE` use case with `asPlanned` BOM traversal and anonymized PURIS aspect models.
 
 == Supported use case
 
@@ -11,7 +11,7 @@ The recursive IRS path provides a partner-to-partner traversal for PURIS data. I
 | Field | Value
 
 | Use case
-| `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE`
+| `PURIS_ANONYMIZED_RECURSIVE`
 
 | BOM lifecycle
 | `asPlanned`
@@ -526,7 +526,13 @@ mc ilm rule add --expire-days 7 myminio/irs-jobs
 
 Adjust the MinIO alias, bucket name and retention value to the target environment. Use `-1` to disable expiration. Do not disable expiration for recursive jobs unless another cleanup mechanism is in place. Without a retention policy, recursive job blobs and message correlation blobs remain in MinIO.
 
+Persisted recursive job state is not migrated when the recursive job model changes. Job state written by an earlier IRS version can load without `lifecycle` or `chainRelations`; results of such jobs are returned without aspect data.
+
 Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.
+
+Stored jobs and grants are not migrated when a use case is renamed. The use case is part of the grant blob name (`chain-opening-grant:{openingId}:{globalAssetId}:{requesterBpn}:{useCase}`) and of the stored job state. A job or grant that references a use case unknown to the running version cannot be read: listing recursive jobs or grants fails, the restart recovery resumes no job, and such grants cannot be removed through the grant API.
+
+Before upgrading to a version whose changelog lists a changed recursive model or a renamed use case, remove the `recursive-job:`, `recursive-msg-in:` and `recursive-msg-out:` blobs from the jobs bucket and the `chain-opening-grant:` blobs from the grants container, then create the grants again with the new use case.
 
 == Audit log
 
@@ -617,8 +623,8 @@ Each line starts with the fixed prefix `AUDIT` and a space, without color codes,
 
 [source]
 ----
-AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=<null> validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
-AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
+AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=<null> validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
+AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
 ----
 
 A log collector can route lines that start with this prefix to a separate audit storage.
@@ -647,7 +653,7 @@ The recursive result separates technical job execution from the business result.
 | `result.resultStatus`
 | Business outcome of the recursive aggregation. Possible values are `COMPLETE`, `PARTIAL` and `FAILED`.
 
-| `result.childItems`
+| `result.relatedItems`
 | Aggregated material tree. Each node represents a BOM child and can contain material metadata, BOM quantity, local aspect payloads, tombstones and further child nodes.
 
 | `items`

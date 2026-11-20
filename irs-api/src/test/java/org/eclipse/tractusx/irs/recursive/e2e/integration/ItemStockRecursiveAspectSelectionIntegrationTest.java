@@ -71,14 +71,14 @@ class ItemStockRecursiveAspectSelectionIntegrationTest extends RecursiveIntegrat
         final String jobId = client.startRootJob(atlas, RecursiveJobRequest.builder()
                 .openingId(OPENING_ID)
                 .useCase(PURIS_USE_CASE)
-                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                .lifecycle(BomLifecycle.AS_PLANNED)
                 .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                 .globalAssetId(ATLAS_ASSET)
                 .build());
 
         final RecursiveJobStatusResponse atlasJob = client.waitForTerminalJob(atlas, jobId);
         assertThat(atlasJob.getJob().getState()).isEqualTo(JobState.COMPLETED);
-        assertThat(atlasJob.getResult().getBomLifecycle()).isEqualTo(BomLifecycle.AS_PLANNED);
+        assertThat(atlasJob.getResult().getLifecycle()).isEqualTo(BomLifecycle.AS_PLANNED);
         assertThat(aspectIds(atlasJob.getResult())).containsOnly(ITEM_STOCK_ANONYMIZED);
         assertThat(quantities(atlasJob.getResult())).containsExactly(3, 5, 7);
         assertThat(tombstones(atlasJob)).isEmpty();

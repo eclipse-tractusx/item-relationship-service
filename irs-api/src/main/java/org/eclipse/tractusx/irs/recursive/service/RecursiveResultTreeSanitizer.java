@@ -107,7 +107,7 @@ final class RecursiveResultTreeSanitizer {
 
     /* package */ static boolean hasTombstones(final RecursiveChildItem node) {
         return !emptyIfNull(node.getTombstones()).isEmpty()
-                || emptyIfNull(node.getChildItems()).stream().anyMatch(
+                || emptyIfNull(node.getRelatedItems()).stream().anyMatch(
                         RecursiveResultTreeSanitizer::hasTombstones);
     }
 
@@ -115,7 +115,7 @@ final class RecursiveResultTreeSanitizer {
         return node.getMaterialNumber() != null
                 || node.getMaterialName() != null
                 || !emptyIfNull(node.getItems()).isEmpty()
-                || emptyIfNull(node.getChildItems()).stream().anyMatch(
+                || emptyIfNull(node.getRelatedItems()).stream().anyMatch(
                         RecursiveResultTreeSanitizer::hasUsableData);
     }
 
@@ -123,7 +123,7 @@ final class RecursiveResultTreeSanitizer {
         return RecursiveChildItem.builder()
                                  .items(List.of())
                                  .tombstones(List.of())
-                                 .childItems(List.of())
+                                 .relatedItems(List.of())
                                  .build();
     }
 
@@ -139,7 +139,7 @@ final class RecursiveResultTreeSanitizer {
         final List<RecursiveTombstone> tombstones = aggregateNodeTombstones
                 ? aggregateTombstones(sanitizedTombstones)
                 : sanitizedTombstones;
-        final List<RecursiveChildItem> children = emptyIfNull(rawNode.getChildItems()).stream()
+        final List<RecursiveChildItem> children = emptyIfNull(rawNode.getRelatedItems()).stream()
                 .filter(Objects::nonNull)
                 .map(child -> sanitizeNode(child, selectedAspects, aggregateNodeTombstones))
                 .toList();
@@ -149,7 +149,7 @@ final class RecursiveResultTreeSanitizer {
                                  .quantity(sanitizeQuantity(rawNode.getQuantity()))
                                  .items(items)
                                  .tombstones(tombstones)
-                                 .childItems(children)
+                                 .relatedItems(children)
                                  .build();
     }
 

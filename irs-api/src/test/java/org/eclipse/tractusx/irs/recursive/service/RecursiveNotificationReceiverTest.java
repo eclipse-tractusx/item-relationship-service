@@ -177,9 +177,9 @@ class RecursiveNotificationReceiverTest {
                 .content(RecursiveNotificationMessage.Content.builder()
                         .type(RecursiveNotificationType.REQUEST)
                         .openingId("opening-42")
-                        .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                        .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                         .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
-                        .bomLifecycle(BomLifecycle.AS_PLANNED)
+                        .lifecycle(BomLifecycle.AS_PLANNED)
                         .aspects(List.of(RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId()))
                         .build())
                 .build();

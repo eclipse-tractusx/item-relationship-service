@@ -80,10 +80,10 @@ alt allowed direct children exist
     Child -> Child: resume after final child response or timeout
     activate Child
     Child -> Child: apply final child response or mark open branches TIMED_OUT
-    Child -> Child: aggregate childItems, items and tombstones
+    Child -> Child: aggregate relatedItems, items and tombstones
 else leaf or no allowed direct children
     Child -> Child: persist COMPLETED state
-    Child -> Child: aggregate childItems, items and tombstones
+    Child -> Child: aggregate relatedItems, items and tombstones
 end
 
 == Upstream response ==

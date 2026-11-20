@@ -55,9 +55,9 @@ final class RecursiveBomReader {
     private final String globalAssetId;
 
     /* package */ RecursiveBomReader(final JsonUtil jsonUtil,
-            final BomLifecycle bomLifecycle, final UUID jobId, final String globalAssetId) {
+            final BomLifecycle lifecycle, final UUID jobId, final String globalAssetId) {
         this.jsonUtil = jsonUtil;
-        this.submodelType = RelationshipAspect.from(bomLifecycle, Direction.DOWNWARD).getSubmodelClazz();
+        this.submodelType = RelationshipAspect.from(lifecycle, Direction.DOWNWARD).getSubmodelClazz();
         this.jobId = jobId;
         this.globalAssetId = globalAssetId;
     }

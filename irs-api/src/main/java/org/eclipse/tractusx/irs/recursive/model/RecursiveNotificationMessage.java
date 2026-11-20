@@ -145,8 +145,8 @@ public class RecursiveNotificationMessage {
     @Builder
     @Jacksonized
     @Schema(description = "Recursive notification content. REQUEST requires type, openingId, useCase, globalAssetId, "
-            + "bomLifecycle=asPlanned and a non-empty aspects list; status and result must be omitted. "
-            + "RESPONSE requires type, openingId, useCase, bomLifecycle=asPlanned, the same non-empty aspects list, "
+            + "lifecycle=asPlanned and a non-empty aspects list; status and result must be omitted. "
+            + "RESPONSE requires type, openingId, useCase, lifecycle=asPlanned, the same non-empty aspects list, "
             + "status and result.")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Content {
@@ -169,7 +169,7 @@ public class RecursiveNotificationMessage {
                  message = "globalAssetId must be a valid UUID or URN UUID")
         private String globalAssetId;
 
-        private BomLifecycle bomLifecycle;
+        private BomLifecycle lifecycle;
 
         private List<@Pattern(regexp = RecursivePatternStore.SAFE_SINGLE_LINE_STRING,
                 message = "aspects must not contain control or line separator characters") String> aspects;

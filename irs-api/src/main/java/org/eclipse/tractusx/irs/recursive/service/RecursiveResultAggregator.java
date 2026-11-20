@@ -48,10 +48,10 @@ class RecursiveResultAggregator {
         }
 
         final List<String> requestedAspects = List.copyOf(selectedAspects.get());
-        final List<RecursiveChildItem> directChildren = childItems(state, requestedAspects);
+        final List<RecursiveChildItem> directChildren = relatedItems(state, requestedAspects);
         final List<RecursiveTombstone> localTombstones = new ArrayList<>(additionalTombstones);
-        if (state.getBomChildren() != null
-                && state.getBomChildren().stream().anyMatch(child -> child.partnerBpnl() == null)) {
+        if (state.getChainRelations() != null
+                && state.getChainRelations().stream().anyMatch(child -> child.partnerBpnl() == null)) {
             final RecursiveTombstone tombstone = localTombstone(RecursiveTombstoneReason.BOM_INCOMPLETE,
                     RecursiveTombstones.BOM_INCOMPLETE_DETAIL);
             localTombstones.add(tombstone);
@@ -76,14 +76,14 @@ class RecursiveResultAggregator {
         return RecursiveJobResult.builder()
                                  .resultStatus(resultStatus)
                                  .useCase(state.getUseCase())
-                                 .bomLifecycle(state.getBomLifecycle())
+                                 .lifecycle(state.getLifecycle())
                                  .requestedAspects(requestedAspects)
-                                 .childItems(List.copyOf(resultChildren))
+                                 .relatedItems(List.copyOf(resultChildren))
                                  .tombstones(rootTombstones)
                                  .build();
     }
 
-    private List<RecursiveChildItem> childItems(final RecursiveJobState state, final List<String> requestedAspects) {
+    private List<RecursiveChildItem> relatedItems(final RecursiveJobState state, final List<String> requestedAspects) {
         final List<RecursiveChildItem> children = new ArrayList<>();
 
         for (final RecursiveChildBranch childBranch : state.getChildBranches()) {
@@ -99,11 +99,11 @@ class RecursiveResultAggregator {
                 RecursiveResultTreeSanitizer.sanitizeTombstones(childBranch.getTombstones(), requestedAspects));
         final RecursiveChildItem childNode;
 
-        if (childResult != null && childResult.getChildItems() != null
-                && childResult.getChildItems().size() == 1
-                && childResult.getChildItems().get(0) != null) {
+        if (childResult != null && childResult.getRelatedItems() != null
+                && childResult.getRelatedItems().size() == 1
+                && childResult.getRelatedItems().get(0) != null) {
             childNode = RecursiveResultTreeSanitizer.sanitizeAndAggregateNode(
-                    childResult.getChildItems().get(0), requestedAspects);
+                    childResult.getRelatedItems().get(0), requestedAspects);
         } else {
             childNode = RecursiveResultTreeSanitizer.emptyNode();
             if (childResult != null && !isFailureResultWithoutNode(childResult)) {
@@ -138,7 +138,7 @@ class RecursiveResultAggregator {
 
     private boolean isFailureResultWithoutNode(final RecursiveJobResult childResult) {
         return childResult.getResultStatus() == RecursiveResultStatus.FAILED
-                && (childResult.getChildItems() == null || childResult.getChildItems().isEmpty())
+                && (childResult.getRelatedItems() == null || childResult.getRelatedItems().isEmpty())
                 && childResult.getTombstones() != null
                 && !childResult.getTombstones().isEmpty();
     }
@@ -183,7 +183,7 @@ class RecursiveResultAggregator {
         tombstones.addAll(additionalTombstones);
         return collected.toBuilder()
                         .quantity(null)
-                        .childItems(List.copyOf(directChildren))
+                        .relatedItems(List.copyOf(directChildren))
                         .tombstones(RecursiveResultTreeSanitizer.aggregateTombstones(tombstones))
                         .build();
     }
@@ -197,24 +197,24 @@ class RecursiveResultAggregator {
         return RecursiveTombstones.childBranch(requestedAspects, reason, detail);
     }
 
-    /* package */ static RecursiveResultStatus derivedStatus(final List<RecursiveChildItem> childItems,
+    /* package */ static RecursiveResultStatus derivedStatus(final List<RecursiveChildItem> relatedItems,
             final List<RecursiveTombstone> rootTombstones) {
         final boolean hasTombstones = !rootTombstones.isEmpty()
-                || childItems.stream().anyMatch(RecursiveResultTreeSanitizer::hasTombstones);
+                || relatedItems.stream().anyMatch(RecursiveResultTreeSanitizer::hasTombstones);
         if (!hasTombstones) {
             return RecursiveResultStatus.COMPLETE;
         }
-        return childItems.stream().anyMatch(RecursiveResultTreeSanitizer::hasUsableData)
+        return relatedItems.stream().anyMatch(RecursiveResultTreeSanitizer::hasUsableData)
                 ? RecursiveResultStatus.PARTIAL
                 : RecursiveResultStatus.FAILED;
     }
 
     private static Optional<Set<String>> selectedAspects(final RecursiveJobState state) {
-        if (state.getUseCase() == null || state.getBomLifecycle() == null || state.getAspects() == null) {
+        if (state.getUseCase() == null || state.getLifecycle() == null || state.getAspects() == null) {
             return Optional.empty();
         }
         return state.getUseCase()
-                .selectAspectIds(state.getBomLifecycle(), state.getAspects())
+                .selectAspectIds(state.getLifecycle(), state.getAspects())
                 .map(LinkedHashSet::new)
                 .map(Collections::unmodifiableSet);
     }
@@ -225,7 +225,7 @@ class RecursiveResultAggregator {
         return RecursiveJobResult.builder()
                                  .resultStatus(RecursiveResultStatus.FAILED)
                                  .requestedAspects(List.of())
-                                 .childItems(List.of())
+                                 .relatedItems(List.of())
                                  .tombstones(List.of(tombstone))
                                  .build();
     }

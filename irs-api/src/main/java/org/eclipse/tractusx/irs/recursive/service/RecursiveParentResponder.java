@@ -79,7 +79,7 @@ class RecursiveParentResponder {
     private void sendParentResponse(final RecursiveJobState state) {
         final List<String> responseAspects = RecursiveResponseMapper.selectedAspectIds(state);
         final RecursiveJobResult externalResult = RecursiveResponseMapper.toExternalResult(state.getResult(),
-                state.getUseCase(), state.getBomLifecycle(), responseAspects);
+                state.getUseCase(), state.getLifecycle(), responseAspects);
         final RecursiveResponseStatus status = state.getState() == RecursiveJobPhase.COMPLETED
                 ? RecursiveResponseStatus.COMPLETED : RecursiveResponseStatus.FAILED;
 

@@ -48,7 +48,7 @@ public class RecursiveJobState {
     private String openingId;
     private RecursiveUseCase useCase;
     private String globalAssetId;
-    private BomLifecycle bomLifecycle;
+    private BomLifecycle lifecycle;
     private List<String> aspects;
     private String requesterBpnl;
     private String receiverBpnl;
@@ -70,7 +70,7 @@ public class RecursiveJobState {
     /**
      * BOM children discovered during local traversal.
      */
-    private List<RecursiveBomChild> bomChildren;
+    private List<RecursiveBomChild> chainRelations;
 
     /**
      * Concrete child branches expected for this job. Each entry represents one direct BOM child.

@@ -93,12 +93,12 @@ public class RecursiveNotificationMessageValidator {
             final RecursiveNotificationMessage.Content content) {
         return isTimestamp(header.getExpectedResponseBy())
                 && content.getGlobalAssetId() != null
-                && content.getBomLifecycle() == BomLifecycle.AS_PLANNED
+                && content.getLifecycle() == BomLifecycle.AS_PLANNED
                 && content.getAspects() != null
                 && !content.getAspects().isEmpty()
                 && content.getUseCase() != null
                 && content.getUseCase()
-                        .selectAspectIds(content.getBomLifecycle(), content.getAspects())
+                        .selectAspectIds(content.getLifecycle(), content.getAspects())
                         .isPresent()
                 && content.getStatus() == null
                 && content.getResult() == null;
@@ -109,7 +109,7 @@ public class RecursiveNotificationMessageValidator {
         return header.getRelatedMessageId() != null
                 && !header.getRelatedMessageId().isBlank()
                 && header.getExpectedResponseBy() == null
-                && content.getBomLifecycle() == BomLifecycle.AS_PLANNED
+                && content.getLifecycle() == BomLifecycle.AS_PLANNED
                 && content.getStatus() != null
                 && content.getResult() != null
                 && isValidResult(content);
@@ -121,7 +121,7 @@ public class RecursiveNotificationMessageValidator {
         }
         final RecursiveJobResult result = content.getResult();
         final Set<String> selectedAspects = content.getUseCase()
-                .selectAspectIds(content.getBomLifecycle(), content.getAspects())
+                .selectAspectIds(content.getLifecycle(), content.getAspects())
                 .orElse(Set.of());
         if (selectedAspects.isEmpty() || !hasRequiredResultFields(result)) {
             return false;
@@ -134,20 +134,20 @@ public class RecursiveNotificationMessageValidator {
             return false;
         }
         return hasValidResultRoot(content, result)
-                && result.getChildItems().stream().allMatch(node -> isValidNode(node, selectedAspects));
+                && result.getRelatedItems().stream().allMatch(node -> isValidNode(node, selectedAspects));
     }
 
     private boolean hasRequiredResultFields(final RecursiveJobResult result) {
         return result != null
                 && result.getResultStatus() != null
-                && result.getChildItems() != null
+                && result.getRelatedItems() != null
                 && result.getTombstones() != null;
     }
 
     private boolean hasConsistentResultMetadata(final RecursiveNotificationMessage.Content content,
             final RecursiveJobResult result, final Set<String> selectedAspects) {
         return Objects.equals(result.getUseCase(), content.getUseCase())
-                && Objects.equals(result.getBomLifecycle(), content.getBomLifecycle())
+                && Objects.equals(result.getLifecycle(), content.getLifecycle())
                 && containsSameAspects(result.getRequestedAspects(), selectedAspects)
                 && isValidTombstones(result.getTombstones(), selectedAspects)
                 && result.getTombstones().stream().noneMatch(RecursiveTombstones::isIncompleteBomNotice);
@@ -155,9 +155,9 @@ public class RecursiveNotificationMessageValidator {
 
     private boolean hasValidResultRoot(final RecursiveNotificationMessage.Content content,
             final RecursiveJobResult result) {
-        return result.getChildItems().size() == 1
+        return result.getRelatedItems().size() == 1
                 || content.getStatus() == RecursiveResponseStatus.FAILED
-                        && result.getChildItems().isEmpty()
+                        && result.getRelatedItems().isEmpty()
                         && !result.getTombstones().isEmpty();
     }
 
@@ -165,12 +165,12 @@ public class RecursiveNotificationMessageValidator {
         return node != null
                 && node.getItems() != null
                 && node.getTombstones() != null
-                && node.getChildItems() != null
+                && node.getRelatedItems() != null
                 && (node.getQuantity() == null
                         || RecursiveResultTreeSanitizer.sanitizeQuantity(node.getQuantity()) != null)
                 && hasUniqueAspectItems(node.getItems(), selectedAspects)
                 && isValidTombstones(node.getTombstones(), selectedAspects)
-                && node.getChildItems().stream().allMatch(child -> isValidNode(child, selectedAspects));
+                && node.getRelatedItems().stream().allMatch(child -> isValidNode(child, selectedAspects));
     }
 
     private boolean hasUniqueAspectItems(final List<RecursiveAspectItem> items, final Set<String> selectedAspects) {

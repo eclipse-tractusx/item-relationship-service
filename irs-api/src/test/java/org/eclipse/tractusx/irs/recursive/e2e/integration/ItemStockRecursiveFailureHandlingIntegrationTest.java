@@ -103,8 +103,8 @@ class ItemStockRecursiveFailureHandlingIntegrationTest extends RecursiveIntegrat
         assertThat(atlasJob.getResult().getResultStatus()).isEqualTo(RecursiveResultStatus.PARTIAL);
         assertThat(quantities(atlasJob.getResult())).containsExactly(7);
         assertThat(atlasJob.getResult().getTombstones()).hasSize(1);
-        assertThat(atlasJob.getResult().getChildItems()).singleElement().satisfies(child -> {
-            assertThat(child.getChildItems()).isEmpty();
+        assertThat(atlasJob.getResult().getRelatedItems()).singleElement().satisfies(child -> {
+            assertThat(child.getRelatedItems()).isEmpty();
             assertThat(child.getTombstones()).isEmpty();
         });
         assertThat(tombstones(atlasJob)).hasSize(1).allSatisfy(tombstone -> {

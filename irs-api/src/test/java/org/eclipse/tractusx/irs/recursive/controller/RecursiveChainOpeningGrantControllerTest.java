@@ -44,7 +44,7 @@ import org.springframework.http.ResponseEntity;
 class RecursiveChainOpeningGrantControllerTest {
 
     private static final String OPENING_ID = "opening-42";
-    private static final RecursiveUseCase USE_CASE = RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE;
+    private static final RecursiveUseCase USE_CASE = RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE;
     private static final String REQUESTER_BPN = "BPNL0000ATLS0001";
     private static final String GLOBAL_ASSET_ID = "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b";
 

@@ -71,26 +71,26 @@ public class RecursiveTraversalService {
     /** Resolves one shell and its direct BOM children. */
     @FunctionalInterface
     private interface TraversalResolver {
-        TraversalResult resolve(UUID jobId, String globalAssetId, String bpnl, BomLifecycle bomLifecycle);
+        TraversalResult resolve(UUID jobId, String globalAssetId, String bpnl, BomLifecycle lifecycle);
     }
 
     /** BOM children and the shell descriptor used to resolve them. */
-    record TraversalResult(List<RecursiveBomChild> bomChildren, AssetAdministrationShellDescriptor shellDescriptor) {
+    record TraversalResult(List<RecursiveBomChild> chainRelations, AssetAdministrationShellDescriptor shellDescriptor) {
     }
 
     public RecursiveTraversalService(final DigitalTwinRegistryService digitalTwinRegistryService,
             final EdcSubmodelFacade submodelFacade,
             final JsonUtil jsonUtil) {
-        this.traversalResolver = (jobId, globalAssetId, bpnl, bomLifecycle) -> resolveTraversalViaIrsClients(
-                digitalTwinRegistryService, submodelFacade, jsonUtil, jobId, globalAssetId, bpnl, bomLifecycle);
+        this.traversalResolver = (jobId, globalAssetId, bpnl, lifecycle) -> resolveTraversalViaIrsClients(
+                digitalTwinRegistryService, submodelFacade, jsonUtil, jobId, globalAssetId, bpnl, lifecycle);
     }
 
     /* package */ TraversalResult resolve(final UUID jobId, final String globalAssetId, final String bpnl,
-            final BomLifecycle bomLifecycle) {
-        log.info("Resolving BOM children for globalAssetId={}, bpnl={}, bomLifecycle={}",
-                RecursiveLogValue.of(globalAssetId), RecursiveLogValue.of(bpnl), bomLifecycle);
-        final TraversalResult result = traversalResolver.resolve(jobId, globalAssetId, bpnl, bomLifecycle);
-        return new TraversalResult(List.copyOf(result.bomChildren()), result.shellDescriptor());
+            final BomLifecycle lifecycle) {
+        log.info("Resolving BOM children for globalAssetId={}, bpnl={}, lifecycle={}",
+                RecursiveLogValue.of(globalAssetId), RecursiveLogValue.of(bpnl), lifecycle);
+        final TraversalResult result = traversalResolver.resolve(jobId, globalAssetId, bpnl, lifecycle);
+        return new TraversalResult(List.copyOf(result.chainRelations()), result.shellDescriptor());
     }
 
     /**
@@ -122,7 +122,7 @@ public class RecursiveTraversalService {
             final UUID jobId,
             final String globalAssetId,
             final String bpnl,
-            final BomLifecycle bomLifecycle) {
+            final BomLifecycle lifecycle) {
         try {
             final PartChainIdentificationKey itemKey = PartChainIdentificationKey.builder()
                     .globalAssetId(globalAssetId)
@@ -132,8 +132,8 @@ public class RecursiveTraversalService {
                     .orElseThrow(() -> new RecursiveExternalCallException("SHELL_NOT_FOUND",
                             "Digital twin shell was not found while resolving BOM relationships.", null));
 
-            final List<Endpoint> relationshipEndpoints = relationshipEndpoints(shell.payload(), bomLifecycle);
-            final RecursiveBomReader bomReader = new RecursiveBomReader(jsonUtil, bomLifecycle, jobId, globalAssetId);
+            final List<Endpoint> relationshipEndpoints = relationshipEndpoints(shell.payload(), lifecycle);
+            final RecursiveBomReader bomReader = new RecursiveBomReader(jsonUtil, lifecycle, jobId, globalAssetId);
 
             final List<RecursiveBomChild> result = new ArrayList<>();
             for (final Endpoint endpoint : relationshipEndpoints) {
@@ -152,14 +152,14 @@ public class RecursiveTraversalService {
     }
 
     private static List<Endpoint> relationshipEndpoints(final AssetAdministrationShellDescriptor shellDescriptor,
-            final BomLifecycle bomLifecycle) {
-        return supportedBomDescriptor(shellDescriptor, bomLifecycle)
+            final BomLifecycle lifecycle) {
+        return supportedBomDescriptor(shellDescriptor, lifecycle)
                 .map(RecursiveTraversalService::descriptorEndpoints)
                 .orElseGet(List::of);
     }
 
     private static Optional<SubmodelDescriptor> supportedBomDescriptor(
-            final AssetAdministrationShellDescriptor shellDescriptor, final BomLifecycle bomLifecycle) {
+            final AssetAdministrationShellDescriptor shellDescriptor, final BomLifecycle lifecycle) {
         final List<SubmodelDescriptor> bomDescriptors = Optional.ofNullable(shellDescriptor.getSubmodelDescriptors())
                 .orElse(List.of())
                 .stream()
@@ -170,7 +170,7 @@ public class RecursiveTraversalService {
             return Optional.empty();
         }
 
-        final String supportedSemanticId = supportedBomSemanticId(bomLifecycle);
+        final String supportedSemanticId = supportedBomSemanticId(lifecycle);
         final List<SubmodelDescriptor> matchingDescriptors = bomDescriptors.stream()
                 .filter(descriptor -> hasSemanticId(descriptor, supportedSemanticId))
                 .toList();
@@ -198,8 +198,8 @@ public class RecursiveTraversalService {
         return endpoints;
     }
 
-    private static String supportedBomSemanticId(final BomLifecycle bomLifecycle) {
-        if (BomLifecycle.AS_PLANNED.equals(bomLifecycle)) {
+    private static String supportedBomSemanticId(final BomLifecycle lifecycle) {
+        if (BomLifecycle.AS_PLANNED.equals(lifecycle)) {
             return SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0;
         }
         throw new RecursiveExternalCallException("BOM_SUBMODEL_NOT_SUPPORTED",

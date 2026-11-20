@@ -66,7 +66,7 @@ class RecursiveRequestFactory {
             final ZonedDateTime inheritedDeadline, final String inheritedMessageId) {
         final String globalAssetId = resolveGlobalAssetId(request);
         final RecursiveUseCase useCase = Objects.requireNonNull(request.getUseCase(), "useCase must be provided");
-        final BomLifecycle bomLifecycle = useCase.resolveLifecycle(request.getBomLifecycle());
+        final BomLifecycle lifecycle = useCase.resolveLifecycle(request.getLifecycle());
         final List<String> aspects = resolveAspects(request, useCase);
         final String localBpnl = properties.getLocalBpnl();
 
@@ -77,7 +77,7 @@ class RecursiveRequestFactory {
         final ZonedDateTime createdOn = ZonedDateTime.now(clock);
         final ZonedDateTime deadline = resolveDeadline(request, isRootJob, inheritedDeadline, createdOn);
 
-        return new PreparedRecursiveJob(request.getOpeningId(), useCase, globalAssetId, bomLifecycle,
+        return new PreparedRecursiveJob(request.getOpeningId(), useCase, globalAssetId, lifecycle,
                 aspects, requesterBpnl, localBpnl, messageId, createdOn, deadline,
                 childResponseDeadline(deadline, createdOn), isRootJob);
     }
@@ -169,7 +169,7 @@ class RecursiveRequestFactory {
      * duplicate and grant checks have passed.
      */
     record PreparedRecursiveJob(String openingId, RecursiveUseCase useCase, String globalAssetId,
-            BomLifecycle bomLifecycle, List<String> aspects, String requesterBpnl, String receiverBpnl, String messageId,
+            BomLifecycle lifecycle, List<String> aspects, String requesterBpnl, String receiverBpnl, String messageId,
             ZonedDateTime createdOn, ZonedDateTime deadline, ZonedDateTime childResponseDeadline, boolean rootJob) {
 
         /* package */ RecursiveJobState toState(final UUID jobId) {
@@ -178,7 +178,7 @@ class RecursiveRequestFactory {
                                     .openingId(openingId)
                                     .useCase(useCase)
                                     .globalAssetId(globalAssetId)
-                                    .bomLifecycle(bomLifecycle)
+                                    .lifecycle(lifecycle)
                                     .aspects(aspects)
                                     .requesterBpnl(requesterBpnl)
                                     .receiverBpnl(receiverBpnl)
@@ -189,7 +189,7 @@ class RecursiveRequestFactory {
                                     .childResponseDeadline(childResponseDeadline)
                                     .state(RecursiveJobPhase.GRANT_CHECKED)
                                     .rootJob(rootJob)
-                                    .bomChildren(List.of())
+                                    .chainRelations(List.of())
                                     .childBranches(List.of())
                                     .build();
         }

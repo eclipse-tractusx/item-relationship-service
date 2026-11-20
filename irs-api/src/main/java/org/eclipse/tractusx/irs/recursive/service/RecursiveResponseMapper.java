@@ -51,7 +51,7 @@ final class RecursiveResponseMapper {
         return RecursiveJobStatusResponse.builder()
                                          .job(toJobView(state, selectedAspectIds))
                                          .result(toExternalResult(state.getResult(), state.getUseCase(),
-                                                 state.getBomLifecycle(), state.getAspects()))
+                                                 state.getLifecycle(), state.getAspects()))
                                          .build();
     }
 
@@ -70,7 +70,7 @@ final class RecursiveResponseMapper {
                                .parameter(RecursiveJobParameter.builder()
                                                                .openingId(state.getOpeningId())
                                                                .useCase(state.getUseCase())
-                                                               .bomLifecycle(state.getBomLifecycle())
+                                                               .lifecycle(state.getLifecycle())
                                                                .aspects(selectedAspectIds)
                                                                .deadline(state.getDeadline())
                                                                .childResponseDeadline(state.getChildResponseDeadline())
@@ -83,11 +83,11 @@ final class RecursiveResponseMapper {
      * selection is incomplete or invalid for its use case.
      */
     /* package */ static List<String> selectedAspectIds(final RecursiveJobState state) {
-        if (state.getUseCase() == null || state.getBomLifecycle() == null || state.getAspects() == null) {
+        if (state.getUseCase() == null || state.getLifecycle() == null || state.getAspects() == null) {
             return List.of();
         }
         return state.getUseCase()
-                    .selectAspectIds(state.getBomLifecycle(), state.getAspects())
+                    .selectAspectIds(state.getLifecycle(), state.getAspects())
                     .map(List::copyOf)
                     .orElseGet(List::of);
     }
@@ -129,18 +129,18 @@ final class RecursiveResponseMapper {
 
     @SuppressWarnings("PMD.NullAssignment")
     /* package */ static RecursiveJobResult toExternalResult(final RecursiveJobResult rawResult,
-            final RecursiveUseCase useCase, final BomLifecycle bomLifecycle, final List<String> fallbackAspects) {
+            final RecursiveUseCase useCase, final BomLifecycle lifecycle, final List<String> fallbackAspects) {
         if (rawResult == null) {
             return null;
         }
 
-        final Optional<Set<String>> selectedAspects = useCase == null || bomLifecycle == null || fallbackAspects == null
+        final Optional<Set<String>> selectedAspects = useCase == null || lifecycle == null || fallbackAspects == null
                 ? Optional.empty()
-                : useCase.selectAspectIds(bomLifecycle, fallbackAspects);
+                : useCase.selectAspectIds(lifecycle, fallbackAspects);
         final List<String> selectedAspectIds = selectedAspects.map(List::copyOf).orElseGet(List::of);
-        final List<RecursiveChildItem> childItems = selectedAspects.isEmpty()
+        final List<RecursiveChildItem> relatedItems = selectedAspects.isEmpty()
                 ? List.of()
-                : RecursiveResultTreeSanitizer.sanitizeNodes(rawResult.getChildItems(), selectedAspectIds);
+                : RecursiveResultTreeSanitizer.sanitizeNodes(rawResult.getRelatedItems(), selectedAspectIds);
         final List<RecursiveTombstone> tombstones = RecursiveResultTreeSanitizer.sanitizeTombstones(
                 rawResult.getTombstones(), selectedAspectIds);
 
@@ -149,15 +149,15 @@ final class RecursiveResponseMapper {
                 || rawResult.getResultStatus() == RecursiveResultStatus.FAILED) {
             resultStatus = RecursiveResultStatus.FAILED;
         } else {
-            resultStatus = RecursiveResultAggregator.derivedStatus(childItems, tombstones);
+            resultStatus = RecursiveResultAggregator.derivedStatus(relatedItems, tombstones);
         }
 
         return RecursiveJobResult.builder()
                                  .resultStatus(resultStatus)
                                  .useCase(selectedAspects.isPresent() ? useCase : null)
-                                 .bomLifecycle(selectedAspects.isPresent() ? bomLifecycle : null)
+                                 .lifecycle(selectedAspects.isPresent() ? lifecycle : null)
                                  .requestedAspects(selectedAspectIds)
-                                 .childItems(childItems)
+                                 .relatedItems(relatedItems)
                                  .tombstones(tombstones)
                                  .build();
     }

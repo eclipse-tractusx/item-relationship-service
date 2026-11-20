@@ -49,7 +49,7 @@ class RecursiveResultTreeSanitizerTest {
                 .materialName("Semiconductor")
                 .quantity(quantity(-1.0))
                 .items(List.of(aspectItem(ITEM_STOCK), aspectItem(DELIVERY_INFORMATION)))
-                .childItems(List.of(child))
+                .relatedItems(List.of(child))
                 .build();
 
         final RecursiveChildItem result = RecursiveResultTreeSanitizer.sanitizeAndAggregateNode(
@@ -58,7 +58,7 @@ class RecursiveResultTreeSanitizerTest {
         assertThat(result.getQuantity()).isNull();
         assertThat(result.getItems()).singleElement()
                 .satisfies(item -> assertThat(item.getAspect()).isEqualTo(ITEM_STOCK));
-        assertThat(result.getChildItems()).singleElement().satisfies(material -> {
+        assertThat(result.getRelatedItems()).singleElement().satisfies(material -> {
             assertThat(material.getMaterialNumber()).isEqualTo("MNR-2");
             assertThat(material.getQuantity()).isEqualTo(quantity(1.0));
             assertThat(material.getItems()).singleElement()
@@ -72,7 +72,7 @@ class RecursiveResultTreeSanitizerTest {
                 .quantity(quantity(2.0))
                 .build();
         final RecursiveChildItem parentWithMaterialBelow = RecursiveChildItem.builder()
-                .childItems(List.of(RecursiveChildItem.builder()
+                .relatedItems(List.of(RecursiveChildItem.builder()
                         .materialName("Transistor")
                         .build()))
                 .build();

@@ -76,9 +76,9 @@ public class RecursiveNotificationController {
                        + "The content.type field (REQUEST or RESPONSE) determines the processing path. "
                        + "REQUEST starts the next recursive child hop and requires header.expectedResponseBy, "
                        + "content.globalAssetId, "
-                       + "content.bomLifecycle=asPlanned and a non-empty content.aspects list. "
+                       + "content.lifecycle=asPlanned and a non-empty content.aspects list. "
                        + "RESPONSE returns the correlated child result and requires header.relatedMessageId, "
-                       + "content.bomLifecycle=asPlanned, a non-empty content.aspects list, content.status and "
+                       + "content.lifecycle=asPlanned, a non-empty content.aspects list, content.status and "
                        + "content.result; header.expectedResponseBy must be omitted. "
                        + "This is the endpoint that the EDC notification asset points to.")
     @ApiResponse(responseCode = "200", description = "Notification accepted or correlated response rejected")

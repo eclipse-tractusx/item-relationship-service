@@ -34,7 +34,7 @@ class RecursiveJobResultSerializationTest {
     void shouldExposeRecursiveMaterialTree() {
         final String aspectType = RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId();
         final RecursiveJobResult result = RecursiveJobResult.builder()
-                .childItems(List.of(RecursiveChildItem.builder()
+                .relatedItems(List.of(RecursiveChildItem.builder()
                         .materialNumber("MNR-1")
                         .materialName("Semiconductor")
                         .quantity(RecursiveQuantity.builder().value(2.0).unit(ItemUnitEnumeration.UNIT_PIECE).build())
@@ -43,13 +43,13 @@ class RecursiveJobResultSerializationTest {
                                 .items(Map.of("direction", "OUTBOUND"))
                                 .build()))
                         .tombstones(List.of())
-                        .childItems(List.of())
+                        .relatedItems(List.of())
                         .build()))
                 .tombstones(List.of())
                 .build();
 
         final JsonNode serialized = new ObjectMapper().valueToTree(result);
-        final JsonNode childItem = serialized.path("childItems").path(0);
+        final JsonNode childItem = serialized.path("relatedItems").path(0);
         final JsonNode aspectItem = childItem.path("items").path(0);
 
         assertThat(childItem.path("materialNumber").asText()).isEqualTo("MNR-1");
@@ -77,10 +77,10 @@ class RecursiveJobResultSerializationTest {
     @Test
     void shouldExposeMissingMaterialDataAsNullAndCollectionsAsArrays() {
         final RecursiveJobResult result = RecursiveJobResult.builder()
-                .childItems(List.of(RecursiveChildItem.builder().build()))
+                .relatedItems(List.of(RecursiveChildItem.builder().build()))
                 .build();
 
-        final JsonNode childItem = new ObjectMapper().valueToTree(result).path("childItems").path(0);
+        final JsonNode childItem = new ObjectMapper().valueToTree(result).path("relatedItems").path(0);
 
         assertThat(childItem.has("materialNumber")).isTrue();
         assertThat(childItem.path("materialNumber").isNull()).isTrue();
@@ -90,6 +90,6 @@ class RecursiveJobResultSerializationTest {
         assertThat(childItem.path("quantity").isNull()).isTrue();
         assertThat(childItem.path("items").isArray()).isTrue();
         assertThat(childItem.path("tombstones").isArray()).isTrue();
-        assertThat(childItem.path("childItems").isArray()).isTrue();
+        assertThat(childItem.path("relatedItems").isArray()).isTrue();
     }
 }

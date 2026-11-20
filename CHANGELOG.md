@@ -15,6 +15,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 
+- **Breaking change:** Rename the recursive API fields `bomLifecycle` to `lifecycle` (job request, notification content, job parameter and job result) and `childItems` to `relatedItems` (job result tree), without changing the behavior; notifications with the old names are rejected. Internally `bomChildren` becomes `chainRelations` in the persisted job state, which is not migrated
+- **Breaking change:** Rename the recursive use case `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` to `PURIS_ANONYMIZED_RECURSIVE` in job requests, notifications and chain opening grants. Stored jobs and grants with the old name are not migrated; remove them before the upgrade and create the grants again
 - **Breaking change:** Require `ADMIN_IRS` to start recursive jobs; `VIEW_IRS` job starts return HTTP 403. Job queries still allow both roles ([#1742](https://github.com/eclipse-tractusx/sig-release/issues/1742))
 - **Breaking change:** Disable recursive IRS by default; existing recursive deployments must set `irs.recursive.enabled=true` or Helm `recursive.enabled=true`. Iterative IRS and ESS remain unchanged ([#1024](https://github.com/eclipse-tractusx/item-relationship-service/issues/1024))
 - Add the missing `guardsMethods` to the PMD rule `GuardLogStatement`, which failed with a processing error on every file and was never evaluated, and resolve the `debug` and `trace` log statements it reports ([#1047](https://github.com/eclipse-tractusx/item-relationship-service/pull/1047))

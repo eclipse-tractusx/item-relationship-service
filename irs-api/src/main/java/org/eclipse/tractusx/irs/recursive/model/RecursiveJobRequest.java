@@ -58,7 +58,7 @@ public class RecursiveJobRequest {
 
     @NotNull
     @Schema(description = "Recursive use case. Only the configured PURIS anonymized bundle is supported.",
-            example = "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE")
+            example = "PURIS_ANONYMIZED_RECURSIVE")
     private RecursiveUseCase useCase;
 
     /**
@@ -74,7 +74,7 @@ public class RecursiveJobRequest {
      */
     @Schema(description = "BOM lifecycle used for traversal. PURIS supports only asPlanned.",
             defaultValue = "asPlanned", allowableValues = "asPlanned")
-    private BomLifecycle bomLifecycle;
+    private BomLifecycle lifecycle;
 
     /**
      * Payload aspects to collect during the recursive traversal.

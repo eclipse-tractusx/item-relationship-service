@@ -50,7 +50,7 @@ import org.junit.jupiter.api.Test;
 
 class RecursiveNotificationMessageValidatorTest {
 
-    private static final RecursiveUseCase USE_CASE = RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE;
+    private static final RecursiveUseCase USE_CASE = RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE;
     private static final String ASPECT = RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId();
     private static final String DELIVERY_ASPECT = RecursiveAspect.DELIVERY_INFORMATION_ANONYMIZED.getSemanticId();
 
@@ -130,9 +130,9 @@ class RecursiveNotificationMessageValidatorTest {
     }
 
     @Test
-    void rejectsResponseWithoutBomLifecycle() {
+    void rejectsResponseWithoutLifecycle() {
         final JsonNode payload = objectMapper.valueToTree(response(result(USE_CASE)));
-        ((ObjectNode) payload.get("content")).remove("bomLifecycle");
+        ((ObjectNode) payload.get("content")).remove("lifecycle");
         final RecursiveNotificationMessage decoded = messageValidator.decode(payload).orElseThrow();
 
         assertThat(messageValidator.isValid(decoded)).isFalse();
@@ -161,13 +161,13 @@ class RecursiveNotificationMessageValidatorTest {
         final RecursiveJobResult result = RecursiveJobResult.builder()
                 .resultStatus(RecursiveResultStatus.COMPLETE)
                 .useCase(USE_CASE)
-                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                .lifecycle(BomLifecycle.AS_PLANNED)
                 .requestedAspects(List.of(ASPECT))
-                .childItems(List.of(RecursiveChildItem.builder()
+                .relatedItems(List.of(RecursiveChildItem.builder()
                         .materialNumber("MNR-1000")
                         .items(List.of(aspectItem(ASPECT), aspectItem(ASPECT)))
                         .tombstones(List.of())
-                        .childItems(List.of())
+                        .relatedItems(List.of())
                         .build()))
                 .tombstones(List.of())
                 .build();
@@ -244,13 +244,13 @@ class RecursiveNotificationMessageValidatorTest {
         final RecursiveJobResult.RecursiveJobResultBuilder misplacedNotice = RecursiveJobResult.builder()
                 .resultStatus(RecursiveResultStatus.PARTIAL)
                 .useCase(USE_CASE)
-                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                .lifecycle(BomLifecycle.AS_PLANNED)
                 .requestedAspects(List.of(ASPECT))
                 .tombstones(List.of(valid));
         assertThat(messageValidator.isValid(response(misplacedNotice
-                .childItems(resultWithNodeTombstone(valid).getChildItems()).build()))).isFalse();
+                .relatedItems(resultWithNodeTombstone(valid).getRelatedItems()).build()))).isFalse();
         assertThat(messageValidator.isValid(response(misplacedNotice
-                .childItems(resultWithNodeTombstone().getChildItems()).build()))).isFalse();
+                .relatedItems(resultWithNodeTombstone().getRelatedItems()).build()))).isFalse();
     }
 
     private RecursiveNotificationMessage request() {
@@ -261,7 +261,7 @@ class RecursiveNotificationMessageValidatorTest {
                         .openingId("opening-42")
                         .useCase(USE_CASE)
                         .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
-                        .bomLifecycle(BomLifecycle.AS_PLANNED)
+                        .lifecycle(BomLifecycle.AS_PLANNED)
                         .aspects(List.of(ASPECT))
                         .build())
                 .build();
@@ -286,7 +286,7 @@ class RecursiveNotificationMessageValidatorTest {
                         .type(RecursiveNotificationType.RESPONSE)
                         .openingId("opening-42")
                         .useCase(USE_CASE)
-                        .bomLifecycle(BomLifecycle.AS_PLANNED)
+                        .lifecycle(BomLifecycle.AS_PLANNED)
                         .aspects(aspects)
                         .status(RecursiveResponseStatus.COMPLETED)
                         .result(result)
@@ -302,13 +302,13 @@ class RecursiveNotificationMessageValidatorTest {
         return RecursiveJobResult.builder()
                 .resultStatus(RecursiveResultStatus.COMPLETE)
                 .useCase(useCase)
-                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                .lifecycle(BomLifecycle.AS_PLANNED)
                 .requestedAspects(requestedAspects)
-                .childItems(List.of(RecursiveChildItem.builder()
+                .relatedItems(List.of(RecursiveChildItem.builder()
                         .materialNumber("MNR-1000")
                         .items(List.of())
                         .tombstones(List.of())
-                        .childItems(List.of())
+                        .relatedItems(List.of())
                         .build()))
                 .tombstones(List.of())
                 .build();
@@ -318,13 +318,13 @@ class RecursiveNotificationMessageValidatorTest {
         return RecursiveJobResult.builder()
                 .resultStatus(RecursiveResultStatus.PARTIAL)
                 .useCase(USE_CASE)
-                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                .lifecycle(BomLifecycle.AS_PLANNED)
                 .requestedAspects(List.of(ASPECT))
-                .childItems(List.of(RecursiveChildItem.builder()
+                .relatedItems(List.of(RecursiveChildItem.builder()
                         .materialNumber("MNR-1000")
                         .items(List.of())
                         .tombstones(List.of(tombstones))
-                        .childItems(List.of())
+                        .relatedItems(List.of())
                         .build()))
                 .tombstones(List.of())
                 .build();

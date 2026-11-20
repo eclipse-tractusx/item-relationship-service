@@ -44,11 +44,11 @@ public class RecursiveJobResult {
             + "result when the chain delivered no usable data.")
     private RecursiveResultStatus resultStatus;
     private RecursiveUseCase useCase;
-    private BomLifecycle bomLifecycle;
+    private BomLifecycle lifecycle;
     private List<String> requestedAspects;
 
     @Builder.Default
-    private List<@Valid RecursiveChildItem> childItems = List.of();
+    private List<@Valid RecursiveChildItem> relatedItems = List.of();
 
     @Schema(description = "Sanitized root-level or otherwise unassignable failures. Failures that belong "
             + "to a material node are exposed in that child item's tombstones. Identical tombstones within "

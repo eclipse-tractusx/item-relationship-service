@@ -52,5 +52,5 @@ public class RecursiveChildItem {
 
     @ArraySchema(schema = @Schema(implementation = RecursiveChildItem.class))
     @Builder.Default
-    private List<@Valid RecursiveChildItem> childItems = List.of();
+    private List<@Valid RecursiveChildItem> relatedItems = List.of();
 }
