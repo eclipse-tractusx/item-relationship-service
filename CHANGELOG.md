@@ -15,7 +15,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 
-- Disable recursive IRS by default and require explicit activation with `irs.recursive.enabled` or Helm `recursive.enabled`, without affecting iterative IRS or ESS ([#1024](https://github.com/eclipse-tractusx/item-relationship-service/issues/1024))
+- **Breaking change:** Require `ADMIN_IRS` to start recursive jobs; `VIEW_IRS` job starts return HTTP 403. Job queries still allow both roles ([#1742](https://github.com/eclipse-tractusx/sig-release/issues/1742))
+- **Breaking change:** Disable recursive IRS by default; existing recursive deployments must set `irs.recursive.enabled=true` or Helm `recursive.enabled=true`. Iterative IRS and ESS remain unchanged ([#1024](https://github.com/eclipse-tractusx/item-relationship-service/issues/1024))
 - Add the missing `guardsMethods` to the PMD rule `GuardLogStatement`, which failed with a processing error on every file and was never evaluated, and resolve the `debug` and `trace` log statements it reports ([#1047](https://github.com/eclipse-tractusx/item-relationship-service/pull/1047))
 - Report an unparsable date in a JSON payload as `Invalid date/time format` instead of the misleading `Can't overwrite cause` error raised by `ZonedDateTimeDeserializer` ([#1047](https://github.com/eclipse-tractusx/item-relationship-service/pull/1047))
 - Refactor recursive EDC notification delivery, extract shared constants for grant API annotations and remove redundant PMD suppressions ([#1027](https://github.com/eclipse-tractusx/item-relationship-service/issues/1027))
@@ -30,6 +31,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Fixed
 
+- **Breaking change:** Isolate malformed recursive BOM relationships without discarding valid siblings; older recursive IRS versions cannot read the new `BOM_INCOMPLETE` and `BOM_SUBMODEL_INVALID` reasons in notifications or stored jobs ([#1029](https://github.com/eclipse-tractusx/item-relationship-service/issues/1029))
 - Use authenticated SeaweedFS storage with a non-root user, health probes and namespace resource limits for Helm CI installation and upgrade tests without changing production chart defaults ([#1050](https://github.com/eclipse-tractusx/item-relationship-service/issues/1050))
 - Use Python 3.13, an available runtime for Helm chart tests on Ubuntu 26.04 ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))
 - Configure Docker Buildx to use the local HTTP registry in Helm chart tests ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))

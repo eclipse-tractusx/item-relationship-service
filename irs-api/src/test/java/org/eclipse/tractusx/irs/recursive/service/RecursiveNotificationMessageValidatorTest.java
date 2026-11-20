@@ -217,6 +217,42 @@ class RecursiveNotificationMessageValidatorTest {
                 validTombstone().errorRefs(List.of("not-a-uuid")).build())))).isFalse();
     }
 
+    @Test
+    void acceptsOneIncompleteBomNoticePerNode() {
+        final RecursiveTombstone.RecursiveTombstoneBuilder incompleteBom = validTombstone()
+                .reason(RecursiveTombstoneReason.BOM_INCOMPLETE)
+                .scope(RecursiveTombstoneScope.LOCAL_NODE)
+                .aspects(List.of())
+                .retryable(false)
+                .detail("The BOM is incomplete.");
+        final RecursiveTombstone valid = incompleteBom.build();
+        final String otherRef = UUID.randomUUID().toString();
+
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(valid)))).isTrue();
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
+                incompleteBom.occurrences(2).build())))).isFalse();
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
+                incompleteBom.occurrences(1).errorRefs(List.of(valid.getErrorRefs().get(0), otherRef))
+                        .build())))).isFalse();
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
+                valid, incompleteBom.errorRefs(List.of(otherRef)).build())))).isFalse();
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
+                incompleteBom.scope(RecursiveTombstoneScope.CHILD_BRANCH).build())))).isFalse();
+        assertThat(messageValidator.isValid(response(resultWithNodeTombstone(
+                incompleteBom.scope(RecursiveTombstoneScope.LOCAL_NODE).aspects(List.of(ASPECT)).build())))).isFalse();
+
+        final RecursiveJobResult.RecursiveJobResultBuilder misplacedNotice = RecursiveJobResult.builder()
+                .resultStatus(RecursiveResultStatus.PARTIAL)
+                .useCase(USE_CASE)
+                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                .requestedAspects(List.of(ASPECT))
+                .tombstones(List.of(valid));
+        assertThat(messageValidator.isValid(response(misplacedNotice
+                .childItems(resultWithNodeTombstone(valid).getChildItems()).build()))).isFalse();
+        assertThat(messageValidator.isValid(response(misplacedNotice
+                .childItems(resultWithNodeTombstone().getChildItems()).build()))).isFalse();
+    }
+
     private RecursiveNotificationMessage request() {
         return RecursiveNotificationMessage.builder()
                 .header(requestHeader())
@@ -278,7 +314,7 @@ class RecursiveNotificationMessageValidatorTest {
                 .build();
     }
 
-    private RecursiveJobResult resultWithNodeTombstone(final RecursiveTombstone tombstone) {
+    private RecursiveJobResult resultWithNodeTombstone(final RecursiveTombstone... tombstones) {
         return RecursiveJobResult.builder()
                 .resultStatus(RecursiveResultStatus.PARTIAL)
                 .useCase(USE_CASE)
@@ -287,7 +323,7 @@ class RecursiveNotificationMessageValidatorTest {
                 .childItems(List.of(RecursiveChildItem.builder()
                         .materialNumber("MNR-1000")
                         .items(List.of())
-                        .tombstones(List.of(tombstone))
+                        .tombstones(List.of(tombstones))
                         .childItems(List.of())
                         .build()))
                 .tombstones(List.of())

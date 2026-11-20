@@ -19,14 +19,19 @@
 package org.eclipse.tractusx.irs.recursive.controller;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -36,6 +41,10 @@ import io.restassured.response.Response;
 import org.eclipse.tractusx.irs.ControllerTest;
 import org.eclipse.tractusx.irs.TestConfig;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveJobRequest;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveJobStatusResponse;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveJobView;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveUseCase;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveJobService;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveNotificationReceiver;
 import org.eclipse.tractusx.irs.recursive.service.RecursiveNotificationValidationException;
@@ -90,6 +99,57 @@ class RecursiveEndpointSecurityTest extends ControllerTest {
     }
 
     @Test
+    void adminMayStartRecursiveJob() {
+        authenticateWith(IrsRoles.ADMIN_IRS);
+        final UUID jobId = UUID.randomUUID();
+        when(jobService.startJob(any(RecursiveJobRequest.class))).thenReturn(jobId);
+
+        startJobRequest()
+                .then().statusCode(CREATED.value())
+                .body("jobId", equalTo(jobId.toString()));
+
+        verify(jobService).startJob(any(RecursiveJobRequest.class));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { IrsRoles.VIEW_IRS, UNKNOWN_ROLE })
+    void nonAdminRolesMustNotStartRecursiveJobs(final String role) {
+        authenticateWith(role);
+
+        startJobRequest()
+                .then().statusCode(FORBIDDEN.value());
+
+        verify(jobService, never()).startJob(any(RecursiveJobRequest.class));
+    }
+
+    @Test
+    void missingAuthenticationMustNotStartRecursiveJobs() {
+        rejectAuthentication();
+
+        startJobRequest()
+                .then().statusCode(UNAUTHORIZED.value());
+
+        verify(jobService, never()).startJob(any(RecursiveJobRequest.class));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { IrsRoles.ADMIN_IRS, IrsRoles.VIEW_IRS })
+    void allowedRolesMayGetRecursiveJob(final String role) {
+        authenticateWith(role);
+        final UUID jobId = UUID.randomUUID();
+        when(jobService.getJobStatus(jobId)).thenReturn(RecursiveJobStatusResponse.builder()
+                .job(RecursiveJobView.builder().id(jobId).build())
+                .build());
+
+        given().port(port)
+               .get(JOBS_PATH + "/{jobId}", jobId)
+               .then().statusCode(OK.value())
+               .body("job.id", equalTo(jobId.toString()));
+
+        verify(jobService).getJobStatus(jobId);
+    }
+
+    @Test
     void unrelatedRoleMustNotAccessRecursiveJobs() {
         authenticateWith(UNKNOWN_ROLE);
 
@@ -130,6 +190,20 @@ class RecursiveEndpointSecurityTest extends ControllerTest {
 
         notificationRequest()
                 .then().statusCode(UNAUTHORIZED.value());
+    }
+
+    private Response startJobRequest() {
+        final RecursiveJobRequest request = RecursiveJobRequest.builder()
+                .openingId("opening-42")
+                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
+                .requesterBpn(SENDER_BPNL)
+                .build();
+
+        return given().port(port)
+                      .contentType(ContentType.JSON)
+                      .body(request)
+                      .post(JOBS_PATH);
     }
 
     private Response notificationRequest() {

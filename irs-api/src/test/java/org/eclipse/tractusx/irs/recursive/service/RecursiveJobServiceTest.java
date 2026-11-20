@@ -83,6 +83,8 @@ class RecursiveJobServiceTest {
 
     private static final String RAW_ITEM_STOCK_ASPECT = "urn:samm:io.catenax.item_stock:2.0.0#ItemStock";
     private static final String ITEM_STOCK_ANONYMIZED = RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId();
+    private static final String CERES_BPNL = "BPNL0000CERS0001";
+    private static final String DELTA_BPNL = "BPNL0000DLTA0001";
 
     private RecursiveJobService jobService;
     private RecursiveChainOpeningGrantStore grantStore;
@@ -411,9 +413,12 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldFilterBomPartnersWhenGrantValidationIsEnabled() {
+        final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
         jobService = newJobService((globalAssetId, bpnl, bomLifecycle) -> List.of(
                 bomChild(
-                        "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000XXXX0001")));
+                        "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000XXXX0001"),
+                new RecursiveBomChild(null, "BPNL0000XXXX0001", null)));
+        notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
         final UUID jobId = jobService.startJob(validRequest());
@@ -421,6 +426,9 @@ class RecursiveJobServiceTest {
         final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
         assertThat(status.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(status.getResult().getResultStatus()).isEqualTo(RecursiveResultStatus.COMPLETE);
+        assertThat(sentRequests).isEmpty();
+        assertChildProgress(status, 0, 0, 0);
+        assertThat(status.getResult().getChildItems()).isEmpty();
         assertThat(allTombstones(status)).isEmpty();
     }
 
@@ -645,12 +653,14 @@ class RecursiveJobServiceTest {
     }
 
     @Test
-    void shouldKeepValidSiblingBranchWhenBomChildGlobalAssetIdIsInvalid() {
+    void shouldKeepValidSiblingBranchWhenBomChildIdsAreInvalid() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        final String validChildId = "urn:uuid:22222222-2222-2222-2222-222222222222";
+        final String belfastAssetId = "provider-specific-child-id";
+        final String ceresAssetId = "urn:uuid:22222222-2222-2222-2222-222222222222";
         jobService = newJobService((globalAssetId, bpnl, bomLifecycle) -> List.of(
-                bomChild("provider-specific-child-id", "BPNL0000BELF0001"),
-                bomChild(validChildId, "BPNL0000CERS0001")));
+                bomChild(belfastAssetId, BELFAST_BPNL),
+                new RecursiveBomChild(null, DELTA_BPNL, null),
+                bomChild(ceresAssetId, CERES_BPNL)));
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
@@ -658,23 +668,77 @@ class RecursiveJobServiceTest {
 
         final RecursiveJobStatusResponse runningStatus = jobService.getJobStatus(jobId);
         assertThat(sentRequests).singleElement().satisfies(request -> {
-            assertThat(request.getHeader().getReceiverBpnl()).isEqualTo("BPNL0000CERS0001");
-            assertThat(request.getContent().getGlobalAssetId()).isEqualTo(validChildId);
+            assertThat(request.getHeader().getReceiverBpnl()).isEqualTo(CERES_BPNL);
+            assertThat(request.getContent().getGlobalAssetId()).isEqualTo(ceresAssetId);
         });
-        assertChildProgress(runningStatus, 1, 0, 1);
+        assertChildProgress(runningStatus, 1, 0, 2);
 
         jobService.handleNotification(childResponse(sentRequests.get(0), RecursiveResponseStatus.COMPLETED,
-                childResult(validChildId)));
+                childResult(ceresAssetId)));
 
         final RecursiveJobStatusResponse completedStatus = jobService.getJobStatus(jobId);
         assertThat(completedStatus.getJob().getState()).isEqualTo(JobState.COMPLETED);
-        assertChildProgress(completedStatus, 0, 1, 1);
+        assertChildProgress(completedStatus, 0, 1, 2);
         assertThat(completedStatus.getResult().getResultStatus()).isEqualTo(RecursiveResultStatus.PARTIAL);
         assertThat(collectedAssetIds(completedStatus, ITEM_STOCK_ANONYMIZED))
-                .containsExactly(anonymizedId(validChildId));
+                .containsExactly(anonymizedId(ceresAssetId));
         assertThat(allTombstones(completedStatus))
-                .extracting(RecursiveTombstone::getReason)
-                .contains(RecursiveTombstoneReason.BOM_CHILD_GLOBAL_ASSET_ID_INVALID);
+                .filteredOn(tombstone -> tombstone.getReason()
+                        == RecursiveTombstoneReason.BOM_CHILD_GLOBAL_ASSET_ID_INVALID)
+                .hasSize(2)
+                .allSatisfy(tombstone -> {
+                    assertThat(tombstone.getScope()).isEqualTo(RecursiveTombstoneScope.CHILD_BRANCH);
+                    assertThat(tombstone.getDetail())
+                            .isEqualTo("The BOM relationship contains an invalid child global asset id.");
+                    assertThat(tombstone.getOccurrences()).isEqualTo(1);
+                    assertThat(tombstone.getErrorRefs()).hasSize(1);
+                });
+        assertThat(new ObjectMapper().valueToTree(completedStatus.getResult()).toString())
+                .doesNotContain(DELTA_BPNL, ceresAssetId, CERES_BPNL, belfastAssetId, BELFAST_BPNL);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = { false, true })
+    void shouldIgnoreUnknownBomPartnersWithoutAllowedPartners(final boolean omittedAllowlist) {
+        final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
+        final RecursiveBomChild unknown = new RecursiveBomChild(null, null, null);
+        jobService = newJobService((globalAssetId, bpnl, bomLifecycle) -> List.of(unknown, unknown));
+        notificationSender = recordingSender(sentRequests);
+        grantStore.store(validGrant().toBuilder().allowedBpnlSet(omittedAllowlist ? null : Set.of()).build());
+
+        final UUID jobId = jobService.startJob(validRequest());
+
+        final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
+        assertThat(sentRequests).isEmpty();
+        assertChildProgress(status, 0, 0, 0);
+        assertThat(jobs.get(jobId).getBomChildren()).isEmpty();
+        assertThat(status.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(status.getResult().getChildItems()).isEmpty();
+        assertThat(allTombstones(status)).isEmpty();
+    }
+
+    @Test
+    void shouldReportUnknownBomPartnersWithoutCreatingChildBranches() {
+        final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
+        final RecursiveBomChild unknown = new RecursiveBomChild(null, null, null);
+        jobService = newJobService((globalAssetId, bpnl, bomLifecycle) -> List.of(unknown, unknown));
+        notificationSender = recordingSender(sentRequests);
+        grantStore.store(validGrant());
+
+        final UUID jobId = jobService.startJob(validRequest());
+
+        final RecursiveJobStatusResponse status = jobService.getJobStatus(jobId);
+        assertThat(sentRequests).isEmpty();
+        assertChildProgress(status, 0, 0, 0);
+        assertThat(status.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(status.getResult().getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
+        assertThat(status.getResult().getChildItems()).isEmpty();
+        assertThat(status.getResult().getTombstones()).singleElement().satisfies(tombstone -> {
+            assertThat(tombstone.getReason()).isEqualTo(RecursiveTombstoneReason.BOM_INCOMPLETE);
+            assertThat(tombstone.getScope()).isEqualTo(RecursiveTombstoneScope.LOCAL_NODE);
+            assertThat(tombstone.getOccurrences()).isEqualTo(1);
+            assertThat(tombstone.getErrorRefs()).hasSize(1);
+        });
     }
 
     @Test
@@ -1654,7 +1718,8 @@ class RecursiveJobServiceTest {
         }
 
         @Override
-        TraversalResult resolve(final String globalAssetId, final String bpnl, final BomLifecycle bomLifecycle) {
+        TraversalResult resolve(final UUID jobId, final String globalAssetId, final String bpnl,
+                final BomLifecycle bomLifecycle) {
             return new TraversalResult(List.copyOf(bomResolver.resolve(globalAssetId, bpnl, bomLifecycle)), null);
         }
     }
@@ -1693,7 +1758,7 @@ class RecursiveJobServiceTest {
                 .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
                 .requesterBpn("BPNL0000ATLS0001")
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
-                .allowedBpnlSet(Set.of("BPNL0000BELF0001", "BPNL0000CERS0001", "BPNL0000DLTA0001"))
+                .allowedBpnlSet(Set.of(BELFAST_BPNL, CERES_BPNL, DELTA_BPNL))
                 .validFrom(ZonedDateTime.now().minusHours(1))
                 .validTo(ZonedDateTime.now().plusHours(12))
                 .build();
