@@ -1558,7 +1558,7 @@ paths:
       tags:
         - Recursive IRS
     post:
-      description: "Requires ADMIN_IRS. Validates the request against the local grant\
+      description: "Requires role ADMIN_IRS. Validates the request against the local grant\
         \ store, resolves the BOM, and determines allowed child partners."
       operationId: startJob
       requestBody:

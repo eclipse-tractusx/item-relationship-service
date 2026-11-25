@@ -1,9 +1,9 @@
-# Copyright (c) 2022,2024
-#       2022: ZF Friedrichshafen AG
-#       2022: ISTOS GmbH
-#       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-#       2022,2023: BOSCH AG
-# Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 ISTOS GmbH
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 BOSCH AG
+# Copyright (c) 2021 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 Volkswagen AG
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -50,7 +50,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET 
 # Copy the jar and build image, alpine version 3.24
 FROM eclipse-temurin:25-jre-alpine@sha256:56f273059de6b13a6b49fe0ded691ed2d0399bbee76156a8f2d385f7524a3d43 AS irs-api
 
-RUN apk add --no-cache --upgrade 'libexpat>=2.10.0-r0'
+RUN apk add --no-cache --upgrade 'libexpat>=2.10.0-r0' 'libfontenc>=1.1.10-r0'
 
 WORKDIR /app
 

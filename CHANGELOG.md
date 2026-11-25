@@ -31,6 +31,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Fixed
 
+- Update `libfontenc` in the runtime image to fix CVE-2026-109908 ([#1053](https://github.com/eclipse-tractusx/item-relationship-service/pull/1053))
 - **Breaking change:** Isolate malformed recursive BOM relationships without discarding valid siblings; older recursive IRS versions cannot read the new `BOM_INCOMPLETE` and `BOM_SUBMODEL_INVALID` reasons in notifications or stored jobs ([#1029](https://github.com/eclipse-tractusx/item-relationship-service/issues/1029))
 - Use authenticated SeaweedFS storage with a non-root user, health probes and namespace resource limits for Helm CI installation and upgrade tests without changing production chart defaults ([#1050](https://github.com/eclipse-tractusx/item-relationship-service/issues/1050))
 - Use Python 3.13, an available runtime for Helm chart tests on Ubuntu 26.04 ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))
