@@ -70,7 +70,7 @@ public class RecursiveJobController {
     private final RecursiveJobService jobService;
 
     @Operation(summary = "Start a new recursive job",
-               description = "Requires ADMIN_IRS. Validates the request against the local grant store, "
+               description = "Requires role ADMIN_IRS. Validates the request against the local grant store, "
                        + "resolves the BOM, and determines allowed child partners.")
     @ApiResponse(responseCode = "201", description = "Job created")
     @ApiResponse(responseCode = "400",
