@@ -526,8 +526,6 @@ mc ilm rule add --expire-days 7 myminio/irs-jobs
 
 Adjust the MinIO alias, bucket name and retention value to the target environment. Use `-1` to disable expiration. Do not disable expiration for recursive jobs unless another cleanup mechanism is in place. Without a retention policy, recursive job blobs and message correlation blobs remain in MinIO.
 
-Persisted recursive job state is not migrated when the recursive job model changes. Job state written by an earlier IRS version can load without `lifecycle` or `chainRelations`; results of such jobs are returned without aspect data.
-
 Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.
 
 Stored jobs and grants are not migrated when a use case is renamed. The use case is part of the grant blob name (`chain-opening-grant:{openingId}:{globalAssetId}:{requesterBpn}:{useCase}`) and of the stored job state. A job or grant that references a use case unknown to the running version cannot be read: listing recursive jobs or grants fails, the restart recovery resumes no job, and such grants cannot be removed through the grant API.

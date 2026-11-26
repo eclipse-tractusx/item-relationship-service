@@ -141,6 +141,28 @@ class RecursiveJobControllerTest {
         assertThat(jobs).isEmpty();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = { "\"bomLifecycle\": \"asBuilt\"", "\"collectRootSubmodels\": true" })
+    void shouldReturnBadRequestWithoutCreatingJobWhenRequestContainsUnknownField(final String unknownField)
+            throws Exception {
+        grantStore.store(validGrant());
+
+        mockMvc.perform(post("/irs/recursive/jobs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "openingId": "opening-42",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
+                                  "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
+                                  %s
+                                }
+                                """.formatted(unknownField)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("MALFORMED_REQUEST"));
+
+        assertThat(jobs).isEmpty();
+    }
+
     @Test
     void shouldRejectOpeningIdContainingLineBreak() throws Exception {
         mockMvc.perform(post("/irs/recursive/jobs")

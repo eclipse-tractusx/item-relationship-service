@@ -120,7 +120,7 @@ class RecursiveJobServiceTest {
         notificationSender = noOpNotificationSender();
         recursiveJobExecutor = Runnable::run;
         clock.set(Clock.systemUTC());
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of());
+        jobService = newJobService(globalAssetId -> List.of());
     }
 
     @Test
@@ -139,7 +139,7 @@ class RecursiveJobServiceTest {
     void shouldReturnJobIdAfterTechnicalAcceptanceBeforeTraversalRuns() {
         final List<Runnable> queuedTasks = new ArrayList<>();
         final AtomicInteger resolverCalls = new AtomicInteger();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> {
+        jobService = newJobService(globalAssetId -> {
             resolverCalls.incrementAndGet();
             return List.of();
         });
@@ -231,7 +231,7 @@ class RecursiveJobServiceTest {
                 return collectedNode(globalAssetId);
             }
         };
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of());
+        jobService = newJobService(globalAssetId -> List.of());
         grantStore.store(validGrant());
 
         final UUID jobId = jobService.startJob(validRequest());
@@ -279,7 +279,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldStoreTraversalFailureAsTombstoneAfterGrantValidation() {
         final AtomicInteger attempts = new AtomicInteger();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> {
+        jobService = newJobService(globalAssetId -> {
             if (attempts.getAndIncrement() == 0) {
                 throw new IllegalStateException("transient traversal failure");
             }
@@ -309,7 +309,7 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldStoreExternalTraversalFailureAsAnonymizedTombstone() {
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> {
+        jobService = newJobService(globalAssetId -> {
             throw new RecursiveExternalCallException("DIGITAL_TWIN_REQUEST_FAILED",
                     "Digital twin registry request failed while resolving BOM relationships.",
                     new IllegalStateException("GET http://dtr.internal/shells?assetIds=urn:uuid:"
@@ -338,7 +338,7 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldStoreUsagePolicyFailureWithDedicatedTombstoneReason() {
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> {
+        jobService = newJobService(globalAssetId -> {
             throw new RecursiveExternalCallException("SUBMODEL_REQUEST_FAILED", "EDC policy validation failed.",
                     new UsagePolicyPermissionException(List.of(), Policy.Builder.newInstance().build(),
                             "BPNL0000ATLS0001"));
@@ -380,7 +380,7 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldAwaitChildResponsesForAllowedBomPartners() {
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         grantStore.store(validGrant());
@@ -395,7 +395,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldSendUtcTimestampsWithChildRequest() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         clock.set(Clock.fixed(clockStart, ZoneId.of("Europe/Berlin")));
@@ -414,7 +414,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldFilterBomPartnersWhenGrantValidationIsEnabled() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000XXXX0001"),
                 new RecursiveBomChild(null, "BPNL0000XXXX0001", null)));
@@ -435,7 +435,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldKeepGrantFilteredPartnerInvisibleInChildProgress() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:22222222-2222-2222-2222-222222222222", "BPNL0000BELF0001"),
                 bomChild(
@@ -470,7 +470,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldAwaitChildResponsesAndCompleteWhenResponseArrives() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
@@ -500,7 +500,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldCompleteCorrelatedBranchWhenChildResponseIsInvalid() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild("urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
@@ -521,7 +521,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldRejectCorrelatedResponseWhenRequestedAspectsDoNotMatch() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild("urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
@@ -558,7 +558,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldIgnoreResponseFromUnexpectedSenderForChildRequest() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
@@ -595,7 +595,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldWaitForEveryChildAssetResponseWhenChildrenSharePartner() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001"),
                 bomChild(
@@ -634,7 +634,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldIgnoreSecondResponseForAnsweredChildBranch() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild("urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001"),
                 bomChild("urn:uuid:22222222-2222-2222-2222-222222222222", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
@@ -657,7 +657,7 @@ class RecursiveJobServiceTest {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
         final String belfastAssetId = "provider-specific-child-id";
         final String ceresAssetId = "urn:uuid:22222222-2222-2222-2222-222222222222";
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(belfastAssetId, BELFAST_BPNL),
                 new RecursiveBomChild(null, DELTA_BPNL, null),
                 bomChild(ceresAssetId, CERES_BPNL)));
@@ -702,7 +702,7 @@ class RecursiveJobServiceTest {
     void shouldIgnoreUnknownBomPartnersWithoutAllowedPartners(final boolean omittedAllowlist) {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
         final RecursiveBomChild unknown = new RecursiveBomChild(null, null, null);
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(unknown, unknown));
+        jobService = newJobService(globalAssetId -> List.of(unknown, unknown));
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant().toBuilder().allowedBpnlSet(omittedAllowlist ? null : Set.of()).build());
 
@@ -721,7 +721,7 @@ class RecursiveJobServiceTest {
     void shouldReportUnknownBomPartnersWithoutCreatingChildBranches() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
         final RecursiveBomChild unknown = new RecursiveBomChild(null, null, null);
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(unknown, unknown));
+        jobService = newJobService(globalAssetId -> List.of(unknown, unknown));
         notificationSender = recordingSender(sentRequests);
         grantStore.store(validGrant());
 
@@ -744,7 +744,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldNotLoseChildResponsesWhenTheyArriveConcurrently() throws InterruptedException {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001"),
                 bomChild(
@@ -801,7 +801,7 @@ class RecursiveJobServiceTest {
                 return collect(globalAssetId, localBpnl, requestedAspects);
             }
         };
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> rootAssetId.equals(globalAssetId)
+        jobService = newJobService(globalAssetId -> rootAssetId.equals(globalAssetId)
                 ? List.of(bomChild(childAssetId, "BPNL0000ATLS0001"))
                 : List.of());
 
@@ -841,7 +841,7 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldCompleteWaitingJobWithTombstoneWhenChildResponseDeadlineExpires() {
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         clock.set(Clock.fixed(clockStart, ZoneOffset.UTC));
@@ -869,7 +869,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldSanitizeChildTombstonesWhenAggregatingParentPayload() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
@@ -913,7 +913,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldCreateGenericTombstoneForFailedChildResponseWithoutPayloadTombstones() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = recordingSender(sentRequests);
@@ -950,7 +950,7 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldIgnoreLateChildResponseAfterTimeoutResultWasStored() {
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         clock.set(Clock.fixed(clockStart, ZoneOffset.UTC));
@@ -989,7 +989,7 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldFailWaitingJobWhenJobDeadlineExpires() {
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         clock.set(Clock.fixed(clockStart, ZoneOffset.UTC));
@@ -1038,7 +1038,7 @@ class RecursiveJobServiceTest {
 
     @Test
     void shouldStoreNotificationDeliveryFailureAsTombstone() {
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = new RecursiveNotificationSender() {
@@ -1069,7 +1069,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldKeepSendFailureTombstoneWhenAnotherChildTimesOut() {
         final List<RecursiveNotificationMessage> sentRequests = new ArrayList<>();
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001"),
                 bomChild(
@@ -1301,7 +1301,7 @@ class RecursiveJobServiceTest {
     @Test
     void shouldPersistDeliveryClassificationAndReuseErrorRefInTombstone() {
         final String errorRef = "008420a8-6cec-487e-b255-29ff370fdf34";
-        jobService = newJobService((globalAssetId, bpnl, lifecycle) -> List.of(
+        jobService = newJobService(globalAssetId -> List.of(
                 bomChild(
                         "urn:uuid:11111111-1111-1111-1111-111111111111", "BPNL0000BELF0001")));
         notificationSender = new RecursiveNotificationSender() {
@@ -1705,7 +1705,7 @@ class RecursiveJobServiceTest {
 
     @FunctionalInterface
     private interface TestBomResolver {
-        List<RecursiveBomChild> resolve(String globalAssetId, String bpnl, BomLifecycle lifecycle);
+        List<RecursiveBomChild> resolve(String globalAssetId);
     }
 
     private static final class StubRecursiveTraversalService extends RecursiveTraversalService {
@@ -1720,7 +1720,7 @@ class RecursiveJobServiceTest {
         @Override
         TraversalResult resolve(final UUID jobId, final String globalAssetId, final String bpnl,
                 final BomLifecycle lifecycle) {
-            return new TraversalResult(List.copyOf(bomResolver.resolve(globalAssetId, bpnl, lifecycle)), null);
+            return new TraversalResult(List.copyOf(bomResolver.resolve(globalAssetId)), null);
         }
     }
 
