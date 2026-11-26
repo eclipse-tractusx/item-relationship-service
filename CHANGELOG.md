@@ -28,15 +28,15 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Extract submodel payload retrieval and part type information reading from `RecursiveSubmodelCollector` into `RecursiveSubmodelFetcher` and `RecursivePartTypeInformationReader` and remove the `GodClass`, `TooManyMethods`, `ExcessiveImports` and class-level `AvoidCatchingGenericException` PMD suppressions ([#1048](https://github.com/eclipse-tractusx/item-relationship-service/pull/1048))
 - Ignore CVE-2026-47884 (`spring-webmvc`) in `.trivyignore`: the fix is only available in Spring Framework 7 and the IRS does not use `XsltView` ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
 - Ignore CVE-2026-47890 (`spring-webmvc`) in `.trivyignore`: the fix is only available in Spring Framework 7 and the IRS does not send view fragments over Server-Sent Events ([#1048](https://github.com/eclipse-tractusx/item-relationship-service/pull/1048))
+- Ignore CVE-2026-113351, CVE-2026-115506, CVE-2026-117610, CVE-2026-118370 (`libexpat`) and CVE-2026-109908 (`libfontenc`) in `.trivyignore` instead of upgrading the packages in the runtime image: only the font stack of the base image uses them, and the next base image update ships the fixes ([#1053](https://github.com/eclipse-tractusx/item-relationship-service/pull/1053))
 
 ### Fixed
 
-- Update `libfontenc` in the runtime image to fix CVE-2026-109908 ([#1053](https://github.com/eclipse-tractusx/item-relationship-service/pull/1053))
 - **Breaking change:** Isolate malformed recursive BOM relationships without discarding valid siblings; older recursive IRS versions cannot read the new `BOM_INCOMPLETE` and `BOM_SUBMODEL_INVALID` reasons in notifications or stored jobs ([#1029](https://github.com/eclipse-tractusx/item-relationship-service/issues/1029))
 - Use authenticated SeaweedFS storage with a non-root user, health probes and namespace resource limits for Helm CI installation and upgrade tests without changing production chart defaults ([#1050](https://github.com/eclipse-tractusx/item-relationship-service/issues/1050))
 - Use Python 3.13, an available runtime for Helm chart tests on Ubuntu 26.04 ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))
 - Configure Docker Buildx to use the local HTTP registry in Helm chart tests ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))
-- Update Guava to 33.7.2-jre and Snappy to 1.1.10.9, refresh the pinned Temurin runtime image and update Expat to address the reported Trivy vulnerabilities ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))
+- Update Guava to 33.7.2-jre and Snappy to 1.1.10.9, refresh the pinned Temurin runtime image to address the reported Trivy vulnerabilities ([#1049](https://github.com/eclipse-tractusx/item-relationship-service/pull/1049))
 - Reject invalid recursive job TTLs and expired new child requests, preserve duplicate-request responses, and validate recursive timeout configuration at startup ([#1742](https://github.com/eclipse-tractusx/sig-release/issues/1742))
 - Remove the duplicate `junit-jupiter-engine` dependency in `irs-load-tests`, which fails the Docker image build with Maven 3.10 ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
 - Remove the unused `jsoup` dependency to fix CVE-2026-75140 ([#1045](https://github.com/eclipse-tractusx/item-relationship-service/pull/1045))
