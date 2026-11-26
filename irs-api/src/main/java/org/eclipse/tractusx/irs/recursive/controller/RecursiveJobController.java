@@ -70,14 +70,14 @@ public class RecursiveJobController {
     private final RecursiveJobService jobService;
 
     @Operation(summary = "Start a new recursive job",
-               description = "Validates the request against the local grant store, resolves the BOM, "
-                       + "and determines allowed child partners.")
+               description = "Requires role ADMIN_IRS. Validates the request against the local grant store, "
+                       + "resolves the BOM, and determines allowed child partners.")
     @ApiResponse(responseCode = "201", description = "Job created")
     @ApiResponse(responseCode = "400",
                  description = "Unknown use case, unsupported lifecycle, or invalid request",
                  content = @Content(mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = RecursiveErrorResponse.class)))
-    @ApiResponse(responseCode = "403", description = "Grant validation failed",
+    @ApiResponse(responseCode = "403", description = "Administrator access required or grant validation failed",
                  content = @Content(mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = RecursiveErrorResponse.class)))
     @ApiResponse(responseCode = "422", description = "Request contains an unsupported aspect",
@@ -96,6 +96,7 @@ public class RecursiveJobController {
                  content = @Content(mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = RecursiveErrorResponse.class)))
     @PostMapping("/jobs")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public ResponseEntity<RecursiveJobStartResponse> startJob(
             @Valid @RequestBody final RecursiveJobRequest request) {
         log.info("POST /irs/recursive/jobs - openingId={}, useCase={}",

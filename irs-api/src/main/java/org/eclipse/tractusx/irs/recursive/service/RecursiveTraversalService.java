@@ -29,11 +29,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
-import org.eclipse.tractusx.irs.component.Quantity;
-import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
@@ -41,14 +40,9 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
-import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.RelationshipSubmodel;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.relationships.RelationshipAspect;
-import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveBomChild;
-import org.eclipse.tractusx.irs.recursive.model.RecursiveQuantity;
 import org.eclipse.tractusx.irs.recursive.util.RecursiveLogValue;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
@@ -66,7 +60,6 @@ import lombok.extern.slf4j.Slf4j;
  * not full submodel collection.</p>
  */
 @Slf4j
-@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.TooManyMethods" })
 public class RecursiveTraversalService {
 
     private static final String SINGLE_LEVEL_BOM_AS_PLANNED_PREFIX =
@@ -78,7 +71,7 @@ public class RecursiveTraversalService {
     /** Resolves one shell and its direct BOM children. */
     @FunctionalInterface
     private interface TraversalResolver {
-        TraversalResult resolve(String globalAssetId, String bpnl, BomLifecycle bomLifecycle);
+        TraversalResult resolve(UUID jobId, String globalAssetId, String bpnl, BomLifecycle bomLifecycle);
     }
 
     /** BOM children and the shell descriptor used to resolve them. */
@@ -88,15 +81,15 @@ public class RecursiveTraversalService {
     public RecursiveTraversalService(final DigitalTwinRegistryService digitalTwinRegistryService,
             final EdcSubmodelFacade submodelFacade,
             final JsonUtil jsonUtil) {
-        this.traversalResolver = (globalAssetId, bpnl, bomLifecycle) -> resolveTraversalViaIrsClients(
-                digitalTwinRegistryService, submodelFacade, jsonUtil, globalAssetId, bpnl, bomLifecycle);
+        this.traversalResolver = (jobId, globalAssetId, bpnl, bomLifecycle) -> resolveTraversalViaIrsClients(
+                digitalTwinRegistryService, submodelFacade, jsonUtil, jobId, globalAssetId, bpnl, bomLifecycle);
     }
 
-    /* package */ TraversalResult resolve(final String globalAssetId, final String bpnl,
+    /* package */ TraversalResult resolve(final UUID jobId, final String globalAssetId, final String bpnl,
             final BomLifecycle bomLifecycle) {
         log.info("Resolving BOM children for globalAssetId={}, bpnl={}, bomLifecycle={}",
                 RecursiveLogValue.of(globalAssetId), RecursiveLogValue.of(bpnl), bomLifecycle);
-        final TraversalResult result = traversalResolver.resolve(globalAssetId, bpnl, bomLifecycle);
+        final TraversalResult result = traversalResolver.resolve(jobId, globalAssetId, bpnl, bomLifecycle);
         return new TraversalResult(List.copyOf(result.bomChildren()), result.shellDescriptor());
     }
 
@@ -126,6 +119,7 @@ public class RecursiveTraversalService {
             final DigitalTwinRegistryService digitalTwinRegistryService,
             final EdcSubmodelFacade submodelFacade,
             final JsonUtil jsonUtil,
+            final UUID jobId,
             final String globalAssetId,
             final String bpnl,
             final BomLifecycle bomLifecycle) {
@@ -138,19 +132,13 @@ public class RecursiveTraversalService {
                     .orElseThrow(() -> new RecursiveExternalCallException("SHELL_NOT_FOUND",
                             "Digital twin shell was not found while resolving BOM relationships.", null));
 
-            final RelationshipAspect relationshipAspect = RelationshipAspect.from(bomLifecycle, Direction.DOWNWARD);
             final List<Endpoint> relationshipEndpoints = relationshipEndpoints(shell.payload(), bomLifecycle);
+            final RecursiveBomReader bomReader = new RecursiveBomReader(jsonUtil, bomLifecycle, jobId, globalAssetId);
 
             final List<RecursiveBomChild> result = new ArrayList<>();
             for (final Endpoint endpoint : relationshipEndpoints) {
                 final String payload = requestSubmodelPayload(submodelFacade, endpoint, bpnl);
-                final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(
-                        payload, relationshipAspect.getSubmodelClazz());
-                for (final Relationship relationship : relationshipSubmodel.asRelationships()) {
-                    final String childGlobalAssetId = relationship.getLinkedItem().getChildCatenaXId().getGlobalAssetId();
-                    result.add(new RecursiveBomChild(childGlobalAssetId, relationship.getBpn(),
-                            quantityOf(relationship)));
-                }
+                result.addAll(bomReader.read(payload));
             }
 
             return new TraversalResult(result.stream().distinct().toList(), shell.payload());
@@ -236,20 +224,6 @@ public class RecursiveTraversalService {
                          .filter(Objects::nonNull)
                          .map(SemanticId::getValue)
                          .filter(Objects::nonNull);
-    }
-
-    private static RecursiveQuantity quantityOf(final Relationship relationship) {
-        if (relationship.getLinkedItem() == null || relationship.getLinkedItem().getQuantity() == null) {
-            return null;
-        }
-        final Quantity quantity = relationship.getLinkedItem().getQuantity();
-        final ItemUnitEnumeration unit = quantity.getMeasurementUnit() == null
-                ? null
-                : ItemUnitEnumeration.findByValue(quantity.getMeasurementUnit().getLexicalValue()).orElse(null);
-        return RecursiveResultTreeSanitizer.sanitizeQuantity(RecursiveQuantity.builder()
-                .value(quantity.getQuantityNumber())
-                .unit(unit)
-                .build());
     }
 
     private static String requestSubmodelPayload(

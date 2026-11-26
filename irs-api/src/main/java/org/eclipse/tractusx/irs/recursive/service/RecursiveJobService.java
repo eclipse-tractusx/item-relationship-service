@@ -254,14 +254,18 @@ public class RecursiveJobService {
     private void processAcceptedJob(final RecursiveChainOpeningGrant grant, final RecursiveJobState acceptedState) {
         try {
             final RecursiveTraversalService.TraversalResult traversal = traversalService.resolve(
-                    acceptedState.getGlobalAssetId(), acceptedState.getReceiverBpnl(),
+                    acceptedState.getJobId(), acceptedState.getGlobalAssetId(), acceptedState.getReceiverBpnl(),
                     acceptedState.getBomLifecycle());
-            final List<RecursiveBomChild> bomChildren = traversal.bomChildren();
+            final boolean allowsChildPartners = grant.getAllowedBpnlSet() != null
+                    && !grant.getAllowedBpnlSet().isEmpty();
+            final List<RecursiveBomChild> bomChildren = traversal.bomChildren().stream()
+                    .filter(child -> allowsChildPartners || child.partnerBpnl() != null)
+                    .toList();
             final RecursiveChildItem localNode = collectLocalNode(acceptedState, traversal);
 
             final Set<String> grantedChildPartners = selectGrantedChildPartners(bomChildren, grant);
             final List<RecursiveChildBranch> childBranches =
-                    buildChildBranches(bomChildren, grantedChildPartners, acceptedState.getAspects());
+                    buildChildBranches(bomChildren, grantedChildPartners, acceptedState);
             final List<RecursiveChildBranch> sendableChildBranches = sendableChildBranches(childBranches);
 
             final RecursiveJobPhase phase = sendableChildBranches.isEmpty()
@@ -384,15 +388,15 @@ public class RecursiveJobService {
     }
 
     private List<RecursiveChildBranch> buildChildBranches(final List<RecursiveBomChild> bomChildren,
-            final Set<String> allowedPartners, final List<String> requestedAspects) {
+            final Set<String> allowedPartners, final RecursiveJobState state) {
         return bomChildren.stream()
                           .filter(child -> allowedPartners.contains(child.partnerBpnl()))
-                          .map(child -> buildChildBranch(child, requestedAspects))
+                          .map(child -> buildChildBranch(child, state))
                           .toList();
     }
 
     private RecursiveChildBranch buildChildBranch(final RecursiveBomChild child,
-            final List<String> requestedAspects) {
+            final RecursiveJobState state) {
         final RecursiveChildBranch.RecursiveChildBranchBuilder builder = RecursiveChildBranch.builder()
                 .messageId(UUID.randomUUID().toString())
                 .partnerBpnl(child.partnerBpnl())
@@ -401,13 +405,20 @@ public class RecursiveJobService {
             return builder.childGlobalAssetId(RecursiveGlobalAssetId.canonicalize(child.childGlobalAssetId()))
                           .build();
         } catch (final IllegalArgumentException exception) {
-            return builder.sendNotification(false)
-                          .status(RecursiveResponseStatus.FAILED)
-                          .tombstones(List.of(RecursiveTombstones.childBranch(requestedAspects,
-                                  RecursiveTombstoneReason.BOM_CHILD_GLOBAL_ASSET_ID_INVALID,
-                                  "The BOM relationship contains an invalid child global asset id.")))
-                          .build();
+            return failedBomBranch(state, builder);
         }
+    }
+
+    private RecursiveChildBranch failedBomBranch(final RecursiveJobState state,
+            final RecursiveChildBranch.RecursiveChildBranchBuilder builder) {
+        final RecursiveTombstone tombstone = RecursiveTombstones.childBranch(state.getAspects(),
+                RecursiveTombstoneReason.BOM_CHILD_GLOBAL_ASSET_ID_INVALID,
+                "The BOM relationship contains an invalid child global asset id.");
+        RecursiveTombstones.logBomFailure(state, tombstone);
+        return builder.sendNotification(false)
+                      .status(RecursiveResponseStatus.FAILED)
+                      .tombstones(List.of(tombstone))
+                      .build();
     }
 
     private List<RecursiveChildBranch> sendableChildBranches(final List<RecursiveChildBranch> childBranches) {

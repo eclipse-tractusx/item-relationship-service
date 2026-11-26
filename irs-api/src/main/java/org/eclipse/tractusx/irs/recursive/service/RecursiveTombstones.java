@@ -25,6 +25,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.tractusx.irs.recursive.model.RecursiveAspect;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveJobState;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstone;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneScope;
@@ -46,6 +47,10 @@ import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
 @Slf4j
 @SuppressWarnings("PMD.TooManyMethods")
 final class RecursiveTombstones {
+
+    /* package */ static final String BOM_INCOMPLETE_DETAIL = "The BOM is incomplete.";
+    /* package */ static final String BOM_SUBMODEL_INVALID_DETAIL =
+            "The BOM payload is unreadable or has an invalid structure.";
 
     private RecursiveTombstones() {
     }
@@ -87,6 +92,25 @@ final class RecursiveTombstones {
         final String detail = RecursiveFailureDetails.anonymizedDetail(raw.getDetail());
         return create(raw.getScope(), aspects, raw.getReason(), detail,
                 sanitizedErrorRefs(raw.getErrorRefs()), raw.getOccurrences());
+    }
+
+    /* package */ static boolean hasValidIncompleteBomNotice(final List<RecursiveTombstone> tombstones) {
+        final List<RecursiveTombstone> notices = tombstones.stream()
+                .filter(RecursiveTombstones::isIncompleteBomNotice).toList();
+        return notices.size() <= 1 && notices.stream().allMatch(tombstone ->
+                tombstone.getScope() == RecursiveTombstoneScope.LOCAL_NODE
+                        && tombstone.getOccurrences() == 1 && tombstone.getErrorRefs().size() == 1
+                        && tombstone.getAspects().isEmpty());
+    }
+
+    /* package */ static boolean isIncompleteBomNotice(final RecursiveTombstone tombstone) {
+        return tombstone.getReason() == RecursiveTombstoneReason.BOM_INCOMPLETE;
+    }
+
+    /* package */ static void logBomFailure(final RecursiveJobState state, final RecursiveTombstone tombstone) {
+        log.warn("BOM failure: jobId={}, globalAssetId={}, errorRefs={}, reason={}",
+                RecursiveLogValue.of(state.getJobId().toString()), RecursiveLogValue.of(state.getGlobalAssetId()),
+                RecursiveLogValue.of(tombstone.getErrorRefs().toString()), tombstone.getReason());
     }
 
     /** Keeps only canonical aspects selected for the current job. */
@@ -152,9 +176,11 @@ final class RecursiveTombstones {
     }
 
     private static String detailValue(final RecursiveTombstoneReason reason, final String detail) {
-        final String rawDetail = detail == null || detail.isBlank()
-                ? "Recursive tombstone reason: " + reason.name()
-                : detail;
+        final String rawDetail = switch (reason) {
+            case BOM_INCOMPLETE -> BOM_INCOMPLETE_DETAIL;
+            case BOM_SUBMODEL_INVALID -> BOM_SUBMODEL_INVALID_DETAIL;
+            default -> detail == null || detail.isBlank() ? "Recursive tombstone reason: " + reason.name() : detail;
+        };
         final String anonymizedDetail = RecursiveFailureDetails.anonymizedDetail(rawDetail);
         if (!RecursivePatternStore.SAFE_SINGLE_LINE_PATTERN.matcher(anonymizedDetail).matches()) {
             return "Recursive tombstone reason: " + reason.name();

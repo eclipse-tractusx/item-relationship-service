@@ -20,6 +20,8 @@ package org.eclipse.tractusx.irs.recursive.model;
 
 /**
  * Direct child relation discovered in the local BOM.
+ * Malformed entries retain known identifiers for grant filtering and deduplication.
+ * A null partner marks an incomplete BOM without assigning a child branch.
  */
 public record RecursiveBomChild(String childGlobalAssetId, String partnerBpnl, RecursiveQuantity quantity) {
 }

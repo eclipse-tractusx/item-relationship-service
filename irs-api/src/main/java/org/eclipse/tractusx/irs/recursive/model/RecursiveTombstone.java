@@ -42,6 +42,9 @@ import org.eclipse.tractusx.irs.recursive.util.RecursivePatternStore;
  * per occurrence. Placement in a {@link RecursiveChildItem} associates a failure with an anonymous
  * material node without exposing participant identities.</p>
  *
+ * <p>{@code BOM_INCOMPLETE} describes the BOM as a whole, with one occurrence and one error
+ * reference per node rather than a count of affected relationships.</p>
+ *
  * <p>This model is separate from the iterative IRS tombstone because recursive results must not carry
  * partner, endpoint, policy or asset identifiers across tiers.</p>
  */

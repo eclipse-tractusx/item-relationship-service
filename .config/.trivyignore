@@ -10,3 +10,17 @@ CVE-2026-47884
 # Affects view fragments sent over Server-Sent Events, which the IRS does not use.
 # Re-review with the upgrade to Spring Framework 7.
 CVE-2026-47890
+
+# libexpat 2.9.0-r0 from the pinned eclipse-temurin:25-jre-alpine base image, fixed in 2.10.0-r0.
+# Denial of service while parsing XML. In the image only fontconfig uses libexpat, to read its own
+# configuration; the IRS parses XML with the JDK and does not render fonts.
+# Re-review with the next update of the pinned base image (Alpine 3.24.4 ships the fixed version).
+CVE-2026-113351
+CVE-2026-115506
+CVE-2026-117610
+CVE-2026-118370
+
+# libfontenc 1.1.9-r0 from the pinned eclipse-temurin:25-jre-alpine base image, fixed in 1.1.10-r0.
+# Font file parsing. In the image only mkfontscale uses libfontenc; the IRS neither runs it nor reads font files.
+# Re-review with the next update of the pinned base image (Alpine 3.24.4 ships the fixed version).
+CVE-2026-109908

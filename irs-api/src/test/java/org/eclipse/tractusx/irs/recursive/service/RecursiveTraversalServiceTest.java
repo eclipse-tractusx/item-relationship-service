@@ -23,19 +23,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
-import org.eclipse.tractusx.irs.component.LinkedItem;
-import org.eclipse.tractusx.irs.component.MeasurementUnit;
-import org.eclipse.tractusx.irs.component.Quantity;
-import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
@@ -44,22 +38,24 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
-import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.RelationshipSubmodel;
 import org.eclipse.tractusx.irs.recursive.model.ItemUnitEnumeration;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveBomChild;
 import org.eclipse.tractusx.irs.recursive.model.RecursiveQuantity;
+import org.eclipse.tractusx.irs.recursive.model.RecursiveTombstoneReason;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class RecursiveTraversalServiceTest {
 
+    private static final UUID JOB_ID = UUID.fromString("fd938cf2-0196-4bd4-8913-5dd521237649");
     private static final String PARENT_ASSET_ID = "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b";
     private static final String CHILD_ASSET_ID = "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8";
     private static final String LOCAL_BPNL = "BPNL0000LOCAL001";
@@ -69,45 +65,27 @@ class RecursiveTraversalServiceTest {
     private DigitalTwinRegistryService digitalTwinRegistryService;
     @Mock
     private EdcSubmodelFacade submodelFacade;
-    @Mock
-    private JsonUtil jsonUtil;
+    private final JsonUtil jsonUtil = new JsonUtil();
     @Mock
     private AssetAdministrationShellDescriptor shellDescriptor;
 
     @Test
     void shouldResolveBomChildWithQuantity() throws Exception {
-        final Endpoint endpoint = Endpoint.builder()
-                .protocolInformation(ProtocolInformation.builder()
-                        .href("http://dataplane/submodel")
-                        .subprotocolBody("id=bom-asset;dspEndpoint=http://partner-edc")
-                        .build())
-                .build();
-        final Relationship relationship = Relationship.builder()
-                .bpn(CHILD_BPNL)
-                .linkedItem(LinkedItem.builder()
-                        .childCatenaXId(GlobalAssetIdentification.of(CHILD_ASSET_ID))
-                        .quantity(Quantity.builder()
-                                .quantityNumber(2.5)
-                                .measurementUnit(MeasurementUnit.builder()
-                                        .lexicalValue("unit:piece")
-                                        .build())
-                                .build())
-                        .build())
-                .build();
-        final RelationshipSubmodel relationshipSubmodel = () -> List.of(relationship);
-        when(digitalTwinRegistryService.fetchShell(any()))
-                .thenReturn(Optional.of(new Shell("agreement-id", shellDescriptor)));
-        when(shellDescriptor.getSubmodelDescriptors())
-                .thenReturn(List.of(descriptor(SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0, endpoint)));
-        when(submodelFacade.getSubmodelPayload(eq("http://partner-edc"), eq("http://dataplane/submodel"),
-                eq("bom-asset"), eq(LOCAL_BPNL)))
-                .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor("agreement-id", "{}"));
-        doReturn(relationshipSubmodel).when(jsonUtil).fromString(eq("{}"), any());
-        final RecursiveTraversalService service = new RecursiveTraversalService(digitalTwinRegistryService,
-                submodelFacade, jsonUtil);
-
-        final List<RecursiveBomChild> children = service.resolve(
-                PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED).bomChildren();
+        final String payload = """
+                {
+                  "childItems": [
+                    {
+                      "catenaXId": "%s",
+                      "businessPartner": "%s",
+                      "quantity": {
+                        "value": 2.5,
+                        "unit": "unit:piece"
+                      }
+                    }
+                  ]
+                }
+                """.formatted(CHILD_ASSET_ID, CHILD_BPNL);
+        final List<RecursiveBomChild> children = resolvePayload(payload);
 
         assertThat(children).singleElement().satisfies(child -> {
             assertThat(child.childGlobalAssetId()).isEqualTo(CHILD_ASSET_ID);
@@ -143,7 +121,7 @@ class RecursiveTraversalServiceTest {
                 submodelFacade, jsonUtil);
 
         final RecursiveTraversalService.TraversalResult result = service.resolve(
-                PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED);
+                JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED);
 
         assertThat(result.bomChildren()).isEmpty();
         assertThat(result.shellDescriptor()).isSameAs(shellDescriptor);
@@ -153,7 +131,12 @@ class RecursiveTraversalServiceTest {
     @Test
     void shouldResolveSupportedBomSemanticIdFromAnyReferenceKey() throws Exception {
         final Endpoint endpoint = endpoint("id=bom-asset;dspEndpoint=http://partner-edc");
-        final RelationshipSubmodel relationshipSubmodel = List::of;
+        final String payload = """
+                {
+                  "catenaXId": "%s",
+                  "childItems": []
+                }
+                """.formatted(PARENT_ASSET_ID);
         when(digitalTwinRegistryService.fetchShell(any()))
                 .thenReturn(Optional.of(new Shell("agreement-id", shellDescriptor)));
         when(shellDescriptor.getSubmodelDescriptors()).thenReturn(List.of(descriptor(List.of(
@@ -161,13 +144,12 @@ class RecursiveTraversalServiceTest {
                 SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0), endpoint)));
         when(submodelFacade.getSubmodelPayload(eq("http://partner-edc"), eq("http://dataplane/submodel"),
                 eq("bom-asset"), eq(LOCAL_BPNL)))
-                .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor("agreement-id", "{}"));
-        doReturn(relationshipSubmodel).when(jsonUtil).fromString(eq("{}"), any());
+                .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor("agreement-id", payload));
         final RecursiveTraversalService service = new RecursiveTraversalService(digitalTwinRegistryService,
                 submodelFacade, jsonUtil);
 
         final List<RecursiveBomChild> children = service.resolve(
-                PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED).bomChildren();
+                JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED).bomChildren();
 
         assertThat(children).isEmpty();
     }
@@ -183,7 +165,7 @@ class RecursiveTraversalServiceTest {
         final RecursiveTraversalService service = new RecursiveTraversalService(digitalTwinRegistryService,
                 submodelFacade, jsonUtil);
 
-        assertThatThrownBy(() -> service.resolve(PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED))
+        assertThatThrownBy(() -> service.resolve(JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED))
                 .isInstanceOfSatisfying(RecursiveExternalCallException.class, exception ->
                         assertThat(exception.getReason()).isEqualTo("BOM_SUBMODEL_NOT_SUPPORTED"));
         verifyNoInteractions(submodelFacade);
@@ -200,7 +182,7 @@ class RecursiveTraversalServiceTest {
         final RecursiveTraversalService service = new RecursiveTraversalService(digitalTwinRegistryService,
                 submodelFacade, jsonUtil);
 
-        assertThatThrownBy(() -> service.resolve(PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED))
+        assertThatThrownBy(() -> service.resolve(JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED))
                 .isInstanceOfSatisfying(RecursiveExternalCallException.class, exception ->
                         assertThat(exception.getReason()).isEqualTo("BOM_SUBMODEL_NOT_SUPPORTED"));
         verifyNoInteractions(submodelFacade);
@@ -216,18 +198,136 @@ class RecursiveTraversalServiceTest {
         final RecursiveTraversalService service = new RecursiveTraversalService(digitalTwinRegistryService,
                 submodelFacade, jsonUtil);
 
-        assertThatThrownBy(() -> service.resolve(PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED))
+        assertThatThrownBy(() -> service.resolve(JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED))
                 .isInstanceOfSatisfying(RecursiveExternalCallException.class, exception ->
                         assertThat(exception.getReason()).isEqualTo("BOM_SUBMODEL_ENDPOINT_MISSING"));
         verifyNoInteractions(submodelFacade);
     }
 
     @Test
-    void shouldReportUnparsableDateInBomPayloadAsParseError() throws Exception {
+    void shouldKeepValidSiblingsAndQuantityWhenChildIdsAreNonTextual() throws Exception {
+        final String unknownPartnerAssetId = "urn:uuid:40ea08bc-9ba9-4aed-8763-5d1f083148b8";
+        final String lastChildAssetId = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
+        final String payload = bomWithChildren("""
+                {
+                  "catenaXId": "%s",
+                  "businessPartner": "%s"
+                },
+                {
+                  "catenaXId": { "globalAssetId": "%s" },
+                  "businessPartner": "%s",
+                  "quantity": { "value": 2.5, "unit": "unit:piece" }
+                },
+                {
+                  "catenaXId": 42,
+                  "businessPartner": "%s",
+                  "quantity": { "value": 2.5, "unit": "unit:piece" }
+                },
+                {
+                  "catenaXId": "%s"
+                },
+                42,
+                {
+                  "catenaXId": "%s",
+                  "businessPartner": "%s"
+                }
+                """.formatted(CHILD_ASSET_ID, CHILD_BPNL, CHILD_ASSET_ID, CHILD_BPNL, CHILD_BPNL,
+                        unknownPartnerAssetId, lastChildAssetId, CHILD_BPNL));
+        final RecursiveQuantity quantity = RecursiveQuantity.builder().value(2.5)
+                .unit(ItemUnitEnumeration.UNIT_PIECE).build();
+
+        assertThat(resolvePayload(payload)).containsExactly(
+                new RecursiveBomChild(CHILD_ASSET_ID, CHILD_BPNL, null),
+                new RecursiveBomChild(null, CHILD_BPNL, quantity),
+                new RecursiveBomChild(null, null, null),
+                new RecursiveBomChild(lastChildAssetId, CHILD_BPNL, null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"null", "{}", "\"BPNL-secret\"", "\"\"", "42"})
+    void shouldNotAssociateRelationshipWithInvalidPartner(final String partner) throws Exception {
+        final String payload = bomWithChildren("""
+                {
+                  "catenaXId": "%s",
+                  "businessPartner": %s
+                }
+                """.formatted(CHILD_ASSET_ID, partner));
+
+        assertThat(resolvePayload(payload)).containsExactly(new RecursiveBomChild(null, null, null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "null", "{}", "[]",
+            """
+            {
+              "value": "not-a-number",
+              "unit": "unit:piece"
+            }
+            """,
+            """
+            {
+              "value": -1,
+              "unit": "unit:piece"
+            }
+            """,
+            """
+            {
+              "value": 1,
+              "unit": { "lexicalValue": "unit:piece" }
+            }
+            """
+    })
+    void shouldKeepRelationshipWhenQuantityIsInvalid(final String quantity) throws Exception {
+        final String payload = bomWithChildren("""
+                {
+                  "catenaXId": "%s",
+                  "businessPartner": "%s",
+                  "quantity": %s
+                }
+                """.formatted(CHILD_ASSET_ID, CHILD_BPNL, quantity));
+
+        assertThat(resolvePayload(payload)).containsExactly(new RecursiveBomChild(CHILD_ASSET_ID, CHILD_BPNL, null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{", "[]", "null", "{}",
+            """
+            {
+              "catenaXId": "parent",
+              "childItems": {}
+            }
+            """,
+            """
+            {
+              "catenaXId": "parent"
+            }
+            """
+    })
+    void shouldRejectInvalidBomStructure(final String payload) throws Exception {
+        assertThatThrownBy(() -> resolvePayload(payload))
+                .isInstanceOfSatisfying(RecursiveExternalCallException.class, exception -> {
+                    assertThat(exception.getReason()).isEqualTo(RecursiveTombstoneReason.BOM_SUBMODEL_INVALID.name());
+                    assertThat(exception.getMessage())
+                            .isEqualTo("The BOM payload is unreadable or has an invalid structure.");
+                    assertThat(exception.getCause()).isNull();
+                });
+    }
+
+    private String bomWithChildren(final String childEntries) {
+        return """
+                {
+                  "catenaXId": "%s",
+                  "childItems": [
+                %s
+                  ]
+                }
+                """.formatted(PARENT_ASSET_ID, childEntries.indent(4).stripTrailing());
+    }
+
+    private List<RecursiveBomChild> resolvePayload(final String payload) throws Exception {
         final Endpoint endpoint = endpoint("id=bom-asset;dspEndpoint=http://partner-edc");
-        final String payload = """
-                {"catenaXId":"%s","childItems":[{"catenaXId":"%s","createdOn":"not-a-date"}]}
-                """.formatted(PARENT_ASSET_ID, CHILD_ASSET_ID);
         when(digitalTwinRegistryService.fetchShell(any()))
                 .thenReturn(Optional.of(new Shell("agreement-id", shellDescriptor)));
         when(shellDescriptor.getSubmodelDescriptors())
@@ -236,12 +336,8 @@ class RecursiveTraversalServiceTest {
                 eq("bom-asset"), eq(LOCAL_BPNL)))
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor("agreement-id", payload));
         final RecursiveTraversalService service = new RecursiveTraversalService(digitalTwinRegistryService,
-                submodelFacade, new JsonUtil());
-
-        assertThatThrownBy(() -> service.resolve(PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED))
-                .isInstanceOf(JsonParseException.class)
-                .hasMessageContaining("Invalid date/time format")
-                .hasRootCauseInstanceOf(DateTimeParseException.class);
+                submodelFacade, jsonUtil);
+        return service.resolve(JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED).bomChildren();
     }
 
     private Endpoint endpoint(final String subprotocolBody) {

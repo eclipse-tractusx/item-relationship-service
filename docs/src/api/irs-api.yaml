@@ -1558,8 +1558,8 @@ paths:
       tags:
         - Recursive IRS
     post:
-      description: "Validates the request against the local grant store, resolves\
-        \ the BOM, and determines allowed child partners."
+      description: "Requires role ADMIN_IRS. Validates the request against the local grant\
+        \ store, resolves the BOM, and determines allowed child partners."
       operationId: startJob
       requestBody:
         content:
@@ -1585,7 +1585,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RecursiveErrorResponse"
-          description: Grant validation failed
+          description: Administrator access required or grant validation failed
         "406":
           content:
             application/json:
@@ -3771,6 +3771,8 @@ components:
             - PART_TYPE_INFORMATION_REQUEST_FAILED
             - BOM_QUANTITY_NOT_AVAILABLE
             - BOM_CHILD_GLOBAL_ASSET_ID_INVALID
+            - BOM_INCOMPLETE
+            - BOM_SUBMODEL_INVALID
             - BOM_SUBMODEL_NOT_SUPPORTED
             - BOM_SUBMODEL_ENDPOINT_MISSING
             - UNSUPPORTED_ANONYMIZED_ASPECT
