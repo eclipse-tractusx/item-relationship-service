@@ -566,12 +566,12 @@ The sequence diagram shows the technical message flow. The following table summa
 
  | Phase | Actor | Action |
  | --- | --- | --- |
- | 1 | Root caller | Starts a recursive job via `POST /irs/recursive/jobs`. |
+ | 1 | Root caller | Starts a recursive job via `POST /irs/recursive/jobs` with `ADMIN_IRS`. |
  | 2 | IRS | Validates the request, resolves default values and validates the local chain opening grant before creating the root job. |
  | 3 | IRS | Looks up the root shell in the Digital Twin Registry and selects the supported `SingleLevelBomAsPlanned` descriptor. If no BOM descriptor is present, the asset is treated as a leaf. |
- | 4 | IRS | Reads the BOM submodel through the EDC submodel access flow and filters direct children by the local chain opening grant. Filtered partners are not exposed to the caller. |
- | 5 | IRS | Creates and persists one direct child branch per valid, grant-allowed BOM child. |
- | 6 | IRS | Sends recursive REQUEST notifications to allowed direct children through EDC. |
+ | 4 | IRS | Reads the BOM through EDC and filters direct children by the local grant. If the grant allows child partners, entries without a valid partner BPNL produce one local `BOM_INCOMPLETE` tombstone. |
+ | 5 | IRS | Creates and persists direct child branches for grant-allowed BOM entries. Malformed entries are marked as failed. |
+ | 6 | IRS | Sends recursive REQUEST notifications through EDC only for valid, grant-allowed BOM children. |
  | 7 | Child IRS | Performs the same processing for its own direct children. It collects its own anonymized aspect payloads unless it is the root job. |
  | 8 | Child IRS | Remains in `AWAITING_CHILDREN` until all expected child responses are available or the child response deadline is processed. |
  | 9 | Child IRS | Aggregates its local node, child nodes and tombstones and sends a recursive RESPONSE to its parent. |

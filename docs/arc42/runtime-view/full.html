@@ -736,7 +736,7 @@ Only the <code>asPlanned</code> lifecycle is supported.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Root caller</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Starts a recursive job via <code>POST /irs/recursive/jobs</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starts a recursive job via <code>POST /irs/recursive/jobs</code> with <code>ADMIN_IRS</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -751,17 +751,17 @@ Only the <code>asPlanned</code> lifecycle is supported.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Reads the BOM submodel through the EDC submodel access flow and filters direct children by the local chain opening grant. Filtered partners are not exposed to the caller.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reads the BOM through EDC and filters direct children by the local grant. If the grant allows child partners, entries without a valid partner BPNL produce one local <code>BOM_INCOMPLETE</code> tombstone.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Creates and persists one direct child branch per valid, grant-allowed BOM child.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates and persists direct child branches for grant-allowed BOM entries. Malformed entries are marked as failed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends recursive REQUEST notifications to allowed direct children through EDC.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends recursive REQUEST notifications through EDC only for valid, grant-allowed BOM children.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
@@ -1597,7 +1597,7 @@ The response of each direct supplier may contain the following results;</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-13 15:00:41 UTC
+Last updated 2026-11-26 07:23:21 UTC
 </div>
 </div>
 </body>

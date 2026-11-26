@@ -805,6 +805,8 @@ The recursive IRS does not anonymize the PURIS payload itself. The submodel prov
 
 For BOM traversal, the absence of a `SingleLevelBomAsPlanned` descriptor means that the material is treated as a leaf. If a `SingleLevelBomAsPlanned` descriptor is present but does not use the supported `3.0.0` semantic ID, or if the supported descriptor is ambiguous or has no usable endpoint, the branch is completed with a sanitized tombstone. For a root job, the same condition fails the root job itself because there is no parent branch.
 
+BOM relationships are processed independently. Malformed entries do not stop valid siblings allowed by the grant. Failures for filtered partners are not exposed. If the grant allows child partners, entries without a valid partner BPNL produce one `BOM_INCOMPLETE` tombstone per affected BOM, without partner identities or entry counts. The tombstone is attached to the material node, or to the result for a root job. An unreadable payload or invalid BOM structure fails the local traversal with `BOM_SUBMODEL_INVALID`.
+
 ### API overview
 
 The recursive path exposes three API groups.
@@ -852,7 +854,8 @@ The recursive endpoints use the existing IRS API key security setup. Clients aut
 
  | Operation | Required access |
  | --- | --- |
- | Start, read and list recursive jobs | `ADMIN_IRS` or `VIEW_IRS` |
+ | Start recursive jobs | `ADMIN_IRS` |
+ | Read and list recursive jobs | `ADMIN_IRS` or `VIEW_IRS` |
  | Create, replace or delete recursive chain opening grants | `ADMIN_IRS` |
  | List recursive chain opening grants | `ADMIN_IRS` or `VIEW_IRS` |
  | Receive recursive notifications | `ADMIN_IRS` or `VIEW_IRS` |
@@ -1373,9 +1376,11 @@ The recursive result exposes the tombstone reasons listed below. The `retryable`
  | `LOCAL_ASPECT_REQUEST_FAILED` | Yes | An available requested aspect could not be retrieved through the DTR, EDC or submodel path. | Check the descriptor endpoint, DSP endpoint, catalog offer, accepted policy, contract negotiation and data-plane or submodel endpoint. Correlating the tombstone reference requires DEBUG logging for `RecursiveTombstones` on the originating IRS instance. |
  | `PART_TYPE_INFORMATION_NOT_AVAILABLE` | No | PartTypeInformation is unavailable or at least one required material field is missing. | Verify the descriptor and endpoints and ensure the payload contains both `manufacturerPartId` and `nameAtManufacturer`. |
  | `PART_TYPE_INFORMATION_REQUEST_FAILED` | Yes | The PartTypeInformation submodel could not be retrieved for technical reasons. | Check shell resolution, the descriptor and DSP endpoint, catalog and policy matching, contract negotiation and data-plane delivery. |
- | `BOM_QUANTITY_NOT_AVAILABLE` | No | A BOM relationship does not provide a complete quantity value and supported unit. | Ensure the relationship contains a numeric quantity value and one of the supported SAMM units. |
- | `BOM_CHILD_GLOBAL_ASSET_ID_INVALID` | No | A BOM relationship contains a child global asset ID that is neither a UUID nor a URN UUID. | Correct `linkedItem.childCatenaXId.globalAssetId`. The invalid branch is isolated; valid sibling branches can continue. |
+ | `BOM_QUANTITY_NOT_AVAILABLE` | No | A BOM relationship does not provide a complete quantity value and supported unit. The quantity is discarded without blocking an otherwise valid child request. | Ensure the relationship contains a numeric quantity value and one of the supported SAMM units. |
+ | `BOM_CHILD_GLOBAL_ASSET_ID_INVALID` | No | A BOM relationship has a missing or invalid child global asset ID. | Provide the child `catenaXId` as a UUID or URN UUID string. The invalid branch is isolated; valid sibling branches can continue. |
  | `BOM_SUBMODEL_NOT_SUPPORTED` | No | A SingleLevelBomAsPlanned descriptor is present, but no unique descriptor matches the supported version, or the requested lifecycle is unsupported. | Provide exactly one descriptor with the supported SingleLevelBomAsPlanned semantic ID. If no BOM descriptor exists at all, the asset is treated as a leaf instead of producing this reason. |
+ | `BOM_INCOMPLETE` | No | The grant allows child partners, but the BOM contains entries without a valid partner BPNL. | Check the local BOM relationships and their partner BPNLs. No partner identity or affected-entry count is exposed. |
+ | `BOM_SUBMODEL_INVALID` | No | Unreadable JSON or an invalid root structure fails the whole BOM. | Provide a JSON object with a `childItems` array. An empty array represents a leaf. |
  | `BOM_SUBMODEL_ENDPOINT_MISSING` | No | The supported BOM descriptor has no endpoint, or its endpoint does not contain a usable `dspEndpoint`. | Add a descriptor endpoint with a valid `dspEndpoint` in its `subprotocolBody`. |
  | `UNSUPPORTED_ANONYMIZED_ASPECT` | No | The requested aspect is not part of the supported recursive PURIS use case. | Use the supported ItemStockAnonymized, DeliveryInformationAnonymized and PlannedProductionOutputAnonymized semantic IDs consistently on all tiers. |
 
