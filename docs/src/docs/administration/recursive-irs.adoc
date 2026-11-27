@@ -528,9 +528,7 @@ Adjust the MinIO alias, bucket name and retention value to the target environmen
 
 Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.
 
-Stored jobs and grants are not migrated when a use case is renamed. The use case is part of the grant blob name (`chain-opening-grant:{openingId}:{globalAssetId}:{requesterBpn}:{useCase}`) and of the stored job state. A job or grant that references a use case unknown to the running version cannot be read: listing recursive jobs or grants fails, the restart recovery resumes no job, and such grants cannot be removed through the grant API.
-
-Before upgrading to a version whose changelog lists a changed recursive model or a renamed use case, remove the `recursive-job:`, `recursive-msg-in:` and `recursive-msg-out:` blobs from the jobs bucket and the `chain-opening-grant:` blobs from the grants container, then create the grants again with the new use case.
+Stored jobs and grants are not migrated when a recursive model or a use case is renamed. Before upgrading to such a version, follow the xref:migration.adoc#_migration[migration guide].
 
 == Audit log
 
