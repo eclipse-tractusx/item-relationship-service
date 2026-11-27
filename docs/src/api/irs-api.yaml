@@ -2145,7 +2145,7 @@ components:
             policy:
               createdOn: 2024-07-08T12:01:19.4677109+02:00
               permissions:
-                - action: use
+                - action: USE
                   constraint:
                     and: []
                     or:
@@ -2161,7 +2161,7 @@ components:
                         operator:
                           '@id': eq
                         rightOperand: ID 3.1 Trace
-                - action: access
+                - action: ACCESS
                   constraint:
                     and: []
                     or:
