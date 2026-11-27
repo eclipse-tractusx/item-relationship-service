@@ -699,6 +699,7 @@ pre.rouge {
 </li>
 <li><a href="#_migration">Migration Guide</a>
 <ul class="sectlevel2">
+<li><a href="#_9_1_x_to_10_0_0">9.1.x to 10.0.0</a></li>
 <li><a href="#_7_0_x_to_7_1_x">7.0.x to 7.1.x</a></li>
 </ul>
 </li>
@@ -1630,7 +1631,7 @@ Keep the values for these settings safe and do not publish them!
 <p><strong>IMPORTANT:</strong> THIS IS AN EXPERIMENTAL FEATURE INTRODUCED WITH APP VERSION 7.1.0 AND CHART VERSION 9.1.0.</p>
 </div>
 <div class="paragraph">
-<p>The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the <code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code> use case with <code>asPlanned</code> BOM traversal and anonymized PURIS aspect models.</p>
+<p>The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the <code>PURIS_ANONYMIZED_RECURSIVE</code> use case with <code>asPlanned</code> BOM traversal and anonymized PURIS aspect models.</p>
 </div>
 <div class="sect2">
 <h3 id="_supported_use_case">Supported use case</h3>
@@ -1648,7 +1649,7 @@ Keep the values for these settings safe and do not publish them!
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Use case</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PURIS_ANONYMIZED_RECURSIVE</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BOM lifecycle</p></td>
@@ -2318,6 +2319,9 @@ Keep the values for these settings safe and do not publish them!
 <div class="paragraph">
 <p>Chain opening grants are stored separately in the <code>irs-chain-opening-grants</code> container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.</p>
 </div>
+<div class="paragraph">
+<p>Stored jobs and grants are not migrated when a recursive model or a use case is renamed. Before upgrading to such a version, follow the <a href="#_migration">migration guide</a>.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_audit_log">Audit log</h3>
@@ -2444,8 +2448,8 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code>AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=&lt;null&gt; validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
-AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234</code></pre>
+<pre class="rouge highlight"><code>AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=&lt;null&gt; validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
+AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2494,7 +2498,7 @@ AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc
 <td class="tableblock halign-left valign-top"><p class="tableblock">Business outcome of the recursive aggregation. Possible values are <code>COMPLETE</code>, <code>PARTIAL</code> and <code>FAILED</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.childItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.relatedItems</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Aggregated material tree. Each node represents a BOM child and can contain material metadata, BOM quantity, local aspect payloads, tombstones and further child nodes.</p></td>
 </tr>
 <tr>
@@ -2801,6 +2805,70 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 <p>This guide has been introduced in 26.09 to cover migration needs based on <strong>chart versions</strong> for the irs. Only the delta is between versions is mentioned.</p>
 </div>
 <div class="sect2">
+<h3 id="_9_1_x_to_10_0_0">9.1.x to 10.0.0</h3>
+<div class="paragraph">
+<p>This version renames fields and a use case of the experimental recursive IRS API. The change is breaking for clients of the recursive API and for the recursive state stored in MinIO. Stored jobs and grants are not migrated.</p>
+</div>
+<div class="sect3">
+<h4 id="_before_the_upgrade">Before the upgrade</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Remove the <code>recursive-job:</code>, <code>recursive-msg-in:</code> and <code>recursive-msg-out:</code> blobs from the jobs bucket (default <code>irs-jobs</code>).</p>
+</li>
+<li>
+<p>Remove the <code>chain-opening-grant:</code> blobs from the grants container (default <code>irs-chain-opening-grants</code>).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The old use case is part of the grant blob name and the stored job state still uses the old field names, so the new version cannot read them. Until the blobs are removed, listing recursive jobs or grants fails with HTTP 503 <code>PERSISTENCE_UNAVAILABLE</code>. Rolling back to the previous version requires the same removal of the blobs written by the new version and creating the grants again with the previous use case.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_after_the_upgrade">After the upgrade</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the chain opening grants again with the use case <code>PURIS_ANONYMIZED_RECURSIVE</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_changes_for_clients">Changes for clients</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Previous</th>
+<th class="tableblock halign-left valign-top">New</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">use case <code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">use case <code>PURIS_ANONYMIZED_RECURSIVE</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field <code>bomLifecycle</code> in job request, notification content, job parameter and job result</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field <code>lifecycle</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field <code>childItems</code> at every level of the job result tree (<code>result.childItems</code> and nested items)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field <code>relatedItems</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Job requests reject every unknown field with HTTP 400 <code>MALFORMED_REQUEST</code>. Job requests and notifications with the previous field or use case names are rejected. A client that still reads <code>result.childItems</code> finds the field missing; a client that treats a missing field as an empty list, such as PURIS, gets an empty tree without an error. Switch to <code>relatedItems</code> and <code>lifecycle</code> at the same time as the IRS upgrade.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_7_0_x_to_7_1_x">7.0.x to 7.1.x</h3>
 <div class="paragraph">
 <p>No Migration is needed. Only an experimental feature for PURIS has been added introducing a new IRS recursive. The changes are minor and don&#8217;t affect existing functionality. Please refer to the <a href="../arc42/index.adoc">arc42</a> and <a href="recursive-irs.adoc">admin guide section</a> for further details.</p>
@@ -2850,7 +2918,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-26 07:23:21 UTC
+Last updated 2026-11-27 13:36:46 UTC
 </div>
 </div>
 </body>

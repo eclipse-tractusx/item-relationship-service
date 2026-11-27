@@ -702,7 +702,7 @@ pre.rouge {
 <p><strong>IMPORTANT:</strong> THIS IS AN EXPERIMENTAL FEATURE INTRODUCED WITH APP VERSION 7.1.0 AND CHART VERSION 9.1.0.</p>
 </div>
 <div class="paragraph">
-<p>The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the <code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code> use case with <code>asPlanned</code> BOM traversal and anonymized PURIS aspect models.</p>
+<p>The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the <code>PURIS_ANONYMIZED_RECURSIVE</code> use case with <code>asPlanned</code> BOM traversal and anonymized PURIS aspect models.</p>
 </div>
 </div>
 </div>
@@ -723,7 +723,7 @@ pre.rouge {
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Use case</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PURIS_ANONYMIZED_RECURSIVE</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BOM lifecycle</p></td>
@@ -1407,6 +1407,9 @@ pre.rouge {
 <div class="paragraph">
 <p>Chain opening grants are stored separately in the <code>irs-chain-opening-grants</code> container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.</p>
 </div>
+<div class="paragraph">
+<p>Stored jobs and grants are not migrated when a recursive model or a use case is renamed. Before upgrading to such a version, follow the <a href="migration.html#_migration">migration guide</a>.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1535,8 +1538,8 @@ pre.rouge {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code>AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=&lt;null&gt; validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
-AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234</code></pre>
+<pre class="rouge highlight"><code>AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=&lt;null&gt; validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
+AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1587,7 +1590,7 @@ AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc
 <td class="tableblock halign-left valign-top"><p class="tableblock">Business outcome of the recursive aggregation. Possible values are <code>COMPLETE</code>, <code>PARTIAL</code> and <code>FAILED</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.childItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.relatedItems</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Aggregated material tree. Each node represents a BOM child and can contain material metadata, BOM quantity, local aspect payloads, tombstones and further child nodes.</p></td>
 </tr>
 <tr>
@@ -1839,7 +1842,7 @@ AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-26 07:23:21 UTC
+Last updated 2026-11-27 13:36:46 UTC
 </div>
 </div>
 </body>

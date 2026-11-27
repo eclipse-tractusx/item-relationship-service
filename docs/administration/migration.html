@@ -443,6 +443,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#_9_1_x_to_10_0_0">9.1.x to 10.0.0</a>
+<ul class="sectlevel2">
+<li><a href="#_before_the_upgrade">Before the upgrade</a></li>
+<li><a href="#_after_the_upgrade">After the upgrade</a></li>
+<li><a href="#_changes_for_clients">Changes for clients</a></li>
+</ul>
+</li>
 <li><a href="#_7_0_x_to_7_1_x">7.0.x to 7.1.x</a></li>
 </ul>
 </div>
@@ -452,6 +459,72 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide has been introduced in 26.09 to cover migration needs based on <strong>chart versions</strong> for the irs. Only the delta is between versions is mentioned.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_9_1_x_to_10_0_0">9.1.x to 10.0.0</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This version renames fields and a use case of the experimental recursive IRS API. The change is breaking for clients of the recursive API and for the recursive state stored in MinIO. Stored jobs and grants are not migrated.</p>
+</div>
+<div class="sect2">
+<h3 id="_before_the_upgrade">Before the upgrade</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Remove the <code>recursive-job:</code>, <code>recursive-msg-in:</code> and <code>recursive-msg-out:</code> blobs from the jobs bucket (default <code>irs-jobs</code>).</p>
+</li>
+<li>
+<p>Remove the <code>chain-opening-grant:</code> blobs from the grants container (default <code>irs-chain-opening-grants</code>).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The old use case is part of the grant blob name and the stored job state still uses the old field names, so the new version cannot read them. Until the blobs are removed, listing recursive jobs or grants fails with HTTP 503 <code>PERSISTENCE_UNAVAILABLE</code>. Rolling back to the previous version requires the same removal of the blobs written by the new version and creating the grants again with the previous use case.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_after_the_upgrade">After the upgrade</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the chain opening grants again with the use case <code>PURIS_ANONYMIZED_RECURSIVE</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_changes_for_clients">Changes for clients</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Previous</th>
+<th class="tableblock halign-left valign-top">New</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">use case <code>PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">use case <code>PURIS_ANONYMIZED_RECURSIVE</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field <code>bomLifecycle</code> in job request, notification content, job parameter and job result</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field <code>lifecycle</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field <code>childItems</code> at every level of the job result tree (<code>result.childItems</code> and nested items)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field <code>relatedItems</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Job requests reject every unknown field with HTTP 400 <code>MALFORMED_REQUEST</code>. Job requests and notifications with the previous field or use case names are rejected. A client that still reads <code>result.childItems</code> finds the field missing; a client that treats a missing field as an empty list, such as PURIS, gets an empty tree without an error. Switch to <code>relatedItems</code> and <code>lifecycle</code> at the same time as the IRS upgrade.</p>
+</div>
 </div>
 </div>
 </div>
@@ -466,7 +539,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-26 07:23:21 UTC
+Last updated 2026-11-27 13:36:46 UTC
 </div>
 </div>
 </body>

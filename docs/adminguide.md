@@ -790,13 +790,13 @@ Login password for Grafana. To be defined by you.
 
 **IMPORTANT:** THIS IS AN EXPERIMENTAL FEATURE INTRODUCED WITH APP VERSION 7.1.0 AND CHART VERSION 9.1.0.
 
-The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` use case with `asPlanned` BOM traversal and anonymized PURIS aspect models.
+The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the `PURIS_ANONYMIZED_RECURSIVE` use case with `asPlanned` BOM traversal and anonymized PURIS aspect models.
 
 ### Supported use case
 
  | Field | Value |
  | --- | --- |
- | Use case | `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` |
+ | Use case | `PURIS_ANONYMIZED_RECURSIVE` |
  | BOM lifecycle | `asPlanned` |
  | BOM model | `urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned` |
  | Payload aspects | `urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized`, `urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized`, `urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized` |
@@ -1248,6 +1248,8 @@ Adjust the MinIO alias, bucket name and retention value to the target environmen
 
 Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.
 
+Stored jobs and grants are not migrated when a recursive model or a use case is renamed. Before upgrading to such a version, follow the [migration guide](migration.adoc#_migration).
+
 ### Audit log
 
 **DISCLAIMER:** THE AUDIT LOG IS ONLY AVAILABLE FOR THE RECURSIVE IRS AND THE POLICY STORE. ALL OTHER APIS, FOR EXAMPLE THE REGULAR JOB API (`/irs/jobs`, `/irs/orders`, `/irs/ess/orders`) AND THE ESS API (`/ess`), ARE NOT AUDITED.
@@ -1304,8 +1306,8 @@ The previous state of a grant is the preceding line with the same `openingId`, `
 Each line starts with the fixed prefix `AUDIT` and a space, without color codes, and ends with the trace ID of the call:
 
 ```bash
-AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=<null> validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
-AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
+AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=<null> validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
+AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
 ```
 
 A log collector can route lines that start with this prefix to a separate audit storage.
@@ -1328,7 +1330,7 @@ The recursive result separates technical job execution from the business result.
  | --- | --- |
  | `job.state` | Technical state of the local job. A job can be technically `COMPLETED` even if the business result is `FAILED`. |
  | `result.resultStatus` | Business outcome of the recursive aggregation. Possible values are `COMPLETE`, `PARTIAL` and `FAILED`. |
- | `result.childItems` | Aggregated material tree. Each node represents a BOM child and can contain material metadata, BOM quantity, local aspect payloads, tombstones and further child nodes. |
+ | `result.relatedItems` | Aggregated material tree. Each node represents a BOM child and can contain material metadata, BOM quantity, local aspect payloads, tombstones and further child nodes. |
  | `items` | Aspect payloads collected for one material node. |
  | `tombstones` | Sanitized failure information. Tombstones must not expose hidden partner identities or connector details. |
  | `tombstones[].occurrences` | Number of identical failures represented by an aggregated tombstone. |
@@ -1429,6 +1431,32 @@ Currently, the IRS only supports one version of the Job model at a time. This me
 ## Migration Guide
 
 This guide has been introduced in 26.09 to cover migration needs based on **chart versions** for the irs. Only the delta is between versions is mentioned.
+
+### 9.1.x to 10.0.0
+
+This version renames fields and a use case of the experimental recursive IRS API. The change is breaking for clients of the recursive API and for the recursive state stored in MinIO. Stored jobs and grants are not migrated.
+
+#### Before the upgrade
+
+1. Remove the `recursive-job:`, `recursive-msg-in:` and `recursive-msg-out:` blobs from the jobs bucket (default `irs-jobs`).
+2. Remove the `chain-opening-grant:` blobs from the grants container (default `irs-chain-opening-grants`).
+
+The old use case is part of the grant blob name and the stored job state still uses the old field names, so the new version cannot read them. Until the blobs are removed, listing recursive jobs or grants fails with HTTP 503 `PERSISTENCE_UNAVAILABLE`. Rolling back to the previous version requires the same removal of the blobs written by the new version and creating the grants again with the previous use case.
+
+#### After the upgrade
+
+1. Create the chain opening grants again with the use case `PURIS_ANONYMIZED_RECURSIVE`.
+
+#### Changes for clients
+
+ | | |
+ | --- | --- |
+ | Previous | New |
+ | use case `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` | use case `PURIS_ANONYMIZED_RECURSIVE` |
+ | field `bomLifecycle` in job request, notification content, job parameter and job result | field `lifecycle` |
+ | field `childItems` at every level of the job result tree (`result.childItems` and nested items) | field `relatedItems` |
+
+Job requests reject every unknown field with HTTP 400 `MALFORMED_REQUEST`. Job requests and notifications with the previous field or use case names are rejected. A client that still reads `result.childItems` finds the field missing; a client that treats a missing field as an empty list, such as PURIS, gets an empty tree without an error. Switch to `relatedItems` and `lifecycle` at the same time as the IRS upgrade.
 
 ### 7.0.x to 7.1.x
 
