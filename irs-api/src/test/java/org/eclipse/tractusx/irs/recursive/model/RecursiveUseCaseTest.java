@@ -29,12 +29,12 @@ import org.junit.jupiter.api.Test;
 class RecursiveUseCaseTest {
 
     private static final RecursiveUseCase USE_CASE =
-            RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE;
+            RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE;
 
     @Test
     void shouldDefinePurisLifecycleAndAspectBundle() {
-        assertThat(USE_CASE.getDefaultBomLifecycle()).isEqualTo(BomLifecycle.AS_PLANNED);
-        assertThat(USE_CASE.getAllowedBomLifecycles())
+        assertThat(USE_CASE.getDefaultLifecycle()).isEqualTo(BomLifecycle.AS_PLANNED);
+        assertThat(USE_CASE.getAllowedLifecycles())
                 .containsExactly(BomLifecycle.AS_PLANNED);
         assertThat(USE_CASE.getAllowedAspects()).containsExactly(
                 RecursiveAspect.ITEM_STOCK_ANONYMIZED,

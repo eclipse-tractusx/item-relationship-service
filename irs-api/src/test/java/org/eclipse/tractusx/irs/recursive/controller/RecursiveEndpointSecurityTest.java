@@ -195,7 +195,7 @@ class RecursiveEndpointSecurityTest extends ControllerTest {
     private Response startJobRequest() {
         final RecursiveJobRequest request = RecursiveJobRequest.builder()
                 .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
                 .requesterBpn(SENDER_BPNL)
                 .build();

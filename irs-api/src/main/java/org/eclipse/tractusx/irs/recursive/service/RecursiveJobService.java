@@ -204,10 +204,10 @@ public class RecursiveJobService {
             final ZonedDateTime inheritedDeadline, final String inheritedMessageId) {
         final PreparedRecursiveJob prepared = requestFactory.prepare(request, isRootJob, inheritedDeadline,
                 inheritedMessageId);
-        log.info("Creating {} job: openingId={}, useCase={}, globalAssetId={}, bomLifecycle={}, aspects={}",
+        log.info("Creating {} job: openingId={}, useCase={}, globalAssetId={}, lifecycle={}, aspects={}",
                 isRootJob ? "ROOT" : "CHILD", RecursiveLogValue.of(prepared.openingId()),
                 RecursiveLogValue.of(prepared.useCase().name()), RecursiveLogValue.of(prepared.globalAssetId()),
-                prepared.bomLifecycle(), RecursiveLogValue.of(prepared.aspects().toString()));
+                prepared.lifecycle(), RecursiveLogValue.of(prepared.aspects().toString()));
 
         final Optional<UUID> existing = isRootJob
                 ? Optional.empty()
@@ -255,17 +255,17 @@ public class RecursiveJobService {
         try {
             final RecursiveTraversalService.TraversalResult traversal = traversalService.resolve(
                     acceptedState.getJobId(), acceptedState.getGlobalAssetId(), acceptedState.getReceiverBpnl(),
-                    acceptedState.getBomLifecycle());
+                    acceptedState.getLifecycle());
             final boolean allowsChildPartners = grant.getAllowedBpnlSet() != null
                     && !grant.getAllowedBpnlSet().isEmpty();
-            final List<RecursiveBomChild> bomChildren = traversal.bomChildren().stream()
+            final List<RecursiveBomChild> chainRelations = traversal.chainRelations().stream()
                     .filter(child -> allowsChildPartners || child.partnerBpnl() != null)
                     .toList();
             final RecursiveChildItem localNode = collectLocalNode(acceptedState, traversal);
 
-            final Set<String> grantedChildPartners = selectGrantedChildPartners(bomChildren, grant);
+            final Set<String> grantedChildPartners = selectGrantedChildPartners(chainRelations, grant);
             final List<RecursiveChildBranch> childBranches =
-                    buildChildBranches(bomChildren, grantedChildPartners, acceptedState);
+                    buildChildBranches(chainRelations, grantedChildPartners, acceptedState);
             final List<RecursiveChildBranch> sendableChildBranches = sendableChildBranches(childBranches);
 
             final RecursiveJobPhase phase = sendableChildBranches.isEmpty()
@@ -275,7 +275,7 @@ public class RecursiveJobService {
             RecursiveJobState processedState = acceptedState.toBuilder()
                     .lastModifiedOn(now())
                     .state(phase)
-                    .bomChildren(bomChildren)
+                    .chainRelations(chainRelations)
                     .childBranches(childBranches)
                     .localNode(localNode)
                     .build();
@@ -339,7 +339,7 @@ public class RecursiveJobService {
                                          .openingId(cnt.getOpeningId())
                                          .useCase(cnt.getUseCase())
                                          .globalAssetId(cnt.getGlobalAssetId())
-                                         .bomLifecycle(cnt.getBomLifecycle())
+                                         .lifecycle(cnt.getLifecycle())
                                          .aspects(cnt.getAspects())
                                          .requesterBpn(hdr.getSenderBpnl())
                                          .build(), false, expectedResponseBy,
@@ -381,15 +381,15 @@ public class RecursiveJobService {
         failed.ifPresent(parentResponder::sendParentResponseQuietly);
     }
 
-    private Set<String> selectGrantedChildPartners(final List<RecursiveBomChild> bomChildren,
+    private Set<String> selectGrantedChildPartners(final List<RecursiveBomChild> chainRelations,
             final RecursiveChainOpeningGrant grant) {
-        final Set<String> bomPartners = traversalService.extractPartnerBpnls(bomChildren);
+        final Set<String> bomPartners = traversalService.extractPartnerBpnls(chainRelations);
         return grantService.filterAllowedPartners(bomPartners, grant);
     }
 
-    private List<RecursiveChildBranch> buildChildBranches(final List<RecursiveBomChild> bomChildren,
+    private List<RecursiveChildBranch> buildChildBranches(final List<RecursiveBomChild> chainRelations,
             final Set<String> allowedPartners, final RecursiveJobState state) {
-        return bomChildren.stream()
+        return chainRelations.stream()
                           .filter(child -> allowedPartners.contains(child.partnerBpnl()))
                           .map(child -> buildChildBranch(child, state))
                           .toList();

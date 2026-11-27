@@ -68,13 +68,13 @@ class RecursiveResultAggregatorTest {
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.COMPLETE);
         assertThat(result.getTombstones()).isEmpty();
-        assertThat(result.getChildItems()).singleElement().satisfies(material -> {
+        assertThat(result.getRelatedItems()).singleElement().satisfies(material -> {
             assertThat(material.getMaterialNumber()).isEqualTo("MNR-1");
             assertThat(material.getMaterialName()).isEqualTo("Semiconductor");
             assertThat(material.getQuantity()).isEqualTo(quantity(2.0));
             assertThat(material.getItems()).singleElement().satisfies(item ->
                     assertThat(item.getItems()).containsEntry("stock", 10));
-            assertThat(material.getChildItems()).singleElement().satisfies(descendant ->
+            assertThat(material.getRelatedItems()).singleElement().satisfies(descendant ->
                     assertThat(descendant.getMaterialNumber()).isEqualTo("MNR-2"));
         });
     }
@@ -98,12 +98,12 @@ class RecursiveResultAggregatorTest {
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.PARTIAL);
         assertThat(result.getTombstones()).isEmpty();
-        assertThat(result.getChildItems()).hasSize(2);
-        assertThat(result.getChildItems().get(0).getTombstones()).singleElement().satisfies(tombstone -> {
+        assertThat(result.getRelatedItems()).hasSize(2);
+        assertThat(result.getRelatedItems().get(0).getTombstones()).singleElement().satisfies(tombstone -> {
             assertThat(tombstone.getOccurrences()).isEqualTo(2);
             assertThat(Set.copyOf(tombstone.getErrorRefs())).isEqualTo(Set.of(ERROR_REF_A, ERROR_REF_B));
         });
-        assertThat(result.getChildItems().get(1).getTombstones()).singleElement().satisfies(tombstone ->
+        assertThat(result.getRelatedItems().get(1).getTombstones()).singleElement().satisfies(tombstone ->
                 assertThat(tombstone.getOccurrences()).isEqualTo(1));
     }
 
@@ -115,7 +115,7 @@ class RecursiveResultAggregatorTest {
                 Map.of("message-1", childResult(node("MNR-1", "Semiconductor", List.of(), List.of()))));
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.PARTIAL);
-        assertThat(result.getChildItems()).singleElement().satisfies(child -> {
+        assertThat(result.getRelatedItems()).singleElement().satisfies(child -> {
             assertThat(child.getQuantity()).isNull();
             assertThat(child.getTombstones()).singleElement().satisfies(tombstone -> {
                 assertThat(tombstone.getReason())
@@ -137,7 +137,7 @@ class RecursiveResultAggregatorTest {
                 Map.of("message-1", childResult(node("MNR-1", "Semiconductor", List.of(), List.of()))));
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.PARTIAL);
-        assertThat(result.getChildItems()).singleElement().satisfies(child -> {
+        assertThat(result.getRelatedItems()).singleElement().satisfies(child -> {
             assertThat(child.getQuantity()).isNull();
             assertThat(child.getTombstones()).singleElement().satisfies(tombstone ->
                     assertThat(tombstone.getReason())
@@ -159,7 +159,7 @@ class RecursiveResultAggregatorTest {
         final RecursiveJobResult result = aggregate(state(List.of(child)), Map.of());
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
-        assertThat(result.getChildItems()).singleElement().satisfies(material ->
+        assertThat(result.getRelatedItems()).singleElement().satisfies(material ->
                 assertThat(material.getTombstones()).extracting(RecursiveTombstone::getReason)
                         .containsExactlyInAnyOrder(RecursiveTombstoneReason.BOM_CHILD_GLOBAL_ASSET_ID_INVALID,
                                 RecursiveTombstoneReason.BOM_QUANTITY_NOT_AVAILABLE));
@@ -170,7 +170,7 @@ class RecursiveResultAggregatorTest {
         final RecursiveBomChild unknown = new RecursiveBomChild(null, null, null);
         final RecursiveJobState state = state(List.of()).toBuilder()
                 .rootJob(false)
-                .bomChildren(List.of(unknown, unknown))
+                .chainRelations(List.of(unknown, unknown))
                 .localNode(node("MNR-1", "Semiconductor", List.of(), List.of()))
                 .build();
 
@@ -178,9 +178,9 @@ class RecursiveResultAggregatorTest {
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.PARTIAL);
         assertThat(result.getTombstones()).isEmpty();
-        assertThat(result.getChildItems()).singleElement().satisfies(material -> {
+        assertThat(result.getRelatedItems()).singleElement().satisfies(material -> {
             assertThat(material.getMaterialNumber()).isEqualTo("MNR-1");
-            assertThat(material.getChildItems()).isEmpty();
+            assertThat(material.getRelatedItems()).isEmpty();
             assertThat(material.getTombstones()).singleElement().satisfies(tombstone -> {
                 assertThat(tombstone.getReason()).isEqualTo(RecursiveTombstoneReason.BOM_INCOMPLETE);
                 assertThat(tombstone.getScope()).isEqualTo(RecursiveTombstoneScope.LOCAL_NODE);
@@ -195,14 +195,14 @@ class RecursiveResultAggregatorTest {
         final RecursiveJobState state = state(List.of(childRequest("message-1", quantity(2.0))));
         final RecursiveJobResult invalidChildResult = RecursiveJobResult.builder()
                 .resultStatus(RecursiveResultStatus.COMPLETE)
-                .childItems(Collections.singletonList(null))
+                .relatedItems(Collections.singletonList(null))
                 .tombstones(List.of())
                 .build();
 
         final RecursiveJobResult result = aggregate(state, Map.of("message-1", invalidChildResult));
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
-        assertThat(result.getChildItems()).singleElement().satisfies(child -> {
+        assertThat(result.getRelatedItems()).singleElement().satisfies(child -> {
             assertThat(child.getQuantity()).isEqualTo(quantity(2.0));
             assertThat(child.getTombstones()).singleElement().satisfies(tombstone ->
                     assertThat(tombstone.getReason())
@@ -225,14 +225,14 @@ class RecursiveResultAggregatorTest {
                 .build();
         final RecursiveJobResult childResult = RecursiveJobResult.builder()
                 .resultStatus(RecursiveResultStatus.FAILED)
-                .childItems(List.of())
+                .relatedItems(List.of())
                 .tombstones(List.of(rejection))
                 .build();
 
         final RecursiveJobResult result = aggregate(state, Map.of("message-1", childResult));
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
-        assertThat(result.getChildItems()).singleElement().satisfies(child -> {
+        assertThat(result.getRelatedItems()).singleElement().satisfies(child -> {
             assertThat(child.getQuantity()).isEqualTo(quantity(2.0));
             assertThat(child.getTombstones()).singleElement().satisfies(tombstone ->
                     assertThat(tombstone.getReason()).isEqualTo(RecursiveTombstoneReason.CHAIN_OPENING_REJECTED));
@@ -242,20 +242,20 @@ class RecursiveResultAggregatorTest {
     @Test
     void shouldReturnFailedResultOutsideUseCasePolicy() {
         final RecursiveJobState state = state(List.of()).toBuilder()
-                .bomLifecycle(BomLifecycle.AS_SPECIFIED)
+                .lifecycle(BomLifecycle.AS_SPECIFIED)
                 .build();
 
         final RecursiveJobResult result = aggregator.aggregate(state, List.of(), null);
 
         assertThat(result.getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
-        assertThat(result.getChildItems()).isEmpty();
+        assertThat(result.getRelatedItems()).isEmpty();
         assertThat(result.getTombstones()).isNotEmpty();
     }
 
     private RecursiveJobResult childResult(final RecursiveChildItem child) {
         return RecursiveJobResult.builder()
                                  .resultStatus(RecursiveResultStatus.COMPLETE)
-                                 .childItems(List.of(child))
+                                 .relatedItems(List.of(child))
                                  .tombstones(List.of())
                                  .build();
     }
@@ -267,7 +267,7 @@ class RecursiveResultAggregatorTest {
                                  .materialName(materialName)
                                  .items(items)
                                  .tombstones(List.of())
-                                 .childItems(children)
+                                 .relatedItems(children)
                                  .build();
     }
 
@@ -311,9 +311,9 @@ class RecursiveResultAggregatorTest {
         return RecursiveJobState.builder()
                                 .jobId(UUID.fromString("00000000-0000-0000-0000-000000000001"))
                                 .openingId("opening-1")
-                                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                                 .globalAssetId("urn:uuid:11111111-1111-1111-1111-111111111111")
-                                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                                .lifecycle(BomLifecycle.AS_PLANNED)
                                 .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                                 .requesterBpnl("BPNL0000ATLS0001")
                                 .receiverBpnl("BPNL0000BELF0001")
@@ -324,7 +324,7 @@ class RecursiveResultAggregatorTest {
                                 .childResponseDeadline(now.plusMinutes(29))
                                 .state(RecursiveJobPhase.AWAITING_CHILDREN)
                                 .rootJob(true)
-                                .bomChildren(List.of())
+                                .chainRelations(List.of())
                                 .childBranches(childBranches)
                                 .build();
     }

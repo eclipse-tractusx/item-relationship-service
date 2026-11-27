@@ -2,7 +2,7 @@
 
 *IMPORTANT:* THIS IS AN EXPERIMENTAL FEATURE INTRODUCED WITH APP VERSION 7.1.0 AND CHART VERSION 9.1.0.
 
-The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` use case with `asPlanned` BOM traversal and anonymized PURIS aspect models.
+The recursive IRS path provides a partner-to-partner traversal for PURIS data. It supports the `PURIS_ANONYMIZED_RECURSIVE` use case with `asPlanned` BOM traversal and anonymized PURIS aspect models.
 
 == Supported use case
 
@@ -11,7 +11,7 @@ The recursive IRS path provides a partner-to-partner traversal for PURIS data. I
 | Field | Value
 
 | Use case
-| `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE`
+| `PURIS_ANONYMIZED_RECURSIVE`
 
 | BOM lifecycle
 | `asPlanned`
@@ -528,6 +528,8 @@ Adjust the MinIO alias, bucket name and retention value to the target environmen
 
 Chain opening grants are stored separately in the `irs-chain-opening-grants` container by default. They can be managed through the grant API. Their blob retention should match the intended grant administration process.
 
+Stored jobs and grants are not migrated when a recursive model or a use case is renamed. Before upgrading to such a version, follow the xref:migration.adoc#_migration[migration guide].
+
 == Audit log
 
 *DISCLAIMER:* THE AUDIT LOG IS ONLY AVAILABLE FOR THE RECURSIVE IRS AND THE POLICY STORE. ALL OTHER APIS, FOR EXAMPLE THE REGULAR JOB API (`/irs/jobs`, `/irs/orders`, `/irs/ess/orders`) AND THE ESS API (`/ess`), ARE NOT AUDITED.
@@ -617,8 +619,8 @@ Each line starts with the fixed prefix `AUDIT` and a space, without color codes,
 
 [source]
 ----
-AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=<null> validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
-AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
+AUDIT 2026-10-29T10:55:13,739 action=PUT_GRANT openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b requesterBpn=BPNL0000ATLS0001 useCase=PURIS_ANONYMIZED_RECURSIVE allowedBpnls=[BPNL0000DLTA0001] validFrom=<null> validTo=2026-11-30T00:00Z trace_id=4bf92f3577b34da6a3ce929d0e0e4736
+AUDIT 2026-10-29T10:56:03,631 action=START_JOB jobId=014bc06a-4fd6-4cb9-9671-fdc4f2a4bfff openingId=opening-42 globalAssetId=urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b useCase=PURIS_ANONYMIZED_RECURSIVE trace_id=12341234123412341234123412341234
 ----
 
 A log collector can route lines that start with this prefix to a separate audit storage.
@@ -647,7 +649,7 @@ The recursive result separates technical job execution from the business result.
 | `result.resultStatus`
 | Business outcome of the recursive aggregation. Possible values are `COMPLETE`, `PARTIAL` and `FAILED`.
 
-| `result.childItems`
+| `result.relatedItems`
 | Aggregated material tree. Each node represents a BOM child and can contain material metadata, BOM quantity, local aspect payloads, tombstones and further child nodes.
 
 | `items`

@@ -59,7 +59,7 @@ abstract class RecursiveIntegrationTestBase {
 
     protected static final String OPENING_ID = "recursive-irs-demo-opening";
     protected static final RecursiveUseCase PURIS_USE_CASE =
-            RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE;
+            RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE;
     protected static final String UNSUPPORTED_ASPECT =
             "urn:samm:io.catenax.unsupported:1.0.0#UnsupportedAspect";
     protected static final String ITEM_STOCK = "urn:samm:io.catenax.item_stock:2.0.0#ItemStock";
@@ -247,18 +247,18 @@ abstract class RecursiveIntegrationTestBase {
 
     private static Map<String, List<Object>> aspectPayloadsByType(final RecursiveJobResult result) {
         final Map<String, List<Object>> grouped = new LinkedHashMap<>();
-        collectAspectPayloads(result.getChildItems(), grouped);
+        collectAspectPayloads(result.getRelatedItems(), grouped);
         return grouped;
     }
 
-    private static void collectAspectPayloads(final List<RecursiveChildItem> childItems,
+    private static void collectAspectPayloads(final List<RecursiveChildItem> relatedItems,
             final Map<String, List<Object>> grouped) {
-        for (final RecursiveChildItem child : childItems == null ? List.<RecursiveChildItem>of() : childItems) {
+        for (final RecursiveChildItem child : relatedItems == null ? List.<RecursiveChildItem>of() : relatedItems) {
             if (child.getItems() != null) {
                 child.getItems().forEach(item -> grouped.computeIfAbsent(item.getAspect(), key -> new ArrayList<>())
                         .add(item.getItems()));
             }
-            collectAspectPayloads(child.getChildItems(), grouped);
+            collectAspectPayloads(child.getRelatedItems(), grouped);
         }
     }
 
@@ -287,17 +287,17 @@ abstract class RecursiveIntegrationTestBase {
 
     protected List<RecursiveTombstone> tombstones(final RecursiveJobStatusResponse response) {
         final List<RecursiveTombstone> tombstones = new ArrayList<>(response.getResult().getTombstones());
-        collectTombstones(response.getResult().getChildItems(), tombstones);
+        collectTombstones(response.getResult().getRelatedItems(), tombstones);
         return tombstones;
     }
 
-    private void collectTombstones(final List<RecursiveChildItem> childItems,
+    private void collectTombstones(final List<RecursiveChildItem> relatedItems,
             final List<RecursiveTombstone> tombstones) {
-        for (final RecursiveChildItem child : childItems == null ? List.<RecursiveChildItem>of() : childItems) {
+        for (final RecursiveChildItem child : relatedItems == null ? List.<RecursiveChildItem>of() : relatedItems) {
             if (child.getTombstones() != null) {
                 tombstones.addAll(child.getTombstones());
             }
-            collectTombstones(child.getChildItems(), tombstones);
+            collectTombstones(child.getRelatedItems(), tombstones);
         }
     }
 

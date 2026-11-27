@@ -123,7 +123,7 @@ class RecursiveTraversalServiceTest {
         final RecursiveTraversalService.TraversalResult result = service.resolve(
                 JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED);
 
-        assertThat(result.bomChildren()).isEmpty();
+        assertThat(result.chainRelations()).isEmpty();
         assertThat(result.shellDescriptor()).isSameAs(shellDescriptor);
         verifyNoInteractions(submodelFacade);
     }
@@ -149,7 +149,7 @@ class RecursiveTraversalServiceTest {
                 submodelFacade, jsonUtil);
 
         final List<RecursiveBomChild> children = service.resolve(
-                JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED).bomChildren();
+                JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED).chainRelations();
 
         assertThat(children).isEmpty();
     }
@@ -337,7 +337,7 @@ class RecursiveTraversalServiceTest {
                 .thenReturn(new org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor("agreement-id", payload));
         final RecursiveTraversalService service = new RecursiveTraversalService(digitalTwinRegistryService,
                 submodelFacade, jsonUtil);
-        return service.resolve(JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED).bomChildren();
+        return service.resolve(JOB_ID, PARENT_ASSET_ID, LOCAL_BPNL, BomLifecycle.AS_PLANNED).chainRelations();
     }
 
     private Endpoint endpoint(final String subprotocolBody) {

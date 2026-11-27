@@ -5,6 +5,33 @@
 
 This guide has been introduced in 26.09 to cover migration needs based on *chart versions* for the irs. Only the delta is between versions is mentioned.
 
+== 9.1.x to 10.0.0
+
+This version renames fields and a use case of the experimental recursive IRS API. The change is breaking for clients of the recursive API and for the recursive state stored in MinIO. Stored jobs and grants are not migrated.
+
+=== Before the upgrade
+
+. Remove the `recursive-job:`, `recursive-msg-in:` and `recursive-msg-out:` blobs from the jobs bucket (default `irs-jobs`).
+. Remove the `chain-opening-grant:` blobs from the grants container (default `irs-chain-opening-grants`).
+
+The old use case is part of the grant blob name and the stored job state still uses the old field names, so the new version cannot read them. Until the blobs are removed, listing recursive jobs or grants fails with HTTP 503 `PERSISTENCE_UNAVAILABLE`. Rolling back to the previous version requires the same removal of the blobs written by the new version and creating the grants again with the previous use case.
+
+=== After the upgrade
+
+. Create the chain opening grants again with the use case `PURIS_ANONYMIZED_RECURSIVE`.
+
+=== Changes for clients
+
+[cols="1,1", options="header"]
+|===
+| Previous | New
+| use case `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE` | use case `PURIS_ANONYMIZED_RECURSIVE`
+| field `bomLifecycle` in job request, notification content, job parameter and job result | field `lifecycle`
+| field `childItems` at every level of the job result tree (`result.childItems` and nested items) | field `relatedItems`
+|===
+
+Job requests reject every unknown field with HTTP 400 `MALFORMED_REQUEST`. Job requests and notifications with the previous field or use case names are rejected. A client that still reads `result.childItems` finds the field missing; a client that treats a missing field as an empty list, such as PURIS, gets an empty tree without an error. Switch to `relatedItems` and `lifecycle` at the same time as the IRS upgrade.
+
 == 7.0.x to 7.1.x
 
 No Migration is needed. Only an experimental feature for PURIS has been added introducing a new IRS recursive. The changes are minor and don't affect existing functionality. Please refer to the link:../arc42/index.adoc[arc42] and link:recursive-irs.adoc[admin guide section] for further details.

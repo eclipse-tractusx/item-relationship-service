@@ -4,7 +4,7 @@ The recursive PURIS path is a partner-to-partner traversal for anonymized PURIS 
 The root caller starts a recursive job with a `globalAssetId`, an `openingId`, the recursive PURIS use case and the anonymized aspect bundle.
 This use case is different from the ESS recursive investigation described in the adjacent ESS runtime section.
 
-The supported use case is `PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE`.
+The supported use case is `PURIS_ANONYMIZED_RECURSIVE`.
 It traverses `SingleLevelBomAsPlanned` version `3.0.0` and collects anonymized PURIS payloads.
 Only the `asPlanned` lifecycle is supported.
 
@@ -119,7 +119,7 @@ Instead, it requests only the allowed anonymized aspect semantic IDs from the pr
 
 The result model contains a material tree:
 
-* `childItems` for BOM child nodes
+* `relatedItems` for BOM child nodes
 * `materialNumber` and `materialName` from PartTypeInformation, if available
 * `quantity` from the BOM relationship
 * `items` for collected anonymized aspect payloads at the material node

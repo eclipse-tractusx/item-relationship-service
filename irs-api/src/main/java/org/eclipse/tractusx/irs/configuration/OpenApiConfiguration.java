@@ -58,7 +58,7 @@ public class OpenApiConfiguration {
     private static final String RECURSIVE_ASPECT_ITEM_SCHEMA = "RecursiveAspectItem";
     private static final String RECURSIVE_TOMBSTONE_SCHEMA = "RecursiveTombstone";
     private static final String USE_CASE_PROPERTY = "useCase";
-    private static final String BOM_LIFECYCLE_PROPERTY = "bomLifecycle";
+    private static final String LIFECYCLE_PROPERTY = "lifecycle";
     private static final String ASPECTS_PROPERTY = "aspects";
 
     /**
@@ -114,7 +114,7 @@ public class OpenApiConfiguration {
         final List<String> useCases = Arrays.stream(RecursiveUseCase.values()).map(Enum::name).toList();
         final List<String> lifecycles = Arrays.stream(BomLifecycle.values())
                 .filter(lifecycle -> Arrays.stream(RecursiveUseCase.values())
-                        .anyMatch(useCase -> useCase.getAllowedBomLifecycles().contains(lifecycle)))
+                        .anyMatch(useCase -> useCase.getAllowedLifecycles().contains(lifecycle)))
                 .map(BomLifecycle::toString)
                 .toList();
         final List<String> aspects = Arrays.stream(RecursiveUseCase.values())
@@ -124,21 +124,21 @@ public class OpenApiConfiguration {
                 .toList();
 
         setPropertyEnum(components, RECURSIVE_JOB_REQUEST_SCHEMA, USE_CASE_PROPERTY, useCases);
-        setPropertyEnum(components, RECURSIVE_JOB_REQUEST_SCHEMA, BOM_LIFECYCLE_PROPERTY, lifecycles);
-        setPropertyDescription(components, RECURSIVE_JOB_REQUEST_SCHEMA, BOM_LIFECYCLE_PROPERTY,
+        setPropertyEnum(components, RECURSIVE_JOB_REQUEST_SCHEMA, LIFECYCLE_PROPERTY, lifecycles);
+        setPropertyDescription(components, RECURSIVE_JOB_REQUEST_SCHEMA, LIFECYCLE_PROPERTY,
                 RECURSIVE_BOM_LIFECYCLE_DESCRIPTION);
         setArrayItemEnum(components, RECURSIVE_JOB_REQUEST_SCHEMA, ASPECTS_PROPERTY, aspects);
-        setPropertyEnum(components, RECURSIVE_NOTIFICATION_CONTENT_SCHEMA, BOM_LIFECYCLE_PROPERTY, lifecycles);
-        setPropertyDescription(components, RECURSIVE_NOTIFICATION_CONTENT_SCHEMA, BOM_LIFECYCLE_PROPERTY,
+        setPropertyEnum(components, RECURSIVE_NOTIFICATION_CONTENT_SCHEMA, LIFECYCLE_PROPERTY, lifecycles);
+        setPropertyDescription(components, RECURSIVE_NOTIFICATION_CONTENT_SCHEMA, LIFECYCLE_PROPERTY,
                 RECURSIVE_BOM_LIFECYCLE_DESCRIPTION);
         setArrayItemEnum(components, RECURSIVE_NOTIFICATION_CONTENT_SCHEMA, ASPECTS_PROPERTY, aspects);
         setArrayItemEnum(components, RECURSIVE_JOB_PARAMETER_SCHEMA, ASPECTS_PROPERTY, aspects);
-        setPropertyEnum(components, RECURSIVE_JOB_PARAMETER_SCHEMA, BOM_LIFECYCLE_PROPERTY, lifecycles);
-        setPropertyDescription(components, RECURSIVE_JOB_PARAMETER_SCHEMA, BOM_LIFECYCLE_PROPERTY,
+        setPropertyEnum(components, RECURSIVE_JOB_PARAMETER_SCHEMA, LIFECYCLE_PROPERTY, lifecycles);
+        setPropertyDescription(components, RECURSIVE_JOB_PARAMETER_SCHEMA, LIFECYCLE_PROPERTY,
                 RECURSIVE_BOM_LIFECYCLE_DESCRIPTION);
         setPropertyEnum(components, RECURSIVE_JOB_RESULT_SCHEMA, USE_CASE_PROPERTY, useCases);
-        setPropertyEnum(components, RECURSIVE_JOB_RESULT_SCHEMA, BOM_LIFECYCLE_PROPERTY, lifecycles);
-        setPropertyDescription(components, RECURSIVE_JOB_RESULT_SCHEMA, BOM_LIFECYCLE_PROPERTY,
+        setPropertyEnum(components, RECURSIVE_JOB_RESULT_SCHEMA, LIFECYCLE_PROPERTY, lifecycles);
+        setPropertyDescription(components, RECURSIVE_JOB_RESULT_SCHEMA, LIFECYCLE_PROPERTY,
                 RECURSIVE_BOM_LIFECYCLE_DESCRIPTION);
         setArrayItemEnum(components, RECURSIVE_JOB_RESULT_SCHEMA, "requestedAspects", aspects);
         setPropertyEnum(components, RECURSIVE_ASPECT_ITEM_SCHEMA, "aspect", aspects);

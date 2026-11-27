@@ -217,7 +217,7 @@ public class RecursiveChainOpeningGrantController {
             @Pattern(regexp = RecursivePatternStore.OPTIONAL_BPNL_STRING,
                      message = "requesterBpn must be blank or a valid BPNL")
             final @RequestParam(name = "requesterBpn", required = false) String requesterBpn,
-            @Parameter(description = "Recursive use case.", example = "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE")
+            @Parameter(description = "Recursive use case.", example = "PURIS_ANONYMIZED_RECURSIVE")
             final @RequestParam(name = "useCase", required = false) RecursiveUseCase useCase,
             @Parameter(description = "Return only grants valid at query time.", example = "true")
             final @RequestParam(name = "validOnly", defaultValue = "true") boolean validOnly) {
@@ -334,7 +334,7 @@ public class RecursiveChainOpeningGrantController {
             @Pattern(regexp = RecursivePatternStore.BPNL_STRING,
                      message = "requesterBpn must be a valid BPNL")
             final @RequestParam(name = "requesterBpn") String requesterBpn,
-            @Parameter(description = "Recursive use case.", example = "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE")
+            @Parameter(description = "Recursive use case.", example = "PURIS_ANONYMIZED_RECURSIVE")
             @NotNull
             final @RequestParam(name = "useCase") RecursiveUseCase useCase) {
         final RecursiveChainOpeningGrant deletedGrant = chainOpeningGrantService.deleteGrant(openingId, globalAssetId,

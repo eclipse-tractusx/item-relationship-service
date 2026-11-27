@@ -24,6 +24,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
@@ -58,7 +59,7 @@ public class RecursiveJobRequest {
 
     @NotNull
     @Schema(description = "Recursive use case. Only the configured PURIS anonymized bundle is supported.",
-            example = "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE")
+            example = "PURIS_ANONYMIZED_RECURSIVE")
     private RecursiveUseCase useCase;
 
     /**
@@ -74,7 +75,7 @@ public class RecursiveJobRequest {
      */
     @Schema(description = "BOM lifecycle used for traversal. PURIS supports only asPlanned.",
             defaultValue = "asPlanned", allowableValues = "asPlanned")
-    private BomLifecycle bomLifecycle;
+    private BomLifecycle lifecycle;
 
     /**
      * Payload aspects to collect during the recursive traversal.
@@ -107,4 +108,16 @@ public class RecursiveJobRequest {
     @Pattern(regexp = RecursivePatternStore.OPTIONAL_SAFE_SINGLE_LINE_STRING,
              message = "ttl must not contain control or line separator characters")
     private String ttl;
+
+    /**
+     * Rejects unknown fields so that a misspelled or outdated field name, for example {@code bomLifecycle},
+     * returns 400 instead of silently applying a default.
+     */
+    public static class RecursiveJobRequestBuilder {
+
+        @JsonAnySetter
+        /* package */ void rejectUnknownField(final String name, final Object value) {
+            throw new IllegalArgumentException("Unknown recursive job request field");
+        }
+    }
 }

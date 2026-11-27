@@ -62,27 +62,27 @@ class RecursiveResponseMapperTest {
                         aspectItem("urn:samm:io.catenax.item_stock:2.0.0#ItemStock",
                                 Map.of("quantity", 40))))
                 .tombstones(List.of())
-                .childItems(List.of())
+                .relatedItems(List.of())
                 .build();
         final RecursiveJobResult rawResult = RecursiveJobResult.builder()
                 .resultStatus(RecursiveResultStatus.COMPLETE)
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .requestedAspects(List.of("injectedAspect"))
-                .childItems(List.of(rawChild))
+                .relatedItems(List.of(rawChild))
                 .tombstones(List.of())
                 .build();
 
         final RecursiveJobResult externalResult = RecursiveResponseMapper.toExternalResult(
-                rawResult, RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE, BomLifecycle.AS_PLANNED,
+                rawResult, RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE, BomLifecycle.AS_PLANNED,
                 List.of(ITEM_STOCK_ANONYMIZED, DELIVERY_INFORMATION_ANONYMIZED));
 
         assertThat(externalResult.getResultStatus()).isEqualTo(RecursiveResultStatus.COMPLETE);
         assertThat(externalResult.getUseCase())
-                .isEqualTo(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE);
-        assertThat(externalResult.getBomLifecycle()).isEqualTo(BomLifecycle.AS_PLANNED);
+                .isEqualTo(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE);
+        assertThat(externalResult.getLifecycle()).isEqualTo(BomLifecycle.AS_PLANNED);
         assertThat(externalResult.getRequestedAspects()).containsExactly(
                 ITEM_STOCK_ANONYMIZED, DELIVERY_INFORMATION_ANONYMIZED);
-        assertThat(externalResult.getChildItems()).singleElement().satisfies(child -> {
+        assertThat(externalResult.getRelatedItems()).singleElement().satisfies(child -> {
             assertThat(child.getMaterialNumber()).isEqualTo("MNR-1");
             assertThat(child.getQuantity().getValue()).isEqualTo(2.0);
             assertThat(child.getItems()).extracting(RecursiveAspectItem::getAspect)
@@ -101,9 +101,9 @@ class RecursiveResponseMapperTest {
         final RecursiveJobState state = RecursiveJobState.builder()
                 .jobId(UUID.fromString("00000000-0000-0000-0000-000000000001"))
                 .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
-                .bomLifecycle(BomLifecycle.AS_PLANNED)
+                .lifecycle(BomLifecycle.AS_PLANNED)
                 .aspects(List.of(ITEM_STOCK_ANONYMIZED))
                 .requesterBpnl("BPNL0000ATLS0001")
                 .messageId("parent-message-id")
@@ -113,7 +113,7 @@ class RecursiveResponseMapperTest {
                 .childResponseDeadline(ZonedDateTime.parse("2026-08-10T10:29:00Z"))
                 .state(RecursiveJobPhase.COMPLETED)
                 .rootJob(true)
-                .bomChildren(List.of(new RecursiveBomChild(filteredAssetId, filteredPartner,
+                .chainRelations(List.of(new RecursiveBomChild(filteredAssetId, filteredPartner,
                         RecursiveQuantity.builder().value(1.0).unit(ItemUnitEnumeration.UNIT_PIECE).build())))
                 .childBranches(List.of(RecursiveChildBranch.builder()
                         .messageId(childMessageId)
@@ -123,7 +123,7 @@ class RecursiveResponseMapperTest {
                         .build()))
                 .result(RecursiveJobResult.builder()
                         .resultStatus(RecursiveResultStatus.COMPLETE)
-                        .childItems(List.of())
+                        .relatedItems(List.of())
                         .tombstones(List.of())
                         .build())
                 .build();
@@ -135,28 +135,28 @@ class RecursiveResponseMapperTest {
                                 .doesNotContain(filteredAssetId)
                                 .doesNotContain(childMessageId)
                                 .doesNotContain("childBranches")
-                                .doesNotContain("bomChildren");
+                                .doesNotContain("chainRelations");
     }
 
     @Test
     void shouldDiscardPayloadsForLifecycleOutsideUseCasePolicy() {
         final RecursiveJobResult externalResult = RecursiveResponseMapper.toExternalResult(
                 RecursiveJobResult.builder()
-                        .childItems(List.of(RecursiveChildItem.builder()
+                        .relatedItems(List.of(RecursiveChildItem.builder()
                                 .items(List.of(aspectItem(ITEM_STOCK_ANONYMIZED, Map.of("quantity", 10))))
                                 .tombstones(List.of())
-                                .childItems(List.of())
+                                .relatedItems(List.of())
                                 .build()))
                         .tombstones(List.of())
                         .build(),
-                RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE,
+                RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE,
                 BomLifecycle.AS_SPECIFIED,
                 List.of(ITEM_STOCK_ANONYMIZED));
 
-        assertThat(externalResult.getChildItems()).isEmpty();
+        assertThat(externalResult.getRelatedItems()).isEmpty();
         assertThat(externalResult.getResultStatus()).isEqualTo(RecursiveResultStatus.FAILED);
         assertThat(externalResult.getUseCase()).isNull();
-        assertThat(externalResult.getBomLifecycle()).isNull();
+        assertThat(externalResult.getLifecycle()).isNull();
         assertThat(externalResult.getRequestedAspects()).isEmpty();
     }
 

@@ -170,9 +170,9 @@ class RecursiveChildResponseProcessor {
         return RecursiveJobResult.builder()
                                  .resultStatus(RecursiveResultStatus.FAILED)
                                  .useCase(state.getUseCase())
-                                 .bomLifecycle(state.getBomLifecycle())
+                                 .lifecycle(state.getLifecycle())
                                  .requestedAspects(state.getAspects())
-                                 .childItems(List.of())
+                                 .relatedItems(List.of())
                                  .tombstones(List.of(tombstone))
                                  .build();
     }
@@ -226,7 +226,7 @@ class RecursiveChildResponseProcessor {
         return Objects.equals(header.getReceiverBpnl(), localBpnl.get())
                 && Objects.equals(content.getOpeningId(), state.getOpeningId())
                 && Objects.equals(content.getUseCase(), state.getUseCase())
-                && content.getBomLifecycle() == state.getBomLifecycle()
+                && content.getLifecycle() == state.getLifecycle()
                 && content.getAspects() != null && state.getAspects() != null
                 && new HashSet<>(content.getAspects()).equals(new HashSet<>(state.getAspects()));
     }

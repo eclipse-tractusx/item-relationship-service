@@ -42,7 +42,7 @@ class RecursiveRequestFactoryTest {
     private static final String GLOBAL_ASSET_ID = "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b";
     private static final String LOCAL_BPNL = "BPNL0000LOCAL001";
     private static final ZonedDateTime NOW = ZonedDateTime.parse("2026-01-01T00:00:00Z");
-    private static final RecursiveUseCase USE_CASE = RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE;
+    private static final RecursiveUseCase USE_CASE = RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE;
     private static final String ITEM_STOCK_ANONYMIZED =
             RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId();
     private static final String DELIVERY_INFORMATION_ANONYMIZED =
@@ -193,8 +193,8 @@ class RecursiveRequestFactoryTest {
                 factory.prepare(request, true, null, null);
 
         assertThat(prepared.aspects()).containsExactlyElementsOf(
-                RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE.getAspectSemanticIds());
-        assertThat(prepared.bomLifecycle()).isEqualTo(BomLifecycle.AS_PLANNED);
+                RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE.getAspectSemanticIds());
+        assertThat(prepared.lifecycle()).isEqualTo(BomLifecycle.AS_PLANNED);
     }
 
     @Test
@@ -234,12 +234,12 @@ class RecursiveRequestFactoryTest {
                 .openingId("opening-42")
                 .useCase(USE_CASE)
                 .globalAssetId(GLOBAL_ASSET_ID)
-                .bomLifecycle(BomLifecycle.AS_BUILT)
+                .lifecycle(BomLifecycle.AS_BUILT)
                 .build();
 
         assertThatThrownBy(() -> factory.prepare(request, true, null, null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("bomLifecycle asBuilt is not supported");
+                .hasMessageContaining("lifecycle asBuilt is not supported");
     }
 
     @Test
@@ -248,12 +248,12 @@ class RecursiveRequestFactoryTest {
                 .openingId("opening-42")
                 .useCase(USE_CASE)
                 .globalAssetId(GLOBAL_ASSET_ID)
-                .bomLifecycle(BomLifecycle.AS_SPECIFIED)
+                .lifecycle(BomLifecycle.AS_SPECIFIED)
                 .build();
 
         assertThatThrownBy(() -> factory.prepare(request, true, null, null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("bomLifecycle asSpecified is not supported");
+                .hasMessageContaining("lifecycle asSpecified is not supported");
     }
 
     @Test

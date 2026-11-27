@@ -41,7 +41,7 @@ import lombok.Value;
     private static final String OPENING_ID = "RECURSIVE_OPENING_ID";
     private static final String USE_CASE = "RECURSIVE_USE_CASE";
 
-    private static final String DEFAULT_USE_CASE = "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE";
+    private static final String DEFAULT_USE_CASE = "PURIS_ANONYMIZED_RECURSIVE";
 
     private static final Pattern BPNL_PATTERN = Pattern.compile("^BPNL[a-zA-Z0-9]{12}$");
     private static final Pattern GLOBAL_ASSET_ID_PATTERN = Pattern.compile(

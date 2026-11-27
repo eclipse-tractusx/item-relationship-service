@@ -1227,14 +1227,14 @@ paths:
             type: string
             pattern: "^BPNL[0-9A-Za-z]{12}$"
         - description: Recursive use case.
-          example: PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+          example: PURIS_ANONYMIZED_RECURSIVE
           in: query
           name: useCase
           required: true
           schema:
             type: string
             enum:
-              - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+              - PURIS_ANONYMIZED_RECURSIVE
       responses:
         "204":
           description: Grant deleted
@@ -1313,14 +1313,14 @@ paths:
             type: string
             pattern: "^(?:BPNL[0-9A-Za-z]{12})?$"
         - description: Recursive use case.
-          example: PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+          example: PURIS_ANONYMIZED_RECURSIVE
           in: query
           name: useCase
           required: false
           schema:
             type: string
             enum:
-              - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+              - PURIS_ANONYMIZED_RECURSIVE
         - description: Return only grants valid at query time.
           example: true
           in: query
@@ -1678,9 +1678,9 @@ paths:
       description: Unified endpoint for child requests and parent responses.
         The content.type field (REQUEST or RESPONSE) determines the processing path.
         REQUEST starts the next recursive child hop and requires header.expectedResponseBy,
-        content.globalAssetId, content.bomLifecycle=asPlanned and a non-empty
+        content.globalAssetId, content.lifecycle=asPlanned and a non-empty
         content.aspects list. RESPONSE returns the correlated child result and
-        requires header.relatedMessageId, content.bomLifecycle=asPlanned, a non-empty
+        requires header.relatedMessageId, content.lifecycle=asPlanned, a non-empty
         content.aspects list, content.status and content.result; header.expectedResponseBy
         must be omitted.
         This is the endpoint that the EDC notification asset points to.
@@ -2571,9 +2571,9 @@ components:
       type: object
       additionalProperties: false
       description: Recursive notification content. REQUEST requires type, openingId,
-        useCase, globalAssetId, bomLifecycle=asPlanned and a non-empty aspects list;
+        useCase, globalAssetId, lifecycle=asPlanned and a non-empty aspects list;
         status and result must be omitted. RESPONSE requires type, openingId, useCase,
-        bomLifecycle=asPlanned, the same non-empty aspects list, status and result.
+        lifecycle=asPlanned, the same non-empty aspects list, status and result.
       properties:
         aspects:
           type: array
@@ -2584,7 +2584,7 @@ components:
               - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
               - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
             pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
-        bomLifecycle:
+        lifecycle:
           type: string
           description: BOM lifecycle used for recursive PURIS traversal. PURIS supports
             only asPlanned.
@@ -2612,7 +2612,7 @@ components:
         useCase:
           type: string
           enum:
-            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+            - PURIS_ANONYMIZED_RECURSIVE
       required:
         - openingId
         - type
@@ -3386,7 +3386,7 @@ components:
           type: string
           description: Supported recursive use case.
           enum:
-            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+            - PURIS_ANONYMIZED_RECURSIVE
         validFrom:
           type: string
           format: date-time
@@ -3402,7 +3402,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        childItems:
+        relatedItems:
           type: array
           items:
             $ref: "#/components/schemas/RecursiveChildItem"
@@ -3470,7 +3470,7 @@ components:
               - urn:samm:io.catenax.item_stock_anonymized:1.0.0#ItemStockAnonymized
               - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
               - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
-        bomLifecycle:
+        lifecycle:
           type: string
           description: BOM lifecycle used for recursive PURIS traversal. PURIS supports
             only asPlanned.
@@ -3490,7 +3490,7 @@ components:
         useCase:
           type: string
           enum:
-            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+            - PURIS_ANONYMIZED_RECURSIVE
     RecursiveJobRequest:
       type: object
       additionalProperties: false
@@ -3512,7 +3512,7 @@ components:
               - urn:samm:io.catenax.delivery_information_anonymized:1.0.0#DeliveryInformationAnonymized
               - urn:samm:io.catenax.planned_production_output_anonymized:1.0.0#PlannedProductionOutputAnonymized
             pattern: "^[^\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]+$"
-        bomLifecycle:
+        lifecycle:
           type: string
           default: asPlanned
           description: BOM lifecycle used for recursive PURIS traversal. PURIS supports
@@ -3544,8 +3544,8 @@ components:
           description: Recursive use case. Only the configured PURIS anonymized bundle
             is supported.
           enum:
-            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
-          example: PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+            - PURIS_ANONYMIZED_RECURSIVE
+          example: PURIS_ANONYMIZED_RECURSIVE
       required:
         - globalAssetId
         - openingId
@@ -3554,13 +3554,13 @@ components:
       type: object
       additionalProperties: false
       properties:
-        bomLifecycle:
+        lifecycle:
           type: string
           description: BOM lifecycle used for recursive PURIS traversal. PURIS supports
             only asPlanned.
           enum:
             - asPlanned
-        childItems:
+        relatedItems:
           type: array
           items:
             $ref: "#/components/schemas/RecursiveChildItem"
@@ -3594,7 +3594,7 @@ components:
         useCase:
           type: string
           enum:
-            - PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE
+            - PURIS_ANONYMIZED_RECURSIVE
     RecursiveJobStartResponse:
       type: object
       additionalProperties: false

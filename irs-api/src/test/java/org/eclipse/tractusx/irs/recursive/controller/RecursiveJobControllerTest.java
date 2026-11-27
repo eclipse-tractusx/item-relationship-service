@@ -141,6 +141,28 @@ class RecursiveJobControllerTest {
         assertThat(jobs).isEmpty();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = { "\"bomLifecycle\": \"asBuilt\"", "\"collectRootSubmodels\": true" })
+    void shouldReturnBadRequestWithoutCreatingJobWhenRequestContainsUnknownField(final String unknownField)
+            throws Exception {
+        grantStore.store(validGrant());
+
+        mockMvc.perform(post("/irs/recursive/jobs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "openingId": "opening-42",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
+                                  "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
+                                  %s
+                                }
+                                """.formatted(unknownField)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("MALFORMED_REQUEST"));
+
+        assertThat(jobs).isEmpty();
+    }
+
     @Test
     void shouldRejectOpeningIdContainingLineBreak() throws Exception {
         mockMvc.perform(post("/irs/recursive/jobs")
@@ -148,7 +170,7 @@ class RecursiveJobControllerTest {
                         .content("""
                                 {
                                   "openingId": "opening-42\\nforged-entry",
-                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
                                   "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b"
                                 }
                                 """))
@@ -169,7 +191,7 @@ class RecursiveJobControllerTest {
                         .content("""
                                 {
                                   "openingId": "opening-42",
-                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
                                   "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
                                   "ttl": "%s"
                                 }
@@ -194,7 +216,7 @@ class RecursiveJobControllerTest {
                         .content("""
                                 {
                                   "openingId": "opening-42",
-                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
                                   "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
                                   "ttl": "PT1000000000000000H"
                                 }
@@ -248,7 +270,7 @@ class RecursiveJobControllerTest {
                         .content("""
                                 {
                                   "openingId": "opening-42",
-                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
                                   "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b"
                                 }
                                 """))
@@ -269,7 +291,7 @@ class RecursiveJobControllerTest {
                         .content("""
                                 {
                                   "openingId": "opening-42",
-                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
                                   "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
                                   "ttl": null
                                 }
@@ -310,7 +332,7 @@ class RecursiveJobControllerTest {
                         .content("""
                                 {
                                   "openingId": "opening-42",
-                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
                                   "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
                                   "requesterBpn": "%s"
                                 }
@@ -336,7 +358,7 @@ class RecursiveJobControllerTest {
                         .content("""
                                 {
                                   "openingId": "opening-42",
-                                  "useCase": "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                                  "useCase": "PURIS_ANONYMIZED_RECURSIVE",
                                   "globalAssetId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
                                   "requesterBpn": "%s"
                                 }
@@ -387,7 +409,7 @@ class RecursiveJobControllerTest {
     private RecursiveJobRequest validRequest() {
         return RecursiveJobRequest.builder()
                 .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
                 .requesterBpn(ATLAS_BPNL)
                 .ttl("PT15M")
@@ -397,7 +419,7 @@ class RecursiveJobControllerTest {
     private RecursiveChainOpeningGrant validGrant() {
         return RecursiveChainOpeningGrant.builder()
                 .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .allowedBpnlSet(Set.of())
                 .requesterBpn(ATLAS_BPNL)
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")

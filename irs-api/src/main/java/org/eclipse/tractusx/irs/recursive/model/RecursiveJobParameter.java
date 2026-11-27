@@ -47,7 +47,7 @@ public class RecursiveJobParameter {
              message = "openingId must not contain control or line separator characters")
     private String openingId;
     private RecursiveUseCase useCase;
-    private BomLifecycle bomLifecycle;
+    private BomLifecycle lifecycle;
     private List<String> aspects;
     private ZonedDateTime deadline;
     private ZonedDateTime childResponseDeadline;

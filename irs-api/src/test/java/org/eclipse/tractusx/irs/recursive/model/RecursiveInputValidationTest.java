@@ -53,7 +53,7 @@ class RecursiveInputValidationTest {
     void shouldRejectLineBreaksInJobRequest() {
         final RecursiveJobRequest request = RecursiveJobRequest.builder()
                 .openingId("opening-42\nforged-entry")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
                 .build();
 
@@ -92,9 +92,9 @@ class RecursiveInputValidationTest {
                 .content(RecursiveNotificationMessage.Content.builder()
                         .type(RecursiveNotificationType.REQUEST)
                         .openingId("opening-42")
-                        .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                        .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                         .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
-                        .bomLifecycle(BomLifecycle.AS_PLANNED)
+                        .lifecycle(BomLifecycle.AS_PLANNED)
                         .aspects(List.of(RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId()))
                         .build())
                 .build();
@@ -126,12 +126,12 @@ class RecursiveInputValidationTest {
         globalAssetIds.forEach(globalAssetId -> {
             final RecursiveJobRequest request = RecursiveJobRequest.builder()
                     .openingId("opening-42")
-                    .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                    .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                     .globalAssetId(globalAssetId)
                     .build();
             final RecursiveChainOpeningGrant grant = RecursiveChainOpeningGrant.builder()
                     .openingId("opening-42")
-                    .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                    .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                     .globalAssetId(globalAssetId)
                     .requesterBpn("BPNL0000ATLS0001")
                     .build();
@@ -170,7 +170,7 @@ class RecursiveInputValidationTest {
     void shouldRejectInvalidGrantPartnerBpn() {
         final RecursiveChainOpeningGrant grant = RecursiveChainOpeningGrant.builder()
                 .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
                 .requesterBpn("BPNL0000ATLS0001")
                 .allowedBpnlSet(Set.of("BPNL0000CHLD0001\nforged-entry"))
@@ -205,9 +205,9 @@ class RecursiveInputValidationTest {
                 .content(RecursiveNotificationMessage.Content.builder()
                         .type(RecursiveNotificationType.REQUEST)
                         .openingId("opening-42")
-                        .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                        .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                         .globalAssetId(globalAssetId)
-                        .bomLifecycle(BomLifecycle.AS_PLANNED)
+                        .lifecycle(BomLifecycle.AS_PLANNED)
                         .aspects(List.of(RecursiveAspect.ITEM_STOCK_ANONYMIZED.getSemanticId()))
                         .build())
                 .build();

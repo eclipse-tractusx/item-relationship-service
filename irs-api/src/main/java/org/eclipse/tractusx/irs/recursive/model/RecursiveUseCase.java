@@ -45,7 +45,7 @@ public enum RecursiveUseCase {
     /**
      * Recursive PURIS collection with the anonymized payload models (the only PURIS bundle in use).
      */
-    PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE(
+    PURIS_ANONYMIZED_RECURSIVE(
             BomLifecycle.AS_PLANNED,
             Set.of(BomLifecycle.AS_PLANNED),
             List.of(
@@ -55,18 +55,18 @@ public enum RecursiveUseCase {
             )
     );
 
-    private final BomLifecycle defaultBomLifecycle;
-    private final Set<BomLifecycle> allowedBomLifecycles;
+    private final BomLifecycle defaultLifecycle;
+    private final Set<BomLifecycle> allowedLifecycles;
     private final List<RecursiveAspect> allowedAspects;
     private final List<String> aspectSemanticIds;
 
-    RecursiveUseCase(final BomLifecycle defaultBomLifecycle, final Set<BomLifecycle> allowedBomLifecycles,
+    RecursiveUseCase(final BomLifecycle defaultLifecycle, final Set<BomLifecycle> allowedLifecycles,
             final List<RecursiveAspect> allowedAspects) {
-        if (!allowedBomLifecycles.contains(defaultBomLifecycle)) {
+        if (!allowedLifecycles.contains(defaultLifecycle)) {
             throw new IllegalArgumentException("Default BOM lifecycle must be part of the allowed lifecycles");
         }
-        this.defaultBomLifecycle = defaultBomLifecycle;
-        this.allowedBomLifecycles = Set.copyOf(allowedBomLifecycles);
+        this.defaultLifecycle = defaultLifecycle;
+        this.allowedLifecycles = Set.copyOf(allowedLifecycles);
         this.allowedAspects = List.copyOf(allowedAspects);
         this.aspectSemanticIds = this.allowedAspects.stream().map(RecursiveAspect::getSemanticId).toList();
     }
@@ -76,12 +76,12 @@ public enum RecursiveUseCase {
      *
      * @return the lifecycle used when the request does not specify one
      */
-    public BomLifecycle getDefaultBomLifecycle() {
-        return defaultBomLifecycle;
+    public BomLifecycle getDefaultLifecycle() {
+        return defaultLifecycle;
     }
 
-    public Set<BomLifecycle> getAllowedBomLifecycles() {
-        return allowedBomLifecycles;
+    public Set<BomLifecycle> getAllowedLifecycles() {
+        return allowedLifecycles;
     }
 
     public List<RecursiveAspect> getAllowedAspects() {
@@ -98,10 +98,10 @@ public enum RecursiveUseCase {
     }
 
     public BomLifecycle resolveLifecycle(final BomLifecycle requestedLifecycle) {
-        final BomLifecycle resolved = requestedLifecycle == null ? defaultBomLifecycle : requestedLifecycle;
-        if (!allowedBomLifecycles.contains(resolved)) {
+        final BomLifecycle resolved = requestedLifecycle == null ? defaultLifecycle : requestedLifecycle;
+        if (!allowedLifecycles.contains(resolved)) {
             throw new IllegalArgumentException(
-                    "bomLifecycle " + resolved + " is not supported for useCase " + name());
+                    "lifecycle " + resolved + " is not supported for useCase " + name());
         }
         return resolved;
     }
@@ -115,13 +115,13 @@ public enum RecursiveUseCase {
      * Missing, empty or unsupported selections are rejected at result boundaries so that
      * request defaulting cannot accidentally be repeated for persisted or partner-provided data.
      *
-     * @param bomLifecycle selected traversal lifecycle
+     * @param lifecycle selected traversal lifecycle
      * @param requestedAspectIds requested, persisted or partner-provided aspect IDs
      * @return canonical IDs that belong to this use-case bundle, or empty when the selection is invalid
      */
-    public Optional<Set<String>> selectAspectIds(final BomLifecycle bomLifecycle,
+    public Optional<Set<String>> selectAspectIds(final BomLifecycle lifecycle,
             final Collection<String> requestedAspectIds) {
-        if (bomLifecycle == null || !allowedBomLifecycles.contains(bomLifecycle)
+        if (lifecycle == null || !allowedLifecycles.contains(lifecycle)
                 || requestedAspectIds == null || requestedAspectIds.isEmpty()) {
             return Optional.empty();
         }

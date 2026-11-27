@@ -37,7 +37,7 @@ class RecursiveChainOpeningGrantSerializationTest {
     @Test
     void shouldAcceptNewValidToOnInput() throws Exception {
         final String json = """
-                {"openingId":"opening-42","useCase":"PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                {"openingId":"opening-42","useCase":"PURIS_ANONYMIZED_RECURSIVE",
                  "validTo":"2099-12-31T23:59:59Z"}""";
 
         final RecursiveChainOpeningGrant grant = objectMapper.readValue(json, RecursiveChainOpeningGrant.class);
@@ -48,7 +48,7 @@ class RecursiveChainOpeningGrantSerializationTest {
     @Test
     void shouldAcceptOpeningIdInGrant() throws Exception {
         final String json = """
-                {"openingId":"opening-4711","useCase":"PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE"}""";
+                {"openingId":"opening-4711","useCase":"PURIS_ANONYMIZED_RECURSIVE"}""";
 
         final RecursiveChainOpeningGrant grant = objectMapper.readValue(json, RecursiveChainOpeningGrant.class);
 
@@ -59,7 +59,7 @@ class RecursiveChainOpeningGrantSerializationTest {
     void shouldSerializeOpeningIdInGrant() throws Exception {
         final RecursiveChainOpeningGrant grant = RecursiveChainOpeningGrant.builder()
                 .openingId("opening-4711")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .build();
 
         final String json = objectMapper.writeValueAsString(grant);
@@ -71,7 +71,7 @@ class RecursiveChainOpeningGrantSerializationTest {
     @Test
     void shouldAcceptOpeningIdInJobRequest() throws Exception {
         final String json = """
-                {"openingId":"opening-4711","useCase":"PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE",
+                {"openingId":"opening-4711","useCase":"PURIS_ANONYMIZED_RECURSIVE",
                  "globalAssetId":"urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b"}""";
 
         final RecursiveJobRequest request = objectMapper.readValue(json, RecursiveJobRequest.class);
@@ -83,7 +83,7 @@ class RecursiveChainOpeningGrantSerializationTest {
     void shouldSerializeUsingValidTo() throws Exception {
         final RecursiveChainOpeningGrant grant = RecursiveChainOpeningGrant.builder()
                 .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .validTo(ZonedDateTime.parse("2099-12-31T23:59:59Z"))
                 .build();
 

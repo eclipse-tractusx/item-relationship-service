@@ -61,7 +61,7 @@ class RecursiveChainOpeningGrantSecurityTest extends ControllerTest {
 
     private static final String GRANTS_PATH = "/irs/recursive/chain-openings/grants";
     private static final String VALID_GRANT_BODY =
-            "{\"openingId\":\"opening-42\",\"useCase\":\"PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE\","
+            "{\"openingId\":\"opening-42\",\"useCase\":\"PURIS_ANONYMIZED_RECURSIVE\","
                     + "\"requesterBpn\":\"BPNL0000ATLS0001\","
                     + "\"globalAssetId\":\"urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b\"}";
 
@@ -103,7 +103,7 @@ class RecursiveChainOpeningGrantSecurityTest extends ControllerTest {
         given().port(port).queryParam("openingId", "opening-42")
                .queryParam("globalAssetId", "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
                .queryParam("requesterBpn", "BPNL0000ATLS0001")
-               .queryParam("useCase", "PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE")
+               .queryParam("useCase", "PURIS_ANONYMIZED_RECURSIVE")
                .delete(GRANTS_PATH)
                .then().statusCode(FORBIDDEN.value());
     }
@@ -123,7 +123,7 @@ class RecursiveChainOpeningGrantSecurityTest extends ControllerTest {
         final ZonedDateTime now = ZonedDateTime.now();
         Mockito.when(grantService.registerGrant(any())).thenReturn(RecursiveChainOpeningGrant.builder()
                 .openingId("opening-42")
-                .useCase(RecursiveUseCase.PURIS_ITEM_STOCK_ANONYMIZED_RECURSIVE)
+                .useCase(RecursiveUseCase.PURIS_ANONYMIZED_RECURSIVE)
                 .requesterBpn("BPNL0000ATLS0001")
                 .globalAssetId("urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b")
                 .createdAt(now)
